@@ -6,16 +6,16 @@ import {
      getFieldVal,
      getFieldDescriptors,
      getRegisteredField
-} from 'framework-ui/src/utils/getters'
+} from '../utils/getters'
 import { formsDataActions } from '../redux/actions'
-import { isRequired } from 'framework-ui/src/validations'
+import { isRequired } from '../validations'
 import { bindActionCreators } from 'redux'
 import { is } from 'ramda'
-import chainHandler from 'framework-ui/src/utils/chainHandler'
+import chainHandler from '../utils/chainHandler'
 import { isNotNil } from 'ramda-extension'
 import { errorLog } from '../Logger'
 import TextField from '@material-ui/core/TextField'
-import Select from 'framework-ui/src/Components/Select'
+import Select from '../Components/Select'
 import ChipArray from './ChipArray'
 import FileLoader from './fieldConnector/FileLoader'
 

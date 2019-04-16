@@ -1,11 +1,17 @@
-import { prop, o, curry, compose, has, filter, equals } from 'ramda'
+import { prop, o, curry, compose, has, filter, equals, is } from 'ramda'
 import getInPath from './getInPath'
 
 export const getFormsData = prop('formsData')
 
 export const getFieldDescriptors = prop('fieldDescriptors')
 
-export const getFieldDescriptor = curry((deepPath, state) => o(getInPath(deepPath), getFieldDescriptors)(state))
+export const getFieldDescriptor = curry((deepPath, state) =>
+     o(descriptors => {
+		if (deepPath.match(/\.\d+$/)) deepPath = deepPath.replace(/\.\d+$/, '[]')
+		console.log(deepPath)
+          return getInPath(deepPath)(descriptors)
+     }, getFieldDescriptors)(state)
+)
 
 export const getRegisteredFields = o(prop('registeredFields'), getFormsData)
 
@@ -50,8 +56,13 @@ export const getUsersWithPosition = o(filter(has('positions')), getUsers)
 
 export const getHistory = prop('history')
 
-export const isUrlHash = hash => compose(equals(hash), prop("hash"), getHistory)
+export const isUrlHash = hash =>
+     compose(
+          equals(hash),
+          prop('hash'),
+          getHistory
+     )
 
-export const getTmpData = prop("tmpData")
+export const getTmpData = prop('tmpData')
 
-export const getDialogTmp = o(prop("dialog"), prop("tmpData"))
+export const getDialogTmp = o(prop('dialog'), prop('tmpData'))

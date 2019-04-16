@@ -13,6 +13,7 @@ import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
 import { bindActionCreators } from 'redux'
 import { prop, filter, pick } from 'ramda'
+import MenuItem from '@material-ui/core/MenuItem'
 
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import * as sensorsActions from '../../store/actions/application/devices'
@@ -21,10 +22,13 @@ import { getDialogTmp } from 'framework-ui/src/utils/getters'
 import InfoAlert from 'framework-ui/src/Components/InfoAlert'
 import { getQueryID, getDevices } from '../../utils/getters'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
+import { SampleIntervals } from '../../constants'
 
 function OnlyWritable(device) {
      return device.permissions
 }
+
+const SampleIntervalWithText = SampleIntervals.map(val => ({ value: val, text: val < 60 ? val + ' min' : val / 60 + ' h' }))
 
 const styles = theme => ({
      textField: {
@@ -131,7 +135,7 @@ class EditDeviceDialog extends Component {
           this.mounted = false
      }
      preFillForm = device => {
-          this.props.fillEditFormAction(device)
+          // TODO this.props.fillEditFormAction(device)
           if (this.mounted) this.setState({ filled: true })
           else this.state.filled = false // eslint-disable-line
      }
@@ -158,6 +162,22 @@ class EditDeviceDialog extends Component {
                     <Card className={classes.card}>
                          <CardHeader className={classes.header} title={device.title} />
                          <CardContent className={classes.content}>
+                              <FieldConnector
+                                   component="Select"
+                                   fieldProps={{
+                                        type: 'text',
+                                        className: classes.textField
+                                   }}
+                                   deepPath="EDIT_SENSORS.sampleInterval"
+                                   selectOptions={SampleIntervalWithText.map(
+                                        ({ value, text }) =>
+                                             value !== 'passwd' && (
+                                                  <MenuItem value={value} key={value}>
+                                                       {text}
+                                                  </MenuItem>
+                                             )
+                                   )}
+                              />
                               <div className={classes.contentInner}>
                                    <FieldConnector
                                         component="TextField"
@@ -165,7 +185,7 @@ class EditDeviceDialog extends Component {
                                              type: 'text',
                                              className: classes.textField
                                         }}
-                                        deepPath="EDIT_SENSORS.title"
+                                        deepPath="EDIT_SENSORS.name.0"
                                    />
                                    <FieldConnector
                                         component="TextField"
@@ -173,7 +193,7 @@ class EditDeviceDialog extends Component {
                                              type: 'text',
                                              className: classes.textField
                                         }}
-                                        deepPath="EDIT_SENSORS.gpsLat"
+                                        deepPath="EDIT_SENSORS.key.0"
                                    />
                                    <FieldConnector
                                         component="TextField"
@@ -181,7 +201,7 @@ class EditDeviceDialog extends Component {
                                              type: 'text',
                                              className: classes.textField
                                         }}
-                                        deepPath="EDIT_SENSORS.gpsLng"
+                                        deepPath="EDIT_SENSORS.unit.0"
                                    />
                               </div>
                               <FieldConnector
@@ -191,7 +211,7 @@ class EditDeviceDialog extends Component {
                                         className: classes.textArea,
                                         multiline: true
                                    }}
-                                   deepPath="EDIT_SENSORS.description"
+                                   deepPath="EDIT_SENSORS.description.0"
                               />
                          </CardContent>
                          <CardActions className={classes.actions}>
