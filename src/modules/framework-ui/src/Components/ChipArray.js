@@ -17,11 +17,6 @@ const createListItems = (array, clickHandler, classes) => {
 };
 
 const styles = theme => ({
-     root: {
-          width: 320,
-          height: 170,
-          float: 'left'
-     },
      chip: {
           margin: theme.spacing.unit / 2
      },
@@ -32,12 +27,11 @@ const styles = theme => ({
           width: 200
      },
      list: {
-          width: 152,
+          // width: 152,
           backgroundColor: theme.palette.background.paper,
           position: 'relative',
           overflow: 'auto',
           float: 'left',
-          height: 150
           // borderRight: '1px solid rgba(0, 0, 0, 0.42)',
      },
      listSection: {
@@ -64,7 +58,6 @@ const styles = theme => ({
      chipContainer: {
           padding: theme.spacing.unit,
           maxWidth: 370,
-          height: 170,
           overflowY: 'scroll',
           overflowX: 'hidden'
      },
@@ -117,10 +110,8 @@ class ChipArray extends Component {
 		}
      }
      syncOptions = newOptionsData => {
-          // TODO now it is just for adding, not for removing
           const { options, chipData } = this.state;
           const diff = difference(newOptionsData, [...options, ...chipData]);
-          console.log('diff', concat(options, diff));
           this.setState({
                options: concat(options, diff)
                // optionsData: newOptionsData,
@@ -150,9 +141,9 @@ class ChipArray extends Component {
                onChange({ target: { value: newChipData.map(obj => obj.value) } });
           }
      };
-     initChipData = chipData => {};
+
      render() {
-          const { classes, onChange, onFocus, onBlur, optionsData, label, required, error, ...other } = this.props;
+          const { classes, onChange, onFocus, onBlur, optionsData, label, required, error, className } = this.props;
           const { chipData, options } = this.state;
           const createChip = data => (
                <Chip key={data.value} label={data.label} onDelete={this.handleDelete(data)} className={classes.chip} />
@@ -162,7 +153,7 @@ class ChipArray extends Component {
           const listItems = createListItems(options, this.handleAddChip, classes);
           const requiredStar = required ? <span>&thinsp;*</span> : null;
           return (
-               <div className={classes.root}>
+               <div className={className}>
                     <List className={classes.list} subheader={<li />}>
                          <li className={classes.listSection}>
                               <ul className={classes.ul}>

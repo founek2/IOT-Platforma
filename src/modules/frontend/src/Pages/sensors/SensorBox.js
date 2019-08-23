@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
@@ -8,16 +8,17 @@ import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { map, last } from 'ramda'
+import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
 
 const styles = theme => ({
      card: {
           width: "25%",
           float: 'left',
-		marginBottom: 1,
-		
-		[theme.breakpoints.down('sm')]: {
-			width: "100%"
-		},
+          marginBottom: 1,
+
+          [theme.breakpoints.down('sm')]: {
+               width: "100%"
+          },
      },
      media: {
           height: 0,
@@ -37,28 +38,35 @@ const styles = theme => ({
           paddingTop: 100
      },
      content: {
-		[theme.breakpoints.up('md')]: {
-			height: 215,
-			paddingLeft: theme.spacing.unit * 3,
-			paddingRight: theme.spacing.unit * 3,
-			paddingBottom: 0
-		},
+          [theme.breakpoints.up('md')]: {
+               height: 215,
+               paddingLeft: theme.spacing.unit * 3,
+               paddingRight: theme.spacing.unit * 3,
+               paddingBottom: 0
+          },
      },
      description: {
           maxHeight: 63,
-          overflow: 'scroll'
-	},
+          overflowY: 'scroll'
+     },
+     updatedBefore: {
+          fontSize: 11,
+          textAlign: "right"
+     }
 
 })
 
-function convertDataView(classes) {
-     return ({ name, unit, data }) => (
-          <Typography component="p" className={classes.data} color="primary" key={name}>
-               {name} : {last(data).value} {unit}
-          </Typography>
-     )
+function convertDataView(classes, currentData) {
+     return ({ name, unit, JSONkey }) => {
+          return (
+               <Typography component="p" className={classes.data} color="primary" key={name}>
+                    {name} : {currentData ? currentData[JSONkey] : "***"} {unit}
+               </Typography>
+          )
+     }
 }
 
+// TODO přidat komponentu s časem do frameworku - forceUpdate
 class SensorBox extends React.Component {
      render() {
           const { classes } = this.props
@@ -75,7 +83,11 @@ class SensorBox extends React.Component {
                          <Typography component="p" className={classes.description}>
                               {description}
                          </Typography>
-                         <div className={classes.dataContainer}>{map(convertDataView(classes), sensors)}</div>
+                         {sensors.current ?
+                              <Fragment>
+                                   <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data), sensors.recipe)}</div>
+                                   <UpdatedBefore time={new Date(sensors.current.updatedAt)} className={classes.updatedBefore}/>
+                              </Fragment> : null}
                     </CardContent>
                     <CardActions>
                          <Button size="small" color="primary" disabled>

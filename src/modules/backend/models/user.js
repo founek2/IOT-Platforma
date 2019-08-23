@@ -3,40 +3,49 @@ import Jwt from '../../framework/src/services/jwt'
 import { createHash, compare } from '../lib/password'
 import catcher from 'framework/src/mongoose/catcher'
 import { isNotEmpty } from 'ramda-extension'
-import { difference } from 'ramda'
+import { difference, keys } from 'ramda'
 import { isRoot } from 'framework/src/utils/groups'
 
 const userSchema = new Schema(
      {
-          userName: { type: String, required: true, index: { unique: true } },
-          firstName: { type: String, required: true },
-          lastName: { type: String, required: true },
-          email: { type: String, lowercase: true },
+          info: {
+               userName: { type: String, required: true, index: { unique: true } },
+               firstName: { type: String, required: true },
+               lastName: { type: String, required: true },
+               email: { type: String, lowercase: true },
+               phoneNumber: { type: String },
+          },
           auth: {
                type: { type: String, default: 'passwd', enum: ['passwd', 'webAuth'] },
                password: { type: String, required: true }
           },
-          phoneNumber: { type: String },
           created: { type: Date, default: Date.now },
           groups: { type: [String], default: ['user'] },
-          devices: {type: Array, default: []}
+          devices: { type: Array, default: [] },
+          deviceUser: {
+               userName: { type: String, index: { unique: true } },
+               password: String
+          }
      },
      {
           toObject: {
-               transform: function(doc, ret) {
+               transform: function (doc, ret) {
                     ret.id = ret._id.toString()
                     delete ret.__v
                     delete ret._id
                     delete ret.auth.password
+                    if (ret.deviceUser) delete ret.deviceUser.password
                }
           }
-     }
+     },
+     {timestamps: true}
 )
 
-userSchema.statics.create = function(object) {
-     const { password, authType } = object
+userSchema.statics.create = function (object) {
+     const { password, authType } = object.auth
      if (authType) throw new Error('notImplemented')
      const User = this.model('User')
+     console.log("user creating:", object)
      return createHash(password)
           .then(hash => {
                const user = new User({ ...object, auth: { password: hash } })
@@ -52,14 +61,15 @@ userSchema.statics.create = function(object) {
           .catch(catcher('user'))
 }
 
-userSchema.statics.findByUserName = function(userName) {
-     return this.model('User').findOne({ userName: userName })
+userSchema.statics.findByUserName = function (userName) {
+     return this.model('User').findOne({ 'info.userName': userName })
 }
 
-userSchema.statics.checkCreditals = function({ userName, password, authType }) {
+userSchema.statics.checkCreditals = function ({ userName, password, authType }) {
+     console.log("tady", userName, password, authType)
      if (authType !== 'passwd') throw new Error('notImplemented')
      return this.model('User')
-          .findOne({ userName, 'auth.type': { $eq: authType } })
+          .findOne({ 'info.userName': userName, 'auth.type': { $eq: authType } })
           .then(doc => {
                if (doc) {
                     if (authType === 'passwd') {
@@ -83,7 +93,7 @@ userSchema.statics.checkCreditals = function({ userName, password, authType }) {
           .catch(catcher('user'))
 }
 
-userSchema.statics.findAll = function() {
+userSchema.statics.findAll = function () {
      return this.model('User')
           .find({}, '-password')
           .then(docs => {
@@ -92,7 +102,7 @@ userSchema.statics.findAll = function() {
           .catch(catcher('user'))
 }
 
-userSchema.statics.findAllNotRoot = function() {
+userSchema.statics.findAllNotRoot = function () {
      return this.model('User')
           .find({ groups: { $ne: 'root' } }, '-password')
           .then(docs => {
@@ -101,18 +111,32 @@ userSchema.statics.findAllNotRoot = function() {
           .catch(catcher('user'))
 }
 
-userSchema.statics.removeUsers = function(arrayOfIDs) {
+userSchema.statics.removeUsers = function (arrayOfIDs) {
      return this.model('User')
           .deleteMany({ _id: { $in: arrayOfIDs.map(id => mongoose.Types.ObjectId(id)) } })
           .catch(catcher('user'))
 }
 
-userSchema.statics.addDevice = function(deviceID, userID) {
+userSchema.statics.addDevice = function (deviceID, userID) {
      return this.model('User')
           .updateOne(
                { _id: mongoose.Types.ObjectId(userID) },
                { $push: { devices: { id: mongoose.Types.ObjectId(deviceID) } } }
           )
+          .catch(catcher('user'))
+}
+
+
+userSchema.statics.updateUser = async function (userID, data) {
+     if (keys(data.auth).length === 1) delete data.auth
+     else if (data.auth && data.auth.password) {
+          const { password } = data.auth;
+          const hash = await createHash(password)
+          data.auth.password = hash;
+     }
+     return this.model('User')
+          .findOneAndUpdate({ _id: mongoose.Types.ObjectId(userID) }, { $set: data })
+          .catch(e => console.log(e))
           .catch(catcher('user'))
 }
 

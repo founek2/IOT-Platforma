@@ -21,9 +21,9 @@ function Transition(props) {
 	return <Slide direction="up" {...props} />;
    }
 
-function OwnDialog({ open, TransitionComponent = Transition, heading, children, onClose, classes}) {
+function OwnDialog({ open, TransitionComponent = Transition, heading, children, onClose, classes, onExited}) {
      return (
-          <Dialog fullScreen open={open} TransitionComponent={TransitionComponent}>
+          <Dialog fullScreen open={open} TransitionComponent={TransitionComponent} onExited={onExited}>
                <AppBar className={classes.appBar}>
                     <Toolbar>
                          <IconButton color="inherit" onClick={onClose} aria-label="Close">

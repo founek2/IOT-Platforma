@@ -5,8 +5,11 @@ const maxLength = (value, max) => value && value.length <= max
 
 const minLength = (value, min) => value && min <= value.length
 
-export const isString = (value, { min, max } = {}) => {
+export const isBool = value => is(Boolean, value) || value === 'true' || value === 'false'
+
+export const isString = (value, { min, max, startsWith } = {}) => {
      if (!is(String, value)) return `notString`
+     if (startsWith && !(new RegExp(`^${startsWith}`).test(value))) return 'notStartWith' 
      if (min && !minLength(value, min)) return 'lowerLength'
      if (max && !maxLength(value, max)) return 'higherLength'
      return true
@@ -20,7 +23,7 @@ export const minValue = (value, min) => min <= value
 export const maxValue = (value, max) => value <= max
 
 export const isNumber = (value, { max, min } = {}) => {
-     if (!/^[0-9\.]*$/.test(value)) return `notNumber`
+     if (!/^[-]?[0-9\.]*$/.test(value)) return `notNumber`
      if (min && !minValue(value, min)) return 'lowerValue'
      if (max && !maxValue(value, max)) return 'higherValue'
      return true

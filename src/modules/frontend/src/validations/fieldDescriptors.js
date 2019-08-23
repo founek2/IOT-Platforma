@@ -1,12 +1,18 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory'
 import { AuthTypes } from '../constants'
+import { evolve, replace, mapObjIndexed, assocPath } from 'ramda'
+
+function transformToForm(formName, fields) {
+     const modify = evolve({ deepPath: replace(/[^.]*/, formName) })
+     return mapObjIndexed(modify, fields)
+}
 
 const LOGIN = {
      userName: {
           deepPath: 'LOGIN.userName',
           required: true,
           label: 'Uživatelské jméno',
-          validations: [validationFactory('isString', { min: 4, max: 20 })]
+          validations: [validationFactory('isString', { min: 4, max: 30 })]
      },
      password: {
           deepPath: 'LOGIN.password',
@@ -22,55 +28,72 @@ const LOGIN = {
           validations: [validationFactory('isString', { min: 4, max: 20 })]
      }
 }
-
-const REGISTRATION = {
-     userName: {
-          deepPath: 'REGISTRATION.userName',
-          required: true,
-          label: 'Uživatelské jméno',
-          validations: [validationFactory('isString', { min: 4, max: 20 })]
+const userFields = {
+     info: {
+          userName: {
+               deepPath: 'REGISTRATION.info.userName',
+               required: true,
+               label: 'Uživatelské jméno',
+               validations: [validationFactory('isString', { min: 4, max: 30 })]
+          },
+          firstName: {
+               deepPath: 'REGISTRATION.info.firstName',
+               required: true,
+               label: 'Jméno',
+               validations: [validationFactory('isString', { min: 2, max: 20 })]
+          },
+          lastName: {
+               deepPath: 'REGISTRATION.info.lastName',
+               required: true,
+               label: 'Příjmení',
+               validations: [validationFactory('isString', { min: 2, max: 20 })]
+          },
+          email: {
+               deepPath: 'REGISTRATION.info.email',
+               label: 'Email',
+               validations: [validationFactory('isEmail')]
+          },
+          phoneNumber: {
+               deepPath: 'REGISTRATION.info.phoneNumber',
+               label: 'Telefonní číslo',
+               validations: [validationFactory('isPhoneNumber')]
+          },
      },
-     firstName: {
-          deepPath: 'REGISTRATION.firstName',
-          required: true,
-          label: 'Jméno',
-          validations: [validationFactory('isString', { min: 2, max: 20 })]
-     },
-     lastName: {
-          deepPath: 'REGISTRATION.lastName',
-          required: true,
-          label: 'Příjmení',
-          validations: [validationFactory('isString', { min: 2, max: 20 })]
-     },
-     authType: {
-          deepPath: 'REGISTRATION.authType',
-          // required: true,
-          label: 'Pokročilá autentizace',
-          validations: [validationFactory('isString', { min: 4, max: 20 })]
-     },
-     password: {
-          deepPath: 'REGISTRATION.password',
-          required: true,
-          label: 'Heslo',
-          validations: [validationFactory('isString', { min: 4, max: 20 })]
-     },
-     email: {
-          deepPath: 'REGISTRATION.email',
-          label: 'Email',
-          validations: [validationFactory('isEmail')]
-     },
-     phoneNumber: {
-          deepPath: 'REGISTRATION.phoneNumber',
-          label: 'Telefonní číslo',
-          validations: [validationFactory('isPhoneNumber')]
-     },
-     groups: {
-          defaultValue: ['user'],
-          deepPath: 'REGISTRATION.groups',
-          label: 'Uživatelské skupiny',
-          validations: [validationFactory('isNotEmptyArray')]
+     auth: {
+          type: {
+               deepPath: 'REGISTRATION.auth.type',
+               // required: true,
+               label: 'Pokročilá autentizace',
+               validations: [validationFactory('isString', { min: 4, max: 20 })]
+          },
      }
 }
+
+const passwd = {
+     deepPath: 'REGISTRATION.auth.password',
+     required: true,
+     label: 'Heslo',
+     validations: [validationFactory('isString', { min: 4, max: 20 })]
+};
+
+const REGISTRATION = assocPath(["auth", 'password'], passwd, userFields)
+
+const passwdNotReq = {
+     deepPath: 'EDIT_USER.auth.password',
+     // required: true,
+     label: 'Heslo',
+     validations: [validationFactory('isString', { min: 4, max: 20 })]
+}
+
+const EDIT_USER = assocPath(["auth", "password"], passwdNotReq, {
+     ...transformToForm('EDIT_USER', userFields),
+     groups: {
+          deepPath: 'EDIT_USER.groups',
+          label: 'Uživatelské skupiny',
+          required: true,
+          validations: [validationFactory('isNotEmptyArray')]
+     },
+})
 
 const CREATE_DEVICE = {
      title: {
@@ -101,7 +124,18 @@ const CREATE_DEVICE = {
           required: true,
           label: 'Zeměpisná délka',
           validations: [validationFactory('isNumber')]
-     }
+     },
+     topic: {
+          deepPath: 'CREATE_DEVICE.topic',
+          required: true,
+          label: 'Topic',
+          validations: [validationFactory('isString', {min: 2, max: 100, startsWith: "/"})]
+     },
+     publicRead: {
+          deepPath: 'CREATE_DEVICE.publicRead',
+          label: 'Veřejné zařízení',
+          validations: [validationFactory('isBool')]
+     },
 }
 
 const EDIT_DEVICE = {
@@ -115,6 +149,11 @@ const EDIT_DEVICE = {
           deepPath: 'EDIT_DEVICE.description',
           label: 'Popis',
           validations: [validationFactory('isString', { min: 2, max: 200 })]
+     },
+     publicRead: {
+          deepPath: 'EDIT_DEVICE.publicRead',
+          label: 'Veřejné zařízení',
+          validations: [validationFactory('isBool')]
      },
      image: {
           deepPath: 'EDIT_DEVICE.image',
@@ -137,34 +176,36 @@ const EDIT_DEVICE = {
 
 const EDIT_SENSORS = {
      sampleInterval: {
-          deepPath: 'EDIT_DEVICE.sampleInterval',
+          deepPath: 'EDIT_SENSORS.sampleInterval',
           required: true,
           label: 'Interval samplování',
-          validations: [validationFactory('isNumber', { min: 0, max: 60 })]
+          validations: [validationFactory('isNumber', { min: -1 })]
      },
+
      'name[]': {
-          deepPath: 'EDIT_DEVICE.name[]',
+          deepPath: 'EDIT_SENSORS.name[]',
           label: 'Název',
           required: true,
           validations: [validationFactory('isString', { min: 2, max: 30 })]
      },
      'unit[]': {
-          deepPath: 'EDIT_DEVICE.unit[]',
+          deepPath: 'EDIT_SENSORS.unit[]',
           label: 'Jednotka',
           required: true,
           validations: [validationFactory('isString', { min: 1, max: 6 })]
-	},
-	'key[]': {
-          deepPath: 'EDIT_DEVICE.key[]',
+     },
+     'JSONkey[]': {
+          deepPath: 'EDIT_SENSORS.JSONkey[]',
           label: 'Klíč',
           required: true,
           validations: [validationFactory('isString', { min: 1, max: 20 })]
-	},
-	"description[]": {
-		deepPath: 'EDIT_DEVICE.description[]',
-		label: 'Popis',
+     },
+     "description[]": {
+          deepPath: 'EDIT_SENSORS.description[]',
+          label: 'Popis',
           validations: [validationFactory('isString', { min: 1, max: 200 })]
-	}
+     }
+
 }
 
 const USER_MANAGEMENT = {
@@ -179,7 +220,8 @@ export default {
      LOGIN,
      REGISTRATION,
      USER_MANAGEMENT,
+     EDIT_USER,
      CREATE_DEVICE,
      EDIT_DEVICE,
-     EDIT_SENSORS
+     EDIT_SENSORS,
 }

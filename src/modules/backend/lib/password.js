@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-export function createHash(plainText) {
+export async function createHash(plainText) {
 	return bcrypt.hash(plainText, 10)
 }
 

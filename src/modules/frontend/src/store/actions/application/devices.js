@@ -9,21 +9,15 @@ import { keys, head } from 'ramda'
 import {
      createDevice as createDeviceApi,
      fetchDevices as fetchDevicesApi,
-     updateDevice as updateDeviceApi
+     updateDevice as updateDeviceApi,
+     putDevice as putDeviceApi
 } from '../../../api/device'
 import { getDevices } from '../../../utils/getters'
 import objectDiff from 'framework-ui/src/utils/objectDiff'
-import { isNotEmpty } from 'ramda-extension'
-
-// export function update(data) {
-//      return {
-//           type: actionTypes.UPDATE_USER,
-//           payload: data
-//      }
-// }
+import { transformSensorsForBE } from '../../../utils/transform'
 
 export function createDevice() {
-     return async function(dispatch, getState) {
+     return async function (dispatch, getState) {
           const CREATE_SENSOR = 'CREATE_DEVICE'
           baseLogger(CREATE_SENSOR)
           const result = dispatch(validateForm(CREATE_SENSOR)())
@@ -50,30 +44,32 @@ export function createDevice() {
 }
 
 export function updateDevice(id) {
-     return async function(dispatch, getState) {
-          const EDIT_SENSOR = 'EDIT_DEVICE'
-          baseLogger(EDIT_SENSOR)
-          const result = dispatch(validateForm(EDIT_SENSOR)())
+     return async function (dispatch, getState) {
+          const EDIT_DEVICE = 'EDIT_DEVICE'
+          baseLogger(EDIT_DEVICE)
+          const result = dispatch(validateForm(EDIT_DEVICE)())
           if (result.valid) {
                const state = getState()
-               const formData = getFormData(EDIT_SENSOR)(state)
-               const fieldDescriptors = getFormDescriptors(EDIT_SENSOR, state)
+               const formData = getFormData(EDIT_DEVICE)(state)
+               const fieldDescriptors = getFormDescriptors(EDIT_DEVICE, state)
                const newFormDataWithFiles = await loadFilesInFormData(formData, keys(fieldDescriptors))
 
                const devices = getDevices(state)
                const device = devices.find(dev => dev.id === id)
 
                const diffObj = objectDiff(newFormDataWithFiles, device)
-               const diff = {id: device.id}
+               const diff = { id: device.id }
                for (const field in diffObj) {
-                    diff[field] = head(diffObj[field])
-			}
-			
+                    const val = head(diffObj[field])
+                    if (val)
+                         diff[field] = val
+               }
+
                return updateDeviceApi(
                     {
-                         body: { formData: { [EDIT_SENSOR]: diff } },
+                         body: { formData: { [EDIT_DEVICE]: diff } },
                          token: getToken(state),
-                         onSuccess: json => {
+                         onSuccess: () => {
                               dispatch(update(diff))
                               dispatch(dehydrateState())
                          }
@@ -85,7 +81,7 @@ export function updateDevice(id) {
 }
 
 export function update(device) {
-	return {
+     return {
           type: ActionTypes.UPDATE_DEVICE,
           payload: device
      }
@@ -99,11 +95,14 @@ export function add(data) {
 }
 
 export function fetch() {
-     return function(dispatch, getState) {
+     return function (dispatch, getState) {
           return fetchDevicesApi(
                {
                     token: getToken(getState()),
-                    onSuccess: json => dispatch(set(json.docs))
+                    onSuccess: json => {
+                         dispatch(set(json.docs))
+                         dispatch(dehydrateState())
+                    }
                },
                dispatch
           )
@@ -114,5 +113,26 @@ export function set(data) {
      return {
           type: ActionTypes.SET_DEVICES,
           payload: data
+     }
+}
+
+export function updateSensors(id) {
+     return async function (dispatch, getState) {
+          const EDIT_SENSORS = 'EDIT_SENSORS'
+          baseLogger(EDIT_SENSORS)
+          const result = dispatch(validateForm(EDIT_SENSORS)())
+          const formData = getFormData(EDIT_SENSORS)(getState())
+
+          if (result.valid) {
+               return putDeviceApi({
+                    token: getToken(getState()),
+                    body: { formData: { [EDIT_SENSORS]: formData } },
+                    id,
+                    onSuccess: () => {
+                         const { sampleInterval, sensors } = transformSensorsForBE(formData);
+                         dispatch(update({ id, sensors, sampleInterval }))
+                    }
+               }, dispatch)
+          }
      }
 }

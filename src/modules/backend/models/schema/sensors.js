@@ -9,29 +9,31 @@ const dataSchema = new Schema({
      timneStamp: { type: Date, default: Date.now }
 })
 
-const subSensorSchema = new Schema({
-     id: { type: mongoose.Types.ObjectId, default: mongoose.Types.ObjectId() },
-     name: String,
-     unit: String,
-     actData: dataSchema,
-     historicalData: [dataSchema],
-     order: Number
-})
-
-const sensorSchema = new Schema(
-     {
-          public: Boolean,
-          devices: [subSensorSchema]
-     },
-     {
-          toObject: {
-               transform: function(doc, ret) {
-                    ret.id = ret._id.toString()
-                    delete ret.__v
-                    delete ret._id
-               }
+const sensorSchema = new Schema({
+     recipe: [{
+          _id:false,
+          name: String,
+          unit: String,
+          JSONkey: String,
+          description: String,
+     }],
+     current: {
+          data: Object,
+          updatedAt: Date
+     }, // {temp1: 100}
+     historical: {
+          data: Object,
+          updatedAt: Date
+     }, // {temp1: [[10, timestamp], ...]}
+},
+{
+     toObject: {
+          transform: function(doc, ret) {
+               delete ret.__v
           }
-     }
+     },
+     _id: false
+}
 )
 
 export default sensorSchema

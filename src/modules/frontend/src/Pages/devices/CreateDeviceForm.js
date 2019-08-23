@@ -11,33 +11,16 @@ import CardHeader from '@material-ui/core/CardHeader'
 import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
 import { bindActionCreators } from 'redux'
-import {prop} from 'ramda'
+import { prop } from 'ramda'
 
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import * as sensorsActions from '../../store/actions/application/devices'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
 import { getDialogTmp } from 'framework-ui/src/utils/getters'
 import InfoAlert from 'framework-ui/src/Components/InfoAlert'
+import { getDeviceUser } from '../../utils/getters';
 
 const styles = theme => ({
-     textField: {
-          marginLeft: theme.spacing.unit,
-          marginRight: theme.spacing.unit,
-          marginTop: theme.spacing.unit,
-          width: 200,
-          [theme.breakpoints.down('sm')]: {
-               width: '80%'
-          }
-     },
-     textArea: {
-          marginLeft: theme.spacing.unit,
-          marginRight: theme.spacing.unit,
-          marginTop: theme.spacing.unit,
-          width: '100%',
-          [theme.breakpoints.down('sm')]: {
-               width: '80%'
-          }
-     },
      card: {
           overflow: 'auto',
           margin: '0px auto',
@@ -86,17 +69,20 @@ const styles = theme => ({
                flexDirection: 'column',
                alignItems: 'center'
           }
+     },
+     textArea: {
+          width: "100%"
      }
 })
 
-function CreateDeviceDialog({ classes, createSensorAction, updateTmpDataAction, apiKey }) {
+function CreateDeviceDialog({ classes, createSensorAction, updateTmpDataAction, apiKey, deviceUser }) {
      const [pending, setPending] = useState(false)
-	async function handleCreate()  {
-		setPending(true);
-		await createSensorAction()
-		setPending(false)
-	}
-	console.log(apiKey, !!apiKey)
+     async function handleCreate() {
+          setPending(true);
+          await createSensorAction()
+          setPending(false)
+     }
+
      return (
           <Fragment>
                <Card className={classes.card}>
@@ -106,41 +92,40 @@ function CreateDeviceDialog({ classes, createSensorAction, updateTmpDataAction, 
                               component="TextField"
                               fieldProps={{
                                    type: 'text',
-                                   className: classes.textField
                               }}
                               deepPath="CREATE_DEVICE.title"
                          />
                          <FieldConnector
                               component="FileLoader"
-                              fieldProps={{
-                                   className: classes.textField
-                              }}
                               deepPath="CREATE_DEVICE.image"
                          />
                          <FieldConnector
                               component="TextField"
-                              fieldProps={{
-                                   type: 'text',
-                                   className: classes.textField
-                              }}
                               deepPath="CREATE_DEVICE.gpsLat"
                          />
                          <FieldConnector
                               component="TextField"
-                              fieldProps={{
-                                   type: 'text',
-                                   className: classes.textField
-                              }}
                               deepPath="CREATE_DEVICE.gpsLng"
                          />
                          <FieldConnector
                               component="TextField"
                               fieldProps={{
-                                   type: 'text',
-                                   className: classes.textArea,
+                                   placeholder: "/house/bedroom/lamp"
+                              }}
+                              className={classes.textArea}
+                              deepPath="CREATE_DEVICE.topic"
+                         />
+                         <FieldConnector
+                              component="TextField"
+                              fieldProps={{
                                    multiline: true
                               }}
+                              className={classes.textArea}
                               deepPath="CREATE_DEVICE.description"
+                         />
+                         <FieldConnector
+                              component="Checkbox"
+                              deepPath="CREATE_DEVICE.publicRead"
                          />
                     </CardContent>
                     <CardActions className={classes.actions}>
@@ -158,9 +143,9 @@ function CreateDeviceDialog({ classes, createSensorAction, updateTmpDataAction, 
                </Card>
                <InfoAlert
                     title={`Váš API Key pro zařízení:	${apiKey}`}
-				content="Tímto klíčem se bude zařízení autorizovat serveru, pro zajištění důvěry."
-				onClose={() => updateTmpDataAction({dialog: {}})}
-				open={!!apiKey}
+                    content="Tímto klíčem se bude zařízení autorizovat serveru, pro zajištění důvěry."
+                    onClose={() => updateTmpDataAction({ dialog: {} })}
+                    open={!!apiKey}
                />
           </Fragment>
      )

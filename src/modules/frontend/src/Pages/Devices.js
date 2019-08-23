@@ -17,9 +17,10 @@ import FullScreenDialog from 'framework-ui/src/Components/FullScreenDialog'
 import { getDevices } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
+import { getQueryID } from '../utils/getters'
 
-function OnlyWritable(device) {
-     return device.permissions
+function isWritable(device) {
+     return device.permissions && device.permissions.write
 }
 
 const styles = theme => ({
@@ -62,7 +63,8 @@ class Devices extends Component {
                devices,
                openEditDialog,
                resetEditFormAction,
-               openSensorsDialog
+               openSensorsDialog,
+               selectedDevice
           } = this.props
           return (
                <Fragment>
@@ -88,36 +90,42 @@ class Devices extends Component {
                               <CreateDeviceForm />
                          </FullScreenDialog>
                          <FullScreenDialog
-                              open={openEditDialog}
-                              onClose={() => {
+                              open={openEditDialog && !!selectedDevice}
+                              onClose={() =>
                                    history.push({ hash: '', search: '' })
-                                   resetEditFormAction()
-                              }}
+                              }
+                              onExited={resetEditFormAction}
                               heading="Editace zařízení"
                          >
-                              <EditDeviceForm />
+                              <EditDeviceForm device={selectedDevice} />
                          </FullScreenDialog>
                          <FullScreenDialog
-                              open={openSensorsDialog}
+                              open={openSensorsDialog && !!selectedDevice}
                               onClose={() => {
                                    history.push({ hash: '', search: '' })
                                    resetEditFormAction()
                               }}
                               heading="Editace senzorů"
                          >
-                              <EditSensorsForm />
+                              <EditSensorsForm device={selectedDevice} />
                          </FullScreenDialog>
                     </Fragment>
                </Fragment>
           )
      }
 }
-const _mapStateToProps = state => ({
-     openCreateDialog: isUrlHash('#createDevice')(state),
-     openEditDialog: isUrlHash('#editDevice')(state),
-     openSensorsDialog: isUrlHash('#editSensors')(state),
-     devices: filter(OnlyWritable, getDevices(state))
-})
+
+const _mapStateToProps = state => {
+     const id = getQueryID(state)
+     const devices = filter(isWritable, getDevices(state))
+     return {
+          openCreateDialog: isUrlHash('#createDevice')(state),
+          openEditDialog: isUrlHash('#editDevice')(state),
+          openSensorsDialog: isUrlHash('#editSensors')(state),
+          devices,
+          selectedDevice: devices.find(dev => dev.id === id),
+     }
+}
 
 const _mapDispatchToProps = dispatch =>
      bindActionCreators(

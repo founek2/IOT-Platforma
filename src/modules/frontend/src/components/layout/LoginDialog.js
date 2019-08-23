@@ -11,11 +11,11 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import Loader from 'framework-ui/src/Components/Loader'
-import chainHandler from 'framework-ui/src/utils/chainHandler'
 import { login, fetchAuthType } from 'framework-ui/src/redux/actions/application/user'
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import { getFieldVal, getUserPresence } from 'framework-ui/src/utils/getters'
 import { AuthTypes } from '../../constants'
+import * as deviceActions from '../../store/actions/application/devices'
 
 const styles = theme => ({
      loginTitle: {
@@ -27,7 +27,8 @@ const styles = theme => ({
           justifyContent: 'center'
      },
      content: {
-          width: 367,
+          position: "relative",
+          width: 400,
 
           [theme.breakpoints.down('md')]: {
                width: 300
@@ -49,7 +50,8 @@ const styles = theme => ({
           cursor: 'pointer'
      },
      textField: {
-          marginTop: theme.spacing.unit
+          marginTop: theme.spacing.unit,
+          width: "calc(100% - 20px)"
      }
 })
 
@@ -61,10 +63,7 @@ function onStopTyping(callback) {
      }
 }
 
-let userNameInput = React.createRef()
-let passwordInput = React.createRef()
-
-function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthTypeAction, userPresence }) {
+function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthTypeAction, fetchDevicesAction }) {
      const [pending, setPending] = useState(false)
 
      function fetchAuthType() {
@@ -76,7 +75,12 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
           })
      }
      const loginMyAction = () => {
-          loginAction().then(success => success && onClose())
+          loginAction().then(success => {
+               if (success) {
+                    fetchDevicesAction()     // refresh devices for logged user
+                    onClose()
+               }
+          })
      }
      const actionHandler = (!authType && fetchAuthType) || loginMyAction
 
@@ -90,29 +94,22 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
                          deepPath="LOGIN.userName"
                          name="userName"
                          autoFocus
+                         className={classes.textField}
                          onEnter={actionHandler}
                          onChange={onStopTyping(fetchAuthType)}
                          fieldProps={{
-                              type: 'text',
                               autoComplete: 'off',
-                              fullWidth: true,
-                              inputRef: field => (userNameInput = field)
                          }}
                     />
 
                     {authType === AuthTypes.PASSWD && (
                          <FieldConnector
                               deepPath="LOGIN.password"
-                              component="TextField"
+                              component="PasswordField"
                               name="password"
                               autoFocus
                               className={classes.textField}
                               onEnter={actionHandler}
-                              fieldProps={{
-                                   type: 'password',
-                                   fullWidth: true,
-                                   inputRef: field => (passwordInput = field)
-                              }}
                          />
                     )}
                </DialogContent>
@@ -145,7 +142,8 @@ const _mapDispatchToProps = dispatch =>
      bindActionCreators(
           {
                loginAction: login,
-               fetchAuthTypeAction: fetchAuthType
+               fetchAuthTypeAction: fetchAuthType,
+               fetchDevicesAction: deviceActions.fetch
           },
           dispatch
      )

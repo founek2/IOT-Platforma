@@ -3,9 +3,7 @@ import DevicesIcon from '@material-ui/icons/DevicesOther'
 import privilegesFactory from 'framework-ui/src/privileges'
 import { lazy } from 'react'
 
-export const groupsHeritage = {
-     root: ['user', 'userAdmin', 'deviceAdmin']
-}
+import groupsHeritage from './groupsHeritage'
 
 const DeviceControll = lazy(() => import('../Pages/DeviceControll'))
 
@@ -20,11 +18,10 @@ export const routes = {
                { path: '/devices', Component: Devices, name: 'devices', Icon: DevicesIcon }
           ]
      },
-     userAdmin: {
+     admin: {
           routes: [{ path: '/userManagement', Component: UserManagement, name: 'userManagement', Icon: BuildIcon }],
-          allowedGroups: [{ name: 'user', text: 'Uživatel' }, { name: 'deviceAdmin', text: 'správce zařízení' }]
+          allowedGroups: [{ name: 'user', text: 'Uživatel' }, { name: 'admin', text: 'správce' }]
      },
-     deviceAdmin: {},
      root: {}
 }
 

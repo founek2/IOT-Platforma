@@ -22,32 +22,14 @@ import InfoAlert from 'framework-ui/src/Components/InfoAlert'
 import { getQueryID, getDevices } from '../../utils/getters'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 
-function OnlyWritable(device) {
-     return device.permissions
-}
-
 const styles = theme => ({
-     textField: {
-          marginLeft: theme.spacing.unit,
-          marginRight: theme.spacing.unit,
-          marginTop: theme.spacing.unit,
-          width: 200,
-          [theme.breakpoints.down('sm')]: {
-               width: '80%'
-          }
-     },
      fileLoader: {
           width: '100%',
-          paddingLeft: theme.spacing.unit,
-          paddingRight: theme.spacing.unit,
           [theme.breakpoints.down('sm')]: {
                width: '80%'
           }
      },
      textArea: {
-          marginLeft: theme.spacing.unit,
-          marginRight: theme.spacing.unit,
-          marginTop: theme.spacing.unit,
           width: '100%',
           [theme.breakpoints.down('sm')]: {
                width: '80%'
@@ -127,32 +109,13 @@ class EditDeviceDialog extends Component {
           super(props)
           this.state = {
                pending: false,
-               errorOpen: true,
-               filled: false
           }
-          const { device } = this.props
-
-          if (device && !this.state.filled) this.preFillForm(device)
-     }
-     componentDidMount() {
-          this.mounted = true
-     }
-     componentWillUnmount() {
-          this.mounted = false
-     }
-     preFillForm = device => {
-          this.props.fillEditFormAction(device)
-          if (this.mounted) this.setState({ filled: true })
-          else this.state.filled = false // eslint-disable-line
-     }
-
-     UNSAFE_componentWillReceiveProps({ device }) {
-          if (!this.state.filled) {
-               this.preFillForm(device)
-          }
+          const {imgPath, description, title, gpsLat, id, gpsLng, publicRead} = this.props.device
+          this.props.fillEditFormAction({imgPath, description, title, gpsLat, id, gpsLng, publicRead})
      }
 
      setPending = b => this.setState({ pending: b })
+
      render() {
           const { classes, updateDeviceAction, updateTmpDataAction, apiKey, device } = this.props
           const { pending } = this.state
@@ -162,7 +125,6 @@ class EditDeviceDialog extends Component {
                await updateDeviceAction(device.id)
                this.setPending(false)
           }
-
           return device ? (
                <Fragment>
                     <Card className={classes.card}>
@@ -184,26 +146,14 @@ class EditDeviceDialog extends Component {
                                    <div>
                                         <FieldConnector
                                              component="TextField"
-                                             fieldProps={{
-                                                  type: 'text',
-                                                  className: classes.textField
-                                             }}
                                              deepPath="EDIT_DEVICE.title"
                                         />
                                         <FieldConnector
                                              component="TextField"
-                                             fieldProps={{
-                                                  type: 'text',
-                                                  className: classes.textField
-                                             }}
                                              deepPath="EDIT_DEVICE.gpsLat"
                                         />
                                         <FieldConnector
                                              component="TextField"
-                                             fieldProps={{
-                                                  type: 'text',
-                                                  className: classes.textField
-                                             }}
                                              deepPath="EDIT_DEVICE.gpsLng"
                                         />
                                    </div>
@@ -217,6 +167,10 @@ class EditDeviceDialog extends Component {
                                    }}
                                    deepPath="EDIT_DEVICE.description"
                               />
+                               <FieldConnector
+                                             component="Checkbox"
+                                             deepPath="EDIT_DEVICE.publicRead"
+                                        />
                          </CardContent>
                          <CardActions className={classes.actions}>
                               <Button
@@ -240,16 +194,13 @@ class EditDeviceDialog extends Component {
                </Fragment>
           ) : (
                <div />
-          ) // redux is faster than closing -> before close is device undefined
+          ) // onClose is removed id from url -> device is undefined before complete close
      }
 }
 
 const _mapStateToProps = state => {
-     const devices = filter(OnlyWritable, getDevices(state))
-	const id = getQueryID(state)
      return {
           apiKey: prop('apiKey')(getDialogTmp(state)),
-          device: devices.find(dev => dev.id === id)
      }
 }
 

@@ -53,7 +53,7 @@ const styles = theme => ({
      },
      description: {
           maxHeight: 63,
-          overflow: 'scroll'
+          overflowY: 'scroll'
      },
      settingsFab: {
           position: 'absolute',

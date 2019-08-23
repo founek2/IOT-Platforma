@@ -8,7 +8,6 @@ export const getFieldDescriptors = prop('fieldDescriptors')
 export const getFieldDescriptor = curry((deepPath, state) =>
      o(descriptors => {
 		if (deepPath.match(/\.\d+$/)) deepPath = deepPath.replace(/\.\d+$/, '[]')
-		console.log(deepPath)
           return getInPath(deepPath)(descriptors)
      }, getFieldDescriptors)(state)
 )

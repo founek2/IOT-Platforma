@@ -1,7 +1,8 @@
 import resource from 'framework/src/middlewares/resource-router-middleware'
-import Device from '../models/device'
+import Device from '../models/Device'
 import processError from 'framework/src/utils/processError'
 import { saveImageBase64, validateFileExtension } from '../service/files'
+import { transformSensorsForBE } from 'frontend/src/utils/transform'
 
 export default ({ config, db }) =>
      resource({
@@ -26,6 +27,17 @@ export default ({ config, db }) =>
                // }else {
                // 	res.status(208).send({error: "beforeQueryNotProvided"})
                // }
+          },
+
+          /* PUT */
+          updateId({ body, params }, res) {
+               const { id } = params;
+               const { formData } = body;
+               if (formData.EDIT_SENSORS) {
+                    const { sensors, sampleInterval } = transformSensorsForBE(formData.EDIT_SENSORS);
+                    Device.updateSensors(id, sampleInterval, sensors )
+                    res.sendStatus(204);
+               } else res.sendStatus(500)
           },
 
           /** POST / - Create a new entity */
@@ -59,9 +71,19 @@ export default ({ config, db }) =>
 
           /** GET / - List all entities */
           index({ user, root }, res) {
-               Device.findForUser(user.id, user.devices).then(docs => {
-                    res.send({ docs })
-               })
+               if (user && user.admin) {
+                    Device.findForAdmin().then(docs => {
+                         res.send({ docs })
+                    })
+               } else if (user) {
+                    Device.findForUser(user.id, user.devices).then(docs => {
+                         res.send({ docs })
+                    })
+               } else {
+                    Device.findPublic().then(docs => {
+                         res.send({ docs })
+                    })
+               }
           },
 
           patch({ body, user }, res) {

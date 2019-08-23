@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import MenuItem from '@material-ui/core/MenuItem'
 import { connect } from 'react-redux'
 import { registerAngLogin, register } from 'framework-ui/src/redux/actions/application/user'
 import { bindActionCreators } from 'redux'
@@ -16,17 +15,9 @@ import { o, prop } from 'ramda'
 import { AuthTypes } from '../constants'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import UserForm from '../components/UserForm'
 
 const styles = theme => ({
-     textField: {
-          marginLeft: theme.spacing.unit,
-          marginRight: theme.spacing.unit,
-          marginTop: theme.spacing.unit,
-          width: 200,
-          [theme.breakpoints.down('sm')]: {
-               width: '80%'
-          }
-     },
      card: {
           overflow: 'auto',
           margin: '0px auto',
@@ -78,19 +69,7 @@ const styles = theme => ({
      }
 })
 
-// const getFields = classes => [
-//      k dispozici pouze pro userAdmina
-//      {
-//           component: 'ChipArray',
-//           deepPath: 'REGISTRATION.groups',
-//           optionsData: map(({ group, text }) => ({ value: group, label: text }), allowedGroups),
-//           fieldProps: {
-//                className: classes.textField
-//           }
-//      },
-// ]
-
-const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }]
+export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }]
 
 function RegisterUser({ classes, registerAndLoginAction, authType, registerAction }) {
      const [pending, setPending] = useState(false)
@@ -98,57 +77,43 @@ function RegisterUser({ classes, registerAndLoginAction, authType, registerActio
      const handleRegister = async () => {
           setPending(true)
           const action = autoLogin ? registerAndLoginAction : registerAction
-		await action()//.then(() => setPending(false))
+		await action()
 		setPending(false)
      }
      return (
           <Card className={classes.card}>
                <CardHeader className={classes.header} title="Registrace" />
                <CardContent className={classes.content}>
-                    <FieldConnector
-                         component="TextField"
+                    {/* <FieldConnector
                          fieldProps={{
                               type: 'text',
-                              className: classes.textField
                          }}
                          deepPath="REGISTRATION.firstName"
                     />
                     <FieldConnector
-                         component="TextField"
                          fieldProps={{
                               type: 'text',
-                              className: classes.textField
                          }}
                          deepPath="REGISTRATION.lastName"
                     />
                     <FieldConnector
-                         component="TextField"
                          fieldProps={{
                               type: 'text',
-                              className: classes.textField
                          }}
                          deepPath="REGISTRATION.userName"
                     />
                     <FieldConnector
-                         component="TextField"
                          fieldProps={{
                               type: 'email',
-                              className: classes.textField
                          }}
                          deepPath="REGISTRATION.email"
                     />
                     <FieldConnector
-                         fieldProps={{
-                              type: 'password',
-                              className: classes.textField
-                         }}
+					component="PasswordField"
                          deepPath="REGISTRATION.password"
                     />
                     <FieldConnector
                          component="Select"
-                         fieldProps={{
-                              className: classes.textField
-                         }}
                          deepPath="REGISTRATION.authType"
                          selectOptions={[
                               <MenuItem value="" key="enum">
@@ -163,7 +128,8 @@ function RegisterUser({ classes, registerAndLoginAction, authType, registerActio
                                         )
                               )
                          ]}
-                    />
+                    /> */}
+                    <UserForm formName="REGISTRATION"/>
                </CardContent>
                <CardActions className={classes.actions}>
                     <FormControlLabel

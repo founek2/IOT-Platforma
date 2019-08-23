@@ -24,3 +24,11 @@ export const updateDevice = (object, dispatch) =>
           successMessage: 'deviceUpdated',
           dispatch
      })
+
+ export const putDevice = ({id, ...object}, dispatch) =>
+ putJson({
+          url: API_URL + `/device/${id}`,
+          ...object,
+          successMessage: 'deviceUpdated',
+          dispatch
+     })

@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/CloudUpload'
 import { withStyles } from '@material-ui/core/styles'
+import fieldStyle from './styles'
 
 import {errorLog} from '../../Logger'
 
@@ -16,8 +17,10 @@ const styles = theme => ({
      button: {
           marginTop: theme.spacing.unit,
           marginLeft: theme.spacing.unit
-     }
+	},
+	textField: fieldStyle(theme).textField
 })
+// console.log(fieldStyle((theme)))
 
 // kvůli persistování se musí jméno uložit taky do storu -> {name, url}
 class FileLoader extends Component {
@@ -44,7 +47,7 @@ class FileLoader extends Component {
           const { label, value, className, classes, ...other } = this.props
 
           return (
-               <div className={`${className} ${classes.root}`}>
+               <div className={`${classes.textField} ${className || ""} ${classes.root}`}>
                     <TextField value={value.name || ''} disabled label={label} fullWidth {...other} />
                     <div>
                          <Fab color="primary" aria-label="Add" size="small" className={classes.button} component="label">

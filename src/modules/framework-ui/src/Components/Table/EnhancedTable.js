@@ -11,14 +11,14 @@ import EnhancedTableToolbar from './EnhancedTableToolbar';
 import EnhancedTableHead from './EnhancedTableHead';
 import { equals } from 'ramda';
 import EditIcon from '@material-ui/icons/Edit';
-import Button from '@material-ui/core/Button';
-import Fab from '@material-ui/core/Fab'
+import IconButton from '@material-ui/core/IconButton'
+import getInPath from '../../utils/getInPath'
 
 function desc(a, b, orderBy) {
-     if (b[orderBy] < a[orderBy]) {
+     if (getInPath(orderBy, b) < getInPath(orderBy, a)) {
           return -1;
      }
-     if (b[orderBy] > a[orderBy]) {
+     if (getInPath(orderBy, b) > getInPath(orderBy, a)) {
           return 1;
      }
      return 0;
@@ -169,21 +169,21 @@ class EnhancedTable extends React.Component {
                                                        <TableCell padding="checkbox">
                                                             <Checkbox checked={isSelected} onClick={event => this.handleClick(event, n.id)}/>
                                                        </TableCell>
-                                                       {dataProps.map(({ key, convertor }, i) => (
-                                                            <TableCell key={key} className={key === "created" ? classes.createdCell : ""}>
-                                                                 {convertor ? convertor(n[key]) : n[key]}
+                                                       {dataProps.map(({ path, convertor }, i) => (
+                                                            <TableCell key={path} className={path === "created" ? classes.createdCell : ""}>
+                                                                 {convertor ? convertor(getInPath(path, n)) : getInPath(path, n)}
                                                             </TableCell>
                                                        ))}
                                                        <TableCell className={classes.editCell}>
                                                             {enableEdit && (
-                                                                 <Fab
-                                                                      color="primary"
-                                                                      aria-label="Add"
+                                                                 <IconButton
+                                                                      // color="primary"
+                                                                      aria-label="Edit"
                                                                       size="small"
                                                                       onClick={() => onEdit(n.id)}
                                                                  >
                                                                       <EditIcon />
-                                                                 </Fab>
+                                                                 </IconButton>
                                                             )}
                                                        </TableCell>
                                                   </TableRow>

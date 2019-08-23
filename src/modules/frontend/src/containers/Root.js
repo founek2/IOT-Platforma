@@ -4,8 +4,6 @@ import store from '../store/store'
 import withTheme from './withTheme'
 import Notifications from 'framework-ui/src/Components/Notifications';
 
-// provider, a router nebo ho možná dát do extra containeru, podle složitosti
-
 function Root({component}) {
 	const Component = component
      return (

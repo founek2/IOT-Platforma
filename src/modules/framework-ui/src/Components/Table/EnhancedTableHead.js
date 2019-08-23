@@ -28,10 +28,10 @@ class EnhancedTableHead extends React.Component {
                          {rows.map(row => {
                               return (
                                    <TableCell
-                                        key={row.key}
+                                        key={row.path}
                                         numeric={row.numeric}
                                         padding={row.disablePadding ? 'none' : 'default'}
-                                        sortDirection={orderBy === row.key ? order : false}
+                                        sortDirection={orderBy === row.path ? order : false}
                                    >
                                         <Tooltip
                                              title="Sort"
@@ -39,9 +39,9 @@ class EnhancedTableHead extends React.Component {
                                              enterDelay={300}
                                         >
                                              <TableSortLabel
-                                                  active={orderBy === row.key}
+                                                  active={orderBy === row.path}
                                                   direction={order}
-                                                  onClick={this.createSortHandler(row.key)}
+                                                  onClick={this.createSortHandler(row.path)}
                                              >
                                                   {row.label}
                                              </TableSortLabel>

@@ -6,6 +6,7 @@ export const messages = {
      lowerLength: ({ min }) => `Text nesmí být kratší než ${min}`,
      lowerValue: ({ min }) => `Hodnota nesmí být nižší než ${min}`,
      higherValue: ({ max }) => `Hodnota nesmí být vyšší než ${max}`,
+     notStartWith: ({startsWith}) => `Hodnota musí začínat s ${startsWith}`,
      notNumber: `Lze zadat jen čísla`,
      isRequired: 'Toto pole je povinné',
 	isNotPhoneNumber: 'Telefoní číslo nemá zprávný formát',

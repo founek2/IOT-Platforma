@@ -1,4 +1,4 @@
-import { postJson, paramSender, deleteJson, patchJson } from '.'
+import { postJson, paramSender, deleteJson, putJson, patchJson } from '.'
 
 const API_URL = '/api'
 
@@ -46,10 +46,21 @@ export const deletedUsers = (object, dispatch) =>
           dispatch
      })
 
-export const updateUser = (object, dispatch) => {
-     patchJson({
-          url: API_URL + '/users',
+export const updateUser = ({id, ...object}, dispatch) => {
+     putJson({
+          url: API_URL + `/user/${id}`,
           ...object,
+          successMessage: 'userUpdated',
+          dispatch
+     })
+}
+
+
+export const patchUser = ({id, ...object}, dispatch) => {
+     patchJson({
+          url: API_URL + `/user/${id}`,
+          ...object,
+          successMessage: 'userUpdated',
           dispatch
      })
 }

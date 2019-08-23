@@ -1,11 +1,12 @@
-import { values, forEach, keys, is, clone } from 'ramda';
+import { values, forEach, keys, is, clone, forEachObjIndexed } from 'ramda';
 import { isNotEmpty } from 'ramda-extension';
 import getInPath from '../utils/getInPath';
 import {
      getFieldDescriptor,
      getFormsData,
      getPristine,
-     getFormDescriptors
+     getFormDescriptors,
+     getRegisteredField,
 } from '../utils/getters';
 import setInPath from '../utils/setInPath';
 import validationFactory from './validationFactory';
@@ -33,6 +34,7 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
                          return createFieldState(result);
                     } else {
                          if (ignoreRequired) {
+                              console.log(deepPath)
                               return createFieldState([]);
                          } else {
                               const result = createValidationsResult(value, [requiredFn]);
@@ -40,12 +42,12 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
                          }
                     }
                } else {
-				if (value) {
-					const result = createValidationsResult(value, validations);
-					return createFieldState(result);
-				} else {
-					return createFieldState([])
-				}
+                    if (value) {
+                         const result = createValidationsResult(value, validations);
+                         return createFieldState(result);
+                    } else {
+                         return createFieldState([])
+                    }
 
                }
           } else {
@@ -58,14 +60,40 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
 };
 
 // upravit validateField, tak aby šel použít pro forEach validateFields
-export const validateForm = (formName, state,  ignoreRequiredFields = false) => {
-	let results = {};
-     const validate = ({ deepPath }) => {
-          const result = validateField(deepPath, state, true, ignoreRequiredFields);
-          results = setInPath(deepPath, result, results);
-     };
+export const validateForm = (formName, state, ignoreRequiredFields = false) => {
+     let results = {};
      const formDescriptors = getFormDescriptors(formName, state);
-	forEach(validate, values(formDescriptors));
+
+     const validate = (obj) => {
+          const { deepPath } = obj
+          if (!deepPath) return validateRec(obj)
+          //console.log(deepPath, deepPath.match(/\[\]$/))
+
+          if (deepPath.match(/\[\]$/)) {    // for array of values
+               const genericDeepPath = deepPath.replace(/\[\]$/, '');
+               const registeredFields = getRegisteredField(genericDeepPath, state);
+
+               const validateF = (val, i) => {
+                    const pathOfField = `${genericDeepPath}.${i}`;
+                    const result = validateField(pathOfField, state, true, ignoreRequiredFields);
+                    results = setInPath(pathOfField, result, results);
+               }
+               if (registeredFields)
+                    [...Array(registeredFields.length)].map(validateF)
+          } else {
+               const result = validateField(deepPath, state, true, ignoreRequiredFields);
+               results = setInPath(deepPath, result, results);
+          }
+     };
+
+     /**
+      * Recursively find all descriptor fields and their deepPaths -> than validate them by deepPath
+      * @param {object} descriptors 
+      */
+     function validateRec(descriptors) {
+          forEach(validate, values(descriptors));
+     }
+     validateRec(formDescriptors)
      return results;
 };
 
@@ -84,14 +112,48 @@ export const isRequired = (descriptor, formData) => {
  * @param {*} fieldsState
  */
 export const checkValid = fieldsState => {
+
      const output = { valid: true, errors: [] };
-     for (const name in fieldsState) {
-          const { valid, errorMessages } = fieldsState[name];
-          if (valid === false) {
-               output.valid = false;
-               output.errors.push({ [name]: errorMessages });
+     // for (const name in fieldsState) {
+     //      if (Array.isArray(fieldsState[name])) {
+     //           let i = 0;
+     //           fieldsState[name].forEach(({valid, errorMessages}) => {
+     //                if (valid === false) {
+     //                     output.valid = false;
+     //                     output.errors.push({ [`${name}.${i++}`]: errorMessages });
+     //                }
+     //           })
+     //      }else {
+     //           const { valid, errorMessages } = fieldsState[name];
+     //           if (valid === false) {
+     //                output.valid = false;
+     //                output.errors.push({ [name]: errorMessages });
+     //           }
+     //      }
+     // }
+     const transform = accum => (value, key) => {
+          if (value.valid === undefined) return transformRec(value, accum + "." + key)
+
+          if (Array.isArray(value)) {
+               let i = 0;
+               value.forEach(({ valid, errorMessages }) => {
+                    if (valid === false) {
+                         output.valid = false;
+                         output.errors.push({ [`${accum + "." + key}.${i++}`]: errorMessages });
+                    }
+               })
+          } else {
+               const { valid, errorMessages } = value;
+               if (valid === false) {
+                    output.valid = false;
+                    output.errors.push({ [accum + "." + key]: errorMessages });
+               }
           }
      }
+     function transformRec(fields, accum) {
+          forEachObjIndexed(transform(accum), fields)
+     }
+     transformRec(fieldsState, '')
      return output;
 };
 function createValidationsResult(value, validations = []) {
@@ -120,10 +182,10 @@ function createFieldState(validationResult) {
 }
 
 export function trimFields(formData) {
-	const newData = clone(formData);
-	for(const field in formData) {
-		if (is(String, formData[field]))
-			newData[field] = formData[field].trim();
-	}
-	return newData;
+     const newData = clone(formData);
+     for (const field in formData) {
+          if (is(String, formData[field]))
+               newData[field] = formData[field].trim();
+     }
+     return newData;
 }

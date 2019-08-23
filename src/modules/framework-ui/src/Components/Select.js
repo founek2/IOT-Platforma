@@ -3,12 +3,14 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import { withStyles } from '@material-ui/core'
 import Input from '@material-ui/core/Input';
+import styles from './fieldConnector/styles'
 
 function OwnSelect(props) {
-     const { label, value, onChange, onBlur, onFocus, name, autoFocus, selectOptions, FormHelperTextProps, helperText, required, error, className, ...other } = props;
+     const { label, value, onChange, onBlur, onFocus, name, autoFocus, selectOptions, FormHelperTextProps, helperText, required, error, className, classes, ...other } = props;
      return (
-          <FormControl className={className}>
+          <FormControl className={`${classes.textField} ${className || ""}`}>
                {label && <InputLabel htmlFor={`select-label-placeholder-${name}`}>{label}</InputLabel>}
                <Select
                     onChange={onChange}
@@ -29,4 +31,4 @@ function OwnSelect(props) {
      );
 }
 
-export default OwnSelect;
+export default withStyles(styles)(OwnSelect);

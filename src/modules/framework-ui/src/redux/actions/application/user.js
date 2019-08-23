@@ -12,6 +12,8 @@ import SuccessMessages from '../../../localization/successMessages'
 import * as currenPosition from '../../../utils/currentPosition'
 import { dehydrateState } from '../'
 import { prop } from 'ramda'
+import LoginCallbacks from '../../../callbacks/login'
+import LogoutCallbacks from '../../../callbacks/login'
 
 export function update(data) {
      return {
@@ -36,6 +38,7 @@ export function login() {
                               dispatch(setUser({ ...json.user, token: json.token }))
                               dispatch(resetForm(LOGIN)())
                               dispatch(dehydrateState())
+                              LoginCallbacks.exec(json.token)
                          }
                     },
                     dispatch
@@ -46,7 +49,6 @@ export function login() {
 
 export function register() {
      return function(dispatch, getState) {
-          console.log('registrace')
           const REGISTRATION = 'REGISTRATION'
           const result = dispatch(validateForm(REGISTRATION)())
           if (result.valid) {
@@ -79,6 +81,7 @@ export function registerAngLogin() {
                               dispatch(setUser({ ...json.user, token: json.token }))
                               dispatch(resetForm(REGISTRATION)())
                               dispatch(dehydrateState())
+                              LoginCallbacks.exec(json.token)
                          }
                     },
                     dispatch
@@ -102,6 +105,7 @@ export function userLogOut() {
           dispatch({
                type: actionTypes.RESET_TO_DEFAULT
           })
+          LogoutCallbacks.exec()
      }
 }
 

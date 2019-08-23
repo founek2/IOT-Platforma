@@ -7,13 +7,14 @@ import { checkValid } from '../../validations';
 import { keys, forEach } from 'ramda';
 import setInPath from '../../utils/setInPath';
 import {baseLogger} from '../../Logger'
+import {curry, forEachObjIndexed, is} from 'ramda'
 
-export function updateFormField(deepPath, data) {
+export const updateFormField = curry(function (deepPath, data) {
      return {
           type: actionTypes.UPDATE_FORM_FIELD,
           payload: { deepPath, data }
      };
-}
+})
 
 export function fillForm(formName) {
      return function(data) {
@@ -77,6 +78,7 @@ export function validateForm(formName, ignoreRequired) {
 			const trimedData = trimFields(getFormData(formName)(getState()));
 			dispatch(setFormData(formName, trimedData));
                const fieldStates = ValidateForm(formName, getState(), ignoreRequired);
+               
                dispatch({
                     type: actionTypes.UPDATE_REGISTERED_FIELDS,
                     payload: fieldStates
@@ -84,6 +86,18 @@ export function validateForm(formName, ignoreRequired) {
                return checkValid(fieldStates[formName]);
           };
      };
+}
+
+function recursive(transform, predicate, object) {
+     const func = (accum = '') => (value, key) => {
+          if (predicate(value)) return rec(value, accum + key + ".")
+          transform(value, accum + key)
+     }
+
+     function rec(obj, accum) {
+          forEachObjIndexed(func(accum), obj)
+     }
+     rec(object)
 }
 
 export function resetForm(formName) {
@@ -95,14 +109,21 @@ export function resetForm(formName) {
 			const origFormData = getFormData(formName)(state);
                let formData = {};
                let registeredFields = {};
-               const resetFormData = fieldPath => {
-                    formData = setInPath(fieldPath, '', formData);
+               const resetFormData = (value,fieldPath) => {
+                    if (is(Array, value)) formData = setInPath(fieldPath, [], formData);
+                    else formData = setInPath(fieldPath, '', formData);
 			};
-			const resetRegisteredFields = fieldPath => {
+			const resetRegisteredFields = (val, fieldPath) => {
                     registeredFields = setInPath(fieldPath, { pristine: true, valid: true }, registeredFields);
                };
-			forEach(resetFormData, keys(origFormData));
-			forEach(resetRegisteredFields, keys(origRegisteredFields));
+
+               recursive(resetFormData, (val) =>  {
+                    return is(Array, val) && !is(String, val)
+               }, origFormData)
+ 
+               recursive(resetRegisteredFields, ({valid}) =>  {
+                    return valid === undefined
+               }, origRegisteredFields)
 
                dispatch({
                     type: actionTypes.UPDATE_REGISTERED_FIELDS,

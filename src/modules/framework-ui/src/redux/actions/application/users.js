@@ -1,11 +1,12 @@
 import { actionTypes, POSITION_UPDATE_INTERVAL } from '../../../constants/redux';
 import { getFormData, getToken, getUsers } from '../../../utils/getters';
-import { create as createUserApi, login as loginApi, getUsers as fetchUsers, deletedUsers, updateUser, getUsersActiveBefore as apiGetUsersActiveBefore } from '../../../api/userApi';
+import { create as createUserApi, login as loginApi, getUsers as fetchUsers, deletedUsers, updateUser as updateUserApi, getUsersActiveBefore as apiGetUsersActiveBefore } from '../../../api/userApi';
 import { validateForm, resetForm } from '../formsData';
 import objectDiff from '../../../utils/objectDiff';
 import {omit, mapObjIndexed, head, isEmpty} from 'ramda'
 import { addNotification } from './notifications';
 import InfoMessages from '../../../localization/infoMessages';
+import { baseLogger } from '../../../Logger'
 
 export function remove(data) {
      return {
@@ -69,34 +70,23 @@ export function updateUsers(arrayWithUsers) {
      };
 }
 
-export function update(id) {
-     return function(dispatch, getState) {
-		const USER = 'USER';
-		const ignoreRequiredFields = {password: true}
-          const result = dispatch(validateForm(USER, ignoreRequiredFields)());
+export function updateUser(id) {
+     return async function(dispatch, getState) {
+          const EDIT_USER = 'EDIT_USER'
+          baseLogger(EDIT_USER)
+
+          const result = dispatch(validateForm(EDIT_USER)())
+          const formData = getFormData(EDIT_USER)(getState())
+          console.log("validRes>", result)
           if (result.valid) {
-               const state = getState();
-			const formData = getFormData(USER)(state);
-			const targetUser = getUsers(state).find(user => user.id === id);
-			const cleanedUser = omit(["created", "id"], targetUser);
-			const diff = objectDiff(formData, cleanedUser);
-			const filteredFormData = mapObjIndexed(head,diff)
-			console.log("filtered diff", filteredFormData)
-			if (isEmpty(filteredFormData)) {
-				dispatch(addNotification({ message: InfoMessages.getMessage('noneChangeFound'), variant: 'info', duration: 3000 }))
-			} else {
-				const formDataWithID = {...filteredFormData, id: targetUser.id};
-				return updateUser(
-					{
-						body: { formsData: { [USER]: formDataWithID } },
-						token: getToken(state),
-						onSuccess: json => {
-							dispatch(updateUsers([formDataWithID]))
-						}
-					},
-					dispatch
-				);
-			}
+               return updateUserApi({
+                    token: getToken(getState()),
+                    body: { formData: { [EDIT_USER]: formData } },
+                    id,
+                    onSuccess: () => {
+                         // dispatch(update({ id, sensors, sampleInterval }))
+                    }
+               }, dispatch)
           }
      };
 }

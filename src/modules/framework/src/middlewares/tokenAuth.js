@@ -1,11 +1,16 @@
 import Jwt from '../services/jwt'
 import mongoose from 'mongoose'
-import {equals} from 'ramda';
+import {equals, T} from 'ramda';
 
-export default function(options) {
+import groupsHeritage from 'frontend/src/privileges/groupsHeritage'
+import privilegesFactory, { enrichGroups } from 'framework-ui/src/privileges'
+
+privilegesFactory([], groupsHeritage)
+
+export default function(options = {restricted: true}) {
      return (req, res, next) => {
 		const token = req.get('Authorization-JWT')
-		const {soft} = options ? options : {};
+		const { restricted } = options;
           // if (req.url !== '/login') {
           if (token) {
                Jwt.verify(token)
@@ -17,8 +22,10 @@ export default function(options) {
                               .findById(obj.id)
                               .then(user => {
                                    if (user) {
-								req.user = user.toObject()
-								if (user.groups.some(equals("root"))) req.root = true;
+                                        req.user = user.toObject()
+                                        req.user.groups = enrichGroups(req.user.groups)
+                                        if (req.user.groups.some(equals("root"))) req.root = true;
+                                        if (req.user.groups.some(equals("admin"))) req.user.admin = true;
                                         next()
                                    } else {
                                         res.status(208).send({ error: 'userDoesNotExist', command: 'logOut' })
@@ -29,7 +36,7 @@ export default function(options) {
                          console.log(err)
                          res.status(208).send({ error: 'someBug' })
                     })
-          } else if (soft) {
+          } else if (!restricted) {
                next()
           } else {
                res.status(208).send({ error: 'tokenNotProvided' })

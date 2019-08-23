@@ -11,14 +11,24 @@ import helmet from 'helmet'
 import path from 'path'
 import checkAndCreateRoot from 'framework/src/services/checkAndCreateRoot'
 import Jwt from 'framework/src/services/jwt'
+import auth from './auth'
+import mqttService from './service/mqtt';
+import socketIo from 'socket.io'
+import webSockets from './webSockets'
+
 
 let config = getConfig()
 
 const app = express()
+
 app.server = http.createServer(app)
+
+app.io = require("socket.io")(app.server)
 
 // serve static files
 app.use(express.static('public'))
+
+app.use(express.urlencoded({ extended: true }))
 
 // logger
 app.use(morgan('dev'))
@@ -45,23 +55,32 @@ app.use((req, res, next) =>
 
 // connect to db
 initializeDb(config, db => {
+     Jwt.init(config)
+
+     checkAndCreateRoot() // check for roor existence, if not, then ask for password in terminal
+
      // internal middleware
      app.use(middleware({ config, db }))
 
      // api router
      app.use('/api', api({ config }))
 
+     app.use("/auth", auth)
+
+
+     app.use("/", webSockets(app.io))
+     
      // fallback index
      app.use('/*', function(req, res) {
           res.sendFile('index.html', { root: './public' })
      })
 
-     checkAndCreateRoot() // check for roor existence, if not, then ask for password in terminal
-
-     Jwt.init(config)
      app.server.listen(process.env.PORT || config.port, () => {
           console.log(`Started on port ${app.server.address().port}`)
      })
+
+     mqttService(app.io); //init
+
 })
 
 export default app

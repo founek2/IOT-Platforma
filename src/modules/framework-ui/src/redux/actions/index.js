@@ -39,9 +39,12 @@ export function hydrateState() {
                     type: actionTypes.HYDRATE_STATE,
                     payload: state
                })
+
+               return state;
           } else {
                infoLog('Nothing to hydrate')
           }
+          return null;
      }
 }
 

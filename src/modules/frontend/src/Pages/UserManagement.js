@@ -9,16 +9,19 @@ import { formsDataActions } from 'framework-ui/src/redux/actions';
 import * as usersActions from 'framework-ui/src/redux/actions/application/users';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getGroups, getUsers, getUser } from 'framework-ui/src/utils/getters';
+import { getGroups, getUsers, isUrlHash } from 'framework-ui/src/utils/getters';
 import EnchancedTable from 'framework-ui/src/Components/Table';
 import FullScreenDialog from 'framework-ui/src/Components/FullScreenDialog';
-// import UserForm from '../Components/UserForm';
 import { merge, equals, pick, isEmpty } from 'ramda';
 import arrToString from 'framework-ui/src/utils/arrToString';
 import { getAllowedGroups } from 'framework-ui/src/privileges';
+import { isGroupAllowed } from 'framework-ui/src/privileges'
+import EditUser from './userManagement/EditUser'
+
+import { getQueryID } from '../utils/getters'
 
 function convertGroupIDsToName(groups) {
-     return function(arr) {
+     return function (arr) {
           return arrToString(
                arr.map(id => {
                     if (isEmpty(groups)) return id;
@@ -30,13 +33,13 @@ function convertGroupIDsToName(groups) {
      };
 }
 const userProps = (groups) => [
-     { key: 'userName', label: 'Uživatelské jméno' },
-     { key: 'firstName', label: 'Jméno' },
-     { key: 'lastName', label: 'Přijmení' },
-     { key: 'email', label: 'Email' },
-     { key: 'phoneNumber', label: 'Telefon' },
-     { key: 'groups', label: 'Uživ. skupiny', convertor: convertGroupIDsToName(groups) },
-     { key: 'created', label: 'Vytvořen', convertor: val => new Date(val).toLocaleDateString() }
+     { path: 'info.userName', label: 'Uživatelské jméno' },
+     { path: 'info.firstName', label: 'Jméno' },
+     { path: 'info.lastName', label: 'Přijmení' },
+     { path: 'info.email', label: 'Email' },
+     { path: 'info.phoneNumber', label: 'Telefon' },
+     { path: 'groups', label: 'Uživ. skupiny', convertor: convertGroupIDsToName(groups) },
+     { path: 'created', label: 'Vytvořen', convertor: val => new Date(val).toLocaleDateString() }
 ];
 
 const styles = theme => ({
@@ -71,7 +74,7 @@ class UserManagement extends Component {
      updateEditForm = obj => {
           const { fillUserForm, users } = this.props;
           if (obj.open === true) {
-               const userTarget = users.find(user => user.id == obj.userID);
+               const userTarget = users.find(user => user.id === obj.userID);
                fillUserForm(pick(['userName', 'firstName', 'lastName', 'email', 'phoneNumber', 'groups'], userTarget));
           }
           this.setState(state => ({
@@ -79,10 +82,8 @@ class UserManagement extends Component {
           }));
      };
      render() {
-		const { classes, groups, users, createUser, updateUser, resetUserForm } = this.props;
-
-          const isAdmin = groups.some(group => equals('userAdmin', group));
-          const isRoot = groups.some(equals('root'));
+          const { classes, groups, users, selectedUser, userID, updateUserAction, history } = this.props;
+          const isAdmin = isGroupAllowed("admin", groups)
           return (
                <div className={classes.root}>
                     <Card className={classes.card}>
@@ -97,49 +98,56 @@ class UserManagement extends Component {
                                              toolbarHead="Seznam"
                                              onDelete={this.handleDelete}
                                              orderBy="userName"
-                                             enableCreation={isAdmin || isRoot}
+                                             // enableCreation={isAdmin}
                                              onAdd={() => this.updateCreateForm({ open: true })}
-                                             enableEdit={isAdmin || isRoot}
-									onEdit={id => this.updateEditForm({ open: true, userID: id })}
-									rowsPerPage={10}
+                                             enableEdit={isAdmin}
+                                             onEdit={id => history.push({ hash: "editUser", search: "?id=" + id })}
+                                             rowsPerPage={10}
                                         />
                                    }
                               />
                          </CardContent>
                          <CardActions />
                     </Card>
-                    <FullScreenDialog
+                    {/* <FullScreenDialog
                          open={this.state.createForm.open}
                          onClose={() => this.updateCreateForm({ open: false })}
                          heading="Vytvoření uživatele"
                     >
-                         {/* <UserForm onButtonClick={createUser} buttonLabel="Vytvořit" /> */}
-                    </FullScreenDialog>
+                          <UserForm onButtonClick={createUser} buttonLabel="Vytvořit" />
+                    </FullScreenDialog> */}
                     <FullScreenDialog
-                         open={this.state.editForm.open}
-                         onClose={() => {
-                              this.updateEditForm({ open: false });
-                              resetUserForm();
-                         }}
+                         open={!!selectedUser && this.props.openEditDialog}
+                         onClose={() => history.push({ hash: '', search: '' })}
                          heading="Editace uživatele"
                     >
-                         {/* <UserForm onButtonClick={() => updateUser(this.state.editForm.userID)} buttonLabel="Uložit" /> */}
+                         <EditUser
+                              onButtonClick={() => updateUserAction(userID)}
+                              buttonLabel="Uložit"
+                              user={selectedUser}
+                         />
                     </FullScreenDialog>
                </div>
           );
      }
 }
 
-const _mapStateToProps = state => ({
-     groups: getGroups(state),
-     users: getUsers(state),
-});
+const _mapStateToProps = state => {
+     const id = getQueryID(state)
+     return {
+          userID: id,
+          groups: getGroups(state),
+          users: getUsers(state),
+          openEditDialog: isUrlHash('#editUser')(state),
+          selectedUser: getUsers(state).find(user => user.id === id),
+     }
+};
 
 const _mapDispatchToProps = dispatch =>
      bindActionCreators(
           {
                fetchAllUsers: usersActions.fetchAll,
-               updateUser: usersActions.update,
+               updateUserAction: usersActions.updateUser,
                deleteUsers: usersActions.deleteUsers,
                createUser: usersActions.create,
                fillUserForm: formsDataActions.fillForm('USER'),

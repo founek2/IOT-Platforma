@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { adjust, lensProp, assoc, append, map, when, o, equals, prop, flip, merge, findIndex, propEq } from 'ramda'
+import { adjust, lensProp, assoc, append, mergeDeepRight, findIndex, propEq } from 'ramda'
 import { ActionTypes } from '../../../constants/redux'
 
 const add = {
@@ -24,15 +24,11 @@ const remove = {
 }
 
 const update = {
-     next({data, timeStamp}, action) {
+     next({data, lastFetch}, action) {
           const updateData = action.payload
-          // const devices = map(when(
-		// 		o(equals(updateData.id), prop("id")),
-		// 		flip(merge)(updateData)
-		// 	), data)
 		const devPos = findIndex(propEq('id', updateData.id))(data);
-		data[devPos] = merge(data[devPos], updateData);
-          return {timeStamp, data: data}
+		data[devPos] = mergeDeepRight(data[devPos], updateData);
+          return {lastFetch, data: data}
      }
 }
 

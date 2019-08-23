@@ -2,6 +2,7 @@ import { infoLog, errorLog } from '../Logger'
 import { checkValidFormData } from '../validations'
 import { trimFields } from 'framework-ui/src/validations';
 
+// TODO probably array validations do not work properly
 export default function formDataChecker(fieldDescriptors, {ingoreRequired} = {}) {
      return (req, res, next) => {
           infoLog('Validating formData')

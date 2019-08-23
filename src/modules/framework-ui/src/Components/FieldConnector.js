@@ -14,16 +14,21 @@ import { is } from 'ramda'
 import chainHandler from '../utils/chainHandler'
 import { isNotNil } from 'ramda-extension'
 import { errorLog } from '../Logger'
-import TextField from '@material-ui/core/TextField'
+// import TextField from '@material-ui/core/TextField'
 import Select from '../Components/Select'
 import ChipArray from './ChipArray'
 import FileLoader from './fieldConnector/FileLoader'
+import PasswordField from './fieldConnector/PasswordField'
+import TextField from './fieldConnector/TextField'
+import Checkbox from './fieldConnector/Checkbox'
 
 const Components = {
      TextField: TextField,
      Select: Select,
 	ChipArray: ChipArray,
-	FileLoader: FileLoader
+	FileLoader: FileLoader,
+     PasswordField: PasswordField,
+     Checkbox: Checkbox,
 }
 const onEnterRun = Fn => e => {
      if (e.keyCode === 13) Fn(e)
