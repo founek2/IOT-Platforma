@@ -26,7 +26,7 @@ app.server = http.createServer(app)
 app.io = require("socket.io")(app.server)
 
 // serve static files
-app.use(express.static('public'))
+app.use(express.static('deploy'))
 
 app.use(express.urlencoded({ extended: true }))
 
@@ -36,12 +36,12 @@ app.use(morgan('dev'))
 // 3rd party middleware
 app.options('*', cors())
 
-app.use(helmet())
+// app.use(helmet())
 
-const corsOptions = {
-     origin: 'https://tracker.iotplatforma.cloud'
-}
-app.use(cors(corsOptions))
+// const corsOptions = {
+//      origin: 'https://tracker.iotplatforma.cloud'
+// }
+// app.use(cors(corsOptions))
 
 function getMaxSize(req) {
      if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '2mb'
@@ -72,7 +72,7 @@ initializeDb(config, db => {
      
      // fallback index
      app.use('/*', function(req, res) {
-          res.sendFile('index.html', { root: './public' })
+          res.sendFile('index.html', { root: './deploy' })
      })
 
      app.server.listen(process.env.PORT || config.port, () => {
