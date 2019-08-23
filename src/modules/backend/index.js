@@ -68,7 +68,7 @@ initializeDb(config, db => {
      app.use("/auth", auth)
 
 
-     app.use("/", webSockets(app.io))
+     app.use("/websocket", webSockets(app.io))
      
      // fallback index
      app.use('/*', function(req, res) {
