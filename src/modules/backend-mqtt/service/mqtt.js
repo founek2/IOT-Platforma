@@ -1,6 +1,6 @@
 import mqtt from 'mqtt'
 // import { getConfig } from './config'
-import config  from "backend/config/index.js"
+import config from "backend/config/index.js"
 import Device from 'backend/models/Device'
 
 export default (io) => {
@@ -11,7 +11,7 @@ export default (io) => {
         client.subscribe('#', function (err) {
             if (!err) {
                 console.log("subscribed to #")
-            }
+            } else console.log("mqtt error:", err)
         })
     })
 
@@ -22,7 +22,7 @@ export default (io) => {
             try {
                 const data = JSON.parse(message.toString())
                 const updateTime = new Date()
-                const {deviceID, publicRead} = await Device.updateSensorsData(idObj[1], "/" + topicObj[1], data, updateTime)
+                const { deviceID, publicRead } = await Device.updateSensorsData(idObj[1], "/" + topicObj[1], data, updateTime)
                 // TODO pokud má public read, tak poslat i do veřejné místnosti
                 const emitData = { deviceID, data, updatedAt: updateTime }
                 io.to(idObj[1]).emit("sensors", emitData)
@@ -37,7 +37,7 @@ export default (io) => {
         // client.end()
     })
 
-    client.on("error", function(err) {
+    client.on("error", function (err) {
         console.log("mqtt connection error")
         // client.reconnect()
     })
