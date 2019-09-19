@@ -13,7 +13,8 @@ module.exports = function (api) {
                          },
                          useBuiltIns: 'entry'
                     }
-               ]
+               ],
+               "@babel/preset-react"    // just for BE build
           ],
           plugins: [
                [
@@ -29,6 +30,8 @@ module.exports = function (api) {
                          }
                     }
                ],
+               "@babel/plugin-proposal-class-properties", // just for BE build
+               "@babel/plugin-syntax-dynamic-import" // just for BE build
                // ["transform-inline-environment-variables", {
                //      "include": [
                //        "NODE_ENV"
