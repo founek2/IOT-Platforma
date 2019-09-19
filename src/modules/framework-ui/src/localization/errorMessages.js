@@ -2,7 +2,7 @@ import {messageFactory} from './index';
 
 export const messages = {
 	userAlreadyExist: 'Uživatel již existuje',
-	passwordMissMatch: 'Nesprávné heslo',
+	passwordMissmatch: 'Nesprávné heslo',
 	unknownUser: 'Neznámý uživatel',
 	userDoesNotExist: "Uživatel již neexistuje",
 	invalidToken: "Neplatný token",
@@ -15,7 +15,9 @@ export const messages = {
 	ValidationError: "Odeslaná data nebyla validní",
 	payloadTooLarge: "Soubor je příliš velký",
 	notAllowedExtension: "Nepodporovaný formát souboru",
-	missingFormData: "V dotazu chybí formulářová data"
+	missingFormData: "V dotazu chybí formulářová data",
+	invalidPermissions: "Nedostatečná oprávnění",
+	validationFailed: "Nevalidní formulář"
 };
 
 export default messageFactory(messages)

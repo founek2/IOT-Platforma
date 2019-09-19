@@ -2,16 +2,14 @@ import io from 'socket.io-client'
 
 let socket;
 
-function init(token) {
+function init(token = "") {
     if (socket) socket.close()
-    socket = io(
-        {
+    socket = io( {
             query: {
                 token
             },
-            forceNew: true
         })
-    socket.open()
+        socket.open()
 }
 
 function getSocket() {

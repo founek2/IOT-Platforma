@@ -13,6 +13,10 @@ export function dehydrateState() {
 
           const { formsData, application } = clone(getState())
           delete application.notifications
+          delete formsData.registeredFields
+
+          // TODO přidal callback na úpravu statu před dehydratací
+          if (application.sensors)  delete application.sensors
 
           setItem(STATE_DEHYDRATED, JSON.stringify({ formsData, application, dehydrationTime: new Date() }))
      }

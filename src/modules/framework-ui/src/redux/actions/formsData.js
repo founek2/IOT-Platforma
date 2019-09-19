@@ -8,6 +8,8 @@ import { keys, forEach } from 'ramda';
 import setInPath from '../../utils/setInPath';
 import {baseLogger} from '../../Logger'
 import {curry, forEachObjIndexed, is} from 'ramda'
+import {addNotification} from './application/notifications'
+import ErrorMessages from '../../localization/errorMessages'
 
 export const updateFormField = curry(function (deepPath, data) {
      return {
@@ -62,11 +64,10 @@ export function updateRegisteredField(deepPath, data) {
      };
 }
 
-export function validateField(deepPath) {
+export function validateField(deepPath, ignorePristine) {
      return function(dispatch, getState) {
           baseLogger('VALIDATE_FIELD:', deepPath);
-          const fieldState = ValidateField(deepPath, getState());
-
+          const fieldState = ValidateField(deepPath, getState(), ignorePristine);
           dispatch(updateRegisteredField(deepPath, fieldState));
      };
 }
@@ -83,7 +84,11 @@ export function validateForm(formName, ignoreRequired) {
                     type: actionTypes.UPDATE_REGISTERED_FIELDS,
                     payload: fieldStates
                });
-               return checkValid(fieldStates[formName]);
+
+               
+               const result =  checkValid(fieldStates[formName]);
+               if (!result.valid) dispatch(addNotification({ message: ErrorMessages.getMessage('validationFailed'), variant: 'error', duration: 3000 }))
+               return result
           };
      };
 }
@@ -98,6 +103,15 @@ function recursive(transform, predicate, object) {
           forEachObjIndexed(func(accum), obj)
      }
      rec(object)
+}
+
+export function removeForm(formName) {
+     return function() {
+          return {
+               type: actionTypes.REMOVE_FORM,
+               payload: formName
+          };
+     }
 }
 
 export function resetForm(formName) {

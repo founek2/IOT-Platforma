@@ -2,6 +2,9 @@ import catcher from 'framework/src/mongoose/catcher'
 import { isNotEmpty } from 'ramda-extension'
 import sensorsScheme from './schema/sensors'
 import hat from 'hat'
+import { devLog } from 'framework/src/Logger'
+import SensorData from './SensorData'
+import sensorData from './SensorData';
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -9,10 +12,6 @@ const Schema = mongoose.Schema
 const gpsSchema = new Schema({
      type: { type: String, default: 'Point' },
      coordinates: Array
-})
-
-const userRef = new Schema({
-     type: { type: mongoose.Types.ObjectId, ref: 'User' }
 })
 
 const deviceSchema = new Schema(
@@ -23,9 +22,8 @@ const deviceSchema = new Schema(
           gps: gpsSchema,
           sampleInterval: Number,
           sensors: sensorsScheme,
-          controll: [],
           apiKey: { type: String, default: hat, index: { unique: true } },
-          created: { type: Date, default: Date.now },
+          // created: { type: Date, default: Date.now },
           createdBy: { type: mongoose.Types.ObjectId, ref: 'User' },
           // permissions: ["read"(senzory), "write"(upravovat device), "control" (ovládat)],
           publicRead: Boolean,
@@ -50,9 +48,9 @@ const deviceSchema = new Schema(
                     }
 
                }
-          }
+          },
+          timestamps: true
      },
-     { timestamps: true }
 )
 
 deviceSchema.statics.isExists = function (apiKey) {
@@ -65,9 +63,9 @@ deviceSchema.statics.create = async function ({ topic, ...object }, imgExtension
      const objID = mongoose.Types.ObjectId(userID)
 
      // check for existence of topic (between all devices with createdBy: id), then create
-     const result = await Device.findOne({topic, createdBy: objID}).select("_id").lean()
+     const result = await Device.findOne({ topic, createdBy: objID }).select("_id").lean()
      if (result) throw Error('topicAlreadyUsed')
-     
+
      const newDevice = new Device({
           ...object,
           createdBy: objID,
@@ -76,6 +74,7 @@ deviceSchema.statics.create = async function ({ topic, ...object }, imgExtension
           topic: topic
      })
      if (imgExtension) newDevice.imgPath = `images/devices/${newDevice.id}.${imgExtension}`
+     devLog("Creating device", newDevice)
      return newDevice
           .save()
           .then(obj => {
@@ -108,15 +107,25 @@ const aggregationFields = {
      createdBy: 1,
      sampleInterval: 1,
      publicRead: 1,
+     topic: 1,
 }
 
 deviceSchema.statics.findForUser = function (userID, devices) {
+     console.log("loking for devices, userID=", userID)
      //return this.model('Device').find({ _id: { $in: arrayOfIDs.map(id => mongoose.Types.ObjectId(id)) } })
      const userObjID = mongoose.Types.ObjectId(userID)
      return this.model('Device')
           .aggregate([
                {
-                    $match: { _id: { $in: devices.map(({ id }) => id) } }
+                    // $match: { _id: { $in: devices.map(({ id }) => id) } }
+                    $match: {
+                         $or: [
+                              { publicRead: true },
+                              { "permissions.write": userObjID },
+                              { "permissions.read": userObjID },
+                              { "permissions.control": userObjID },
+                         ]
+                    }
                },
                {
                     $project: {
@@ -135,33 +144,33 @@ deviceSchema.statics.findForUser = function (userID, devices) {
                                    else: '$$REMOVE'
                               }
                          },
-                         "permissions.write": {
-                              $cond: {
-                                   if: { $in: [userObjID, '$permissions.write'] },
-                                   then: '$permissions.write',
-                                   else: '$$REMOVE'
-                              }
-                         },
-                         "permissions.read": {
-                              $cond: {
-                                   if: { $in: [userObjID, '$permissions.read'] },
-                                   then: '$permissions.read',
-                                   else: '$$REMOVE'
-                              }
-                         },
-                         "permissions.control": {
-                              $cond: {
-                                   if: { $in: [userObjID, '$permissions.control'] },
-                                   then: '$permissions.control',
-                                   else: '$$REMOVE'
-                              }
-                         },
+                         permissions: {
+                              "read": {
+                                   $cond: {
+                                        if: { $in: [userObjID, '$permissions.read'] },
+                                        then: '$permissions.read',
+                                        else: '$$REMOVE'
+                                   }
+                              },
+                              "write": {
+                                   $cond: {
+                                        if: { $in: [userObjID, '$permissions.write'] },
+                                        then: '$permissions.write',
+                                        else: '$$REMOVE'
+                                   }
+                              },
+                              "control": {
+                                   $cond: {
+                                        if: { $in: [userObjID, '$permissions.control'] },
+                                        then: '$permissions.control',
+                                        else: '$$REMOVE'
+                                   }
+                              },
+                         }
                     }
                }
           ])
-          .then(docs => {
-               return docs
-          }).catch(catcher('device'))
+          .catch(catcher('device'))
 }
 
 deviceSchema.statics.findForAdmin = function () {
@@ -198,7 +207,7 @@ deviceSchema.statics.findPublic = function () {
           }).catch(catcher('device'))
 }
 
-deviceSchema.statics.updateByFormData = function (formData, userID) {
+deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtension, { id, admin }) {
      if (formData.gpsLng && formData.gpsLat) {
           const coordinates = [formData.gpsLng, formData.gpsLat]
           formData.coordinates = coordinates
@@ -207,25 +216,42 @@ deviceSchema.statics.updateByFormData = function (formData, userID) {
      delete formData.gpsLng
 
      return this.model('Device')
-          .findOne({ _id: mongoose.Types.ObjectId(formData.id) })
-          .select('permissions')
-          .then(doc => {
-               if (doc.permissions.write.some(id => id.toString() === userID)) {
+          .findOne({ _id: mongoose.Types.ObjectId(deviceID) })
+          .select('permissions createdBy imgPath')
+          .then(async doc => {
+               if (doc.permissions.write.some(id => id.toString() == id) || admin) { // two eq (==) are required
+                    const { topic } = formData
+                    if (topic) {
+                         const result = await this.model('Device').find({ topic, createdBy: doc.createdBy, _id: { $ne: mongoose.Types.ObjectId(deviceID) } }).lean().count()
+                         if (result) throw Error('topicAlreadyUsed')
+                    }
+                    const origImgPath = doc.imgPath
+                    if (imgExtension) formData.imgPath = `images/devices/${doc.id}.${imgExtension}`
                     console.log("updating Device> ", formData)
-                    return this.model('Device').updateOne({ _id: mongoose.Types.ObjectId(formData.id) }, formData)
+
+                    return doc.updateOne(formData).then(() => origImgPath)
                } else {
                     throw Error("invalidPermissions")
                }
           }).catch(catcher('device'))
 }
 
-deviceSchema.statics.updateSensorsRecipe = function (deviceId, sampleInterval, recipe) {
-     return this.model('Device')
-          .findOneAndUpdate({ _id: deviceId }, { $set: { "sensors.recipe": recipe, sampleInterval } }).then((n, e) => { console.log(n, e) })
+deviceSchema.statics.updateSensorsRecipe = async function (deviceId, sampleInterval, recipe, user) {
+     const result = await this.model('Device')
+          .updateOne(
+               {
+                    _id: deviceId,
+                    ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
+               },
+               { $set: { "sensors.recipe": recipe, sampleInterval } }
+          )
+
+     if (result.nModified !== 1) throw new Error("invalidPermissions")
+     return result
 }
 
 deviceSchema.statics.getOwnerAndTopic = async function (apiKey) {
-     return this.model('Device').findOne({ apiKey }, { createdBy: 1, topic: 1, sampleInterval: 1, "sensors.historical.updatedAt": 1}).then(doc => {
+     return this.model('Device').findOne({ apiKey }, { createdBy: 1, topic: 1, sampleInterval: 1, "sensors.historical.updatedAt": 1 }).lean().then(doc => {
           return doc ? { ownerId: doc.createdBy, topic: doc.topic } : {}
      })
 }
@@ -234,32 +260,87 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
      return this.model('Device')
           .findOneAndUpdate(
                { createdBy: ownerId, topic: topic },
-               { $set: { "sensors.current": { data, updatedAt: updateTime} } },
-               { fields: { sampleInterval: 1, "sensors.recipe": 1, "sensors.historical.updatedAt": 1, publicRead: 1 } }
+               { $set: { "sensors.current": { data, updatedAt: updateTime } } },
+               { fields: { sampleInterval: 1, "sensors.recipe": 1, "sensors.historical.updatedAt": 1, publicRead: 1, "sensors.historical.timestampsCount": 1 } }
           ).then(doc => {
                if (doc) {
                     console.log("sensorsData updated")
-                    const { sampleInterval } = doc;
-                    const { updatedAt } = doc.sensors.historical
+                    const { sampleInterval, sensors } = doc;
+                    const { updatedAt } = sensors.historical
 
-                    const timeDiffSeconds = (new Date() - updatedAt) / 1000
-                    if (sampleInterval !== -1 && !updatedAt || timeDiffSeconds > sampleInterval) {
+                    // -1 is never
+                    if (sampleInterval !== -1 && (!updatedAt || (new Date() - updatedAt) / 1000 > sampleInterval)) {
                          const update = {}
+                         const sum = {}
+                         const min = {}
+                         const max = {}
+                         const isDay = updateTime.getHours() >= 6 && updateTime.getHours() < 20
                          doc.sensors.recipe.forEach(({ JSONkey }) => {
-                              update["sensors.historical.data." + JSONkey] = [data[JSONkey], updateTime]
+                              const val = Number(data[JSONkey])
+                              update["samples." + JSONkey] = val
+                              update["timestamps"] = updateTime
+                              min["min." + JSONkey] = val;
+                              max["max." + JSONkey] = val
+                              if (isDay) {    // day
+                                   sum["sum.day." + JSONkey] = val
+                              } else {   // night
+                                   sum["sum.night." + JSONkey] = val
+                              }
                          })
 
-                         return doc.updateOne({ $push: update, "sensors.historical.updatedAt": new Date() }).then(out => {
-                              console.log("sensorsData saved historical")
-                              return {deviceID: doc._id, publicRead: doc.publicRead}
+                         return SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay).then(result => {
+                              return { deviceID: doc._id.toString(), publicRead: doc.publicRead }
                          })
-                    } else  return {deviceID: doc._id, publicRead: doc.publicRead}
-                   
-               }else {
-                    console.log("ERROR: saving sensors data to unexisting device", )
+                    } else return { deviceID: doc._id, publicRead: doc.publicRead }
+
+               } else {
+                    console.log("ERROR: saving sensors data to unexisting device")
                }
           })
 }
 
-const Device = mongoose.model('Device', deviceSchema)
-export default Device
+deviceSchema.statics.delete = async function (deviceID, user) {  // TODO smazat případná data o zařízení u uživatelů
+     return this.model('Device')
+          .findOneAndDelete({
+               _id: mongoose.Types.ObjectId(deviceID),
+               ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
+          }).lean().then(doc => {
+               if (!doc) throw new Error("InvalidDeviceId")
+               return doc
+          })
+}
+
+deviceSchema.statics.getSensorsDataForAdmin = async function (deviceID, from, to) {
+     return sensorData.getData(deviceID, from, to)
+}
+
+deviceSchema.statics.getSensorsData = async function (deviceID, from, to, user = {}) {
+
+     const doc = await this.model('Device').findOne({
+          _id: mongoose.Types.ObjectId(deviceID),
+          $or: [{ "permissions.read": mongoose.Types.ObjectId(user.id) }, { publicRead: true }]
+     }, "_id").lean()
+
+     if (!doc) throw new Error("invalidPermissions")
+     return sensorData.getData(deviceID, from, to)
+}
+
+deviceSchema.statics.getApiKey = async function (id, user = {}) {
+     const doc = await this.model('Device').findOne({
+          "_id": mongoose.Types.ObjectId(id),
+          ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
+     }, "-_id apiKey").lean()
+     if (!doc) throw new Error("invalidPermissions")
+     return doc.apiKey
+}
+
+deviceSchema.statics.updatePermissions = async function (id, permissions, user) {
+     const result = await this.model('Device').updateOne({
+          "_id": mongoose.Types.ObjectId(id),
+          ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
+     }, { permissions }).lean()
+     if (result.nModified !== 1) throw new Error("invalidPermissions")
+     return result
+}
+
+export default mongoose.model('Device', deviceSchema)

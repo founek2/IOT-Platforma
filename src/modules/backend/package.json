@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Martin Skalický",
+  "private": true,
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "nodemon": "^1.19.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-http-proxy": "^1.5.1",
+    "http-proxy-middleware": "^0.19.1"
+  }
+}

@@ -17,9 +17,9 @@ const styles = theme => ({
 	   },
 });
 
-function Transition(props) {
-	return <Slide direction="up" {...props} />;
-   }
+const Transition = React.forwardRef(function Transition(props, ref) {
+     return <Slide direction="up" ref={ref} {...props} />;
+   });
 
 function OwnDialog({ open, TransitionComponent = Transition, heading, children, onClose, classes, onExited}) {
      return (

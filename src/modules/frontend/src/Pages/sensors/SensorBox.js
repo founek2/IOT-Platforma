@@ -9,6 +9,8 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { map, last } from 'ramda'
 import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
+import { Link } from 'react-router-dom'
+import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
      card: {
@@ -38,30 +40,44 @@ const styles = theme => ({
           paddingTop: 100
      },
      content: {
+          position: "relative",
           [theme.breakpoints.up('md')]: {
-               height: 215,
-               paddingLeft: theme.spacing.unit * 3,
-               paddingRight: theme.spacing.unit * 3,
+               height: 230,
+               paddingLeft: theme.spacing(3),
+               paddingRight: theme.spacing(3),
                paddingBottom: 0
           },
      },
      description: {
-          maxHeight: 63,
+          maxHeight: 72,
           overflowY: 'scroll'
      },
      updatedBefore: {
           fontSize: 11,
-          textAlign: "right"
+          textAlign: "right",
+          [theme.breakpoints.up('md')]: {
+               paddingRight: theme.spacing(3),
+               position: "absolute",
+               right: 0,
+               bottom: 0
+               
+          },
      }
 
 })
 
-function convertDataView(classes, currentData) {
-     return ({ name, unit, JSONkey }) => {
+function convertDataView(classes, currentData, id) {
+     return ({ name, unit, JSONkey, description }) => {
+          const content = <Typography component="p" className={classes.data} color="primary">
+               {name} : {currentData ? currentData[JSONkey] : "***"} {unit}
+          </Typography>
+          const contentFInal = description ? <Tooltip title={description} placement="left">
+               {content}
+          </Tooltip> : content
           return (
-               <Typography component="p" className={classes.data} color="primary" key={name}>
-                    {name} : {currentData ? currentData[JSONkey] : "***"} {unit}
-               </Typography>
+               <Link to={{ pathname: `/sensor/${id}`, search: `?name=${name}` }} key={JSONkey}>
+                    {contentFInal}
+               </Link>
           )
      }
 }
@@ -69,24 +85,26 @@ function convertDataView(classes, currentData) {
 // TODO přidat komponentu s časem do frameworku - forceUpdate
 class SensorBox extends React.Component {
      render() {
-          const { classes } = this.props
+          const { classes, device } = this.props
 
-          const { title, description, sensors, imgPath } = this.props.device
+          const { title, description, sensors, imgPath, id } = device
 
           return (
                <Card className={classes.card}>
                     <CardMedia className={classes.media} image={imgPath} />
                     <CardContent className={classes.content}>
-                         <Typography gutterBottom variant="h5" component="h2">
-                              {title}
-                         </Typography>
+                         <Link to={`/sensor/${id}`}>
+                              <Typography gutterBottom variant="h5" component="h2">
+                                   {title}
+                              </Typography>
+                         </Link>
                          <Typography component="p" className={classes.description}>
                               {description}
                          </Typography>
                          {sensors.current ?
                               <Fragment>
-                                   <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data), sensors.recipe)}</div>
-                                   <UpdatedBefore time={new Date(sensors.current.updatedAt)} className={classes.updatedBefore}/>
+                                   <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
+                                   <UpdatedBefore time={new Date(sensors.current.updatedAt)} className={classes.updatedBefore} />
                               </Fragment> : null}
                     </CardContent>
                     <CardActions>

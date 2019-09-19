@@ -29,11 +29,12 @@ function OnlyWritable(device) {
      return device.permissions
 }
 
-const SampleIntervalWithText = SampleIntervals.map(val => {
-     const min = val / 60;
-     if (min >= 0) return { value: val, text: min < 60 ? min + ' min' : min / 60 + ' h' }
-     return { value: val, text: "Nikdy" }
-})
+// const SampleIntervalWithText = SampleIntervals.map(val => {
+//      const min = val / 60;
+//      if (min > 0) return { value: val, text: min < 60 ? min + ' min' : min / 60 + ' h' }
+//      else if (val === 0)  return { value: "0", text: "Vždy" }
+//      return { value: val, text: "Nikdy" }
+// })
 
 const styles = theme => ({
      textField: {
@@ -50,8 +51,8 @@ const styles = theme => ({
      },
      fileLoader: {
           width: '100%',
-          paddingLeft: theme.spacing.unit,
-          paddingRight: theme.spacing.unit,
+          paddingLeft: theme.spacing(1),
+          paddingRight: theme.spacing(1),
           [theme.breakpoints.down('sm')]: {
                width: '80%'
           }
@@ -79,9 +80,9 @@ const styles = theme => ({
           }
      },
      actions: {
-          marginBottom: theme.spacing.unit * 2,
+          marginBottom: theme.spacing(2),
           [theme.breakpoints.up('sm')]: {
-               marginTop: theme.spacing.unit * 2
+               marginTop: theme.spacing(2)
           },
           margin: 'auto',
           width: 400,
@@ -95,17 +96,17 @@ const styles = theme => ({
      },
      header: {
           paddingBottom: 0,
-          paddingTop: theme.spacing.unit * 4,
+          paddingTop: theme.spacing(4),
           textAlign: 'center'
      },
      content: {
-          paddingLeft: theme.spacing.unit * 6,
-          paddingRight: theme.spacing.unit * 6,
+          paddingLeft: theme.spacing(6),
+          paddingRight: theme.spacing(6),
           [theme.breakpoints.down('sm')]: {
                flexDirection: 'column',
                textAlign: 'center',
-               paddingLeft: theme.spacing.unit,
-               paddingRight: theme.spacing.unit,
+               paddingLeft: theme.spacing(1),
+               paddingRight: theme.spacing(1),
           }
      },
 
@@ -127,8 +128,8 @@ class EditDeviceDialog extends Component {
      preFillForm = device => {
           if (device.sensors && device.sensors.recipe) {
                const { fillEditFormAction } = this.props;
-     
                fillEditFormAction(transformSensorsForForm(device.sensors.recipe, device.sampleInterval))
+               console.log("prefill")
           }
      }
 
@@ -168,15 +169,12 @@ class EditDeviceDialog extends Component {
                          <CardContent className={classes.content}>
                               <FieldConnector
                                    component="Select"
-                                   fieldProps={{
-                                        type: 'text',
-                                        className: classes.textField
-                                   }}
                                    deepPath="EDIT_SENSORS.sampleInterval"
-                                   selectOptions={SampleIntervalWithText.map(
-                                        ({ value, text }) =>
+                                   selectOptions={SampleIntervals
+                                        .map(
+                                        ({ value, label }) =>
                                              (<MenuItem value={value} key={value}>
-                                                  {text}
+                                                  {label}
                                              </MenuItem>)
                                    )}
                               />
@@ -225,7 +223,6 @@ const _mapDispatchToProps = dispatch => (
                {
                     updateSensorCount: formsActions.updateFormField("EDIT_SENSORS.count"),
                     fillEditFormAction: formsActions.fillForm('EDIT_SENSORS'),
-                    updateSensorsAction: deviceActions.updateSensors,
                     updateSensorsAction: deviceActions.updateSensors,
                },
                dispatch

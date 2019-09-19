@@ -129,7 +129,7 @@ const CREATE_DEVICE = {
           deepPath: 'CREATE_DEVICE.topic',
           required: true,
           label: 'Topic',
-          validations: [validationFactory('isString', {min: 2, max: 100, startsWith: "/"})]
+          validations: [validationFactory('isString', { min: 2, max: 100, startsWith: "/" })]
      },
      publicRead: {
           deepPath: 'CREATE_DEVICE.publicRead',
@@ -171,7 +171,13 @@ const EDIT_DEVICE = {
           required: true,
           label: 'Zeměpisná délka',
           validations: [validationFactory('isNumber')]
-     }
+     },
+     topic: {
+          deepPath: 'EDIT_DEVICE.topic',
+          required: true,
+          label: 'Topic',
+          validations: [validationFactory('isString', { min: 2, max: 100, startsWith: "/" })]
+     },
 }
 
 const EDIT_SENSORS = {
@@ -198,12 +204,18 @@ const EDIT_SENSORS = {
           deepPath: 'EDIT_SENSORS.JSONkey[]',
           label: 'Klíč',
           required: true,
-          validations: [validationFactory('isString', { min: 1, max: 20 })]
+          validations: [validationFactory('isString', { min: 1, max: 20, notEqual: "time" })]
      },
      "description[]": {
           deepPath: 'EDIT_SENSORS.description[]',
+          defaultValue: "",
           label: 'Popis',
           validations: [validationFactory('isString', { min: 1, max: 200 })]
+     },
+     "count": {
+          deepPath: 'EDIT_SENSORS.count',
+          label: 'Popis',
+          validations: [validationFactory('isNumber')]
      }
 
 }
@@ -216,6 +228,20 @@ const USER_MANAGEMENT = {
      }
 }
 
+const EDIT_PERMISSIONS = {
+     read: {
+          deepPath: 'EDIT_PERMISSIONS.read',
+          label: "Čtení"
+     }, write: {
+          deepPath: 'EDIT_PERMISSIONS.write',
+          required: true,
+          label: "Zápis"
+     }, control: {
+          deepPath: 'EDIT_PERMISSIONS.control',
+          label: "Ovládání"
+     }
+}
+
 export default {
      LOGIN,
      REGISTRATION,
@@ -224,4 +250,5 @@ export default {
      CREATE_DEVICE,
      EDIT_DEVICE,
      EDIT_SENSORS,
+     EDIT_PERMISSIONS,
 }

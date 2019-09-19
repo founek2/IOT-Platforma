@@ -11,7 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import AlertDialog from './AlertDialog';
+import AlertDialog from '../AlertDialog';
 import {compose} from 'ramda';
 
 const toolbarStyles = theme => ({

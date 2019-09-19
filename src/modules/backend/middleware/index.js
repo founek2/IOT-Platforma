@@ -9,26 +9,19 @@ import fieldDescriptors from 'fieldDescriptors'
 export default ({ config, db }) => {
      let router = Router()
 
-     router.post('/api/user', formDataChecker(fieldDescriptors))
-     router.put('/api/users', tokenAuthMIddleware())
-     router.put('/api/user', formDataChecker(fieldDescriptors))
+     router.use('/api/user', tokenAuthMIddleware({ methods: ["GET","DELETE", "PUT"] }))
+     // router.get('/api/user', tokenAuthMIddleware({ restricted: false }))
+     // router.get('/api/user/*', tokenAuthMIddleware())
+     router.use('/api/user', groupRestriction('admin', { methods: ["DELETE", "PUT"] }))
+     // router.get('/api/user', groupRestriction('admin'))
+     router.use('/api/user', formDataChecker(fieldDescriptors, { methods: ["POST", "DELETE", "PUT"] }))
 
-     router.use('/api/users', tokenAuthMIddleware())
-     router.use('/api/users', groupRestriction('admin'))
-	router.delete('/api/users', formDataChecker(fieldDescriptors))
-	
-	router.post('/api/device', tokenAuthMIddleware())
-     router.post('/api/device', groupRestriction('user'))
-     router.put('/api/device', tokenAuthMIddleware())
-     router.put('/api/device', groupRestriction('user'))
-     router.patch('/api/device', tokenAuthMIddleware())
-     router.patch('/api/device', groupRestriction('user'))
 
-     router.get('/api/device', tokenAuthMIddleware({restricted: false}))
-     
-     router.post('/api/device', formDataChecker(fieldDescriptors))
-     router.put('/api/device', formDataChecker(fieldDescriptors))
-	router.patch('/api/device', formDataChecker(fieldDescriptors, {ingoreRequired: true}))
+     router.use('/api/device', tokenAuthMIddleware({ methods: ["POST", "PUT", "PATCH", "DELETE"] }))
+     router.get('/api/device', tokenAuthMIddleware({ restricted: false }))
+     router.get('/api/device/*', tokenAuthMIddleware({ restricted: false }))
+     router.use('/api/device', formDataChecker(fieldDescriptors, { methods: ["POST", "PUT"] }))
+     // router.patch('/api/device/*', formDataChecker(fieldDescriptors, { ingoreRequired: true }))
 
      return router
 }

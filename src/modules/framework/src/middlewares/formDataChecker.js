@@ -1,25 +1,27 @@
-import { infoLog, errorLog } from '../Logger'
+import { infoLog, errorLog, warningLog } from '../Logger'
 import { checkValidFormData } from '../validations'
 import { trimFields } from 'framework-ui/src/validations';
 
 // TODO probably array validations do not work properly
-export default function formDataChecker(fieldDescriptors, {ingoreRequired} = {}) {
+export default function formDataChecker(fieldDescriptors, { ingoreRequired, methods } = {}) {
      return (req, res, next) => {
-          infoLog('Validating formData')
-          const { formData } = req.body
-          if (formData) {
-			const trimedData = trimFields(formData);
-               const { valid, errors } = checkValidFormData(trimedData, fieldDescriptors, ingoreRequired)
+          if (methods === undefined || methods.some(method => method === req.method)) {
+               infoLog('Validating formData')
+               const { formData } = req.body
+               if (formData) {
+                    const trimedData = trimFields(formData);
+                    const { valid, errors } = checkValidFormData(trimedData, fieldDescriptors, ingoreRequired)
 
-               if (valid) {
-                    next()
+                    if (valid) {
+                         next()
+                    } else {
+                         warningLog('Validation Failed> ' + JSON.stringify(errors))
+                         res.status(208).send({ error: 'validationFailed' })
+                    }
                } else {
-                    errorLog('Validation Failed> ' + JSON.stringify(errors))
-                    res.status(208).send({ error: 'validationFailed' })
+                    warningLog('Missing formData')
+                    res.status(208).send({ error: 'missingFormData' })
                }
-          } else {
-               errorLog('Missing formData')
-               res.status(208).send({ error: 'missingFormData' })
-          }
+          } else next()
      }
 }

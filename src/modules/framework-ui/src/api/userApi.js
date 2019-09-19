@@ -5,30 +5,30 @@ const API_URL = '/api'
 export const login = (object, dispatch) =>
      postJson({
           url: API_URL + '/user',
-		...object,
-		successMessage: "successfullyLoggedIn",
+          ...object,
+          successMessage: "successfullyLoggedIn",
           dispatch
      })
 
 export const create = (object, dispatch) =>
      postJson({
           url: API_URL + '/user',
-		...object,
-		successMessage: "userCreated",
+          ...object,
+          successMessage: "userCreated",
           dispatch
      })
 
 export const getUsers = (object, dispatch) =>
      paramSender({
-          url: API_URL + '/users',
+          url: API_URL + '/user',
           ...object,
           dispatch
-	})
-	
-export const getUserAuthType = ({userName, ...rest}, dispatch) =>
+     })
+
+export const getUserAuthType = ({ userName, ...rest }, dispatch) =>
      paramSender({
-		url: API_URL + `/user/${userName}`,
-		...rest,
+          url: API_URL + `/user/${userName}`,
+          ...rest,
           dispatch
      })
 
@@ -41,12 +41,13 @@ export const getUsersActiveBefore = (object, dispatch) =>
 
 export const deletedUsers = (object, dispatch) =>
      deleteJson({
-          url: API_URL + '/users',
+          url: API_URL + '/user',
           ...object,
+          successMessage: 'usersSuccessfullyDeleted',
           dispatch
      })
 
-export const updateUser = ({id, ...object}, dispatch) => {
+export const updateUser = ({ id, ...object }, dispatch) => {
      putJson({
           url: API_URL + `/user/${id}`,
           ...object,
@@ -56,7 +57,7 @@ export const updateUser = ({id, ...object}, dispatch) => {
 }
 
 
-export const patchUser = ({id, ...object}, dispatch) => {
+export const patchUser = ({ id, ...object }, dispatch) => {
      patchJson({
           url: API_URL + `/user/${id}`,
           ...object,
@@ -64,4 +65,3 @@ export const patchUser = ({id, ...object}, dispatch) => {
           dispatch
      })
 }
-

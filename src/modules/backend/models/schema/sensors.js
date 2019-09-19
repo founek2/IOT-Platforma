@@ -22,7 +22,6 @@ const sensorSchema = new Schema({
           updatedAt: Date
      }, // {temp1: 100}
      historical: {
-          data: Object,
           updatedAt: Date
      }, // {temp1: [[10, timestamp], ...]}
 },

@@ -1,10 +1,13 @@
 import { equals, gt } from 'ramda'
+import { infoLog, errorLog } from '../Logger'
 
-
-export default function (group) {
+export default function (group, { methods } = {}) {
      return (req, res, next) => {
-          if ( req.user.groups.some(equals(group))) {
-               next()
-          } else res.status(208).send({ error: 'notAllowed' })
+          if (methods === undefined || methods.some(method => method === req.method)) {
+               infoLog("Checking group restriction")
+               if (req.user.groups.some(equals(group))) {
+                    next()
+               } else res.status(208).send({ error: 'notAllowed' })
+          } else next()
      }
 }

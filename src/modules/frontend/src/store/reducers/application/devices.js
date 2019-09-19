@@ -1,6 +1,7 @@
 import { handleActions } from 'redux-actions'
-import { adjust, lensProp, assoc, append, mergeDeepRight, findIndex, propEq } from 'ramda'
+import { adjust, lensProp, assoc, append, mergeDeepRight, findIndex, propEq, filter } from 'ramda'
 import { ActionTypes } from '../../../constants/redux'
+
 
 const add = {
      next(state, action) {
@@ -17,9 +18,8 @@ const set = {
 
 const remove = {
      next(state, action) {
-          throw Error('unsuported')
-          //return dissoc(action.payload, state)
-          return state
+          const deviceID = action.payload
+          return {data: filter(({id}) => id !== deviceID, state.data), lastFetch: state.lastFetch}
      }
 }
 
@@ -32,11 +32,11 @@ const update = {
      }
 }
 
-const userReducers = {
+const deviceReducers = {
      [ActionTypes.ADD_DEVICE]: add,
      [ActionTypes.SET_DEVICES]: set,
      [ActionTypes.REMOVE_DEVICE]: remove,
      [ActionTypes.UPDATE_DEVICE]: update
 }
 
-export default handleActions(userReducers, {})
+export default handleActions(deviceReducers, {})

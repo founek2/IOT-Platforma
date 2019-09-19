@@ -1,4 +1,4 @@
-import { merge, dissocPath } from 'ramda';
+import { merge, dissocPath, dissoc } from 'ramda';
 import setInPath from '../../utils/setInPath';
 import getInPath from '../../utils/getInPath';
 import { actionTypes } from '../../constants/redux';
@@ -44,6 +44,7 @@ export const updateRegisteredField = {
 export const updateRegisteredFields = {
 	next(state, {payload}) {
 		const fieldState = getInPath('registeredFields', state);
+		console.log("merging", fieldState, payload)
 		const newFieldState = merge(fieldState, payload);
 		const updatedState = setInPath('registeredFields', newFieldState, state)
           return updatedState;
@@ -73,6 +74,12 @@ const setFormData = {
      }
 }
 
+const removeForm = {
+	next(state, action) {
+        return dissoc(action.payload, state)
+     }
+}
+
 export const formDataReducers = {
 	[actionTypes.SET_FORMS_DATA]: setFormsData,
 	[actionTypes.UPDATE_FORM_FIELD]: updateField,
@@ -82,4 +89,5 @@ export const formDataReducers = {
 	[actionTypes.UPDATE_FORM]: updateForm,
 	[actionTypes.UPDATE_REGISTERED_FIELDS]: updateRegisteredFields,
 	[actionTypes.SET_FORM_DATA]: setFormData,
+	[actionTypes.REMOVE_FORM]: removeForm,
 };

@@ -17,9 +17,9 @@ export const fetchDevices = (object, dispatch) =>
           dispatch
      })
 
-export const updateDevice = (object, dispatch) =>
+export const updateDevice = ({id, ...object}, dispatch) =>
      patchJson({
-          url: API_URL + '/device',
+          url: API_URL + `/device/${id}`,
           ...object,
           successMessage: 'deviceUpdated',
           dispatch
@@ -32,3 +32,19 @@ export const updateDevice = (object, dispatch) =>
           successMessage: 'deviceUpdated',
           dispatch
      })
+
+export const deleteDevice = ({id, ...object}, dispatch) =>
+     deleteJson({
+          url: API_URL + `/device/${id}`,
+          ...object,
+          successMessage: 'deviceDeleted',
+          dispatch
+     })
+
+export const fetchDeviceData = ({id, ...object}, dispatch) => {
+     paramSender({
+          url: API_URL + `/device/${id}`,
+          ...object,
+          dispatch
+     })
+}

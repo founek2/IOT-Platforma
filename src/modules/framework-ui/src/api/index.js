@@ -90,7 +90,7 @@ export const jsonSender = async ({ url, token = '', onSuccess, onError, onFinish
                body: JSON.stringify(body)
           })
           const json = await processResponse(dispatch, successMessage)(response)
-          onSuccess(json)
+          if(onSuccess) onSuccess(json)
      } catch (e) {
           catched = true
           checkError(onError)(e)

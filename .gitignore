@@ -7,6 +7,8 @@
 
 #VSCode
 /.vscode
+.history
+.nyc_output
 
 # testing
 /coverage
@@ -14,6 +16,8 @@
 # production
 /build
 /public/images
+/deploy
+/distBE
 
 # misc
 .DS_Store

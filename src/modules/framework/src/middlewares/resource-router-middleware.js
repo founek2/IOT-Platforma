@@ -1,7 +1,7 @@
 var Router = require('express').Router;
 
 var keyed = ['get', 'read', 'put', 'update', 'patch', 'modify', 'del', 'delete'],
-	map = { index:'get', list:'get', read:'get', create:'post', update:'put', updateId: "put", patch:'patch', patchId: "patch" };
+	map = { index:'get', list:'get', read:'get', create:'post', update:'put', updateId: "put", patch:'patch', patchId: "patch", deleteId: "delete" };
 
 module.exports = function ResourceRouter(route) {
 	route.mergeParams = route.mergeParams ? true : false;
@@ -23,7 +23,7 @@ module.exports = function ResourceRouter(route) {
 	for (key in route) {
 		fn = map[key] || key;
 		if (typeof router[fn]==='function') {
-			if (key === "read" || key === "updateId" || key === "patchId"){
+			if (key === "read" || key === "updateId" || key === "patchId" || key === "deleteId"){
 				url = "/:id"
 			} else {
 				url = ~keyed.indexOf(key) && route.load ? ('/:'+route.id) : '/';

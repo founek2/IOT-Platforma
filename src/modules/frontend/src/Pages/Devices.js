@@ -18,6 +18,7 @@ import { getDevices } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 import { getQueryID } from '../utils/getters'
+import EditPermissions from './devices/EditPermissions';
 
 function isWritable(device) {
      return device.permissions && device.permissions.write
@@ -62,14 +63,18 @@ class Devices extends Component {
                history,
                devices,
                openEditDialog,
-               resetEditFormAction,
+               resetEditDeviceA,
+               resetEditSensorsA,
+               resetEditPermissionsA,
                openSensorsDialog,
-               selectedDevice
+               selectedDevice,
+               deleteDeviceAction,
+               openPermissionsDialog
           } = this.props
           return (
                <Fragment>
                     {devices.map(data => (
-                         <DeviceBox device={data} key={data.id} />
+                         <DeviceBox device={data} key={data.id} onDelete={deleteDeviceAction}/>
                     ))}
 
                     <Fragment>
@@ -94,21 +99,28 @@ class Devices extends Component {
                               onClose={() =>
                                    history.push({ hash: '', search: '' })
                               }
-                              onExited={resetEditFormAction}
+                              onExited={resetEditDeviceA}
                               heading="Editace zařízení"
                          >
                               <EditDeviceForm device={selectedDevice} />
                          </FullScreenDialog>
                          <FullScreenDialog
                               open={openSensorsDialog && !!selectedDevice}
-                              onClose={() => {
-                                   history.push({ hash: '', search: '' })
-                                   resetEditFormAction()
-                              }}
+                              onClose={() =>  history.push({ hash: '', search: '' })}
+                              onExited={resetEditSensorsA}
                               heading="Editace senzorů"
                          >
                               <EditSensorsForm device={selectedDevice} />
                          </FullScreenDialog>
+                         <FullScreenDialog
+                              open={openPermissionsDialog && !!selectedDevice}
+                              onClose={() => history.push({ hash: '', search: '' })}
+                              onExited={resetEditPermissionsA}
+                              heading="Editace oprávnění"
+                         >
+                              <EditPermissions device={selectedDevice} />
+                         </FullScreenDialog>
+
                     </Fragment>
                </Fragment>
           )
@@ -122,6 +134,7 @@ const _mapStateToProps = state => {
           openCreateDialog: isUrlHash('#createDevice')(state),
           openEditDialog: isUrlHash('#editDevice')(state),
           openSensorsDialog: isUrlHash('#editSensors')(state),
+          openPermissionsDialog: isUrlHash('#editPermissions')(state),
           devices,
           selectedDevice: devices.find(dev => dev.id === id),
      }
@@ -131,7 +144,10 @@ const _mapDispatchToProps = dispatch =>
      bindActionCreators(
           {
                fetchDevicesAction: deviceActions.fetch,
-               resetEditFormAction: formsActions.resetForm('EDIT_DEVICE')
+               resetEditDeviceA: formsActions.removeForm("EDIT_DEVICE"),
+               resetEditSensorsA: formsActions.removeForm("EDIT_SENSORS"),
+               resetEditPermissionsA: formsActions.removeForm("EDIT_PERMISSIONS"),
+               deleteDeviceAction: deviceActions.deleteDevice,
           },
           dispatch
      )

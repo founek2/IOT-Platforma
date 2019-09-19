@@ -2,16 +2,27 @@
   "name": "IOT-platforma",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "src/modules/*"
+  ],
   "scripts": {
     "devFE": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js",
-    "devBE": "nodemon --exec babel-node --ignore='node_modules' ./src/modules/backend/index.js "
+    "testttttttt": "node scripts/test.js",
+    "test": "mocha ./src/modules/backend/test ./src/modules/framework-ui/test ./src/modules/framework/test --require @babel/register",
+    "mochaBackend": "mocha ./src/modules/backend/test --require @babel/register",
+    "mochaFrontend": "mocha ./src/modules/frontend/test",
+    "mochaFramework-ui": "mocha ./src/modules/framework-ui/test --require @babel/register",
+    "mochaFramework": "mocha ./src/modules/framework/test --require @babel/register",
+    "devBE": "nodemon --watch src/modules/backend --exec babel-node ./src/modules/backend/index.js ",
+    "devBE-mqtt": "nodemon --watch src/modules/backend --watch src/modules/backend-mqtt --exec babel-node ./src/modules/backend-mqtt/index.js",
+    "buildBE": "babel src/modules -d distBE",
+    "server": "node distBE/backend/index.js"
   },
   "dependencies": {
-    "@babel/core": "7.2.2",
-    "@material-ui/core": "^3.9.2",
-    "@material-ui/icons": "^3.0.2",
+    "@babel/register": "^7.5.5",
+    "@material-ui/core": "^4.4.2",
+    "@material-ui/icons": "^4.4.1",
     "@svgr/webpack": "4.1.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
@@ -37,7 +48,6 @@
     "eslint-plugin-import": "2.14.0",
     "eslint-plugin-jsx-a11y": "6.1.2",
     "eslint-plugin-react": "7.12.4",
-    "express": "^4.16.4",
     "file-loader": "2.0.0",
     "fork-ts-checker-webpack-plugin-alt": "0.4.14",
     "fs-extra": "^7.0.1",
@@ -52,6 +62,7 @@
     "jsonwebtoken": "^8.5.0",
     "key-mirror": "^1.0.1",
     "mini-css-extract-plugin": "0.5.0",
+    "mongodb": "^3.3.1",
     "mongoose": "^5.4.18",
     "morgan": "^1.9.1",
     "mqtt": "^3.0.0",
@@ -142,11 +153,20 @@
     ]
   },
   "devDependencies": {
-    "@babel/node": "^7.2.2",
-    "@babel/preset-env": "^7.3.4",
     "hat": "^0.0.3",
-    "nodemon": "^1.18.10"
+    "mocha": "^6.2.0",
+    "should": "^13.2.3",
+    "supertest": "^4.0.2"
   },
-  "proxy": "http://localhost:8085",
-  "homepage": "https://test.iotplatforma.cloud"
+  "homepage": "https://test.iotplatforma.cloud",
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": [
+      "node_modules/**/node_modules"
+    ],
+    "delay": "500",
+    "env": {
+      "NODE_ENV": "development"
+    }
+  }
 }

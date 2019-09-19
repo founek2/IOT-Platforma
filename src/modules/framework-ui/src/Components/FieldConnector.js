@@ -36,10 +36,18 @@ const onEnterRun = Fn => e => {
 class fieldConnector extends Component {
      constructor(props) {
           super(props)
-          const { updateFormField, registerField, deepPath, descriptor } = this.props
-		registerField(deepPath)
-		if (descriptor && descriptor.defaultValue)
-			updateFormField(deepPath, descriptor.defaultValue);
+          const { updateFormField, deepPath, descriptor, value, state } = this.props
+          // registerField(deepPath)
+          if (descriptor && !value && descriptor.defaultValue !== undefined){
+               console.log("setting", deepPath, value, state)
+               console.log("val", getFieldVal(deepPath, state))
+               // updateFormField(deepPath, descriptor.defaultValue);
+          }
+     }
+     componentDidMount() {
+          const {registerField, deepPath, value, validateField} = this.props
+          registerField(deepPath)
+          if (value) validateField(deepPath, true)
      }
      componentWillUnmount() {
           const { unregisterField, deepPath } = this.props
@@ -76,7 +84,7 @@ class fieldConnector extends Component {
                optionsData,
                onEnter,
                value,
-               className
+               className,
           } = this.props
           const { valid, errorMessages, pristine } = registeredField
 
@@ -141,7 +149,8 @@ const _mapStateToProps = (state, { deepPath }) => ({
      registeredField: getRegisteredField(deepPath, state),
      fieldDescriptors: getFieldDescriptors(state),
      descriptor: getFieldDescriptor(deepPath, state),
-     value: getFieldVal(deepPath, state)
+     value: getFieldVal(deepPath, state),
+     state,
 })
 
 const _mapDispatchToProps = dispatch =>

@@ -29,6 +29,7 @@ export const actionTypes = keymirror({
 	SET_HISTORY: null,
 	UPDATE_TMP_DATA: null,
 	SET_TMP_DATA: null,
+	REMOVE_FORM: null,
 });
 
 export const STATE_DEHYDRATED = 'STATE_DEHYDRATED'

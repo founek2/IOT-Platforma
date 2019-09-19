@@ -2,9 +2,8 @@ import mongoose, { Schema } from 'mongoose'
 import Jwt from '../../framework/src/services/jwt'
 import { createHash, compare } from '../lib/password'
 import catcher from 'framework/src/mongoose/catcher'
-import { isNotEmpty } from 'ramda-extension'
-import { difference, keys } from 'ramda'
-import { isRoot } from 'framework/src/utils/groups'
+import { keys } from 'ramda'
+import { devLog } from 'framework/src/Logger'
 
 const userSchema = new Schema(
      {
@@ -19,7 +18,7 @@ const userSchema = new Schema(
                type: { type: String, default: 'passwd', enum: ['passwd', 'webAuth'] },
                password: { type: String, required: true }
           },
-          created: { type: Date, default: Date.now },
+          // created: { type: Date, default: Date.now },
           groups: { type: [String], default: ['user'] },
           devices: { type: Array, default: [] },
           deviceUser: {
@@ -36,16 +35,16 @@ const userSchema = new Schema(
                     delete ret.auth.password
                     if (ret.deviceUser) delete ret.deviceUser.password
                }
-          }
+          },
+          timestamps: true
      },
-     {timestamps: true}
 )
 
 userSchema.statics.create = function (object) {
      const { password, authType } = object.auth
      if (authType) throw new Error('notImplemented')
      const User = this.model('User')
-     console.log("user creating:", object)
+     devLog("user creating:", object)
      return createHash(password)
           .then(hash => {
                const user = new User({ ...object, auth: { password: hash } })
@@ -66,7 +65,6 @@ userSchema.statics.findByUserName = function (userName) {
 }
 
 userSchema.statics.checkCreditals = function ({ userName, password, authType }) {
-     console.log("tady", userName, password, authType)
      if (authType !== 'passwd') throw new Error('notImplemented')
      return this.model('User')
           .findOne({ 'info.userName': userName, 'auth.type': { $eq: authType } })
@@ -83,7 +81,7 @@ userSchema.statics.checkCreditals = function ({ userName, password, authType }) 
                                              doc: obj
                                         }
                                    })
-                              } else throw Error('passwordMissMatch')
+                              } else throw Error('passwordMissmatch')
                          })
                     }
                } else {
@@ -136,8 +134,14 @@ userSchema.statics.updateUser = async function (userID, data) {
      }
      return this.model('User')
           .findOneAndUpdate({ _id: mongoose.Types.ObjectId(userID) }, { $set: data })
-          .catch(e => console.log(e))
           .catch(catcher('user'))
+}
+
+userSchema.statics.findAllUserNames = function () {
+     return this.model("User").find({
+           groups: { $ne: "root" }
+     }, "info.userName").lean().sort({ "info.userName": 1 })
+
 }
 
 const User = mongoose.model('User', userSchema)

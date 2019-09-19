@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { userLogOut } from 'framework-ui/src/redux/actions/application/user'
+import * as formsDataActions from 'framework-ui/src/redux/actions/formsData'
 import { bindActionCreators } from 'redux'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -36,7 +37,7 @@ const styles = {
 	}
 }
 
-function Layout({ classes, userPresence, loginOpen, history, userInfo }) {
+function Layout({ classes, userPresence, loginOpen, history, userInfo, removeLoginFormAction }) {
      const [mainMenuOpen, setMainMenuO] = useState(false)
      const setMainMenuOpen = bool => () => setMainMenuO(bool)
 
@@ -47,7 +48,7 @@ function Layout({ classes, userPresence, loginOpen, history, userInfo }) {
                          <MenuIcon />
                     </IconButton>
                     <Link className={`${classes.flex} ${classes.noLinkStyles}`} to="/">
-                         <Typography variant="h5" color="inherit" inline={true}>
+                         <Typography variant="h5" color="inherit">
                               IOT Platforma
                          </Typography>
                     </Link>
@@ -60,7 +61,12 @@ function Layout({ classes, userPresence, loginOpen, history, userInfo }) {
                               </Button>
                          </Link>
                     )}
-                    <LoginDialog open={loginOpen} onClose={() => history.push({ hash: '' })} />
+                    <LoginDialog open={loginOpen} onClose={
+                         () => {
+                              history.push({ hash: '' })
+                              removeLoginFormAction()
+                         }
+                         } />
                </Toolbar>
                <SideMenu open={mainMenuOpen} onClose={setMainMenuOpen(false)} onOpen={setMainMenuOpen(true)}/>
           </AppBar>
@@ -71,13 +77,14 @@ const _mapStateToProps = state => ({
      userInfo: getUserInfo(state),
      groups: getGroups(state),
      userPresence: getUserPresence(state),
-     loginOpen: isUrlHash('#login')(state)
+     loginOpen: isUrlHash('#login')(state),
 })
 
 const _mapDispatchToProps = dispatch =>
      bindActionCreators(
           {
-               logOut: userLogOut
+               logOut: userLogOut,
+               removeLoginFormAction: formsDataActions.removeForm("LOGIN")
           },
           dispatch
      )

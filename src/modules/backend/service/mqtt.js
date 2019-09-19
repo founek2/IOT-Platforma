@@ -1,8 +1,8 @@
 import mqtt from 'mqtt'
-import { getConfig } from './config'
+import config  from "../config/index"
 import Device from '../models/Device'
 
-const config = getConfig();
+// const config = getConfig();
 
 export default (io) => {
     const client = mqtt.connect('mqtt://localhost', { username: `${config.mqttUser}`, password: `${config.mqttPassword}` })

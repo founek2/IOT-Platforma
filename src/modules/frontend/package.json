@@ -1,0 +1,12 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Martin Skalický",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "react-google-charts": "^3.0.15",
+    "recharts": "^1.7.1"
+  }
+}

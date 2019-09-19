@@ -41,9 +41,9 @@ const styles = theme => ({
           }
      },
      actions: {
-		marginBottom: theme.spacing.unit * 2,
+		marginBottom: theme.spacing(2),
           [theme.breakpoints.up('sm')]: {
-               marginTop: theme.spacing.unit * 2,
+               marginTop: theme.spacing(2),
           },
           margin: 'auto',
           width: 400,
@@ -57,7 +57,7 @@ const styles = theme => ({
      },
      header: {
           paddingBottom: 0,
-          paddingTop: theme.spacing.unit * 4,
+          paddingTop: theme.spacing(4),
           textAlign: 'center'
      },
      content: {

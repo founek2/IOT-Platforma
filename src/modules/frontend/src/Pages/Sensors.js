@@ -8,22 +8,27 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { filter } from 'ramda'
 import { bindActionCreators } from 'redux'
+import { isNotEmpty } from 'ramda-extension'
 
 import { getUserPresence, isUrlHash } from 'framework-ui/src/utils/getters'
 import { getDevices } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import io from '../webSocket'
+import { Typography } from '@material-ui/core';
+
 
 function readableWithSensors(device) {
-     return (device.publicRead || (device.permissions && device.permissions.read) )  && (device.sensors && device.sensors.recipe)
+     return (device.publicRead || (device.permissions && device.permissions.read)) && (device.sensors && device.sensors.recipe)
 }
 
 const styles = theme => ({
-
+     noDevices: {
+          padding: 10
+     }
 })
 
 function updateDevice(updateDeviceAction) {
-     return ({data, deviceID, updatedAt}) => {
+     return ({ data, deviceID, updatedAt }) => {
           updateDeviceAction({
                id: deviceID,
                sensors: {
@@ -36,10 +41,11 @@ function updateDevice(updateDeviceAction) {
      }
 }
 
+// TODO stáhnout nová data, pokud na event focus budou starší jak cca 30min?
 class Sensors extends Component {
      componentDidMount() {
           this.props.fetchDevicesAction()
-          this.listener =  updateDevice(this.props.updateDeviceAction)
+          this.listener = updateDevice(this.props.updateDeviceAction)
           io.getSocket().on("sensors", this.listener)
      }
 
@@ -48,20 +54,20 @@ class Sensors extends Component {
      }
 
      render() {
-          const { classes, userPresence, openDialog, devices } = this.props;
+          const { devices, classes } = this.props;
           return (
                <Fragment>
-                    {devices.map(data => (
-                         <SensorBox device={data} key={data.id} />
-                    ))}
+                    {isNotEmpty(devices)
+                         ? devices.map(data => (
+                              <SensorBox device={data} key={data.id} />
+                         ))
+                         : <Typography className={classes.noDevices}>Nebyla nalezena žádná zařízení s naměřenými daty</Typography>}
                </Fragment>
           )
      }
 }
 
 const _mapStateToProps = state => ({
-     userPresence: getUserPresence(state),
-     openDialog: isUrlHash('#createSensor')(state),
      devices: filter(readableWithSensors, getDevices(state))
 })
 
@@ -72,6 +78,6 @@ const _mapDispatchToProps = dispatch =>
                updateDeviceAction: deviceActions.update
           },
           dispatch
-	)
+     )
 
 export default connect(_mapStateToProps, _mapDispatchToProps)(withStyles(styles)(Sensors))

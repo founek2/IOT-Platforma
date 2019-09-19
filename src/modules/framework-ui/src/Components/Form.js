@@ -35,7 +35,7 @@ const styles = theme => {
                position: 'relative',
           },
           actions: {
-			marginTop: theme.spacing.unit * 4,
+			marginTop:  theme.spacing(4),
                margin: 'auto',
 			width: 400,
                display: 'flex',

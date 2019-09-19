@@ -6,7 +6,8 @@ import bodyParser from 'body-parser'
 import initializeDb from './db'
 import middleware from './middleware'
 import api from './api'
-import { getConfig } from './service/config'
+// import { getConfig } from './service/config'
+import config  from "./config/index"
 import helmet from 'helmet'
 import path from 'path'
 import checkAndCreateRoot from 'framework/src/services/checkAndCreateRoot'
@@ -15,15 +16,16 @@ import auth from './auth'
 import mqttService from './service/mqtt';
 import socketIo from 'socket.io'
 import webSockets from './webSockets'
-
-
-let config = getConfig()
+import { devLog } from 'framework/src/Logger'
+// import proxy from 'express-http-proxy'
+import proxy from 'http-proxy-middleware'
+// let config = getConfig()
 
 const app = express()
 
 app.server = http.createServer(app)
 
-app.io = require("socket.io")(app.server)
+app.io = require("socket.io")(app.server, { path: "/websocket/io" })
 
 // serve static files
 app.use(express.static('deploy'))
@@ -31,7 +33,7 @@ app.use(express.static('deploy'))
 app.use(express.urlencoded({ extended: true }))
 
 // logger
-app.use(morgan('dev'))
+app.use("/api",morgan('dev'))
 
 // 3rd party middleware
 app.options('*', cors())
@@ -44,7 +46,8 @@ app.options('*', cors())
 // app.use(cors(corsOptions))
 
 function getMaxSize(req) {
-     if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '2mb'
+     // if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'
+     if (/^\/api\/device(\/|$)/.test(req.url) && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'
      return '100kb'
 }
 app.use((req, res, next) =>
@@ -65,13 +68,31 @@ initializeDb(config, db => {
      // api router
      app.use('/api', api({ config }))
 
-     app.use("/auth", auth)
+     // app.use("/auth", auth)
 
 
-     app.use("/websocket", webSockets(app.io))
-     
+     // app.use("/websocket", webSockets(app.io))
+
+     if (process.env.NODE_ENV === "development"){
+          var wsProxy = proxy('/socket.io', {
+               target: 'ws://localhost:8084/socket.io',
+               // pathRewrite: {
+               //  '^/websocket' : '/socket',        // rewrite path.
+               //  '^/removepath' : ''               // remove path.
+               // },
+               changeOrigin: true, // for vhosted sites, changes host header to match to target's host
+               ws: true, // enable websocket proxy
+               logLevel: 'info'
+             });
+
+          app.use(wsProxy);
+          app.server.on("upgrade", wsProxy.upgrade)
+          devLog("Proxy enabled")
+     }
+
+     app.use("/api/*", (req, res) => res.sendStatus(404))
      // fallback index
-     app.use('/*', function(req, res) {
+     app.use('/*', function (req, res) {
           res.sendFile('index.html', { root: './deploy' })
      })
 
@@ -79,7 +100,7 @@ initializeDb(config, db => {
           console.log(`Started on port ${app.server.address().port}`)
      })
 
-     mqttService(app.io); //init
+     // mqttService(app.io); //init
 
 })
 

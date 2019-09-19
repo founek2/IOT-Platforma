@@ -1,4 +1,4 @@
-import { values, forEach, keys, is, clone, forEachObjIndexed } from 'ramda';
+import { values, forEach, keys, is, clone, forEachObjIndexed, uniq, F } from 'ramda';
 import { isNotEmpty } from 'ramda-extension';
 import getInPath from '../utils/getInPath';
 import {
@@ -7,26 +7,31 @@ import {
      getPristine,
      getFormDescriptors,
      getRegisteredField,
+     getFormData,
+     getRegisteredFields
 } from '../utils/getters';
 import setInPath from '../utils/setInPath';
 import validationFactory from './validationFactory';
 
 const requiredFn = validationFactory('isRequired');
 
-/**
- * Validate field and return fieldState
- * @param {String} deepPath
- * @param {Object} descriptor
- * @param {Object} formData
- */
 export const validateField = (deepPath, state, ignorePristine = false, ignoreRequired = false) => {
      const pristine = getPristine(deepPath, state);
      if (!pristine || ignorePristine) {
           const formsData = getFormsData(state);
+
           const descriptor = getFieldDescriptor(deepPath, state);
+
+          if (!descriptor) return {
+               valid: false,
+               errorMessages: ["missingDescriptor"]
+          }
           const { required, when, validations } = descriptor;
           const formName = deepPath.split('.')[0];
+
+
           const value = getInPath(deepPath, formsData);
+          // console.log(deepPath, value)
           if (!when || (typeof when === 'function' && when(formsData[formName] || {}))) {
                if (required) {
                     if (value && isNotEmpty(value)) {
@@ -34,7 +39,6 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
                          return createFieldState(result);
                     } else {
                          if (ignoreRequired) {
-                              console.log(deepPath)
                               return createFieldState([]);
                          } else {
                               const result = createValidationsResult(value, [requiredFn]);
@@ -59,42 +63,73 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
      }
 };
 
-// upravit validateField, tak aby šel použít pro forEach validateFields
-export const validateForm = (formName, state, ignoreRequiredFields = false) => {
-     let results = {};
-     const formDescriptors = getFormDescriptors(formName, state);
-
-     const validate = (obj) => {
-          const { deepPath } = obj
-          if (!deepPath) return validateRec(obj)
-          //console.log(deepPath, deepPath.match(/\[\]$/))
-
-          if (deepPath.match(/\[\]$/)) {    // for array of values
-               const genericDeepPath = deepPath.replace(/\[\]$/, '');
-               const registeredFields = getRegisteredField(genericDeepPath, state);
-
-               const validateF = (val, i) => {
-                    const pathOfField = `${genericDeepPath}.${i}`;
-                    const result = validateField(pathOfField, state, true, ignoreRequiredFields);
-                    results = setInPath(pathOfField, result, results);
-               }
-               if (registeredFields)
-                    [...Array(registeredFields.length)].map(validateF)
-          } else {
-               const result = validateField(deepPath, state, true, ignoreRequiredFields);
-               results = setInPath(deepPath, result, results);
-          }
-     };
-
-     /**
-      * Recursively find all descriptor fields and their deepPaths -> than validate them by deepPath
-      * @param {object} descriptors 
-      */
-     function validateRec(descriptors) {
-          forEach(validate, values(descriptors));
+function recursive(transform, predicate, arrayPredicate, object) {
+     const func = (accum = '') => (value, key) => {
+          if (arrayPredicate(value, accum + key)) return recArray(value, accum + key + ".") // pouze pokud existuje descriptor pro array
+          if (predicate(value)) return recObj(value, accum + key + ".")
+          transform(value, accum + key)
      }
-     validateRec(formDescriptors)
-     return results;
+
+     function recObj(obj, accum) {
+          forEachObjIndexed(func(accum), obj)
+     }
+
+     function recArray(obj, accum) {
+          obj.map(func(accum))
+     }
+     recObj(object)
+}
+
+const isObject = (val) => Object.prototype.toString.call(val) === "[object Object]"
+
+export const validateForm = (formName, state, ignoreRequiredFields = false) => {
+     const formDescriptors = getFormDescriptors(formName, state);
+     const formData = getFormData(formName)(state)
+
+     const arraOfPaths = []
+     const arrayOfArrayFields = [] // to know when validate array as array and when as array of fields
+     let result = {}
+
+     // find all deePaths of - fields and array of fields
+     const arrayRegex = /\[\]$/;
+     recursive((val, deepPath) => {
+          // if (deepPath === formName) debugger
+          if (arrayRegex.test(deepPath)) arrayOfArrayFields.push(deepPath.replace(arrayRegex, ""))
+          else arraOfPaths.push(deepPath)
+     }, (val) => {
+          return isObject(val) && !val.deepPath
+     }, F, { [formName]: formDescriptors })
+
+     // find all array of fields in formData
+     recursive((val, deepPath) => {
+          // if (deepPath === formName) debugger
+          arraOfPaths.push(deepPath)
+     }, isObject,
+          (val, deepPath) =>
+               is(Array, val) && arrayOfArrayFields.some(p => p === deepPath)
+          , { [formName]: formData })
+
+     // just for FrontEnd validations - field can be mounted and do not have value in formData
+     // It still needs be validated
+     const regFields = getRegisteredFields(state)
+     if (regFields && regFields[formName]) {
+          const fields = regFields[formName];
+          recursive((val, deepPath) => {
+               // if (deepPath === formName) debugger
+               arraOfPaths.push(deepPath)
+          }, val =>    isObject(val) && val.valid == undefined,
+               (val, deepPath) =>
+                    is(Array, val) && arrayOfArrayFields.some(p => p === deepPath)
+               , { [formName]: fields })
+     }
+
+
+     const uniqArray = uniq(arraOfPaths)
+     forEach((deepPath) => {
+          const out = validateField(deepPath, state, true, ignoreRequiredFields);
+          result = setInPath(deepPath, out, result);
+     }, uniqArray)
+     return result;
 };
 
 export const isRequired = (descriptor, formData) => {
@@ -112,41 +147,23 @@ export const isRequired = (descriptor, formData) => {
  * @param {*} fieldsState
  */
 export const checkValid = fieldsState => {
-
      const output = { valid: true, errors: [] };
-     // for (const name in fieldsState) {
-     //      if (Array.isArray(fieldsState[name])) {
-     //           let i = 0;
-     //           fieldsState[name].forEach(({valid, errorMessages}) => {
-     //                if (valid === false) {
-     //                     output.valid = false;
-     //                     output.errors.push({ [`${name}.${i++}`]: errorMessages });
-     //                }
-     //           })
-     //      }else {
-     //           const { valid, errorMessages } = fieldsState[name];
-     //           if (valid === false) {
-     //                output.valid = false;
-     //                output.errors.push({ [name]: errorMessages });
-     //           }
-     //      }
-     // }
-     const transform = accum => (value, key) => {
-          if (value.valid === undefined) return transformRec(value, accum + "." + key)
 
+     const transform = accum => (value, key) => {
+          if (value.valid === undefined) return transformRec(value, accum + key + ".")
           if (Array.isArray(value)) {
                let i = 0;
                value.forEach(({ valid, errorMessages }) => {
                     if (valid === false) {
                          output.valid = false;
-                         output.errors.push({ [`${accum + "." + key}.${i++}`]: errorMessages });
+                         output.errors.push({ [`${accum + key}.${i++}`]: errorMessages });
                     }
                })
           } else {
                const { valid, errorMessages } = value;
                if (valid === false) {
                     output.valid = false;
-                    output.errors.push({ [accum + "." + key]: errorMessages });
+                    output.errors.push({ [accum + key]: errorMessages });
                }
           }
      }
@@ -156,7 +173,7 @@ export const checkValid = fieldsState => {
      transformRec(fieldsState, '')
      return output;
 };
-function createValidationsResult(value, validations = []) {
+export function createValidationsResult(value, validations = []) {
      const result = [];
      validations.forEach(Fn => {
           const output = Fn(value);
@@ -167,7 +184,7 @@ function createValidationsResult(value, validations = []) {
      return result;
 }
 
-function createFieldState(validationResult) {
+export function createFieldState(validationResult) {
      if (isNotEmpty(validationResult)) {
           return {
                valid: false,
@@ -176,7 +193,7 @@ function createFieldState(validationResult) {
      } else {
           return {
                valid: true,
-               errorMessages: undefined
+               errorMessages: []
           };
      }
 }

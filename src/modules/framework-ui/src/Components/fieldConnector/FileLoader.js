@@ -15,8 +15,8 @@ const styles = theme => ({
           display: 'inline-flex'
      },
      button: {
-          marginTop: theme.spacing.unit,
-          marginLeft: theme.spacing.unit
+          marginTop: theme.spacing(1),
+          marginLeft: theme.spacing(1)
 	},
 	textField: fieldStyle(theme).textField
 })

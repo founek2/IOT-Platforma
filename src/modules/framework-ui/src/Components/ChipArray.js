@@ -6,6 +6,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
 
 const createListItems = (array, clickHandler, classes) => {
      const createOption = obj => (
@@ -17,21 +18,20 @@ const createListItems = (array, clickHandler, classes) => {
 };
 
 const styles = theme => ({
-     chip: {
-          margin: theme.spacing.unit / 2
+     root: {
+          display: "flex",
+          // flexWrap: "wrap"
      },
-     select: {
-          marginLeft: theme.spacing.unit,
-          marginRight: theme.spacing.unit,
-          marginTop: theme.spacing.unit,
-          width: 200
+     chip: {
+          margin: theme.spacing(0.5)
      },
      list: {
-          // width: 152,
+          // width: "10%",
           backgroundColor: theme.palette.background.paper,
           position: 'relative',
-          overflow: 'auto',
-          float: 'left',
+          overflowY: 'scroll',
+          // overflowX: 'visible',
+          // maxHeight: 300,
           // borderRight: '1px solid rgba(0, 0, 0, 0.42)',
      },
      listSection: {
@@ -45,24 +45,30 @@ const styles = theme => ({
           fontSize: 14
      },
      listItem: {
-          paddingLeft: theme.spacing.unit,
-          paddingRight: theme.spacing.unit,
+          paddingLeft: theme.spacing(1),
+          paddingRight: theme.spacing(3),
           paddingTop: 2,
           paddingBottom: 2
      },
      listHeader: {
-          paddingLeft: theme.spacing.unit,
-          paddingRight: theme.spacing.unit,
-          height: 40
+          paddingLeft: theme.spacing(1),
+          paddingRight: theme.spacing(1),
+          height: 40,
+          fontSize: 16,
      },
      chipContainer: {
-          padding: theme.spacing.unit,
-          maxWidth: 370,
+          padding: theme.spacing(1),
+          // maxWidth: 370,
           overflowY: 'scroll',
           overflowX: 'hidden'
      },
      errorColor: {
           color: '#f44336'
+     },
+     listWrapper: {
+          maxWidth: "45%",
+          overflowX: "visible",
+          display: "flex"
      }
 });
 
@@ -153,17 +159,20 @@ class ChipArray extends Component {
           const listItems = createListItems(options, this.handleAddChip, classes);
           const requiredStar = required ? <span>&thinsp;*</span> : null;
           return (
-               <div className={className}>
+               <div className={`${classes.root} ${className}`}>
+                    <div className={classes.listWrapper}>
                     <List className={classes.list} subheader={<li />}>
                          <li className={classes.listSection}>
                               <ul className={classes.ul}>
                                    <ListSubheader className={`${classes.listHeader} ${error ? classes.errorColor : ''}`}>
                                         {label} {requiredStar}
                                    </ListSubheader>
+                                   <Divider />
                                    {listItems}
                               </ul>
                          </li>
                     </List>
+                    </div>
                     <div className={classes.chipContainer}>{chips}</div>
                </div>
           );

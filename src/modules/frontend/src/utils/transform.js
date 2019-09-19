@@ -3,10 +3,10 @@
  * @param {Object} sensorsFromFE 
  */
 
-export function transformSensorsForBE({ name, unit, JSONkey, count, sampleInterval }) {
+export function transformSensorsForBE({ name, unit, JSONkey, count, sampleInterval, description }) {
     const resultArr = [];
     for (let i = 0; i < count; i++) {
-        resultArr.push({ name: name[i], JSONkey: JSONkey[i], unit: unit[i] })
+        resultArr.push({ name: name[i], JSONkey: JSONkey[i], unit: unit[i], description: description[i] })
     }
     return { sensors: resultArr, sampleInterval };
 }
@@ -17,11 +17,12 @@ export function transformSensorsForBE({ name, unit, JSONkey, count, sampleInterv
  */
 export function transformSensorsForForm(arrayOfSensors, sampleInterval) {
     const len = arrayOfSensors.length;
-    const resultObj = { name: [], JSONkey: [], unit: [], count: len, sampleInterval };
+    const resultObj = { name: [], JSONkey: [], unit: [], description: [], count: len, sampleInterval };
     for (let i = 0; i < len; i++) {
         resultObj["name"].push(arrayOfSensors[i].name)
         resultObj["JSONkey"].push(arrayOfSensors[i].JSONkey)
         resultObj["unit"].push(arrayOfSensors[i].unit)
+        resultObj["description"].push(arrayOfSensors[i].description)
     }
     return resultObj;
 }

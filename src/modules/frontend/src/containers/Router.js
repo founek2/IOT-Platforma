@@ -4,6 +4,7 @@ import { Router as RouterReact, Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Layout from '../components/Layout'
 import Sensors from '../Pages/Sensors'
+import SensorDetail from '../Pages/SensorDetail'
 import RegisterUser from '../Pages/RegisterUser'
 import { bindActionCreators } from 'redux'
 import { isNotEmpty } from 'ramda-extension'
@@ -78,11 +79,9 @@ class Router extends Component {
                                    {additionRoutes}
                                    <Route
                                         path="/registerUser"
-                                        render={() => {
-                                             console.log('rendering <RegisterUser />')
-                                             return <RegisterUser />
-                                        }}
+                                        component={RegisterUser}
                                    />
+                                    <Route path="/sensor/:deviceId" component={SensorDetail} />
                                    <Route path="/" component={Sensors} />
                               </Switch>
                          </Suspense>

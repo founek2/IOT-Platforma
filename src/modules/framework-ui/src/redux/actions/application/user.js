@@ -25,9 +25,9 @@ export function update(data) {
 const LOGIN = 'LOGIN'
 
 export function login() {
-     return function(dispatch, getState) {
-		const result = dispatch(validateForm(LOGIN)())
-		console.log("login")
+     return function (dispatch, getState) {
+          const result = dispatch(validateForm(LOGIN)())
+          console.log("login")
           if (result.valid) {
                const formData = getFormData(LOGIN)(getState())
                return loginApi(
@@ -36,9 +36,9 @@ export function login() {
 
                          onSuccess: json => {
                               dispatch(setUser({ ...json.user, token: json.token }))
-                              dispatch(resetForm(LOGIN)())
                               dispatch(dehydrateState())
                               LoginCallbacks.exec(json.token)
+                              // dispatch(resetForm(LOGIN)())
                          }
                     },
                     dispatch
@@ -48,7 +48,7 @@ export function login() {
 }
 
 export function register() {
-     return function(dispatch, getState) {
+     return function (dispatch, getState) {
           const REGISTRATION = 'REGISTRATION'
           const result = dispatch(validateForm(REGISTRATION)())
           if (result.valid) {
@@ -68,7 +68,7 @@ export function register() {
 }
 
 export function registerAngLogin() {
-     return function(dispatch, getState) {
+     return function (dispatch, getState) {
           const REGISTRATION = 'REGISTRATION'
           const result = dispatch(validateForm(REGISTRATION)())
           if (result.valid) {
@@ -98,19 +98,22 @@ export function setUser(data) {
 }
 
 export function userLogOut() {
-     return function(dispatch) {
-          dispatch(
-               addNotification({ message: SuccessMessages.getMessage('successfullyLogOut'), variant: 'success', duration: 3000 })
-          )
-          dispatch({
-               type: actionTypes.RESET_TO_DEFAULT
+     return function (dispatch) {
+          return new Promise((resolve) => {
+               dispatch({
+                    type: actionTypes.RESET_TO_DEFAULT
+               })
+               dispatch(
+                    addNotification({ message: SuccessMessages.getMessage('successfullyLogOut'), variant: 'success', duration: 3000 })
+               )
+               LogoutCallbacks.exec()
+               resolve()
           })
-          LogoutCallbacks.exec()
      }
 }
 
 export function fetchAuthType() {
-     return function(dispatch, getState) {
+     return function (dispatch, getState) {
           const userName = prop('userName', getFormData(LOGIN)(getState()))
           return getUserAuthTypeApi(
                {
@@ -127,13 +130,13 @@ export function fetchAuthType() {
 }
 
 export function updateLastPosition() {
-     return function(dispatch) {
+     return function (dispatch) {
           return dispatch(update({ lastPositionUpdate: new Date() }))
      }
 }
 
 export function sendCurrentPosition() {
-     return function(dispatch, getState) {
+     return function (dispatch, getState) {
           currenPosition.get(
                position => {
                     const { latitude, longitude } = position.coords
@@ -152,14 +155,14 @@ export function sendCurrentPosition() {
 }
 let interval = null
 export function enableSendingCurrPosition() {
-     return function(dispatch) {
+     return function (dispatch) {
           dispatch(sendCurrentPosition())
           interval = setInterval(() => dispatch(sendCurrentPosition()), POSITION_UPDATE_INTERVAL)
      }
 }
 
 export function disableSendingCurrPosition() {
-     return function(dispatch) {
+     return function (dispatch) {
           clearInterval(interval)
      }
 }

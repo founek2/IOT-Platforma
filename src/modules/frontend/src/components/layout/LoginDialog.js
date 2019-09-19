@@ -34,8 +34,8 @@ const styles = theme => ({
                width: 300
           },
           [theme.breakpoints.up('sm')]: {
-               marginLeft: theme.spacing.unit * 2,
-               marginRight: theme.spacing.unit * 2
+               marginLeft: theme.spacing(2),
+               marginRight: theme.spacing(2)
           },
 
           [theme.breakpoints.down('sm')]: {
@@ -50,7 +50,7 @@ const styles = theme => ({
           cursor: 'pointer'
      },
      textField: {
-          marginTop: theme.spacing.unit,
+          marginTop: theme.spacing(1),
           width: "calc(100% - 20px)"
      }
 })
@@ -123,7 +123,7 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
                     <Typography component="div">
                          Nemáte účet?{' '}
                          <Link to={{ pathname: '/registerUser', hash: '' }}>
-                              <Typography color="primary" inline={true} className={classes.registerButton}>
+                              <Typography color="primary" display="inline" className={classes.registerButton}>
                                    Zaregistrujte se!
                               </Typography>
                          </Link>

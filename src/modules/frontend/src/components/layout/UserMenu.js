@@ -10,50 +10,42 @@ import { bindActionCreators } from 'redux'
 
 import { getUserInfo } from 'framework-ui/src/utils/getters'
 import { userLogOut } from 'framework-ui/src/redux/actions/application/user'
+import * as deviceActions from '../../store/actions/application/devices'
 
-const styles =theme => ({
-	rightIcon: {
-		marginLeft: theme.spacing.unit,
-	   },
+const styles = theme => ({
+     rightIcon: {
+          marginLeft: theme.spacing(1),
+     },
 })
-
-let iconButton = React.createRef()
-
 const isNotMobile = document.body.clientWidth > 600;
 
-function UserMenu({ classes, logOutAction, userInfo }) {
-     const [open, setOpen] = useState(false)
-     const curriedSetOpen = bool => () => setOpen(bool)
+function UserMenu({ classes, logOutAction, userInfo, fetchDevicesAction }) {
+     const [ancholEl, setAnchorEl] = useState(null)
+     // const curriedSetOpen = bool => () => setOpen(bool)
 
      return (
           <Fragment>
                <Button
-                    onClick={o(curriedSetOpen(true), e => (iconButton = e.target))}
-				//color="inherit"
-				variant="contained"
+                    onClick={e => setAnchorEl(e.currentTarget)}
+                    //color="inherit"
+                    variant="contained"
                >
-			{isNotMobile && userInfo && userInfo.userName}
-                    <AccountCircle className={isNotMobile && classes.rightIcon}/>
+                    {isNotMobile && userInfo && userInfo.userName}
+                    <AccountCircle className={isNotMobile && classes.rightIcon} />
                </Button>
                <Menu
                     id="menu-appbar"
-                    anchorEl={iconButton}
-                    anchorOrigin={{
-                         vertical: 'top',
-                         horizontal: 'right'
-                    }}
-                    transformOrigin={{
-                         vertical: 'top',
-                         horizontal: 'right'
-                    }}
-                    open={open}
-                    onClose={curriedSetOpen(false)}
+                    anchorEl={ancholEl}
+                    open={Boolean(ancholEl)}
+                    onClose={() => setAnchorEl(null)}
                >
                     <MenuItem>Můj účet</MenuItem>
                     <MenuItem
                          onClick={() => {
-                              setOpen(false)
-                              logOutAction()
+                              setAnchorEl(null)
+                              logOutAction().then(
+                                   fetchDevicesAction
+                              )
                          }}
                     >
                          Odhlásit
@@ -70,7 +62,8 @@ const _mapStateToProps = state => ({
 const _mapDispatchToProps = dispatch =>
      bindActionCreators(
           {
-               logOutAction: userLogOut
+               logOutAction: userLogOut,
+               fetchDevicesAction: deviceActions.fetch
           },
           dispatch
      )

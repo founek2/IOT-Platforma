@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
@@ -7,13 +7,15 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import { map, last, pick } from 'ramda'
 import IconSettings from '@material-ui/icons/Settings'
-import IconEdit from '@material-ui/icons/Edit'
 import Fab from '@material-ui/core/Fab'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+
+import AlertDialog from 'framework-ui/src/Components/AlertDialog'
 
 const styles = theme => ({
      card: {
@@ -46,13 +48,13 @@ const styles = theme => ({
      content: {
           [theme.breakpoints.up('md')]: {
                height: 160,
-               paddingLeft: theme.spacing.unit * 3,
-               paddingRight: theme.spacing.unit * 3,
+               paddingLeft: theme.spacing(3),
+               paddingRight: theme.spacing(3),
                paddingBottom: 0
           }
      },
      description: {
-          maxHeight: 63,
+          maxHeight: 72,
           overflowY: 'scroll'
      },
      settingsFab: {
@@ -64,70 +66,81 @@ const styles = theme => ({
                top: 20
           }
      },
-     iconEdit: {
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          backgroundColor: 'white',
-          boxShadow: 'none'
-     }
 })
 
-function convertDataView(classes) {
-     return ({ name, unit, data }) => (
-          <Typography component="p" className={classes.data} color="primary" key={name}>
-               {name} : {last(data).value} {unit}
-          </Typography>
-     )
-}
+const ref = React.createRef();
 
-class DeviceBox extends React.Component {
-     render() {
-          const { classes, device } = this.props
+function DeviceBox({ classes, device, onDelete }) {
+     const [anchorEl, setAnchorEl] = useState(null)
+     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+     const { title, description, imgPath, gps, id } = device
 
-          const { title, description, imgPath, gps, id } = device
+     function handleClick(event) {
+          setAnchorEl(event.currentTarget);
+     }
+     function handleClose() {
+          setAnchorEl(null);
+     }
 
-          return (
-               <Card className={classes.card}>
-                    <CardMedia className={classes.media} image={imgPath} />
-                    <CardContent className={classes.content}>
-                         <Typography gutterBottom variant="h5" component="h2">
-                              {title}
-                         </Typography>
-                         <Typography component="p" className={classes.description}>
-                              {description}
-                         </Typography>
-                         <div className={classes.dataContainer}>
-                              {/* {map(convertDataView(classes), sensors)} */}
-                              <Link to={{ hash: `editSensors`, search: `?id=${id}` }}>
-                                   <Fab size="small" className={classes.iconEdit}>
-                                        <IconEdit />
-                                   </Fab>
-                              </Link>
-                         </div>
-                    </CardContent>
-                    <CardActions>
-                         {/* <Button size="small" color="primary" disabled>
+     return (
+          <Card className={classes.card}>
+               <CardMedia className={classes.media} image={imgPath} />
+               <CardContent className={classes.content}>
+                    <Typography gutterBottom variant="h5" component="h2">
+                         {title}
+                    </Typography>
+                    <Typography component="p" className={classes.description}>
+                         {description}
+                    </Typography>
+                    <div className={classes.dataContainer}>
+                    </div>
+               </CardContent>
+               <CardActions>
+                    {/* <Button size="small" color="primary" disabled>
                               Notify
                          </Button> */}
-                         <Button size="small" color="primary" disabled>
-                              Mapa
+                    <Button size="small" color="primary" disabled>
+                         Mapa
                          </Button>
-                    </CardActions>
+               </CardActions>
+               <Fab size="small" className={classes.settingsFab} onClick={handleClick} >
+                    <IconSettings />
+               </Fab>
+               <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+               >
                     <Link to={{ hash: `editDevice`, search: `?id=${id}` }}>
-                         <Fab size="small" className={classes.settingsFab}>
-                              <IconSettings />
-                         </Fab>
+                         <MenuItem onClick={handleClose}>Nastavení</MenuItem>
                     </Link>
-               </Card>
-          )
-     }
+                    <Link to={{ hash: `editSensors`, search: `?id=${id}` }}>
+                         <MenuItem onClick={handleClose}>Senzory</MenuItem>
+                    </Link>
+                    <Link to={{ hash: `editPermissions`, search: `?id=${id}` }}>
+                         <MenuItem onClick={handleClose}>Oprávnění</MenuItem>
+                    </Link>
+                    <MenuItem onClick={() => { handleClose(); setOpenDeleteDialog(true) }}>Smazat</MenuItem>
+               </Menu>
+               <AlertDialog
+                    open={openDeleteDialog}
+                    onAgree={async () => await onDelete(device.id)}
+                    onClose={() => setOpenDeleteDialog(false)}
+                    title="Odstranění zařízení"
+                    notDisablePending
+                    content="Opravdu chcete odstranit zařízení? Tato akce je nevratná."
+               />
+          </Card>
+     )
 }
 DeviceBox.propTypes = {
      classes: PropTypes.object.isRequired
 }
 
-const _mapDispatchToProps = dispatch => bindActionCreators({}, dispatch)
+const _mapDispatchToProps = dispatch => bindActionCreators({
+
+}, dispatch)
 
 export default connect(
      null,

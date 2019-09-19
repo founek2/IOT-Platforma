@@ -1,45 +1,47 @@
 import Jwt from '../services/jwt'
 import mongoose from 'mongoose'
-import {equals, T} from 'ramda';
+import { equals, T } from 'ramda';
 
 import groupsHeritage from 'frontend/src/privileges/groupsHeritage'
 import privilegesFactory, { enrichGroups } from 'framework-ui/src/privileges'
 
 privilegesFactory([], groupsHeritage)
 
-export default function(options = {restricted: true}) {
+export default function (options = { restricted: true}) {
      return (req, res, next) => {
-		const token = req.get('Authorization-JWT')
-		const { restricted } = options;
+          const { restricted, methods } = options;
           // if (req.url !== '/login') {
-          if (token) {
-               Jwt.verify(token)
-                    .then(obj => {
-                         req.user = obj
-                         // next()
-                         mongoose
-                              .model('User')
-                              .findById(obj.id)
-                              .then(user => {
-                                   if (user) {
-                                        req.user = user.toObject()
-                                        req.user.groups = enrichGroups(req.user.groups)
-                                        if (req.user.groups.some(equals("root"))) req.root = true;
-                                        if (req.user.groups.some(equals("admin"))) req.user.admin = true;
-                                        next()
-                                   } else {
-                                        res.status(208).send({ error: 'userDoesNotExist', command: 'logOut' })
-                                   }
-                              })
-                    })
-                    .catch(err => {
-                         console.log(err)
-                         res.status(208).send({ error: 'someBug' })
-                    })
-          } else if (!restricted) {
-               next()
-          } else {
-               res.status(208).send({ error: 'tokenNotProvided' })
-          }
+          if (methods === undefined || methods.some(method => method === req.method)) {
+               const token = req.get('Authorization-JWT')
+               if (token) {
+                    return Jwt.verify(token)
+                         .then(obj => {
+                              req.user = obj
+                              // next()
+                              mongoose  // TODO bad implementation - framework doesnt have User model
+                                   .model('User')
+                                   .findById(obj.id)
+                                   .then(user => {
+                                        if (user) {
+                                             req.user = user.toObject()
+                                             req.user.groups = enrichGroups(req.user.groups)
+                                             if (req.user.groups.some(equals("root"))) req.root = true;
+                                             if (req.user.groups.some(equals("admin"))) req.user.admin = true;
+                                             next()
+                                        } else {
+                                             res.status(208).send({ error: 'userDoesNotExist', command: 'logOut' })
+                                        }
+                                   })
+                         })
+                         .catch(err => {
+                              console.log("token problem", err)
+                              res.status(208).send({ error: 'invalidToken' })
+                         })
+               } else if (!restricted) {
+                    next()
+               } else {
+                    res.status(208).send({ error: 'tokenNotProvided' })
+               }
+          } else next()
      }
 }
