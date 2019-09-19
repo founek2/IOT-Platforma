@@ -1,5 +1,5 @@
 {
-  "name": "IOT-platforma",
+  "name": "iot-platforma",
   "version": "0.1.0",
   "private": true,
   "workspaces": [
@@ -9,15 +9,16 @@
     "devFE": "node scripts/start.js",
     "build": "node scripts/build.js",
     "testttttttt": "node scripts/test.js",
-    "test": "mocha ./src/modules/backend/test ./src/modules/framework-ui/test ./src/modules/framework/test --require @babel/register",
-    "mochaBackend": "mocha ./src/modules/backend/test --require @babel/register",
-    "mochaFrontend": "mocha ./src/modules/frontend/test",
-    "mochaFramework-ui": "mocha ./src/modules/framework-ui/test --require @babel/register",
-    "mochaFramework": "mocha ./src/modules/framework/test --require @babel/register",
-    "devBE": "nodemon --watch src/modules/backend --exec babel-node ./src/modules/backend/index.js ",
+    "test": "env ROOT_PATH=${PWD} mocha ./src/modules/backend/test ./src/modules/framework-ui/test ./src/modules/framework/test --require @babel/register",
+    "mochaBackend": "env ROOT_PATH=${PWD} mocha ./src/modules/backend/test --require @babel/register",
+    "mochaFrontend": "env ROOT_PATH=${PWD} mocha ./src/modules/frontend/test",
+    "mochaFramework-ui": "env ROOT_PATH=${PWD} mocha ./src/modules/framework-ui/test --require @babel/register",
+    "mochaFramework": "env ROOT_PATH=${PWD} mocha ./src/modules/framework/test --require @babel/register",
+    "devBE": "nodemon --watch src/modules/backend --exec env ROOT_PATH=${PWD} babel-node ./src/modules/backend/index.js ",
     "devBE-mqtt": "nodemon --watch src/modules/backend --watch src/modules/backend-mqtt --exec babel-node ./src/modules/backend-mqtt/index.js",
-    "buildBE": "babel src/modules -d distBE",
-    "server": "node distBE/backend/index.js"
+    "buildBE": "env ROOT_PATH=${PWD} babel src/modules -d distBE",
+    "server1": "env ROOT_PATH=${PWD} node distBE/backend/index.js",
+    "server2": "env ROOT_PATH=${PWD} node distBE/backend-mqtt/index.js"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",

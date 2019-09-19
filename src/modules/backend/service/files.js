@@ -10,8 +10,8 @@ export function saveImageBase64(base64Data, fileName, ext) {
           if (!imgExtensions.some(ex => ex === ext)) reject('notAllowedExtension')
           else {
                const data = base64Data.replace(/^data:image\/\w+;base64,/, '')
-               devLog("saving file to", path.join(__dirname, "../../../../", IMAGES_DEVICES_FOLDER, fileName + "." + ext))
-               fs.writeFile(path.join(__dirname, "../../../../", IMAGES_DEVICES_FOLDER, fileName + "." + ext), data, 'base64', function (err) {
+               devLog("saving file to", path.join(process.env.ROOT_PATH, IMAGES_DEVICES_FOLDER, fileName + "." + ext))
+               fs.writeFile(path.join(process.env.ROOT_PATH, IMAGES_DEVICES_FOLDER, fileName + "." + ext), data, 'base64', function (err) {
                     console.log(err)
                     if (err) reject(err)
                     resolve()
@@ -21,9 +21,10 @@ export function saveImageBase64(base64Data, fileName, ext) {
 }
 
 export function deleteImage(filePathFromDB) {
+     console.log("rootPath", process.env.ROOT_PATH)
      return new Promise((resolve, reject) => {
-          devLog("removing file from", path.join(__dirname, "../../../../", PUBLIC_FOLDER, filePathFromDB))
-          fs.unlink(path.join(__dirname, "../../../../", PUBLIC_FOLDER, filePathFromDB), err => {
+          devLog("removing file from", path.join(process.env.ROOT_PATH, PUBLIC_FOLDER, filePathFromDB))
+          fs.unlink(path.join(process.env.ROOT_PATH, PUBLIC_FOLDER, filePathFromDB), err => {
                if (err) reject(err)
                resolve()
           })

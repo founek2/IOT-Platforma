@@ -59,6 +59,7 @@ app.use((req, res, next) =>
 // connect to db
 initializeDb(config, db => {
      Jwt.init(config)
+     console.log("ROOT path", process.env.ROOT_PATH)
 
      checkAndCreateRoot() // check for roor existence, if not, then ask for password in terminal
 
