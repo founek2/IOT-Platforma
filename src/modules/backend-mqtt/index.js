@@ -25,7 +25,7 @@ initializeDb(config, db => {
 
     app.server.listen( config.portAuth,"localhost", () => {
         console.log(`Started on port ${app.server.address().port}`)
-    })
 
-    setTimeout(() => mqttService(app.io), 1000); //init
+        setTimeout(() => mqttService(app.io), 1000); //init
+    })
 })

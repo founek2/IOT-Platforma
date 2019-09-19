@@ -4,6 +4,7 @@ import config  from "backend/config/index.js"
 import Device from 'backend/models/Device'
 
 export default (io) => {
+    console.log("connecting to mqtt")
     const client = mqtt.connect('mqtt://localhost', { username: `${config.mqttUser}`, password: `${config.mqttPassword}` })
 
     client.on('connect', function () {

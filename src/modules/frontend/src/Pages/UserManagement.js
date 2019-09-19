@@ -39,7 +39,7 @@ const userProps = (groups) => [
      { path: 'info.email', label: 'Email' },
      { path: 'info.phoneNumber', label: 'Telefon' },
      { path: 'groups', label: 'Uživ. skupiny', convertor: convertGroupIDsToName(groups) },
-     { path: 'created', label: 'Vytvořen', convertor: val => new Date(val).toLocaleDateString() }
+     { path: 'createdAt', label: 'Vytvořen', convertor: val => new Date(val).toLocaleDateString() }
 ];
 
 const styles = theme => ({
