@@ -42,7 +42,7 @@ const styles = theme => ({
      content: {
           position: "relative",
           [theme.breakpoints.up('md')]: {
-               height: 230,
+               height: 250,
                paddingLeft: theme.spacing(3),
                paddingRight: theme.spacing(3),
                paddingBottom: 0

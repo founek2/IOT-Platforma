@@ -31,6 +31,9 @@ const styles = theme => ({
     title: {
         padding: 15,
         color: "#5c6b73"
+    },
+    root: {
+        paddingBottom: 20
     }
 })
 
@@ -86,19 +89,18 @@ function transformData(sensorsData, sensorRecipe, sensorName) {
         for (let j = 0; j < keys.length; j++) {
             const key = keys[j]
 
-            if (sum.day) {
+            if (sum.day)
                 oneDay.sum.day[key] += sum.day[key]
-                oneDay.nsamples.day += nsamples.day
-            }
-            if (sum.night) {
+
+            if (sum.night) 
                 oneDay.sum.night[key] += sum.night[key]
-                oneDay.nsamples.night += nsamples.night
-            }
+            
+                // null is for non recoreded values
             if (oneDay.min[key] === null || oneDay.min[key] > min[key]) oneDay.min[key] = min[key]
             if (oneDay.max[key] === null || oneDay.max[key] < max[key]) oneDay.max[key] = max[key]
-            // debugger
         }
-
+        oneDay.nsamples.night += nsamples.night || 0
+        oneDay.nsamples.day += nsamples.day || 0
     })
     return [arr, sumObject]
 }
@@ -141,7 +143,7 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
     return (
         <Fragment>
             {device
-                ? <Card>
+                ? <Card className={classes.root}>
                     <Typography className={classes.title} variant="h3" align="center">{device.title}</Typography>
                     {hasData ? // Chart needs two points to draw a line
                         <Chart

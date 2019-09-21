@@ -47,7 +47,7 @@ app.options('*', cors())
 
 function getMaxSize(req) {
      // if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'
-     if (/^\/api\/device(\/|$)/.test(req.url) && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'
+     if (/^\/api\/device(\/|$)/.test(req.url) && (req.method == 'POST' || req.method == 'PUT')) return '5mb'
      return '100kb'
 }
 app.use((req, res, next) =>

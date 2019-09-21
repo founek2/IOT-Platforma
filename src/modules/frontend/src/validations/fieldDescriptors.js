@@ -235,7 +235,7 @@ const EDIT_PERMISSIONS = {
      }, write: {
           deepPath: 'EDIT_PERMISSIONS.write',
           required: true,
-          label: "Zápis"
+          label: "Editace"
      }, control: {
           deepPath: 'EDIT_PERMISSIONS.control',
           label: "Ovládání"

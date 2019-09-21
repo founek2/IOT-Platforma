@@ -7,14 +7,21 @@ const styles = theme => ({
     root: {
         paddingBottom: 15,
         // marginLeft: "10%"
+        [theme.breakpoints.up('md')]: {
+            width: "90%",
+            margin: "0 auto"
+        }
     },
     loader: {
-        left: 100,
-        top: -8
+        left: 10,
     },
+    loading: {
+        display: "flex",
+        justifyContent: "center"
+    }
 })
 
-const options = (hAxisTitle,vAxisTitle) => ({
+const options = (hAxisTitle, vAxisTitle) => ({
     // chart: {
     //     title: 'Graf průběhu v čase',
     //     // subtitle: 'in millions of dollars (USD)'
@@ -35,9 +42,9 @@ const options = (hAxisTitle,vAxisTitle) => ({
             //     minutes: { format: ['HH:mm', ':mm'] }
             // }
         },
-        minorGridlines: {
-            count: 0,
-        },
+        // minorGridlines: {
+        //     count: 6,
+        // },
         textStyle: { color: '#b0bec5', fontName: 'Roboto', fontSize: '12', bold: true },
     },
     legend: { position: 'top', alignment: 'center', textStyle: { color: '#607d8b', fontName: 'Roboto', fontSize: '12' } },
@@ -46,7 +53,7 @@ const options = (hAxisTitle,vAxisTitle) => ({
         title: vAxisTitle,
         gridlines: { color: '#37474f', count: 4 },
         baselineColor: 'transparent',
-         minValue: 0, 
+        minValue: 0,
         minorGridlines: {
             count: 0,
             // units: {
@@ -60,10 +67,17 @@ const options = (hAxisTitle,vAxisTitle) => ({
     },
     explorer: {
         actions: ['dragToZoom', 'rightClickToReset'],
+        // actions: ['dragToPan'],
         axis: 'horizontal',
         keepInBounds: true,
-        maxZoomIn: 4.0
+        maxZoomIn: 0.1,
+        zoomDelta: 1.1
     },
+    // animation:{
+    //     duration: 400,
+    //     easing: 'in',
+    //     startup: true
+    // },
     colorAxis: { colors: ["#3f51b5", "#2196f3", "#03a9f4", "#00bcd4"] },
     backgroundColor: 'transparent',
     areaOpacity: 0.24,
@@ -101,15 +115,15 @@ function MyChart({ classes, fetchData, data, vAxisTitle, hAxisTitle }) {
     return (
         <div className={classes.root} align="center">
             <Chart
-                width="90%"
+                width="100%"
                 height="400px"
 
                 chartType="LineChart"
                 legendToggle
-                loader={<span>Načítám graf<Loader open className={classes.loader} /></span>}
+                loader={<span className={classes.loading}>Načítám graf<Loader open className={classes.loader} /></span>}
                 data={data}
                 // options={finalOptions}
-                options={options(hAxisTitle,vAxisTitle)}
+                options={options(hAxisTitle, vAxisTitle)}
                 rootProps={{ 'data-testid': '2' }}
                 chartEvents={convertFunc ? null : chartEvents}
                 chartLanguage="cs"

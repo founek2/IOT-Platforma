@@ -46,7 +46,9 @@ export default ({ config, db }) =>
                               try {
                                    if (image && origImgPath)
                                         await deleteImage(origImgPath)
-                              } catch (e) { }
+                              } catch (e) { 
+                                   console.log("removing file failed", e)
+                              }
 
                               try {
                                    if (image) {
@@ -54,6 +56,7 @@ export default ({ config, db }) =>
                                    }
                                    res.sendStatus(204)
                               } catch (e) {
+                                   console.log("creating file failed", e)
                                    res.sendStatus(500)
                               }
                          })

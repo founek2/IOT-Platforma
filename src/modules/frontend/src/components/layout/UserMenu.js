@@ -14,10 +14,18 @@ import * as deviceActions from '../../store/actions/application/devices'
 
 const styles = theme => ({
      rightIcon: {
-          marginLeft: theme.spacing(1),
+          marginLeft: 0,
+          [theme.breakpoints.up('sm')]: {
+               marginLeft: theme.spacing(1),
+          }
      },
+     hideOnMobile: {
+          [theme.breakpoints.down('xs')]: {
+               display: "none"
+          }
+     }
 })
-const isNotMobile = document.body.clientWidth > 600;
+// const isNotMobile = document.body.clientWidth > 600;
 
 function UserMenu({ classes, logOutAction, userInfo, fetchDevicesAction }) {
      const [ancholEl, setAnchorEl] = useState(null)
@@ -30,8 +38,8 @@ function UserMenu({ classes, logOutAction, userInfo, fetchDevicesAction }) {
                     //color="inherit"
                     variant="contained"
                >
-                    {isNotMobile && userInfo && userInfo.userName}
-                    <AccountCircle className={isNotMobile && classes.rightIcon} />
+                    <span className={classes.hideOnMobile}>{userInfo.userName}</span>
+                    <AccountCircle className={classes.rightIcon} />
                </Button>
                <Menu
                     id="menu-appbar"

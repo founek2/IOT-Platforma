@@ -26,8 +26,7 @@ export function createDevice() {
           if (result.valid) {
                const state = getState()
                const formData = getFormData(CREATE_SENSOR)(state)
-               const fieldDescriptors = getFormDescriptors(CREATE_SENSOR, state)
-               const newFormDataWithFiles = await loadFilesInFormData(formData, keys(fieldDescriptors)) //
+               const newFormDataWithFiles = await loadFilesInFormData(formData) //
                return createDeviceApi(
                     {
                          body: { formData: { [CREATE_SENSOR]: newFormDataWithFiles } },
@@ -50,29 +49,17 @@ export function updateDevice(id) {
           const EDIT_DEVICE = 'EDIT_DEVICE'
           baseLogger(EDIT_DEVICE)
           const result = dispatch(validateForm(EDIT_DEVICE)())
-          if (result.valid) { // TODO do put request - image is in form only when changed...., diff now ignores empty description
+          if (result.valid) {
                const state = getState()
                const formData = getFormData(EDIT_DEVICE)(state)
-               // const fieldDescriptors = getFormDescriptors(EDIT_DEVICE, state)
-               // const newFormDataWithFiles = await loadFilesInFormData(formData, keys(fieldDescriptors))
-
-               // const devices = getDevices(state)
-               // const device = devices.find(dev => dev.id === id)
-
-               // const diffObj = objectDiff(newFormDataWithFiles, device)
-               // const diff = {}
-               // for (const field in diffObj) {
-               //      const val = head(diffObj[field])
-               //      if (val)
-               //           diff[field] = val
-               // }
+               const newFormDataWithFiles = await loadFilesInFormData(formData)
 
                return putDeviceApi(
                     {
-                         body: { formData: { [EDIT_DEVICE]: formData } },
+                         body: { formData: { [EDIT_DEVICE]: newFormDataWithFiles } },
                          token: getToken(state),
                          onSuccess: () => {
-                              // TODO force refresh new image and dont add diff image to device
+                              // TODO force refresh new image - maybe add timestamp as query to disable cache
                               delete formData.image
                               dispatch(update({ ...formData, id }))
                               dispatch(dehydrateState())
@@ -168,7 +155,6 @@ export function updateSensors(id) {
           baseLogger(EDIT_SENSORS)
           const result = dispatch(validateForm(EDIT_SENSORS)())
           const formData = getFormData(EDIT_SENSORS)(getState())
-          console.log("update sensors", result)
           if (result.valid) {
                return putDeviceApi({
                     token: getToken(getState()),

@@ -8,6 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
+
 
 const round2 = (num) =>
     Math.round(num * 100) / 100
@@ -18,6 +20,9 @@ const useStyles = makeStyles(theme => ({
         marginTop: theme.spacing(3),
         margin: "0 auto",
         overflowX: 'auto',
+        [theme.breakpoints.down('md')]: {
+            width: '100%',
+        }
     },
     table: {
         minWidth: 400,
@@ -31,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 
 function DetailTable({ sensorRecipe: { JSONkey, name, unit }, sumObject }) {
     const classes = useStyles();
-
+    console.log("DetailTable", name, sumObject)
     const days = Object.keys(sumObject)
     const rows = []
     days.forEach(date => {
@@ -64,8 +69,12 @@ function DetailTable({ sensorRecipe: { JSONkey, name, unit }, sumObject }) {
                 <TableHead>
                     <TableRow>
                         <TableCell>Datum</TableCell>
-                        <TableCell align="right">Den</TableCell>
-                        <TableCell align="right">Noc</TableCell>
+                        <Tooltip title="Od 6h do 20h" placement="top">
+                            <TableCell align="right">Den</TableCell>
+                        </Tooltip>
+                        <Tooltip title="Od 20h do 6h" placement="top">
+                            <TableCell align="right">Noc</TableCell>
+                        </Tooltip>
                         <TableCell align="right">Průměr</TableCell>
                         <TableCell align="right">Min</TableCell>
                         <TableCell align="right">Max</TableCell>

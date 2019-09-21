@@ -10,7 +10,6 @@ import Loader from 'framework-ui/src/Components/Loader'
 
 function AlertDialog({ onAgree, onClose, open, title, content, cancelText = "Zrušit", agreeText = "Souhlasím", notDisablePending = false }) {
     const [pending, setPending] = useState(false)
-    console.log("onAgree", onAgree.constructor.name)
     async function handleAgree(e) {
         setPending(true)
         await onAgree(e)

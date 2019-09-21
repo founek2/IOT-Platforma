@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import IconButton from '@material-ui/core/IconButton'
 import AddCircle from '@material-ui/icons/AddCircle'
+import FileCopy from '@material-ui/icons/FileCopy'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import CardActions from '@material-ui/core/CardActions'
@@ -28,6 +29,8 @@ import { getQueryID, getDevices } from '../../utils/getters'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 import AlertDialog from 'framework-ui/src/Components/AlertDialog'
 import TextField from 'framework-ui/src/Components/fieldConnector/TextField.js'
+import { Tooltip } from '@material-ui/core'
+import CopyToClipboard from 'framework-ui/src/Components/CopyToClipboard'
 
 const styles = theme => ({
      fileLoader: {
@@ -41,6 +44,12 @@ const styles = theme => ({
           [theme.breakpoints.down('sm')]: {
                width: '80%'
           }
+     },
+     topicWrapper: {
+          display: "flex"
+     },
+     topic: {
+          width: "calc(100% - 58px)"
      },
      card: {
           overflow: 'auto',
@@ -111,7 +120,7 @@ const styles = theme => ({
      },
 })
 
-function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, apiKey, device, fillEditFormAction, deleteDeviceAction, editFormTopic, fetchApiKeyAction, topicRegisteredField }) {
+function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, apiKey, device, fillEditFormAction, deleteDeviceAction, editFormTopic, fetchApiKeyAction, topicRegisteredField, newImg }) {
      useEffect(() => {
           const { description, title, gpsLat, gpsLng, publicRead, topic } = device
           fillEditFormAction({ description, title, gpsLat, gpsLng, publicRead, topic })
@@ -136,7 +145,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
           await fetchApiKeyAction(device.id)
           setPending(false)
      }
-
+     const topicVal = device && `/${device.createdBy}${editFormTopic || ""}` || ""
      return device ? (
           <Fragment>
                <Card className={classes.card}>
@@ -145,7 +154,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                          <div className={classes.contentInner}>
                               <div>
                                    <div className={classes.mediaWrapper}>
-                                        <CardMedia className={classes.media} image={device.imgPath} />
+                                        <CardMedia className={classes.media} image={(newImg && newImg.url) || device.imgPath} />
                                    </div>
                                    <FieldConnector
                                         component="FileLoader"
@@ -179,17 +188,27 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                               }}
                               deepPath="EDIT_DEVICE.description"
                          />
-                         <TextField
-                              className={classes.textArea}
-                              value={`/${device.createdBy}${editFormTopic || ""}`}
-                              error={topicRegisteredField ? !topicRegisteredField.valid : false}
-                              helperText={topicRegisteredField && topicRegisteredField.errorMessages ? topicRegisteredField.errorMessages[0] : ""}
-                              FormHelperTextProps={{ error: topicRegisteredField ? !topicRegisteredField.valid : false }}
-                              disabled
-                              label="Topic"
-                              inputProps={{ style: { cursor: "pointer" } }}
-                              onClick={() => setOpenTopicDialog(true)}
-                         />
+                         <div className={classes.topicWrapper}>
+                              <TextField
+                                   className={classes.topic}
+                                   value={topicVal}
+                                   error={topicRegisteredField ? !topicRegisteredField.valid : false}
+                                   helperText={topicRegisteredField && topicRegisteredField.errorMessages ? topicRegisteredField.errorMessages[0] : ""}
+                                   FormHelperTextProps={{ error: topicRegisteredField ? !topicRegisteredField.valid : false }}
+                                   disabled
+                                   label="Topic"
+                                   inputProps={{ style: { cursor: "pointer" } }}
+                                   onClick={() => setOpenTopicDialog(true)}
+                              />
+                              <CopyToClipboard TooltipProps={{ title: "Zkopírováno do schránky" }}>
+                                   {({ copy }) => (
+
+                                        <IconButton onClick={() => copy(topicVal)}>
+                                             <FileCopy />
+                                        </IconButton>
+                                   )}
+                              </CopyToClipboard>
+                         </div>
                          <FieldConnector
                               component="Checkbox"
                               deepPath="EDIT_DEVICE.publicRead"
@@ -271,7 +290,8 @@ const _mapStateToProps = state => {
      return {
           apiKey: prop('apiKey')(getDialogTmp(state)),
           editFormTopic: getFieldVal("EDIT_DEVICE.topic", state),
-          topicRegisteredField: getRegisteredField("EDIT_DEVICE.topic", state)
+          topicRegisteredField: getRegisteredField("EDIT_DEVICE.topic", state),
+          newImg: getFieldVal("EDIT_DEVICE.image", state)
      }
 }
 

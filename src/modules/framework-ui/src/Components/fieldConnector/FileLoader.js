@@ -8,7 +8,10 @@ import AddIcon from '@material-ui/icons/CloudUpload'
 import { withStyles } from '@material-ui/core/styles'
 import fieldStyle from './styles'
 
-import {errorLog} from '../../Logger'
+import blobToBase64 from '../../utils/blobToBase64'
+import { errorLog } from '../../Logger'
+import MyFile from '../../dto/MyFile'
+import MyFileData from '../../dto/MyFileData'
 
 const styles = theme => ({
      root: {
@@ -17,18 +20,16 @@ const styles = theme => ({
      button: {
           marginTop: theme.spacing(1),
           marginLeft: theme.spacing(1)
-	},
-	textField: fieldStyle(theme).textField
+     },
+     textField: fieldStyle(theme).textField
 })
-// console.log(fieldStyle((theme)))
 
-// kvůli persistování se musí jméno uložit taky do storu -> {name, url}
 class FileLoader extends Component {
      // constructor(props) {
-	// 	super(props);
-	// 	// to reset hydrated state -> objectURL is destroyed afted document unmount
-	// 	this.props.onChange({target: {value: {}}}); 
-	// }
+     // 	super(props);
+     // 	// to reset hydrated state -> objectURL is destroyed afted document unmount
+     // 	this.props.onChange({target: {value: {}}}); 
+     // }
 
      handleChange = e => {
           const { onChange } = this.props
@@ -38,9 +39,9 @@ class FileLoader extends Component {
           } else if (files.length === 1) {
                const localImageUrl = window.URL.createObjectURL(files[0])
 
-               onChange({ target: { value: { url: localImageUrl, name: files[0].name } } })
+               onChange({ target: { value: new MyFile(files[0].name, localImageUrl) } })
           } else {
-			errorLog("Multiple files are not currently supported");
+               errorLog("Multiple files are not currently supported");
           }
      }
      render() {
