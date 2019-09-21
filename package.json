@@ -19,7 +19,7 @@
     "buildBE": "env ROOT_PATH=${PWD}/public babel src/modules -d distBE",
     "server1": "env ROOT_PATH=${PWD}/public node distBE/backend/index.js",
     "server2": "env ROOT_PATH=${PWD}/public node distBE/backend-mqtt/index.js",
-    "serveFE": "env ROOT_PATH=${PWD}/public cp build/* \"$ROOT_PATH\""
+    "serveFE": "env ROOT_PATH=${PWD}/public cp -r build/* \"$ROOT_PATH\""
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",
