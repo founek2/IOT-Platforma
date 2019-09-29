@@ -149,7 +149,7 @@ class ChipArray extends Component {
      };
 
      render() {
-          const { classes, onChange, onFocus, onBlur, optionsData, label, required, error, className } = this.props;
+          const { classes, label, required, error, className } = this.props;
           const { chipData, options } = this.state;
           const createChip = data => (
                <Chip key={data.value} label={data.label} onDelete={this.handleDelete(data)} className={classes.chip} />

@@ -1,5 +1,5 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory'
-import { AuthTypes } from '../constants'
+import { AuthTypes, ControlTypes, SampleIntervals } from '../constants'
 import { evolve, replace, mapObjIndexed, assocPath } from 'ramda'
 
 function transformToForm(formName, fields) {
@@ -185,7 +185,7 @@ const EDIT_SENSORS = {
           deepPath: 'EDIT_SENSORS.sampleInterval',
           required: true,
           label: 'Interval samplování',
-          validations: [validationFactory('isNumber', { min: -1 })]
+          validations: [validationFactory('isOneOf', SampleIntervals)]
      },
 
      'name[]': {
@@ -217,7 +217,38 @@ const EDIT_SENSORS = {
           label: 'Popis',
           validations: [validationFactory('isNumber')]
      }
+}
 
+const EDIT_CONTROL = {
+     'name[]': {
+          deepPath: 'EDIT_SENSORS.name[]',
+          label: 'Název',
+          required: true,
+          validations: [validationFactory('isString', { min: 2, max: 30 })]
+     },
+     'type[]': {
+          deepPath: 'EDIT_SENSORS.type[]',
+          label: 'Typ',
+          required: true,
+          validations: [validationFactory('isOneOf', ControlTypes)]
+     },
+     'JSONkey[]': {
+          deepPath: 'EDIT_SENSORS.JSONkey[]',
+          label: 'Klíč',
+          required: true,
+          validations: [validationFactory('isString', { min: 1, max: 20 })]
+     },
+     "description[]": {
+          deepPath: 'EDIT_SENSORS.description[]',
+          defaultValue: "",
+          label: 'Popis',
+          validations: [validationFactory('isString', { min: 1, max: 200 })]
+     },
+     "count": {
+          deepPath: 'EDIT_SENSORS.count',
+          label: 'Popis',
+          validations: [validationFactory('isNumber')]
+     }
 }
 
 const USER_MANAGEMENT = {
@@ -251,4 +282,5 @@ export default {
      EDIT_DEVICE,
      EDIT_SENSORS,
      EDIT_PERMISSIONS,
+     EDIT_CONTROL,
 }

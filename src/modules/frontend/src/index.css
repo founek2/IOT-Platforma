@@ -13,6 +13,10 @@ html {
 	 color: inherit;
  }
 
+ .marginAuto {
+	 margin: 0 auto;
+ }
+
 
 /* cyrillic-ext */
 @font-face {

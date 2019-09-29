@@ -6,4 +6,5 @@ export const ActionTypes = keymirror({
 	SET_DEVICES: null,
 	UPDATE_DEVICE: null,
 	SET_USER_NAMES: null,
+	UPDATE_STATE_DEVICE: null,
 });

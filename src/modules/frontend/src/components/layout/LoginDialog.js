@@ -29,18 +29,16 @@ const styles = theme => ({
      content: {
           position: "relative",
           width: 400,
+          marginLeft: theme.spacing(2),
+          marginRight: theme.spacing(2),
 
           [theme.breakpoints.down('md')]: {
-               width: 300
+               width: "100%",
+               marginLeft: 0,
+               marginRight: 0,
           },
-          [theme.breakpoints.up('sm')]: {
-               marginLeft: theme.spacing(2),
-               marginRight: theme.spacing(2)
-          },
+  
 
-          [theme.breakpoints.down('sm')]: {
-               width: 240
-          }
      },
      loginFooter: {
           textAlign: 'center',

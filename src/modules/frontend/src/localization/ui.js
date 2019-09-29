@@ -7,7 +7,7 @@ const mainMenu = {
 	userManagement: 'Správce uživatelů',
 	registration: "Registrovat",
 	sensors: "Senzory",
-	deviceControll: "Ovládání",
+	deviceControl: "Ovládání",
 	devices: "Zařízení"
 };
 

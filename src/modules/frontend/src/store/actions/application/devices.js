@@ -13,6 +13,7 @@ import {
      putDevice as putDeviceApi,
      deleteDevice as deleteDeviceApi,
      fetchDeviceData as fetchDeviceDataApi,
+     updateState as updateStateApi,
 } from '../../../api/device'
 import { getDevices } from '../../../utils/getters'
 import objectDiff from 'framework-ui/src/utils/objectDiff'
@@ -87,7 +88,7 @@ export function updatePermissions(id) {
                     token: getToken(state),
                     id,
                     onSuccess: () => {
-                         dispatch(update({id, permissions: formData}))
+                         dispatch(update({ id, permissions: formData }))
                     }
                }, dispatch)
           }
@@ -166,6 +167,44 @@ export function updateSensors(id) {
                     }
                }, dispatch)
           }
+     }
+}
+
+export function updateControl(id) {
+     return async function (dispatch, getState) {
+          const EDIT_CONTROL = 'EDIT_CONTROL'
+          baseLogger(EDIT_CONTROL)
+          const result = dispatch(validateForm(EDIT_CONTROL)())
+          const formData = getFormData(EDIT_CONTROL)(getState())
+          if (result.valid) {
+               return putDeviceApi({
+                    token: getToken(getState()),
+                    body: { formData: { [EDIT_CONTROL]: formData } },
+                    id,
+                    onSuccess: () => {
+                         // const { sampleInterval, sensors } = transformSensorsForBE(formData);
+                         // dispatch(update({ id, sensors, sampleInterval }))
+                    }
+               }, dispatch)
+          }
+     }
+}
+
+export function updateState(id, JSONkey, data) {
+     return async function (dispatch, getState) {
+
+          const EDIT_CONTROL = 'UPDATE_STATE_DEVICE'
+          baseLogger(EDIT_CONTROL)
+
+          return updateStateApi({
+               token: getToken(getState()),
+               body: { state: { [JSONkey]: data } },
+               id,
+               onSuccess: json => {
+                    // const { sampleInterval, sensors } = transformSensorsForBE(formData);
+                    dispatch(update({ id, control: json.data}))
+               }
+          }, dispatch)
      }
 }
 

@@ -10,6 +10,14 @@ export const createDevice = (object, dispatch) =>
           dispatch
      })
 
+export const updateState = ({ id, ...object }, dispatch) =>
+     patchJson({
+          url: API_URL + `/device/${id}`,
+          ...object,
+          // successMessage: 'deviceCreated',
+          dispatch
+     })
+
 export const fetchDevices = (object, dispatch) =>
      paramSender({
           url: API_URL + '/device',
@@ -17,7 +25,7 @@ export const fetchDevices = (object, dispatch) =>
           dispatch
      })
 
-export const updateDevice = ({id, ...object}, dispatch) =>
+export const updateDevice = ({ id, ...object }, dispatch) =>
      patchJson({
           url: API_URL + `/device/${id}`,
           ...object,
@@ -25,15 +33,15 @@ export const updateDevice = ({id, ...object}, dispatch) =>
           dispatch
      })
 
- export const putDevice = ({id, ...object}, dispatch) =>
- putJson({
+export const putDevice = ({ id, ...object }, dispatch) =>
+     putJson({
           url: API_URL + `/device/${id}`,
           ...object,
           successMessage: 'deviceUpdated',
           dispatch
      })
 
-export const deleteDevice = ({id, ...object}, dispatch) =>
+export const deleteDevice = ({ id, ...object }, dispatch) =>
      deleteJson({
           url: API_URL + `/device/${id}`,
           ...object,
@@ -41,7 +49,7 @@ export const deleteDevice = ({id, ...object}, dispatch) =>
           dispatch
      })
 
-export const fetchDeviceData = ({id, ...object}, dispatch) => {
+export const fetchDeviceData = ({ id, ...object }, dispatch) => {
      paramSender({
           url: API_URL + `/device/${id}`,
           ...object,

@@ -18,3 +18,11 @@ export const SampleIntervals = [
 	{value: 120 * 60, label: "2 hod"},
 	{value: 300 * 60, label: "5 hod"},
 ]
+
+export const ControlTypes = [
+	{value: "switch", label: "vypínač"},
+	{value: "activator", label: "Aktivátor"},
+	// {value: "switch", label: "vypínač"},
+	// {value: "switch", label: "vypínač"},
+	// {value: "switch", label: "vypínač"},
+]

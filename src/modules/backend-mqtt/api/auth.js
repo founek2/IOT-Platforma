@@ -13,7 +13,7 @@ router.post('/user', function (req, res) {
      const { username, password } = req.body
 
      if (username.length === 32) {
-          Device.isExists(username).then(b =>
+          Device.login(username).then(b =>
                b ? res.send("allow") : res.send("deny"))
      } else
           User.checkCreditals({ userName: username, password, authType: "passwd" }).then(({ doc }) => {

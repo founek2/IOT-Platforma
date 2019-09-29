@@ -118,6 +118,9 @@ function DeviceBox({ classes, device, onDelete }) {
                     <Link to={{ hash: `editSensors`, search: `?id=${id}` }}>
                          <MenuItem onClick={handleClose}>Senzory</MenuItem>
                     </Link>
+                    <Link to={{ hash: `editControl`, search: `?id=${id}` }}>
+                         <MenuItem onClick={handleClose}>Ovládání</MenuItem>
+                    </Link>
                     <Link to={{ hash: `editPermissions`, search: `?id=${id}` }}>
                          <MenuItem onClick={handleClose}>Oprávnění</MenuItem>
                     </Link>

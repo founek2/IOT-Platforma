@@ -207,5 +207,6 @@
 }
 
 .relative {
-	position: relative;
+     position: relative;
+     width: 32px;
 }

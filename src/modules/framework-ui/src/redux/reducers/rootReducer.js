@@ -8,7 +8,10 @@ export default appReducer => (state, action) => {
           warningLog('Hydrating state')
           const { formsData, application } = action.payload
 
-          state = { application, fieldDescriptors: state.fieldDescriptors, formsData: {...state.formsData, ...formsData} }
+          state = { application, fieldDescriptors: state.fieldDescriptors, 
+               // formsData: {...state.formsData, ...formsData}
+               formsData: state.formsData 
+          }
      }
 
      // if (action.type === actionTypes.RESET_TO_DEFAULT) {

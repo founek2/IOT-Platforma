@@ -19,6 +19,7 @@ import * as deviceActions from '../store/actions/application/devices'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 import { getQueryID } from '../utils/getters'
 import EditPermissions from './devices/EditPermissions';
+import EditControlForm from './devices/EditControlForm'
 
 function isWritable(device) {
      return device.permissions && device.permissions.write
@@ -65,11 +66,13 @@ class Devices extends Component {
                openEditDialog,
                resetEditDeviceA,
                resetEditSensorsA,
+               resetEditControlA,
                resetEditPermissionsA,
                openSensorsDialog,
                selectedDevice,
                deleteDeviceAction,
-               openPermissionsDialog
+               openPermissionsDialog,
+               openControlDialog,
           } = this.props
           return (
                <Fragment>
@@ -113,6 +116,14 @@ class Devices extends Component {
                               <EditSensorsForm device={selectedDevice} />
                          </FullScreenDialog>
                          <FullScreenDialog
+                              open={openControlDialog && !!selectedDevice}
+                              onClose={() =>  history.push({ hash: '', search: '' })}
+                              onExited={resetEditControlA}
+                              heading="Editace ovládání"
+                         >
+                              <EditControlForm device={selectedDevice} />
+                         </FullScreenDialog>
+                         <FullScreenDialog
                               open={openPermissionsDialog && !!selectedDevice}
                               onClose={() => history.push({ hash: '', search: '' })}
                               onExited={resetEditPermissionsA}
@@ -135,6 +146,7 @@ const _mapStateToProps = state => {
           openEditDialog: isUrlHash('#editDevice')(state),
           openSensorsDialog: isUrlHash('#editSensors')(state),
           openPermissionsDialog: isUrlHash('#editPermissions')(state),
+          openControlDialog: isUrlHash('#editControl')(state),
           devices,
           selectedDevice: devices.find(dev => dev.id === id),
      }
@@ -147,6 +159,7 @@ const _mapDispatchToProps = dispatch =>
                resetEditDeviceA: formsActions.removeForm("EDIT_DEVICE"),
                resetEditSensorsA: formsActions.removeForm("EDIT_SENSORS"),
                resetEditPermissionsA: formsActions.removeForm("EDIT_PERMISSIONS"),
+               resetEditControlA: formsActions.removeForm("EDIT_CONTROL"),
                deleteDeviceAction: deviceActions.deleteDevice,
           },
           dispatch

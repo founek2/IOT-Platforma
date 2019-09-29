@@ -2,7 +2,8 @@ import resource from 'framework/src/middlewares/resource-router-middleware'
 import Device from '../models/Device'
 import processError from 'framework/src/utils/processError'
 import { saveImageBase64, validateFileExtension, deleteImage } from '../service/files'
-import { transformSensorsForBE } from 'frontend/src/utils/transform'
+import { transformSensorsForBE, transformControlForBE } from 'frontend/src/utils/transform'
+import fetch from 'node-fetch'
 
 export default ({ config, db }) =>
      resource({
@@ -46,7 +47,7 @@ export default ({ config, db }) =>
                               try {
                                    if (image && origImgPath)
                                         await deleteImage(origImgPath)
-                              } catch (e) { 
+                              } catch (e) {
                                    console.log("removing file failed", e)
                               }
 
@@ -68,6 +69,11 @@ export default ({ config, db }) =>
                          .catch(processError(res))
                } else if (formData.EDIT_PERMISSIONS) {      // tested
                     Device.updatePermissions(id, formData.EDIT_PERMISSIONS, user)
+                         .then(() => res.sendStatus(204))
+                         .catch(processError(res))
+               } else if (formData.EDIT_CONTROL) {
+                    const { control } = transformControlForBE(formData.EDIT_CONTROL);
+                    Device.updateControlRecipe(id, control, user)
                          .then(() => res.sendStatus(204))
                          .catch(processError(res))
                } else res.sendStatus(500)
@@ -119,40 +125,32 @@ export default ({ config, db }) =>
                }
           },
 
-          patchId({ body, user, params }, res) {
-               // const { formData } = body
-               // const { id } = params
+          patchId({ body, user, params: { id } }, res) {
+               const { state } = body
+               console.log("state", state)
+               if (state) {
+                    Device.canControl(id, user).then(output => {
+                         if (output) {
+                              // TODO send to mqtt, there wait for ack, responde and here save to DB
+                              fetch(`http://localhost:${config.portAuth}/api/action/${id}`, {
+                                   headers: { 'Content-Type': 'application/json' },
+                                   method: "patch",
+                                   body: JSON.stringify(body),
+                              }).then(response => {
+                                   if (response.ok) {
+                                        Device.updateState(id, state, user).then(({ control }) => {
+                                             console.log("control", control.current.data.power2)
+                                             res.send({ data: control })
+                                        })
 
-               // if (formData.EDIT_DEVICE) {
-               //      const form = formData.EDIT_DEVICE
-               //      const image = form.image
-               //      let extension
-               //      if (image) {
-               //           delete form.image
-               //           extension = image.name.split('.').pop()
-               //           if (!validateFileExtension(extension)) {
-               //                res.status(208).send({ error: 'notAllowedExtension' })
-               //                return
-               //           }
-               //      }
-               //      Device.updateByFormData(id, formData.EDIT_DEVICE, extension, user)
-               //           .then(async (origImgPath) => {
-               //                try {
-               //                     if (image && origImgPath)
-               //                          await deleteImage(origImgPath)
-               //                } catch (e) { }
 
-               //                try {
-               //                     if (image) {
-               //                          await saveImageBase64(image.data, id, extension)
-               //                     }
-               //                     res.sendStatus(204)
-               //                } catch (e) {
-               //                     res.sendStatus(500)
-               //                }
-               //           })
-               //           .catch(processError(res))
-               // } else res.sendStatus(500)
+                                   } else res.sendStatus(500)
+                              }).catch(() => res.sendStatus(500))
+                         } else res.status(208).send({ error: "InvalidPermissions" })
+                    })
+
+               } else res.sendStatus(500)
+
           },
           /** DELETE - Delete a given entities */
           deleteId({ params, user }, res) {  // tested, 2

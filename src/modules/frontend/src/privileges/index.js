@@ -5,7 +5,7 @@ import { lazy } from 'react'
 
 import groupsHeritage from './groupsHeritage'
 
-const DeviceControll = lazy(() => import('../Pages/DeviceControll'))
+const DeviceControl = lazy(() => import('../Pages/DeviceControl'))
 
 const UserManagement = lazy(() => import('../Pages/UserManagement'))
 
@@ -14,7 +14,7 @@ const Devices = lazy(() => import('../Pages/Devices'))
 export const routes = {
      user: {
           routes: [
-               { path: '/deviceControll', Component: DeviceControll, name: 'deviceControll', Icon: BuildIcon },
+               { path: '/deviceControl', Component: DeviceControl, name: 'deviceControl', Icon: BuildIcon },
                { path: '/devices', Component: Devices, name: 'devices', Icon: DevicesIcon }
           ]
      },

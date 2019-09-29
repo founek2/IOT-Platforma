@@ -1,10 +1,11 @@
 import catcher from 'framework/src/mongoose/catcher'
 import { isNotEmpty } from 'ramda-extension'
 import sensorsScheme from './schema/sensors'
+import controlScheme from './schema/control'
 import hat from 'hat'
 import { devLog } from 'framework/src/Logger'
 import SensorData from './SensorData'
-import sensorData from './SensorData';
+import { keys } from 'ramda'
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -22,6 +23,7 @@ const deviceSchema = new Schema(
           gps: gpsSchema,
           sampleInterval: Number,
           sensors: sensorsScheme,
+          control: controlScheme,
           apiKey: { type: String, default: hat, index: { unique: true } },
           // created: { type: Date, default: Date.now },
           createdBy: { type: mongoose.Types.ObjectId, ref: 'User' },
@@ -32,7 +34,9 @@ const deviceSchema = new Schema(
                write: [{ type: 'ObjectId', ref: 'User' }],
                control: [{ type: 'ObjectId', ref: 'User' }]
           },
-          topic: { type: String, required: true }
+          topic: { type: String, required: true },
+          lastLogin: Date,
+          ack: Date,
      },
      {
           toObject: {
@@ -53,8 +57,14 @@ const deviceSchema = new Schema(
      },
 )
 
-deviceSchema.statics.isExists = function (apiKey) {
-     return this.model('Device').findOne({ apiKey }, "_id")
+deviceSchema.statics.updateAck = async function (ownerId, topic) {
+     const result = await this.model('Device').updateOne({ createdBy: mongoose.Types.ObjectId(ownerId), topic }, { ack: new Date() })
+     if (result.nModified != 1) throw new Error("Invalid id/topic")
+}
+
+deviceSchema.statics.login = async function (apiKey) {
+     const result = await this.model('Device').updateOne({ apiKey }, { lastLogin: new Date() })
+     return result.nModified === 1
 }
 
 deviceSchema.statics.create = async function ({ topic, ...object }, imgExtension, userID) {
@@ -259,7 +269,7 @@ deviceSchema.statics.getOwnerAndTopic = async function (apiKey) {
 deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, updateTime) {
      return this.model('Device')
           .findOneAndUpdate(
-               { createdBy: ownerId, topic: topic },
+               { createdBy: ownerId, topic: topic },   // should be ObjectId?
                { $set: { "sensors.current": { data, updatedAt: updateTime } } },
                { fields: { sampleInterval: 1, "sensors.recipe": 1, "sensors.historical.updatedAt": 1, publicRead: 1, "sensors.historical.timestampsCount": 1 } }
           ).then(doc => {
@@ -311,7 +321,7 @@ deviceSchema.statics.delete = async function (deviceID, user) {  // TODO smazat 
 }
 
 deviceSchema.statics.getSensorsDataForAdmin = async function (deviceID, from, to) {
-     return sensorData.getData(deviceID, from, to)
+     return SensorData.getData(deviceID, from, to)
 }
 
 deviceSchema.statics.getSensorsData = async function (deviceID, from, to, user = {}) {
@@ -322,7 +332,7 @@ deviceSchema.statics.getSensorsData = async function (deviceID, from, to, user =
      }, "_id").lean()
 
      if (!doc) throw new Error("invalidPermissions")
-     return sensorData.getData(deviceID, from, to)
+     return SensorData.getData(deviceID, from, to)
 }
 
 deviceSchema.statics.getApiKey = async function (id, user = {}) {
@@ -338,9 +348,61 @@ deviceSchema.statics.updatePermissions = async function (id, permissions, user) 
      const result = await this.model('Device').updateOne({
           "_id": mongoose.Types.ObjectId(id),
           ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
-     }, { permissions }).lean()
+     }, { permissions })
      if (result.nModified !== 1) throw new Error("invalidPermissions")
      return result
+}
+
+deviceSchema.statics.updateControlRecipe = async function (deviceID, controlRecipe, user) {
+     const result = await this.model('Device')
+          .updateOne(
+               {
+                    _id: deviceID,
+                    ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
+               },
+               { $set: { "control.recipe": controlRecipe } }
+          )
+
+     if (result.nModified !== 1) throw new Error("invalidPermissions")
+     return result
+}
+
+function prepareStateUpdate(data, updatedAt) {
+     const result = {}
+     keys(data).forEach(key => {
+          result["control.current.data." + key] = { state: data[key], updatedAt }
+     })
+
+     return result
+}
+
+deviceSchema.statics.updateState = async function (deviceID, state, user) {
+     const updateTime = new Date()
+     const updateStateQuery = prepareStateUpdate(state, updateTime)
+
+     const doc = await this.model('Device').findOneAndUpdate({
+          "_id": mongoose.Types.ObjectId(deviceID),
+          ...(!user.admin && { "permissions.control": mongoose.Types.ObjectId(user.id) })
+     }, {
+          $set: updateStateQuery
+     }, { fields: { control: 1 }, new: true }).lean()
+     if (!doc) throw new Error("invalidPermissions")
+     return doc
+}
+
+deviceSchema.statics.canControl = async function (deviceID, user) {
+     const doc = await this.model('Device').findOne({
+          "_id": mongoose.Types.ObjectId(deviceID),
+          ...(!user.admin && { "permissions.control": mongoose.Types.ObjectId(user.id) })
+     }, "-_id").lean()
+     return !!doc
+}
+
+deviceSchema.statics.getTopicByApiKey = async function (apiKey) {
+     const doc = await this.model('Device').findOne({
+          apiKey
+     }, "-_id topic createdBy").lean()
+     return doc
 }
 
 export default mongoose.model('Device', deviceSchema)

@@ -14,7 +14,8 @@ export const messages = {
 	isNotEmail: "Email nemá správný formát",
 	cannotContainNumbers: "Hodnota nesmí obsahovat čísla",
      isNotFile: "Nahrajte soubor",
-     notBool: "Hodnota musí být true/false"
+     notBool: "Hodnota musí být true/false",
+     isNotOneOf: (array) => "Hodnota musí být jedna z " + array.map(obj => obj.label).join(", ")
 };
 
 export default messageFactory(messages);

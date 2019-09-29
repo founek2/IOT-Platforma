@@ -40,3 +40,5 @@ export const isPhoneNumber = value => /^(\+420)? ?[1-9][0-9]{2} ?[0-9]{3} ?[0-9]
 export const isEmail = value => /[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.test(value) || 'isNotEmail'
 
 export const isFile = value => and(or(has('data', value), has('url', value)), has('name', value)) || 'isNotFile'    // TODO validate extension
+
+export const isOneOf = (value, array) => array.some(obj => value === obj.value) || "isNotOneOf"
