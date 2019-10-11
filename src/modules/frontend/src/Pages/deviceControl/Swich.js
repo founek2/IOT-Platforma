@@ -43,7 +43,7 @@ const styles = theme => ({
     focusVisible: {},
 })
 
-function MySwitch({ classes, name, description, onClick,value,  ...props }) {
+function MySwitch({ classes, name, description, onClick,value, className, ...props }) {
     const [pending, setPending] = useState(false)
 
     async function handleClick(e) {
@@ -52,7 +52,7 @@ function MySwitch({ classes, name, description, onClick,value,  ...props }) {
         setPending(false)
     }
     return (
-        <Box >
+        <Box className={className}>
             <Typography>{name}</Typography>
             <Switch
                 focusVisibleClassName={classes.focusVisible}

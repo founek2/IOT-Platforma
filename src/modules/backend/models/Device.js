@@ -271,7 +271,7 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
           .findOneAndUpdate(
                { createdBy: ownerId, topic: topic },   // should be ObjectId?
                { $set: { "sensors.current": { data, updatedAt: updateTime } } },
-               { fields: { sampleInterval: 1, "sensors.recipe": 1, "sensors.historical.updatedAt": 1, publicRead: 1, "sensors.historical.timestampsCount": 1 } }
+               { fields: { sampleInterval: 1, "sensors.recipe": 1, "sensors.historical.updatedAt": 1, publicRead: 1, "sensors.historical.timestampsCount": 1, "permissions.read": 1 } }
           ).then(doc => {
                if (doc) {
                     console.log("sensorsData updated")
@@ -298,10 +298,10 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
                               }
                          })
 
-                         return SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay).then(result => {
-                              return { deviceID: doc._id.toString(), publicRead: doc.publicRead }
-                         })
-                    } else return { deviceID: doc._id, publicRead: doc.publicRead }
+                         SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay)     // async
+                    } 
+               
+                    return { deviceID: doc._id.toString(), publicRead: doc.publicRead, permissions: {read: doc.permissions.read} }
 
                } else {
                     console.log("ERROR: saving sensors data to unexisting device")

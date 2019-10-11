@@ -12,7 +12,7 @@ export function publish(topic, message, opt = { qos: 1 }) {
 
 export default (io) => {
     console.log("connecting to mqtt")
-    const client = mqtt.connect('mqtts://192.168.10.154', { username: `${config.mqttUser}`, password: `${config.mqttPassword}`, port: 8883, connectTimeout: 20 * 1000, rejectUnauthorized: false })
+    const client = mqtt.connect('mqtts://localhost', { username: `${config.mqttUser}`, password: `${config.mqttPassword}`, port: 8883, connectTimeout: 20 * 1000, rejectUnauthorized: false })
     mqttClient = client
 
     client.on('connect', function () {
@@ -31,10 +31,16 @@ export default (io) => {
                 try {
                     const data = JSON.parse(message.toString())
                     const updateTime = new Date()
-                    const { deviceID, publicRead } = await Device.updateSensorsData(idObj[1], "/" + topicObj[1], data, updateTime)
+                    const { deviceID, publicRead, permissions: { read = [] } } = await Device.updateSensorsData(idObj[1], "/" + topicObj[1], data, updateTime)
                     const emitData = { deviceID, data, updatedAt: updateTime }
-                    io.to(idObj[1]).emit("sensors", emitData)
+
                     if (publicRead) io.to("public").emit("sensors", emitData)
+                    else    // send to all users with permissions
+                        read.forEach((id) => {
+                            console.log("emmiting messages to", JSON.stringify(read))
+                            io.to(id.toString()).emit("sensors", emitData)
+                        })
+
                     console.log("emmiting to public", publicRead)
                 } catch (err) {
                     console.log("error", err)

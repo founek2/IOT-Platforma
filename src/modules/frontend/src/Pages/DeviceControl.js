@@ -23,6 +23,13 @@ const styles = theme => ({
      root: {
           // height: "100vh"
           // paddingBottom: "100px"
+     },
+     item: {
+          width: 150,
+          [theme.breakpoints.down('sm')]: {
+               width: `calc(50% - ${theme.spacing(1.5)}px)`,     // to add spacing to right
+               margin: `${theme.spacing(1)}px 0 0 ${theme.spacing(1)}px`
+          }
      }
 })
 
@@ -41,6 +48,7 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
                     description={description}
                     onClick={(val) => updateDeviceStateA(device.id, JSONkey, val)}
                     value={value}
+                    className={classes.item}
                />)
           })
      })

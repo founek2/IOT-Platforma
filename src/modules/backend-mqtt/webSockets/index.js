@@ -31,7 +31,8 @@ export default (io) => {
     io.on("connection", socket => {
         console.log("New client connected");
         if (socket.request.user) socket.join(socket.request.user.id)
-        else socket.join("public")
+
+        socket.join("public")
 
         socket.on("disconnect", () => {
             console.log("Client disconnected");

@@ -17,7 +17,7 @@ const styles = theme => ({
     }
 })
 
-function Activator({ classes, name, onClick, value }) {
+function Activator({ classes, name, onClick, value, className }) {
     const [pending, setPending] = useState(false)
     async function handleClick(e) {
         setPending(true)
@@ -25,7 +25,7 @@ function Activator({ classes, name, onClick, value }) {
         setPending(false)
     }
     return (
-        <Box>
+        <Box className={className}>
             <Typography>{name}</Typography>
             <Button
                 variant="contained"
