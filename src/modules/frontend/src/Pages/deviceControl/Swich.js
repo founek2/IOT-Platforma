@@ -52,7 +52,7 @@ function MySwitch({ classes, name, description, onClick,value, className, ...pro
         setPending(false)
     }
     return (
-        <Box className={className}>
+        <Box className={className} onClick={() => handleClick({target: {checked: !value}})}>
             <Typography>{name}</Typography>
             <Switch
                 focusVisibleClassName={classes.focusVisible}
@@ -66,7 +66,7 @@ function MySwitch({ classes, name, description, onClick,value, className, ...pro
                 }}
                 disabled={pending}
                 {...props}
-                onClick={handleClick}
+                // onClick={handleClick}
                 checked={!!value}
             />
             <Loader open={pending} className="marginAuto"/>

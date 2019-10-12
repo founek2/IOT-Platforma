@@ -5,9 +5,9 @@ import Device from 'backend/models/Device'
 
 let mqttClient = null
 
-export function publish(topic, message, opt = { qos: 1 }) {
+export function publish(topic, message, opt = { qos: 2 }) {
     if (!mqttClient) throw new Error("client was not inicialized")
-    return mqttClient.publish(topic, message, opt)
+    return mqttClient.publish(topic, JSON.stringify(message), opt)
 }
 
 export default (io) => {

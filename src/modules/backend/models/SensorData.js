@@ -29,8 +29,6 @@ const SensorDataSchema = new Schema({
 SensorDataSchema.index({ device: 1, day: -1 })
 
 SensorDataSchema.statics.saveData = function (deviceID, pushQuery, sumInc, minQuery, maxQuery, sampleTime, isDay) {
-
-    // console.log(resetTime(new Date()), new Date())
     const nsamples = isDay ? "nsamples.day" : "nsamples.night"
     return this.model("SensorData").updateOne(
         {

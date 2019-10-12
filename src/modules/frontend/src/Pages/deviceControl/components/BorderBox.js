@@ -8,8 +8,8 @@ const defaultProps = {
     style: { padding: "1rem", textAlign: "center" },
 };
 
-export default function ({ children, className }) {
-    return (<Box display="inline-block" borderRadius={10} borderColor="grey.400" className={className ? className : ""} {...defaultProps}>
+export default function ({ children, className, ...other }) {
+    return (<Box display="inline-block" borderRadius={10} borderColor="grey.400" className={className ? className : ""} {...defaultProps} {...other}>
         {children}
     </Box>)
 }

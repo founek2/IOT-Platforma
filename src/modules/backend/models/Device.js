@@ -272,7 +272,7 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
                { createdBy: ownerId, topic: topic },   // should be ObjectId?
                { $set: { "sensors.current": { data, updatedAt: updateTime } } },
                { fields: { sampleInterval: 1, "sensors.recipe": 1, "sensors.historical.updatedAt": 1, publicRead: 1, "sensors.historical.timestampsCount": 1, "permissions.read": 1 } }
-          ).then(doc => {
+          ).then(async doc => {
                if (doc) {
                     console.log("sensorsData updated")
                     const { sampleInterval, sensors } = doc;
@@ -298,7 +298,7 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
                               }
                          })
 
-                         SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay)     // async
+                         await SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay)     // async
                     } 
                
                     return { deviceID: doc._id.toString(), publicRead: doc.publicRead, permissions: {read: doc.permissions.read} }

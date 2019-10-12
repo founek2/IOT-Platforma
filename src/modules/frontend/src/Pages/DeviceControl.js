@@ -23,6 +23,7 @@ const styles = theme => ({
      root: {
           // height: "100vh"
           // paddingBottom: "100px"
+          display: "flex"
      },
      item: {
           width: 150,
