@@ -77,7 +77,9 @@ export default (io) => {
                 const jsonKeys = dev.control.recipe.map(obj => obj.JSONkey)
                 const result = map(flip(contains)(jsonKeys), keys(data))
 
-                if (all(equals(true), result)) {
+                if (data.ack == "ack"){
+                    Device.updateAck(ownerId, deviceTopic);
+                } else if (all(equals(true), result)) {
                     console.log("saving to db updateState ack")
                     const { permissions: { control = [] }, _id } = await Device.updateStateByDevice(ownerId, deviceTopic, data, updateTime)
 
