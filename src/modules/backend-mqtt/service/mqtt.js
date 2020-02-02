@@ -76,8 +76,8 @@ export default (io) => {
                 const dev = await Device.findOne({ createdBy: ownerId, topic: deviceTopic }, "control.recipe")
                 const jsonKeys = dev.control.recipe.map(obj => obj.JSONkey)
                 const result = map(flip(contains)(jsonKeys), keys(data))
-
-                if (data.ack == "ack"){
+                
+                if (data.ack == 1){
                     Device.updateAck(ownerId, deviceTopic);
                 } else if (all(equals(true), result)) {
                     console.log("saving to db updateState ack")
