@@ -11,7 +11,8 @@ module.exports = function (api) {
                          targets: {
                               node: 'current'
                          },
-                         useBuiltIns: 'entry'
+                         useBuiltIns: 'usage',
+                         corejs: "3.6"
                     }
                ],
                "@babel/preset-react"    // just for BE build
@@ -22,11 +23,11 @@ module.exports = function (api) {
                     {
                          root: ['./src'],
                          alias: {
-                              framework: './src/modules/framework',
+                              'framework': './src/modules/framework',
                               "fieldDescriptors": "./src/modules/frontend/src/validations/fieldDescriptors",
                               'framework-ui': './src/modules/framework-ui',
-                              frontend: './src/modules/frontend',
-                              backend: './src/modules/backend'
+                              'frontend': './src/modules/frontend',
+                              'backend': './src/modules/backend'
                          }
                     }
                ],
