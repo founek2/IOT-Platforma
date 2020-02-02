@@ -5,10 +5,11 @@ import Switch from './deviceControl/Swich'
 import Activator from './deviceControl/Activator'
 import { connect } from 'react-redux'
 import { getDevices } from '../utils/getters'
-import { filter, isEmpty } from 'ramda'
+import { filter, isEmpty, keys } from 'ramda'
 import { bindActionCreators } from 'redux'
 import * as deviceActions from '../store/actions/application/devices'
 import { Typography } from '@material-ui/core'
+import io from '../webSocket'
 
 const compMapper = {
      activator: Activator,
@@ -21,9 +22,8 @@ function isControllable(device) {
 
 const styles = theme => ({
      root: {
-          // height: "100vh"
-          // paddingBottom: "100px"
-          display: "flex"
+          display: "flex",
+          flexWrap: "wrap",
      },
      item: {
           width: 150,
@@ -34,22 +34,42 @@ const styles = theme => ({
      }
 })
 
+function updateDevice(updateDeviceAction) {
+     return ({ data, deviceID }) => {
+          console.log(data, deviceID)
+          updateDeviceAction({
+               id: deviceID,
+               control: {
+                    current: {
+                         data
+                    }
+               }
+          })
+     }
+}
 
-function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceStateA }) {
-     useEffect(() => { fetchDevicesAction() }, [])
+function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceStateA, updateDeviceAction }) {
+     useEffect(() => {
+          fetchDevicesAction()
+          const listener = updateDevice(updateDeviceAction)
+          io.getSocket().on("control", listener)
+
+          return () => io.getSocket().off("sensors", listener);
+     }, [])
      const arr = [];
      devices.forEach(device => {
           device.control.recipe.forEach(({ name, type, JSONkey, description }) => {
                // console.log("name", name, type, compMapper[type])
                const Comp = compMapper[type]
-               const value = (device.control.current && device.control.current.data[JSONkey] && device.control.current.data[JSONkey].state) || 0
+               const data = (device.control.current && device.control.current.data[JSONkey] && device.control.current.data[JSONkey]) || {}
                arr.push(<Comp
                     key={`${device.id}/${JSONkey}`}
                     name={name}
                     description={description}
                     onClick={(val) => updateDeviceStateA(device.id, JSONkey, val)}
-                    value={value}
+                    data={data}
                     className={classes.item}
+                    ackTime={device.ack}
                />)
           })
      })
@@ -69,6 +89,7 @@ const _mapDispatchToProps = dispatch =>
           {
                fetchDevicesAction: deviceActions.fetch,
                updateDeviceStateA: deviceActions.updateState,
+               updateDeviceAction: deviceActions.update,
           },
           dispatch
      )

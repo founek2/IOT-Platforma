@@ -58,8 +58,12 @@ const deviceSchema = new Schema(
 )
 
 deviceSchema.statics.updateAck = async function (ownerId, topic) {
-     const result = await this.model('Device').updateOne({ createdBy: mongoose.Types.ObjectId(ownerId), topic }, { ack: new Date() })
-     if (result.nModified != 1) throw new Error("Invalid id/topic")
+     const doc = await this.model('Device').findOneAndUpdate(
+          { createdBy: mongoose.Types.ObjectId(ownerId), topic },
+          { ack: new Date() },
+          { fields: { "permissions.control": 1 } })
+     if (doc) throw new Error("Invalid id/topic")
+     return doc;
 }
 
 deviceSchema.statics.login = async function (apiKey) {
@@ -94,16 +98,16 @@ deviceSchema.statics.create = async function ({ topic, ...object }, imgExtension
           .catch(catcher('device'))
 }
 
-deviceSchema.statics.createAndAddToUser = function (object, imgExtension, userID) {
-     return this.model('Device')
-          .create(object, imgExtension, userID)
-          .then(deviceDoc => {
-               return this.model('User')
-                    .addDevice(deviceDoc.id, userID)
-                    .then(() => deviceDoc)
-          })
-          .catch(catcher('device'))
-}
+//deviceSchema.statics.createAndAddToUser = function (object, imgExtension, userID) {
+//      return this.model('Device')
+//           .create(object, imgExtension, userID)
+//           .then(deviceDoc => {
+//                return this.model('User')
+//                     .addDevice(deviceDoc.id, userID)
+//                     .then(() => deviceDoc)
+//           })
+//           .catch(catcher('device'))
+// }
 
 const aggregationFields = {
      id: '$_id',
@@ -118,6 +122,7 @@ const aggregationFields = {
      sampleInterval: 1,
      publicRead: 1,
      topic: 1,
+     ack: 1,
 }
 
 deviceSchema.statics.findForUser = function (userID, devices) {
@@ -261,7 +266,7 @@ deviceSchema.statics.updateSensorsRecipe = async function (deviceId, sampleInter
 }
 
 deviceSchema.statics.getOwnerAndTopic = async function (apiKey) {
-     return this.model('Device').findOne({ apiKey }, { createdBy: 1, topic: 1, sampleInterval: 1, "sensors.historical.updatedAt": 1 }).lean().then(doc => {
+     return this.model('Device').findOne({ apiKey }, { createdBy: 1, topic: 1, sampleInterval: 1 }).lean().then(doc => {
           return doc ? { ownerId: doc.createdBy, topic: doc.topic } : {}
      })
 }
@@ -271,8 +276,8 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
           .findOneAndUpdate(
                { createdBy: ownerId, topic: topic },   // should be ObjectId?
                { $set: { "sensors.current": { data, updatedAt: updateTime } } },
-               { fields: { sampleInterval: 1, "sensors.recipe": 1, "sensors.historical.updatedAt": 1, publicRead: 1, "sensors.historical.timestampsCount": 1, "permissions.read": 1 } }
-          ).then(async doc => {
+               { fields: { sampleInterval: 1, "sensors.recipe": 1, publicRead: 1, "sensors.historical.updatedAt": 1, "permissions.read": 1 } }
+          ).then(doc => {
                if (doc) {
                     console.log("sensorsData updated")
                     const { sampleInterval, sensors } = doc;
@@ -298,10 +303,11 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
                               }
                          })
 
-                         await SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay)     // async
-                    } 
-               
-                    return { deviceID: doc._id.toString(), publicRead: doc.publicRead, permissions: {read: doc.permissions.read} }
+                         SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay)
+                         doc.update({ "sensors.historical.updatedAt": updateTime }).exec()
+                    }
+
+                    return { deviceID: doc._id.toString(), publicRead: doc.publicRead, permissions: { read: doc.permissions.read } }
 
                } else {
                     console.log("ERROR: saving sensors data to unexisting device")
@@ -376,18 +382,45 @@ function prepareStateUpdate(data, updatedAt) {
      return result
 }
 
-deviceSchema.statics.updateState = async function (deviceID, state, user) {
-     const updateTime = new Date()
+// deviceSchema.statics.updateState = async function (deviceID, state, user) {
+//      const updateTime = new Date()
+//      const updateStateQuery = prepareStateUpdate(state, updateTime)
+
+//      const doc = await this.model('Device').findOneAndUpdate({
+//           "_id": mongoose.Types.ObjectId(deviceID),
+//           ...(!user.admin && { "permissions.control": mongoose.Types.ObjectId(user.id) })
+//      }, {
+//           $set: updateStateQuery
+//      }, { fields: { control: 1 }, new: true }).lean()
+//      if (!doc) throw new Error("invalidPermissions")
+//      return doc
+// }
+
+
+deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, state, updateTime) {
      const updateStateQuery = prepareStateUpdate(state, updateTime)
 
      const doc = await this.model('Device').findOneAndUpdate({
-          "_id": mongoose.Types.ObjectId(deviceID),
-          ...(!user.admin && { "permissions.control": mongoose.Types.ObjectId(user.id) })
+          createdBy, topic
+     }, {
+          $set: { ...updateStateQuery, ack: updateTime }
+     }, { fields: { "permissions.control": 1 } }).lean()
+     if (!doc) throw new Error("Invalid device")
+     return doc
+}
+
+
+deviceSchema.statics.initControl = async function (createdBy, topic, state, updateTime) {
+     const updateStateQuery = prepareStateUpdate(state, updateTime)
+
+     const doc = await this.model('Device').findOneAndUpdate({
+          topic,
+          createdBy
      }, {
           $set: updateStateQuery
-     }, { fields: { control: 1 }, new: true }).lean()
+     }, { fields: { "permissions.control": 1 }, new: true }).lean()
      if (!doc) throw new Error("invalidPermissions")
-     return doc
+     return doc;
 }
 
 deviceSchema.statics.canControl = async function (deviceID, user) {

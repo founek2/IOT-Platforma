@@ -48,13 +48,13 @@ router.post('/topic', async function (req, res) {
                if (new RegExp(`\.${ownerId}\..+`).test(routing_key)) {
                     const deviceTopic = `.${ownerId}${topic.replace(/\//g, ".")}`
                     // console.log("moje", new RegExp("^" + deviceTopic + "(\..*)?$").test(routing_key),"^" + deviceTopic + "(/.*)?$" )
-                    if (permission === "write" && new RegExp("^" + deviceTopic + "(\..*)?$").test(routing_key))
+                    if ((permission === "write" || permission === "read") && new RegExp("^" + deviceTopic + "(\..*)?$").test(routing_key))
                          return res.send("allow")
 
                }
           }
      }
-
+     console.log("deny")
      res.send("deny")
 });
 

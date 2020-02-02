@@ -42,7 +42,7 @@ SensorDataSchema.statics.saveData = function (deviceID, pushQuery, sumInc, minQu
             $min: { first: sampleTime, ...minQuery },
             $max: { last: sampleTime, ...maxQuery },
             $inc: { [nsamples]: 1, ...sumInc },
-        }, { upsert: true, setDefaultsOnInsert: true }) // setDefaultsOnInsert is required to properly work with $lt and upsert
+        }, { upsert: true, setDefaultsOnInsert: true }).exec() // setDefaultsOnInsert is required to properly work with $lt and upsert
 }
 
 SensorDataSchema.statics.getData = function (deviceID, from, to) {

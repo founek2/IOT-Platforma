@@ -5,7 +5,8 @@ const defaultProps = {
     bgcolor: 'background.paper',
     m: 1,
     border: 1,
-    style: { padding: "1rem", textAlign: "center" },
+    style: { padding: "1rem" },
+    position: "relative",
 };
 
 export default function ({ children, className, ...other }) {

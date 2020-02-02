@@ -26,7 +26,7 @@ function OwnSelect(props) {
                >
                     {selectOptions}
                </Select>
-               <FormHelperText {...FormHelperTextProps}>{helperText}</FormHelperText>
+               {error && <FormHelperText {...FormHelperTextProps}>{helperText}</FormHelperText>}
           </FormControl>
      );
 }

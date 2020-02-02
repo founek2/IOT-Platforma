@@ -14,7 +14,7 @@ const sensorSchema = new Schema({
           updatedAt: Date
      }, // {temp1: 100}
      historical: {
-          updatedAt: Date
+          updatedAt: Date     // to calculate interval
      }, // {temp1: [[10, timestamp], ...]}
 },
 {

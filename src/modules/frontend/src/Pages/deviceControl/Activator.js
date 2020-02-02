@@ -14,11 +14,23 @@ const styles = theme => ({
         backgroundColor: "#c0c3c0",
         marginTop: 3,
         marginBottom: 3,
+    },
+    circle: {
+        width: 15,
+        height: 15,
+        backgroundColor: "#62bd19",
+        borderRadius: "50%",
+        position: "absolute",
+        top: 23,
+        left: 23,
     }
 })
 
-function Activator({ classes, name, onClick, value, className }) {
+// TODO zobrazit afk při starším updatedAt
+function Activator({ classes, name, onClick, data, className }) {
     const [pending, setPending] = useState(false)
+    const { state, updatedAt, inTransition } = data;
+
     async function handleClick(e) {
         setPending(true)
         await onClick(1)
@@ -37,9 +49,9 @@ function Activator({ classes, name, onClick, value, className }) {
                 Send
         {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
                 <SendIcon className={classes.rightIcon} />
-               
+
             </Button>
-            <Loader open={pending} className="marginAuto"/>
+            <Loader open={pending} className="marginAuto" />
         </Box>
     )
 }

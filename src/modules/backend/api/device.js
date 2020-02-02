@@ -4,6 +4,7 @@ import processError from 'framework/src/utils/processError'
 import { saveImageBase64, validateFileExtension, deleteImage } from '../service/files'
 import { transformSensorsForBE, transformControlForBE } from 'frontend/src/utils/transform'
 import fetch from 'node-fetch'
+import {toPairs} from 'ramda'
 
 export default ({ config, db }) =>
      resource({
@@ -131,21 +132,28 @@ export default ({ config, db }) =>
                if (state) {
                     Device.canControl(id, user).then(output => {
                          if (output) {
-                              // TODO send to mqtt, there wait for ack, responde and here save to DB
+                              // BE validate keys
                               fetch(`http://localhost:${config.portAuth}/api/action/${id}`, {
                                    headers: { 'Content-Type': 'application/json' },
                                    method: "patch",
                                    body: JSON.stringify(body),
                               }).then(response => {
                                    if (response.ok) {
-                                        Device.updateState(id, state, user).then(({ control }) => {
-                                             console.log("control", control.current.data.power2)
-                                             res.send({ data: control })
-                                        })
-
+                                        // Device.updateState(id, state, user).then(({ control }) => {
+                                        //      console.log("control", control.current.data.power2)
+                                        //      res.send({ data: control })
+                                        // })
+                                        let data = {};
+                                        toPairs(state).forEach(([key, val]) => {
+                                             data[key] = { state: val, inTransition: true, transitionStarted: new Date()}
+                                         })
+                                        res.send({data:  {current: {data}}})
 
                                    } else res.sendStatus(500)
-                              }).catch(() => res.sendStatus(500))
+                              }).catch((err) => {
+                                   console.log("mqtt BE action err", err)
+                                   res.sendStatus(500)
+                              })
                          } else res.status(208).send({ error: "InvalidPermissions" })
                     })
 

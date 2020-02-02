@@ -39,7 +39,7 @@ const styles = theme => ({
      },
      ul: {
           backgroundColor: 'inherit',
-          padding: 0
+          paddingRight: 10
      },
      itemText: {
           fontSize: 14
@@ -55,6 +55,7 @@ const styles = theme => ({
           paddingRight: theme.spacing(1),
           height: 40,
           fontSize: 16,
+          whiteSpace: "pre",
      },
      chipContainer: {
           padding: theme.spacing(1),
@@ -157,7 +158,7 @@ class ChipArray extends Component {
 
           const chips = map(createChip, chipData);
           const listItems = createListItems(options, this.handleAddChip, classes);
-          const requiredStar = required ? <span>&thinsp;*</span> : null;
+          const requiredStar = required ? " *" : null;
           return (
                <div className={`${classes.root} ${className}`}>
                     <div className={classes.listWrapper}>

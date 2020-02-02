@@ -180,7 +180,7 @@ class EditDeviceDialog extends Component {
                               />
                               <Divider />
                               <div>
-                                   <Typography variant="subtitle1">Senzory:</Typography>
+                                   <Typography variant="subtitle1" align="center" >Senzory:</Typography>
                                    {sensorCount > 0 && [...Array(sensorCount).keys()].map(i => <EditSensor id={i} key={i} onDelete={this.removeSensorByIndex} />)}
 
                               </div>

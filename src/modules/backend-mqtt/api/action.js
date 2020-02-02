@@ -8,7 +8,8 @@ export default ({ config, db }) =>
         patchId({ body, params: { id } }, res) {
             const { state } = body
             if (state) {
-                Device.findById(id, "control createdBy topic").lean().then(doc => {
+                Device.findById(id, "topic control createdBy ").lean().then(doc => {
+                    console.log("doc", doc)
                     if (doc) {
                         // TODO send to mqtt, there wait for ack, responde and here save to DB
                         const jsonKeys = doc.control.recipe.map(obj => obj.JSONkey)

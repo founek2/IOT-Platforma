@@ -5,7 +5,7 @@ export default theme => ({
           marginTop: theme.spacing(1),
           width: 200,
           [theme.breakpoints.down('sm')]: {
-               width: '80%'
+               width: `calc(90% - ${theme.spacing(2)}px)`
           }
      }
 })

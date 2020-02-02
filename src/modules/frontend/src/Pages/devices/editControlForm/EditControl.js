@@ -22,14 +22,14 @@ const styles = theme => ({
     clearButton: {
         position: "absolute",
         right: 10,
-        top: -5,
+        top: -15,
     },
     textArea: {
-        width: 'calc(100% - 16px)',
-        [theme.breakpoints.down('sm')]: {
-            width: '80%'
+        // width: 'calc(100% - 16px)',
+        [theme.breakpoints.up('md')]: {
+             width: `calc(100% - ${theme.spacing(2)}px)`
         }
-    },
+   },
 })
 
 function EditSensor({ id, classes, onDelete }) {

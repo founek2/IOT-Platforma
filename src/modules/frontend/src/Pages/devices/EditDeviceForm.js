@@ -33,23 +33,22 @@ import { Tooltip } from '@material-ui/core'
 import CopyToClipboard from 'framework-ui/src/Components/CopyToClipboard'
 
 const styles = theme => ({
-     fileLoader: {
-          width: '100%',
-          [theme.breakpoints.down('sm')]: {
-               width: '80%'
-          }
-     },
      textArea: {
-          width: '100%',
-          [theme.breakpoints.down('sm')]: {
-               width: '80%'
+          [theme.breakpoints.up('md')]: {
+               width: `calc(100% - ${theme.spacing(2)}px)`
           }
      },
      topicWrapper: {
-          display: "flex"
+          display: "inline-flex",
+          [theme.breakpoints.down('sm')]: {
+               width: "90%",
+          },
+          width: '100%'
      },
      topic: {
-          width: "calc(100% - 58px)"
+          [theme.breakpoints.up('sm')]: {
+               width: "calc(100% - 58px)"
+          },
      },
      card: {
           overflow: 'auto',
@@ -64,28 +63,18 @@ const styles = theme => ({
 
           [theme.breakpoints.down('sm')]: {
                width: '100%'
-               //height: '100%'
           },
-          [theme.breakpoints.down('xs')]: {
-               width: '100%'
-          },
-          [theme.breakpoints.up('lg')]: {
-               //height: 410
-          }
      },
      actions: {
           marginBottom: theme.spacing(2),
+          width: "100%",
+          justifyContent: 'center',
+
           [theme.breakpoints.up('sm')]: {
                marginTop: theme.spacing(2)
           },
-          margin: 'auto',
-          width: 400,
-          justifyContent: 'center',
-
           [theme.breakpoints.down('sm')]: {
                width: '100%',
-               justifyContent: 'flex-start',
-               flexDirection: 'column'
           }
      },
      header: {
@@ -94,18 +83,19 @@ const styles = theme => ({
           textAlign: 'center'
      },
      content: {
-          paddingLeft: theme.spacing(6),
-          paddingRight: theme.spacing(6),
+          [theme.breakpoints.up('sm')]: {
+               paddingLeft: theme.spacing(6),
+               paddingRight: theme.spacing(6),
+          },
           [theme.breakpoints.down('sm')]: {
-               // display: 'flex',
                flexDirection: 'column',
-               alignItems: 'center'
+               textAlign: "center",
           }
      },
      contentInner: {
           display: 'flex',
           [theme.breakpoints.down('sm')]: {
-               display: 'block'
+               display: 'block',
           }
      },
      media: {
@@ -113,10 +103,14 @@ const styles = theme => ({
           paddingTop: '56.25%' // 16:9
      },
      mediaWrapper: {
+          display: "inline-block",
           width: 300,
           paddingLeft: theme.spacing(1),
           paddingRight: theme.spacing(1),
-          paddingTop: theme.spacing(3)
+          paddingTop: theme.spacing(3),
+          [theme.breakpoints.down('sm')]: {
+               width: '90%',
+          }
      },
 })
 
@@ -159,7 +153,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                                    <FieldConnector
                                         component="FileLoader"
                                         fieldProps={{
-                                             className: classes.fileLoader
+                                             className: classes.textArea
                                         }}
                                         deepPath="EDIT_DEVICE.image"
                                    />
@@ -269,6 +263,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                               name="topic"
                               autoFocus
                               onEnter={() => setOpenTopicDialog(false)}
+                              className={classes.textArea}
                          />
                     </DialogContent>
                     <DialogActions className={classes.loginActions}>

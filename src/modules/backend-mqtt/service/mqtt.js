@@ -2,6 +2,7 @@ import mqtt from 'mqtt'
 // import { getConfig } from './config'
 import config from "backend/config/index.js"
 import Device from 'backend/models/Device'
+import { map, flip, keys, all, equals, contains, toPairs, _ } from 'ramda';
 
 let mqttClient = null
 
@@ -10,6 +11,7 @@ export function publish(topic, message, opt = { qos: 2 }) {
     return mqttClient.publish(topic, JSON.stringify(message), opt)
 }
 
+const magicRegex = /^(?:\/([\w]*)([\/]\w+[\/]\w+[\/]\w+)(.*))/;
 export default (io) => {
     console.log("connecting to mqtt")
     const client = mqtt.connect('mqtts://localhost', { username: `${config.mqttUser}`, password: `${config.mqttPassword}`, port: 8883, connectTimeout: 20 * 1000, rejectUnauthorized: false })
@@ -24,43 +26,80 @@ export default (io) => {
     })
 
     client.on('message', async function (topic, message) {
-        const idObj = topic.match(/^(?:[^\/]*\/){1}([^\/]*)/)
-        const topicObj = topic.match(/^(?:[^\/]*\/){2}(.*)\//)
-        if (idObj && topicObj) {
-            if (topic.match(/\/save$/)) {
-                try {
-                    const data = JSON.parse(message.toString())
+        // const idObj = topic.match(/^(?:[^\/]*\/){1}([^\/]*)/)
+        // const topicObj = topic.match(/^(?:[^\/]*\/){2}(.*)\//)
+
+        const [_, ownerId, deviceTopic, restTopic] = topic.match(magicRegex);
+        if (!ownerId || !deviceTopic) return;
+        try {
+            if (restTopic === "" || restTopic === "/") {
+
+                const data = JSON.parse(message.toString())
+                const updateTime = new Date()
+                const { deviceID, publicRead, permissions: { read = [] } } = await Device.updateSensorsData(ownerId, deviceTopic, data, updateTime)
+                const emitData = { deviceID, data, updatedAt: updateTime }
+
+                if (publicRead) io.to("public").emit("sensors", emitData)
+                else    // send to all users with permissions
+                    read.forEach((id) => {
+                        io.to(id.toString()).emit("sensors", emitData)
+                    })
+
+                console.log("emmiting to public", publicRead)
+            } else if (restTopic === "/initControl") {
+
+                const data = JSON.parse(message.toString())
+                const dev = await Device.findOne({ createdBy: ownerId, topic: deviceTopic }, "control.recipe")
+                const jsonKeys = dev.control.recipe.map(obj => obj.JSONkey)
+                const result = map(flip(contains)(jsonKeys), keys(data))
+
+                if (all(equals(true), result)) {
                     const updateTime = new Date()
-                    const { deviceID, publicRead, permissions: { read = [] } } = await Device.updateSensorsData(idObj[1], "/" + topicObj[1], data, updateTime)
-                    const emitData = { deviceID, data, updatedAt: updateTime }
+                    const { permissions: { control = [] }, _id } = await Device.initControl(ownerId, deviceTopic, data, updateTime)
+                    console.log("init control", data)
 
-                    if (publicRead) io.to("public").emit("sensors", emitData)
-                    else    // send to all users with permissions
-                        read.forEach((id) => {
-                            console.log("emmiting messages to", JSON.stringify(read))
-                            io.to(id.toString()).emit("sensors", emitData)
-                        })
+                    let newData = {};
+                    toPairs(data).forEach(([key, val]) => {
+                        newData[key] = { state: val, updatedAt: updateTime }
+                    })
+                    const emitData = { deviceID: _id, data: newData, updatedAt: updateTime }
+                    control.forEach((id) => {
+                        io.to(id.toString()).emit("control", emitData)
+                    })
+                } else console.log("invalid key")
 
-                    console.log("emmiting to public", publicRead)
-                } catch (err) {
-                    console.log("error", err)
-                }
 
-                console.log("message", message.toString(), topic)
-            } else if (topic.match(/\/ack$/)) {
-                try {
-                    await Device.updateAck(idObj[1], "/" + topicObj[1])
-                    console.log("updating ack")
-                    // io.to(idObj[1]).emit("sensors", emitData)
-                    // if (publicRead) io.to("public").emit("sensors", emitData)
-                    // console.log("emmiting to public", publicRead)
-                } catch (err) {
-                    console.log("error", err)
-                }
+            } else if (restTopic === "/ack") {
+
+                const updateTime = new Date()
+                const data = JSON.parse(message.toString())
+                const dev = await Device.findOne({ createdBy: ownerId, topic: deviceTopic }, "control.recipe")
+                const jsonKeys = dev.control.recipe.map(obj => obj.JSONkey)
+                const result = map(flip(contains)(jsonKeys), keys(data))
+
+                if (all(equals(true), result)) {
+                    console.log("saving to db updateState ack")
+                    const { permissions: { control = [] }, _id } = await Device.updateStateByDevice(ownerId, deviceTopic, data, updateTime)
+
+                    let newData = {};
+                    toPairs(data).forEach(([key, val]) => {
+                        newData[key] = { state: val, updatedAt: updateTime, inTransition: false }
+                    })
+                    const emitData = { deviceID: _id, data: newData, updatedAt: updateTime }
+                    control.forEach((id) => {
+                        io.to(id.toString()).emit("control", emitData)
+                    })
+                } else console.log("error missing keys3")
+
+
             }
+        } catch (err) {
+            console.log("error", err)
         }
+    }
+
         // client.end()
-    })
+    )
 
     client.on("error", function (err) {
         console.log("mqtt connection error")

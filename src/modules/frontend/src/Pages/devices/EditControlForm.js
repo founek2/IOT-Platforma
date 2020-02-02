@@ -168,7 +168,7 @@ class EditDeviceDialog extends Component {
                          <CardHeader className={classes.header} title={device.title} titleTypographyProps={{ variant: "h3" }} />
                          <CardContent className={classes.content}>
                               <div>
-                                   <Typography variant="subtitle1">Ovládání:</Typography>
+                                   <Typography variant="subtitle1" align="center">Ovládání:</Typography>
                                    {sensorCount > 0 && [...Array(sensorCount).keys()].map(i => <EditControl id={i} key={i} onDelete={this.removeSensorByIndex} />)}
 
                               </div>
