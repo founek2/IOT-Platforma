@@ -21,7 +21,7 @@ class NotificationsProvider extends Component {
       * (success, error, warning, info)
       * @param {string} message - text of the notification
       */
-     componentWillReceiveProps({ notifications }) {
+     UNSAFE_componentWillReceiveProps({ notifications }) {
 		const addedNotification = difference(keys(notifications), keys(this.props.notifications));
 		addedNotification.forEach((key) => {
 			this.handlePresentSnackbar(notifications[key]);

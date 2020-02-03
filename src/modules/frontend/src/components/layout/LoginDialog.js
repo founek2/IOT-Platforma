@@ -20,7 +20,10 @@ import * as deviceActions from '../../store/actions/application/devices'
 const styles = theme => ({
      loginTitle: {
           margin: '0 auto',
-          paddingBottom: 10
+          paddingBottom: 10,
+          [theme.breakpoints.down('sm')]: {
+               paddingBottom: 0
+          },
      },
      loginActions: {
           margin: 'auto',
@@ -32,17 +35,15 @@ const styles = theme => ({
           marginLeft: theme.spacing(2),
           marginRight: theme.spacing(2),
 
-          [theme.breakpoints.down('md')]: {
+          [theme.breakpoints.down('sm')]: {
                width: "100%",
                marginLeft: 0,
                marginRight: 0,
           },
-  
-
      },
      loginFooter: {
           textAlign: 'center',
-          overflowY: 'hidden'
+          paddingBottom: theme.spacing(2),
      },
      registerButton: {
           cursor: 'pointer'
@@ -50,7 +51,7 @@ const styles = theme => ({
      textField: {
           marginTop: theme.spacing(1),
           width: "calc(100% - 20px)"
-     }
+     },
 })
 
 let timer = null
@@ -83,7 +84,7 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
      const actionHandler = (!authType && fetchAuthType) || loginMyAction
 
      return (
-          <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+          <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" >
                <DialogTitle id="form-dialog-title" className={classes.loginTitle}>
                     Přihlášení
                </DialogTitle>
