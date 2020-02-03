@@ -1,5 +1,5 @@
 import React, { Fragment, Component, Suspense } from 'react'
-import createHistory from 'history/createBrowserHistory'
+import {createBrowserHistory} from 'history'
 import { Router as RouterReact, Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Layout from '../components/Layout'
@@ -24,7 +24,7 @@ import LogoutCallbacks from 'framework-ui/src/callbacks/logout'
 
 import '../privileges' // init
 
-const history = createHistory()
+const history = createBrowserHistory()
 
 const defLocation = history.location
 
@@ -71,22 +71,22 @@ class Router extends Component {
           }
 
           return (
-               <RouterReact history={history}>
-                    <Fragment>
-                         <Route component={Layout} />
-                         <Suspense fallback={<Loader open={true} />}>
+               
+               <Suspense fallback={<Loader open={true} />}>
+                 
+                    <RouterReact history={history}>
+                              <Layout history={history}/>
                               <Switch>
                                    {additionRoutes}
                                    <Route
                                         path="/registerUser"
                                         component={RegisterUser}
                                    />
-                                    <Route path="/sensor/:deviceId" component={SensorDetail} />
+                                   <Route path="/sensor/:deviceId" component={SensorDetail} />
                                    <Route path="/" component={Sensors} />
                               </Switch>
-                         </Suspense>
-                    </Fragment>
-               </RouterReact>
+                    </RouterReact>
+               </Suspense>
           )
      }
 }

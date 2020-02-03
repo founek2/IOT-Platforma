@@ -10,24 +10,22 @@ import { keys } from 'ramda'
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const gpsSchema = new Schema({
-     type: { type: String, default: 'Point' },
-     coordinates: Array
-})
-
 const deviceSchema = new Schema(
      {
-          title: { type: String, required: true },
-          description: { type: String },
-          imgPath: { type: String },
-          gps: gpsSchema,
+          info: {
+               title: { type: String, required: true },
+               description: { type: String },
+               imgPath: { type: String },
+          },
+          gps: {
+               type: { type: String, default: 'Point' },
+               coordinates: Array
+          },
           sampleInterval: Number,
           sensors: sensorsScheme,
           control: controlScheme,
           apiKey: { type: String, default: hat, index: { unique: true } },
-          // created: { type: Date, default: Date.now },
           createdBy: { type: mongoose.Types.ObjectId, ref: 'User' },
-          // permissions: ["read"(senzory), "write"(upravovat device), "control" (ovládat)],
           publicRead: Boolean,
           permissions: {
                read: [{ type: 'ObjectId', ref: 'User' }],
@@ -46,8 +44,6 @@ const deviceSchema = new Schema(
                     delete ret._id
                     if (ret.gps) {
 
-                         ret.gpsLat = ret.gps.coordinates[0]
-                         ret.gpsLng = ret.gps.coordinates[1]
                          delete ret.gps;
                     }
 
@@ -73,7 +69,7 @@ deviceSchema.statics.login = async function (apiKey) {
 
 deviceSchema.statics.create = async function ({ topic, ...object }, imgExtension, userID) {
      const Device = this.model('Device')
-     const coordinates = [object.gpsLng, object.gpsLat]
+     // const coordinates = [object.info.gpsLng, object.info.gpsLat]
      const objID = mongoose.Types.ObjectId(userID)
 
      // check for existence of topic (between all devices with createdBy: id), then create
@@ -83,11 +79,11 @@ deviceSchema.statics.create = async function ({ topic, ...object }, imgExtension
      const newDevice = new Device({
           ...object,
           createdBy: objID,
-          gps: { coordinates },
+          // gps: { coordinates },
           permissions: { read: [objID], write: [objID], control: [objID] },
           topic: topic
      })
-     if (imgExtension) newDevice.imgPath = `images/devices/${newDevice.id}.${imgExtension}`
+     if (imgExtension) newDevice.info.imgPath = `images/devices/${newDevice.id}.${imgExtension}`
      devLog("Creating device", newDevice)
      return newDevice
           .save()
@@ -98,26 +94,13 @@ deviceSchema.statics.create = async function ({ topic, ...object }, imgExtension
           .catch(catcher('device'))
 }
 
-//deviceSchema.statics.createAndAddToUser = function (object, imgExtension, userID) {
-//      return this.model('Device')
-//           .create(object, imgExtension, userID)
-//           .then(deviceDoc => {
-//                return this.model('User')
-//                     .addDevice(deviceDoc.id, userID)
-//                     .then(() => deviceDoc)
-//           })
-//           .catch(catcher('device'))
-// }
-
 const aggregationFields = {
      id: '$_id',
      _id: 0,
-     title: 1,
-     description: 1,
-     imgPath: 1,
-     gpsLat: { $arrayElemAt: ['$gps.coordinates', 0] },
-     gpsLng: { $arrayElemAt: ['$gps.coordinates', 1] },
-     created: 1,
+     "gps.coordinates": 1,
+     // "gps.type": 0,
+     info: 1,
+     createdAt: 1,
      createdBy: 1,
      sampleInterval: 1,
      publicRead: 1,
@@ -223,16 +206,16 @@ deviceSchema.statics.findPublic = function () {
 }
 
 deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtension, { id, admin }) {
-     if (formData.gpsLng && formData.gpsLat) {
-          const coordinates = [formData.gpsLng, formData.gpsLat]
-          formData.coordinates = coordinates
-     }
-     delete formData.gpsLat
-     delete formData.gpsLng
-
+     // if (formData.gpsLng && formData.gpsLat) {
+     //      const coordinates = [formData.gpsLng, formData.gpsLat]
+     //      formData.coordinates = coordinates
+     // }
+     // delete formData.gpsLat
+     // delete formData.gpsLng
+     console.log(formData)
      return this.model('Device')
           .findOne({ _id: mongoose.Types.ObjectId(deviceID) })
-          .select('permissions createdBy imgPath')
+          .select('permissions createdBy imgPath info')
           .then(async doc => {
                if (doc.permissions.write.some(id => id.toString() == id) || admin) { // two eq (==) are required
                     const { topic } = formData
@@ -240,11 +223,12 @@ deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtensi
                          const result = await this.model('Device').find({ topic, createdBy: doc.createdBy, _id: { $ne: mongoose.Types.ObjectId(deviceID) } }).lean().count()
                          if (result) throw Error('topicAlreadyUsed')
                     }
-                    const origImgPath = doc.imgPath
-                    if (imgExtension) formData.imgPath = `images/devices/${doc.id}.${imgExtension}`
-                    console.log("updating Device> ", formData)
+                    const origImgPath = doc.info.imgPath
+                    if (imgExtension) formData.info.imgPath = `images/devices/${doc.id}.${imgExtension}`
 
-                    return doc.updateOne(formData).then(() => origImgPath)
+                    const formDataNested = {...formData, info: {...doc.info, ...(formData.info)}}    // merge original nested object "info"
+                    console.log("updating Device> ", formDataNested)
+                    return doc.updateOne(formDataNested).then(() => origImgPath)
                } else {
                     throw Error("invalidPermissions")
                }
@@ -381,20 +365,6 @@ function prepareStateUpdate(data, updatedAt) {
 
      return result
 }
-
-// deviceSchema.statics.updateState = async function (deviceID, state, user) {
-//      const updateTime = new Date()
-//      const updateStateQuery = prepareStateUpdate(state, updateTime)
-
-//      const doc = await this.model('Device').findOneAndUpdate({
-//           "_id": mongoose.Types.ObjectId(deviceID),
-//           ...(!user.admin && { "permissions.control": mongoose.Types.ObjectId(user.id) })
-//      }, {
-//           $set: updateStateQuery
-//      }, { fields: { control: 1 }, new: true }).lean()
-//      if (!doc) throw new Error("invalidPermissions")
-//      return doc
-// }
 
 
 deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, state, updateTime) {

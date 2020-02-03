@@ -315,18 +315,18 @@ module.exports = function(webpackEnv) {
 									"react-app"
 							    ],
                                         plugins: [
-                                             [require.resolve('babel-plugin-transform-class-properties'), { spec: true }],
-                                             [
-                                                  'transform-rename-import',
-                                                  {
-                                                       replacements: [
-                                                            {
-                                                                 original: 'framework-ui',
-                                                                 replacement: path.join(paths.appSrc, 'modules', 'framework-ui')
-                                                            }
-                                                       ]
-                                                  }
-                                             ]
+                                             [require.resolve('@babel/plugin-proposal-class-properties')],
+                                             // [
+                                             //      'transform-rename-import',
+                                             //      {
+                                             //           replacements: [
+                                             //                {
+                                             //                     original: 'framework-ui',
+                                             //                     replacement: path.join(paths.appSrc, 'modules', 'framework-ui')
+                                             //                }
+                                             //           ]
+                                             //      }
+                                             // ]
                                         ],
                                         // This is a feature of `babel-loader` for webpack (not Babel itself).
                                         // It enables caching results in ./node_modules/.cache/babel-loader/

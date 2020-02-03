@@ -1,6 +1,6 @@
 import { ActionTypes } from '../../../constants/redux'
 import { getFormData, getToken, getFormDescriptors } from 'framework-ui/src/utils/getters'
-import { validateForm, resetForm, updateFormField } from 'framework-ui/src/redux/actions/formsData'
+import { validateForm, resetForm, validateRegisteredFields } from 'framework-ui/src/redux/actions/formsData'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
 import { baseLogger } from 'framework-ui/src/Logger'
 import loadFilesInFormData from 'framework-ui/src/utils/loadFilesInFormData'
@@ -23,7 +23,7 @@ export function createDevice() {
      return async function (dispatch, getState) {
           const CREATE_SENSOR = 'CREATE_DEVICE'
           baseLogger(CREATE_SENSOR)
-          const result = dispatch(validateForm(CREATE_SENSOR)())
+          const result = dispatch(validateRegisteredFields(CREATE_SENSOR)())
           if (result.valid) {
                const state = getState()
                const formData = getFormData(CREATE_SENSOR)(state)
@@ -49,7 +49,7 @@ export function updateDevice(id) {
      return async function (dispatch, getState) {
           const EDIT_DEVICE = 'EDIT_DEVICE'
           baseLogger(EDIT_DEVICE)
-          const result = dispatch(validateForm(EDIT_DEVICE)())
+          const result = dispatch(validateRegisteredFields(EDIT_DEVICE)())
           if (result.valid) {
                const state = getState()
                const formData = getFormData(EDIT_DEVICE)(state)
@@ -78,7 +78,7 @@ export function updatePermissions(id) {
      return async function (dispatch, getState) {
           const EDIT_PERMISSIONS = 'EDIT_PERMISSIONS'
           baseLogger(EDIT_PERMISSIONS)
-          const result = dispatch(validateForm(EDIT_PERMISSIONS)())
+          const result = dispatch(validateRegisteredFields(EDIT_PERMISSIONS)())
           if (result.valid) {
                const state = getState()
                const formData = getFormData(EDIT_PERMISSIONS)(state)
@@ -154,7 +154,7 @@ export function updateSensors(id) {
      return async function (dispatch, getState) {
           const EDIT_SENSORS = 'EDIT_SENSORS'
           baseLogger(EDIT_SENSORS)
-          const result = dispatch(validateForm(EDIT_SENSORS)())
+          const result = dispatch(validateRegisteredFields(EDIT_SENSORS)())
           const formData = getFormData(EDIT_SENSORS)(getState())
           if (result.valid) {
                return putDeviceApi({
@@ -174,7 +174,7 @@ export function updateControl(id) {
      return async function (dispatch, getState) {
           const EDIT_CONTROL = 'EDIT_CONTROL'
           baseLogger(EDIT_CONTROL)
-          const result = dispatch(validateForm(EDIT_CONTROL)())
+          const result = dispatch(validateRegisteredFields(EDIT_CONTROL)())
           const formData = getFormData(EDIT_CONTROL)(getState())
           if (result.valid) {
                return putDeviceApi({

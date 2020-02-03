@@ -18,7 +18,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
 import { bindActionCreators } from 'redux'
-import { prop, filter, pick } from 'ramda'
+import { prop, omit } from 'ramda'
 
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import * as deviceActions from '../../store/actions/application/devices'
@@ -116,8 +116,9 @@ const styles = theme => ({
 
 function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, apiKey, device, fillEditFormAction, deleteDeviceAction, editFormTopic, fetchApiKeyAction, topicRegisteredField, newImg }) {
      useEffect(() => {
-          const { description, title, gpsLat, gpsLng, publicRead, topic } = device
-          fillEditFormAction({ description, title, gpsLat, gpsLng, publicRead, topic })
+          const { info, publicRead, topic, gps } = device
+          
+          fillEditFormAction({ info: omit(["imgPath"], info), publicRead, topic, gps })
      }, [])
      const [pending, setPending] = useState(false)
      const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
@@ -148,28 +149,28 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                          <div className={classes.contentInner}>
                               <div>
                                    <div className={classes.mediaWrapper}>
-                                        <CardMedia className={classes.media} image={(newImg && newImg.url) || device.imgPath} />
+                                        <CardMedia className={classes.media} image={(newImg && newImg.url) || device.info.imgPath} />
                                    </div>
                                    <FieldConnector
                                         component="FileLoader"
                                         fieldProps={{
                                              className: classes.textArea
                                         }}
-                                        deepPath="EDIT_DEVICE.image"
+                                        deepPath="EDIT_DEVICE.info.image"
                                    />
                               </div>
                               <div>
                                    <FieldConnector
                                         component="TextField"
-                                        deepPath="EDIT_DEVICE.title"
+                                        deepPath="EDIT_DEVICE.info.title"
                                    />
                                    <FieldConnector
-                                        component="TextField"
-                                        deepPath="EDIT_DEVICE.gpsLat"
+                                        label="Zeměpisná šířka"
+                                        deepPath="EDIT_DEVICE.gps.coordinates.1"
                                    />
                                    <FieldConnector
-                                        component="TextField"
-                                        deepPath="EDIT_DEVICE.gpsLng"
+                                        label="Zeměpisná délka"
+                                        deepPath="EDIT_DEVICE.gps.coordinates.0"
                                    />
                               </div>
                          </div>
@@ -180,7 +181,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                                    className: classes.textArea,
                                    multiline: true
                               }}
-                              deepPath="EDIT_DEVICE.description"
+                              deepPath="EDIT_DEVICE.info.description"
                          />
                          <div className={classes.topicWrapper}>
                               <TextField
@@ -286,7 +287,7 @@ const _mapStateToProps = state => {
           apiKey: prop('apiKey')(getDialogTmp(state)),
           editFormTopic: getFieldVal("EDIT_DEVICE.topic", state),
           topicRegisteredField: getRegisteredField("EDIT_DEVICE.topic", state),
-          newImg: getFieldVal("EDIT_DEVICE.image", state)
+          newImg: getFieldVal("EDIT_DEVICE.info.image", state)
      }
 }
 

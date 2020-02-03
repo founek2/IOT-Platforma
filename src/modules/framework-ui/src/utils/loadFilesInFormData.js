@@ -7,25 +7,6 @@ const isObject = (val) => Object.prototype.toString.call(val) === "[object Objec
 
 export default async function loadFilesInFormData(formData) {
      let newData = formData
-     // return new Promise((resolve, reject) => {
-     //      const promises = []
-     //      deepPaths.forEach(deepPath => {
-     //           const field = data[deepPath]
-     //           if (typeof field === 'object' && field.url) {
-     //                promises.push(
-     //                     fetch(field.url)
-     //                          .then(res => res.blob())
-     //                          .then(async blob => {
-	// 						field.data = await blobToBase64(blob)
-	// 						delete field.url;
-     //                          })
-     //                )
-     //           }
-     //      })
-     //      Promise.all(promises)
-     //           .then(() => resolve(data))
-     //           .catch(reject)
-     // })
      const arr = []
     
      recursive((val, deepPath) => {

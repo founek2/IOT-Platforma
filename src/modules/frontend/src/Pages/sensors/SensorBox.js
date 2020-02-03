@@ -87,7 +87,7 @@ class SensorBox extends React.Component {
      render() {
           const { classes, device } = this.props
 
-          const { title, description, sensors, imgPath, id } = device
+          const { info: {imgPath, title, description}, sensors, id } = device
 
           return (
                <Card className={classes.card}>

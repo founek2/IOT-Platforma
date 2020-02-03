@@ -96,34 +96,31 @@ const EDIT_USER = assocPath(["auth", "password"], passwdNotReq, {
 })
 
 const CREATE_DEVICE = {
-     title: {
-          deepPath: 'CREATE_DEVICE.title',
-          required: true,
-          label: 'Název',
-          validations: [validationFactory('isString', { min: 4, max: 20 })]
+     info: {
+          title: {
+               deepPath: 'CREATE_DEVICE.info.title',
+               required: true,
+               label: 'Název',
+               validations: [validationFactory('isString', { min: 4, max: 20 })]
+          },
+          description: {
+               deepPath: 'CREATE_DEVICE.info.description',
+               label: 'Popis',
+               validations: [validationFactory('isString', { min: 2, max: 200 })]
+          },
+          image: {
+               deepPath: 'CREATE_DEVICE.info.image',
+               required: true,
+               label: 'Obrázek',
+               validations: [validationFactory('isFile')]
+          },
      },
-     description: {
-          deepPath: 'CREATE_DEVICE.description',
-          label: 'Popis',
-          validations: [validationFactory('isString', { min: 2, max: 200 })]
-     },
-     image: {
-          deepPath: 'CREATE_DEVICE.image',
-          required: true,
-          label: 'Obrázek',
-          validations: [validationFactory('isFile')]
-     },
-     gpsLat: {
-          deepPath: 'CREATE_DEVICE.gpsLat',
-          required: true,
-          label: 'Zeměpisná šířka',
-          validations: [validationFactory('isNumber')]
-     },
-     gpsLng: {
-          deepPath: 'CREATE_DEVICE.gpsLng',
-          required: true,
-          label: 'Zeměpisná délka',
-          validations: [validationFactory('isNumber')]
+     gps: {
+          "coordinates[]": {
+               deepPath: 'CREATE_DEVICE.gps.coordinates[]',
+               required: true,
+               validations: [validationFactory('isNumber')]
+          },
      },
      topic: {
           deepPath: 'CREATE_DEVICE.topic',
@@ -139,38 +136,35 @@ const CREATE_DEVICE = {
 }
 
 const EDIT_DEVICE = {
-     title: {
-          deepPath: 'EDIT_DEVICE.title',
-          required: true,
-          label: 'Název',
-          validations: [validationFactory('isString', { min: 4, max: 20 })]
-     },
-     description: {
-          deepPath: 'EDIT_DEVICE.description',
-          label: 'Popis',
-          validations: [validationFactory('isString', { min: 2, max: 200 })]
+     info: {
+          title: {
+               deepPath: 'EDIT_DEVICE.info.title',
+               required: true,
+               label: 'Název',
+               validations: [validationFactory('isString', { min: 4, max: 20 })]
+          },
+          description: {
+               deepPath: 'EDIT_DEVICE.info.description',
+               label: 'Popis',
+               validations: [validationFactory('isString', { min: 2, max: 200 })]
+          },
+          image: {
+               deepPath: 'EDIT_DEVICE.info.image',
+               label: 'Obrázek',
+               validations: [validationFactory('isFile')]
+          },
      },
      publicRead: {
           deepPath: 'EDIT_DEVICE.publicRead',
           label: 'Veřejné zařízení',
           validations: [validationFactory('isBool')]
      },
-     image: {
-          deepPath: 'EDIT_DEVICE.image',
-          label: 'Obrázek',
-          validations: [validationFactory('isFile')]
-     },
-     gpsLat: {
-          deepPath: 'EDIT_DEVICE.gpsLat',
-          required: true,
-          label: 'Zeměpisná šířka',
-          validations: [validationFactory('isNumber')]
-     },
-     gpsLng: {
-          deepPath: 'EDIT_DEVICE.gpsLng',
-          required: true,
-          label: 'Zeměpisná délka',
-          validations: [validationFactory('isNumber')]
+     gps: {
+          "coordinates[]": {
+               deepPath: 'EDIT_DEVICE.gps.coordinates[]',
+               required: true,
+               validations: [validationFactory('isNumber')]
+          },
      },
      topic: {
           deepPath: 'EDIT_DEVICE.topic',

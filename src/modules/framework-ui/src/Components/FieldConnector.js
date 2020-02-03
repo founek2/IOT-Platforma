@@ -85,6 +85,7 @@ class fieldConnector extends Component {
                onEnter,
                value,
                className,
+               label
           } = this.props
           const { valid, errorMessages, pristine } = registeredField
 
@@ -94,7 +95,7 @@ class fieldConnector extends Component {
           }
           if (isNotNil(descriptor)) {
                const required = isRequired(descriptor, formsData)
-               const { label } = descriptor
+               const finalLabel = label ? label : descriptor.label;
                if (is(Object, component)) {
                     const compWithProps = React.cloneElement(component, {
                          value: value || '',
@@ -102,7 +103,7 @@ class fieldConnector extends Component {
                          helperText: errorMessages && errorMessages[0],
                          FormHelperTextProps: { error: !valid },
                          error: !valid,
-                         label: label
+                         label: finalLabel
                     })
                     return compWithProps
                } else {
@@ -132,7 +133,7 @@ class fieldConnector extends Component {
                               name={name}
                               autoFocus={autoFocus}
                               onKeyDown={onEnter && onEnterRun(onEnter)}
-                              label={required && dontHaveRequired ? label + ' *' : label}
+                              label={required && dontHaveRequired ? finalLabel + ' *' : finalLabel}
                               {...options}
                               {...fieldProps}
                          />

@@ -117,10 +117,50 @@ export const validateForm = (formName, state, ignoreRequiredFields = false) => {
           recursive((val, deepPath) => {
                // if (deepPath === formName) debugger
                arraOfPaths.push(deepPath)
-          }, val =>    isObject(val) && val.valid == undefined,
+          }, val => isObject(val) && val.valid == undefined,
                (val, deepPath) =>
                     is(Array, val) && arrayOfArrayFields.some(p => p === deepPath)
                , { [formName]: fields })
+     }
+
+
+     const uniqArray = uniq(arraOfPaths)
+     console.log(uniqArray)
+     forEach((deepPath) => {
+          const out = validateField(deepPath, state, true, ignoreRequiredFields);
+          result = setInPath(deepPath, out, result);
+     }, uniqArray)
+     return result;
+};
+
+export const validateRegisteredFields = (formName, state, ignoreRequiredFields = false) => {
+     const formDescriptors = getFormDescriptors(formName, state);
+
+     const arraOfPaths = []
+     const arrayOfArrayFields = [] // to know when validate array as array and when as array of fields
+     let result = {}
+
+     // find all deePaths of - fields and array of fields
+     const arrayRegex = /\[\]$/;
+     recursive((val, deepPath) => {
+          // if (deepPath === formName) debugger
+          if (arrayRegex.test(deepPath)) arrayOfArrayFields.push(deepPath.replace(arrayRegex, ""))
+          else arraOfPaths.push(deepPath)
+     }, (val) => {
+          return isObject(val) && !val.deepPath
+     }, F, { [formName]: formDescriptors })
+
+     // just for FrontEnd validations - field can be mounted and do not have value in formData
+     // It still needs to be validated
+     const regFields = getRegisteredFields(state)
+     if (regFields && regFields[formName]) {
+          recursive((val, deepPath) => {
+               // if (deepPath === formName) debugger
+               arraOfPaths.push(deepPath)
+          }, val => isObject(val) && val.valid == undefined,
+               (val, deepPath) =>
+                    is(Array, val) && arrayOfArrayFields.some(p => p === deepPath)
+               , { [formName]: regFields[formName] })
      }
 
 

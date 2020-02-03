@@ -33,17 +33,17 @@ export default ({ config, db }) =>
 
                if (formData.EDIT_DEVICE) {   // tested
                     const form = formData.EDIT_DEVICE
-                    const image = form.image
-                    let extension
+                    const image = form.info.image
+                    let extension = null;
                     if (image) {
-                         delete form.image
+                         delete form.info.image
                          extension = image.name.split('.').pop()
                          if (!validateFileExtension(extension)) {
                               res.status(208).send({ error: 'notAllowedExtension' })
                               return
                          }
                     }
-                    Device.updateByFormData(id, formData.EDIT_DEVICE, extension, user)
+                    Device.updateByFormData(id, form, extension, user)
                          .then(async (origImgPath) => {
                               try {
                                    if (image && origImgPath)
@@ -86,8 +86,8 @@ export default ({ config, db }) =>
 
                if (formData.CREATE_DEVICE) {      // tested, not saving of file
                     const form = formData.CREATE_DEVICE
-                    const image = form.image
-                    delete form.image
+                    const image = form.info.image
+                    delete form.info.image
 
                     const extension = image.name.split('.').pop()
                     if (!validateFileExtension(extension)) {

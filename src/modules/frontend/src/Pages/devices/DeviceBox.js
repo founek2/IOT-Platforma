@@ -73,7 +73,7 @@ const ref = React.createRef();
 function DeviceBox({ classes, device, onDelete }) {
      const [anchorEl, setAnchorEl] = useState(null)
      const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-     const { title, description, imgPath, gps, id } = device
+     const { info: {title, description, imgPath}, id } = device
 
      function handleClick(event) {
           setAnchorEl(event.currentTarget);

@@ -1,10 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
-import IconButton from '@material-ui/core/IconButton'
-import AddCircle from '@material-ui/icons/AddCircle'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -18,7 +15,7 @@ import * as sensorsActions from '../../store/actions/application/devices'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
 import { getDialogTmp } from 'framework-ui/src/utils/getters'
 import InfoAlert from 'framework-ui/src/Components/InfoAlert'
-import { getDeviceUser } from '../../utils/getters';
+
 
 const styles = theme => ({
      card: {
@@ -93,19 +90,21 @@ function CreateDeviceDialog({ classes, createSensorAction, updateTmpDataAction, 
                               fieldProps={{
                                    type: 'text',
                               }}
-                              deepPath="CREATE_DEVICE.title"
+                              deepPath="CREATE_DEVICE.info.title"
                          />
                          <FieldConnector
                               component="FileLoader"
-                              deepPath="CREATE_DEVICE.image"
+                              deepPath="CREATE_DEVICE.info.image"
                          />
                          <FieldConnector
                               component="TextField"
-                              deepPath="CREATE_DEVICE.gpsLat"
+                              label="Zeměpisná šířka"
+                              deepPath="CREATE_DEVICE.gps.coordinates.1"
                          />
                          <FieldConnector
                               component="TextField"
-                              deepPath="CREATE_DEVICE.gpsLng"
+                              label="Zeměpisná délka"
+                              deepPath="CREATE_DEVICE.gps.coordinates.0"
                          />
                          <FieldConnector
                               component="TextField"
@@ -121,7 +120,7 @@ function CreateDeviceDialog({ classes, createSensorAction, updateTmpDataAction, 
                                    multiline: true
                               }}
                               className={classes.textArea}
-                              deepPath="CREATE_DEVICE.description"
+                              deepPath="CREATE_DEVICE.info.description"
                          />
                          <FieldConnector
                               component="Checkbox"

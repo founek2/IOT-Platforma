@@ -1,5 +1,5 @@
 import { actionTypes } from '../../constants/redux';
-import { validateField as ValidateField, validateForm as ValidateForm, trimFields } from '../../validations';
+import { validateField as ValidateField, validateForm as ValidateForm, trimFields, validateRegisteredFields as ValidateRegisteredFields } from '../../validations';
 import {
      getFormDescriptors, getFormData, getRegisteredFields
 } from '../../utils/getters';
@@ -72,13 +72,34 @@ export function validateField(deepPath, ignorePristine) {
      };
 }
 
-export function validateForm(formName, ignoreRequired) {
+export function validateForm(formName, ignoreRequired = false) {
      return function() {
           return function(dispatch, getState) {
 			baseLogger('VALIDATE_FORM:', formName);
 			const trimedData = trimFields(getFormData(formName)(getState()));
 			dispatch(setFormData(formName, trimedData));
                const fieldStates = ValidateForm(formName, getState(), ignoreRequired);
+               
+               dispatch({
+                    type: actionTypes.UPDATE_REGISTERED_FIELDS,
+                    payload: fieldStates
+               });
+
+               
+               const result =  checkValid(fieldStates[formName]);
+               if (!result.valid) dispatch(addNotification({ message: ErrorMessages.getMessage('validationFailed'), variant: 'error', duration: 3000 }))
+               return result
+          };
+     };
+}
+
+export function validateRegisteredFields(formName, ignoreRequired = false) {
+     return function() {
+          return function(dispatch, getState) {
+			baseLogger('VALIDATE_FORM:', formName);
+			const trimedData = trimFields(getFormData(formName)(getState()));
+			dispatch(setFormData(formName, trimedData));
+               const fieldStates = ValidateRegisteredFields(formName, getState(), ignoreRequired);
                
                dispatch({
                     type: actionTypes.UPDATE_REGISTERED_FIELDS,

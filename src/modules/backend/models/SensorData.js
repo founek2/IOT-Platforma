@@ -8,9 +8,6 @@ const SensorDataSchema = new Schema({
     day: Date,
     first: Date,
     last: Date,
-    // samples: [
-    //     { val: Object, time: Date }
-    // ]
     samples: Object, // {temp: [{val: Object, time: Date}]}
     timestamps: Array,
     min: Object,

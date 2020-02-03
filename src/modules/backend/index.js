@@ -72,7 +72,7 @@ initializeDb(config, db => {
 
      if (process.env.NODE_ENV === "development"){
           var wsProxy = proxy('/socket.io', {
-               target: 'ws://localhost:8084/socket.io',
+               target: 'ws://localhost:8084',
                // pathRewrite: {
                //  '^/websocket' : '/socket',        // rewrite path.
                //  '^/removepath' : ''               // remove path.
