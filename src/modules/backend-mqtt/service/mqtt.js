@@ -88,7 +88,7 @@ export default (io) => {
 
                     let newData = {};
                     toPairs(data).forEach(([key, val]) => {
-                        newData[key] = { state: val, updatedAt: updateTime, inTransition: false }
+                        newData[key] = { state: val, updatedAt: updateTime, inTransition: false, transitionEnded: updateTime }
                     })
                     const emitData = { deviceID: _id, data: newData, updatedAt: updateTime }
                     control.forEach((id) => {

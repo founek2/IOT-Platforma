@@ -84,6 +84,7 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
                     data={data}
                     className={classes.item}
                     ackTime={device.ack}
+                    updateTime={device.ack}     // for force updating
                />)
           })
      })

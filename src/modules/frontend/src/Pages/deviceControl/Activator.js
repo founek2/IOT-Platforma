@@ -4,7 +4,6 @@ import SendIcon from '@material-ui/icons/Send'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography';
 import Loader from 'framework-ui/src/Components/Loader'
-import OnlineCircle from '../../components/OnlineCircle';
 import boxHoc from './components/boxHoc'
 
 const styles = {
@@ -41,13 +40,6 @@ function Activator({ classes, name, onClick, data, ackTime, afk }) {
 
     return (
         <div onClick={() => !afk && handleClick()} className={classes.root}>
-            <OnlineCircle
-                inTransition={inTransition}
-                ackTime={ackTime}
-                changeTime={updatedAt}
-                afk={afk}
-                className={classes.circle}
-            />
             <Typography className={classes.header}>{name}</Typography>
             <IconButton aria-label="delete" className={classes.button} disabled={afk}>
                 <SendIcon fontSize="large" className={classes.icon} />
