@@ -5,25 +5,16 @@ import { AuthTypes } from '../constants'
 
 export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }]
 
-function UserForm({formName}) {
+function UserForm({formName, onAuthChange}) {
     return (
         <Fragment>
             <FieldConnector
-                fieldProps={{
-                    type: 'text',
-                }}
                 deepPath={`${formName}.info.firstName`}
             />
             <FieldConnector
-                fieldProps={{
-                    type: 'text',
-                }}
                 deepPath={`${formName}.info.lastName`}
             />
             <FieldConnector
-                fieldProps={{
-                    type: 'text',
-                }}
                 deepPath={`${formName}.info.userName`}
             />
             <FieldConnector
@@ -39,6 +30,7 @@ function UserForm({formName}) {
             <FieldConnector
                 component="Select"
                 deepPath={`${formName}.auth.type`}
+                onChange={onAuthChange}
                 selectOptions={[
                     <MenuItem value="" key="enum">
                         <em />

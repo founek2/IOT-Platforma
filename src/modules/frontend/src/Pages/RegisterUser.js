@@ -16,6 +16,9 @@ import { AuthTypes } from '../constants'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import UserForm from '../components/UserForm'
+import userActions from '../store/actions/application/user'
+import { create as createCredentials } from '../utils/webAuth'
+import { getAuthChallenge as getAuthChallengeApi } from '../api/authApi'
 
 const styles = theme => ({
      card: {
@@ -41,7 +44,7 @@ const styles = theme => ({
           }
      },
      actions: {
-		marginBottom: theme.spacing(2),
+          marginBottom: theme.spacing(2),
           [theme.breakpoints.up('sm')]: {
                marginTop: theme.spacing(2),
           },
@@ -71,65 +74,33 @@ const styles = theme => ({
 
 export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }]
 
-function RegisterUser({ classes, registerAndLoginAction, authType, registerAction }) {
+function RegisterUser({ classes, registerAndLoginAction, authType, registerAction, getChallengeAction }) {
      const [pending, setPending] = useState(false)
      const [autoLogin, setAutoLogin] = useState(true)
      const handleRegister = async () => {
           setPending(true)
           const action = autoLogin ? registerAndLoginAction : registerAction
-		await action()
-		setPending(false)
+          await action()
+          setPending(false)
+     }
+
+     const handleAuth = async (e) => {
+          if (e.target.value != "webAuth") return;
+          setPending(true)
+          try {
+               const challenge = await getChallengeAction()
+               const credentials = await createCredentials(challenge);
+               console.log("credentials", credentials)
+          } catch{
+               // TODO change to empty auth
+           }
+          setPending(false)
      }
      return (
           <Card className={classes.card}>
                <CardHeader className={classes.header} title="Registrace" />
                <CardContent className={classes.content}>
-                    {/* <FieldConnector
-                         fieldProps={{
-                              type: 'text',
-                         }}
-                         deepPath="REGISTRATION.firstName"
-                    />
-                    <FieldConnector
-                         fieldProps={{
-                              type: 'text',
-                         }}
-                         deepPath="REGISTRATION.lastName"
-                    />
-                    <FieldConnector
-                         fieldProps={{
-                              type: 'text',
-                         }}
-                         deepPath="REGISTRATION.userName"
-                    />
-                    <FieldConnector
-                         fieldProps={{
-                              type: 'email',
-                         }}
-                         deepPath="REGISTRATION.email"
-                    />
-                    <FieldConnector
-					component="PasswordField"
-                         deepPath="REGISTRATION.password"
-                    />
-                    <FieldConnector
-                         component="Select"
-                         deepPath="REGISTRATION.authType"
-                         selectOptions={[
-                              <MenuItem value="" key="enum">
-                                   <em />
-                              </MenuItem>,
-                              ...AuthTypesWithText.map(
-                                   ({ value, text }) =>
-                                        value !== 'passwd' && (
-                                             <MenuItem value={value} key={value}>
-                                                  {text}
-                                             </MenuItem>
-                                        )
-                              )
-                         ]}
-                    /> */}
-                    <UserForm formName="REGISTRATION"/>
+                    <UserForm formName="REGISTRATION" onAuthChange={handleAuth} />
                </CardContent>
                <CardActions className={classes.actions}>
                     <FormControlLabel
@@ -167,7 +138,8 @@ const _mapDispatchToProps = dispatch =>
      bindActionCreators(
           {
                registerAndLoginAction: registerAngLogin,
-               registerAction: register
+               registerAction: register,
+               getChallengeAction: userActions.getAuthChallenge,
           },
           dispatch
      )
