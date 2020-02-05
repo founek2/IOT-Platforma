@@ -9,7 +9,10 @@ import Circle from './components/Circle'
 import { head } from "ramda";
 import getLastUpdateText from 'framework-ui/src/utils/getLastUpdateText'
 import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
-
+import isAfk from '../../utils/isAfk'
+import getCircleColor from '../../utils/getCircleColor'
+import OnlineCircle from '../../components/OnlineCircle';
+import boxHoc from './components/boxHoc'
 
 const styles = theme => ({
     ...switchCss(theme),
@@ -24,70 +27,58 @@ const styles = theme => ({
         textAlign: 'center',
     },
     tooltipText: {
-        fontSize: 10
+        fontSize: "0.625rem"    // weird behavior -> first tooltip in page is render with in Typography with variant body2
+    },
+    circle: {
+        top: 3,
+        right: 3,
+        position: 'absolute',
     }
 })
 
-function isAfk(ackTime) {
-    return !ackTime || new Date() - new Date(ackTime) > 10 * 60 * 1000
-}
-
-function getColor(inTransition, transitionStarted, ackTime) {
-    if (isAfk(ackTime)) // afk for more then 10min
-        return "red"
-    // else if (inTransition && new Date() - new Date(transitionStarted) > 2 * 1000)
-    //     return "orange"
-    else if (inTransition)
-        return "orange"
-    return "green"
-}
-
-// TODO pokud nedojde ke změně updateAt do 2s, tak změnit stav zpět a zvýraznit offline zařízení
-// stejně tak offline při ack starším než ->
-function MySwitch({ classes, name, description, onClick, data, className, ackTime, ...props }) {
+function MySwitch({ classes, name, description, onClick, data, className, ackTime,afk, forceUpdate, ...props }) {
     const [pending, setPending] = useState(false)
     const { state, inTransition, transitionStarted, updatedAt } = data;
     async function handleClick(e) {
         setPending(true)
-        await onClick(e.target.checked ? 1 : 0)
+        await onClick(state ? 0 : 1)
         setPending(false)
     }
-    const disabled = isAfk(ackTime);
-    const ackDate = new Date(ackTime);
-    const updateAtDate =  new Date(updatedAt);
+    console.log("state", state, !!state)
     return (
-        <Box className={className} onClick={() => !disabled && handleClick({ target: { checked: !state } })}>
-            <div className={classes.root}>
-                <Circle
-                    color={getColor(inTransition, transitionStarted, ackTime)}
-                    tooltipText={ackTime ? <UpdatedBefore time={ackDate > updateAtDate ? ackDate : updateAtDate} className={classes.tooltipText} prefix="Poslední aktivita před"/>: "Nikdy"}
-                />
-                <div className={classes.header}>
-                    <Typography component="span" >{name}</Typography>
-                </div>
-
-                <div className={classes.switchContainer}>
-                    <Switch
-                        focusVisibleClassName={classes.focusVisible}
-                        disableRipple
-                        classes={{
-                            root: classes.switchRoot,
-                            switchBase: classes.switchBase,
-                            thumb: classes.thumb,
-                            track: classes.track,
-                            checked: classes.checked,
-                            disabled: classes.disabled
-                        }}
-                        disabled={pending || disabled}
-                        {...props}
-                        // onClick={handleClick}
-                        checked={!!state}
-                    />
-                </div>
-                <Loader open={pending} className="marginAuto" />
+        <div className={classes.root} onClick={(e) => !afk && handleClick(e)}>
+            <OnlineCircle
+                inTransition={inTransition}
+                ackTime={ackTime}
+                changeTime={updatedAt}
+                afk={afk}
+                className={classes.circle}
+            />
+            <div className={classes.header}>
+                <Typography component="span" >{name}</Typography>
             </div>
-        </Box>
-    )
+
+            <div className={classes.switchContainer}>
+                <Switch
+                    focusVisibleClassName={classes.focusVisible}
+                    disableRipple
+                    classes={{
+                        root: classes.switchRoot,
+                        switchBase: classes.switchBase,
+                        thumb: classes.thumb,
+                        track: classes.track,
+                        checked: classes.checked,
+                        disabled: classes.disabled
+                    }}
+                    disabled={pending || isAfk(ackTime)}
+                    {...props}
+                    // onClick={handleClick}
+                    checked={!!state}
+                />
+            </div>
+            <Loader open={pending} className="marginAuto" />
+        </div>)
+
 }
 
-export default withStyles(styles)(MySwitch)
+export default boxHoc(withStyles(styles)(MySwitch))

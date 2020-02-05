@@ -57,9 +57,20 @@ deviceSchema.statics.updateAck = async function (ownerId, topic) {
      const doc = await this.model('Device').findOneAndUpdate(
           { createdBy: mongoose.Types.ObjectId(ownerId), topic },
           { ack: new Date() },
-          { fields: { "permissions.control": 1 } })
-     if (doc) throw new Error("Invalid id/topic")
+          { fields: { "permissions.control": 1 } }).lean()
+     if (!doc) throw new Error("Invalid id/topic")
      return doc;
+}
+
+deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, state, updateTime) {
+     const updateStateQuery = prepareStateUpdate(state, updateTime)
+
+     const doc = await this.model('Device').findOneAndUpdate(
+          { createdBy: mongoose.Types.ObjectId(createdBy), topic },
+          { $set: { ...updateStateQuery, ack: updateTime } },
+          { fields: { "permissions.control": 1 } }).lean()
+     if (!doc) throw new Error("Invalid device")
+     return doc
 }
 
 deviceSchema.statics.login = async function (apiKey) {
@@ -206,13 +217,6 @@ deviceSchema.statics.findPublic = function () {
 }
 
 deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtension, { id, admin }) {
-     // if (formData.gpsLng && formData.gpsLat) {
-     //      const coordinates = [formData.gpsLng, formData.gpsLat]
-     //      formData.coordinates = coordinates
-     // }
-     // delete formData.gpsLat
-     // delete formData.gpsLng
-     console.log(formData)
      return this.model('Device')
           .findOne({ _id: mongoose.Types.ObjectId(deviceID) })
           .select('permissions createdBy imgPath info')
@@ -226,7 +230,7 @@ deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtensi
                     const origImgPath = doc.info.imgPath
                     if (imgExtension) formData.info.imgPath = `images/devices/${doc.id}.${imgExtension}`
 
-                    const formDataNested = {...formData, info: {...doc.info, ...(formData.info)}}    // merge original nested object "info"
+                    const formDataNested = { ...formData, info: { ...doc.info, ...(formData.info) } }    // merge original nested object "info"
                     console.log("updating Device> ", formDataNested)
                     return doc.updateOne(formDataNested).then(() => origImgPath)
                } else {
@@ -288,7 +292,7 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
                          })
 
                          SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay)
-                         doc.update({ "sensors.historical.updatedAt": updateTime }).exec()
+                         doc.updateOne({ "sensors.historical.updatedAt": updateTime }).exec()
                     }
 
                     return { deviceID: doc._id.toString(), publicRead: doc.publicRead, permissions: { read: doc.permissions.read } }
@@ -364,19 +368,6 @@ function prepareStateUpdate(data, updatedAt) {
      })
 
      return result
-}
-
-
-deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, state, updateTime) {
-     const updateStateQuery = prepareStateUpdate(state, updateTime)
-
-     const doc = await this.model('Device').findOneAndUpdate({
-          createdBy, topic
-     }, {
-          $set: { ...updateStateQuery, ack: updateTime }
-     }, { fields: { "permissions.control": 1 } }).lean()
-     if (!doc) throw new Error("Invalid device")
-     return doc
 }
 
 

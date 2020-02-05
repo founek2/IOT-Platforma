@@ -4,20 +4,20 @@ import Tooltip from '@material-ui/core/Tooltip'
 
 const styles = {
     wrapper: {
-        width: 18,
-        height: 18,
+        width: 22,
+        height: 22,
         borderRadius: "50%",
         display: 'inline-block',
-        top: 5,
-        right: 5,
+        top: 3,
+        right: 3,
         position: 'absolute',
     },
     circle: {
         width: 10,
         height: 10,
         borderRadius: "50%",
-        left: 4,
-        top: 4,
+        left: 6,
+        top: 6,
         position: 'absolute',
     },
     green: {
@@ -42,7 +42,7 @@ const CircleComponent = React.forwardRef(
 
 function Circle({ color, classes, tooltipText }) {
     return (
-        <Tooltip title={tooltipText} arrow={true} placement="bottom">
+        <Tooltip title={tooltipText} placement="bottom" arrow={true}>
             <CircleComponent color={color} classes={classes} />
         </Tooltip>)
 }

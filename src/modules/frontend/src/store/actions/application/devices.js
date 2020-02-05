@@ -14,7 +14,7 @@ import {
      deleteDevice as deleteDeviceApi,
      fetchDeviceData as fetchDeviceDataApi,
      updateState as updateStateApi,
-} from '../../../api/device'
+} from '../../../api/deviceApi'
 import { getDevices } from '../../../utils/getters'
 import objectDiff from 'framework-ui/src/utils/objectDiff'
 import { transformSensorsForBE } from '../../../utils/transform'

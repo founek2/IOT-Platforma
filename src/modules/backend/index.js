@@ -24,7 +24,7 @@ app.server = http.createServer(app)
 app.io = require("socket.io")(app.server, { path: "/websocket/io" })
 
 // serve static files
-app.use(express.static('deploy'))
+// app.use(express.static('deploy'))
 
 app.use(express.urlencoded({ extended: true }))
 
@@ -89,9 +89,9 @@ initializeDb(config, db => {
 
      app.use("/api/*", (req, res) => res.sendStatus(404))
      // fallback index
-     app.use('/*', function (req, res) {
-          res.sendFile('index.html', { root: './deploy' })
-     })
+     // app.use('/*', function (req, res) {
+     //      res.sendFile('index.html', { root: './deploy' })
+     // })
 
      app.server.listen(process.env.PORT || config.port, () => {
           console.log(`Started on port ${app.server.address().port}`)

@@ -8,15 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
 
-const createListItems = (array, clickHandler, classes) => {
-     const createOption = obj => (
-          <ListItem key={obj.value} className={classes.listItem} onClick={() => clickHandler(obj)}>
-               <ListItemText primary={obj.label} classes={{ primary: classes.itemText }} />
-          </ListItem>
-     );
-     return map(createOption, array);
-};
-
 const styles = theme => ({
      root: {
           display: "flex",
@@ -29,7 +20,7 @@ const styles = theme => ({
           // width: "10%",
           backgroundColor: theme.palette.background.paper,
           position: 'relative',
-          overflowY: 'scroll',
+          overflowY: 'auto',
           // overflowX: 'visible',
           // maxHeight: 300,
           // borderRight: '1px solid rgba(0, 0, 0, 0.42)',
@@ -39,19 +30,21 @@ const styles = theme => ({
      },
      ul: {
           backgroundColor: 'inherit',
-          paddingRight: 10
+          paddingRight: 10,
+          paddingLeft: 10,
      },
      itemText: {
           fontSize: 14
      },
      listItem: {
-          paddingLeft: theme.spacing(1),
+          paddingLeft: 0,
           paddingRight: theme.spacing(3),
           paddingTop: 2,
-          paddingBottom: 2
+          paddingBottom: 2,
+          cursor: 'pointer', 
      },
      listHeader: {
-          paddingLeft: theme.spacing(1),
+          paddingLeft: 0,
           paddingRight: theme.spacing(1),
           height: 40,
           fontSize: 16,
@@ -60,7 +53,7 @@ const styles = theme => ({
      chipContainer: {
           padding: theme.spacing(1),
           // maxWidth: 370,
-          overflowY: 'scroll',
+          overflowY: 'auto',
           overflowX: 'hidden'
      },
      errorColor: {
@@ -72,6 +65,15 @@ const styles = theme => ({
           display: "flex"
      }
 });
+
+const createListItems = (array, clickHandler, classes) => {
+     const createOption = obj => (
+          <ListItem key={obj.value} className={classes.listItem} onClick={() => clickHandler(obj)}>
+               <ListItemText primary={obj.label} classes={{ primary: classes.itemText }} />
+          </ListItem>
+     );
+     return map(createOption, array);
+};
 
 class ChipArray extends Component {
      constructor(props) {
@@ -153,7 +155,7 @@ class ChipArray extends Component {
           const { classes, label, required, error, className } = this.props;
           const { chipData, options } = this.state;
           const createChip = data => (
-               <Chip key={data.value} label={data.label} onDelete={this.handleDelete(data)} className={classes.chip} />
+               <Chip key={data.value} label={data.label} onClick={this.handleDelete(data)} onDelete={this.handleDelete(data)}  className={classes.chip} />
           );
 
           const chips = map(createChip, chipData);

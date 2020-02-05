@@ -44,17 +44,6 @@ const processResponse = (dispatch, successMessage) => response => {
                               })
                          )
                     }
-                    // else if (message) {
-                    //      dispatch(
-                    //           addNotification({
-                    //                message: SuccessMessages.getMessage(message),
-                    //                variant: 'success',
-                    //                duration: 3000
-                    //           })
-                    //      )
-                    //      delete json.message
-                    // }
-
                     return json
                }
           })
@@ -78,7 +67,7 @@ function buildParams(params) {
 }
 
 export const jsonSender = async ({ url, token = '', onSuccess, onError, onFinish, method, body, dispatch, successMessage }) => {
-     let catched = false
+     let json = {};
      try {
           const response = await fetch(url, {
                method,
@@ -89,14 +78,13 @@ export const jsonSender = async ({ url, token = '', onSuccess, onError, onFinish
                },
                body: JSON.stringify(body)
           })
-          const json = await processResponse(dispatch, successMessage)(response)
+          json = await processResponse(dispatch, successMessage)(response)
           if(onSuccess) onSuccess(json)
      } catch (e) {
-          catched = true
           checkError(onError)(e)
      }
      onFinish && onFinish()
-     return !catched
+     return json;
 }
 
 export const paramSender = async ({ url, token = '', onSuccess, onError, onFinish, method = 'GET', dispatch, params }) => {
@@ -127,3 +115,5 @@ export const putJson = o(jsonSender, flip(merge)({ method: 'PUT' }))
 export const deleteJson = o(jsonSender, flip(merge)({ method: 'DELETE' }))
 
 export const patchJson = o(jsonSender, flip(merge)({ method: 'PATCH' }))
+
+export const getJson = o(jsonSender, flip(merge)({ method: 'GET' }))

@@ -126,7 +126,7 @@ const CREATE_DEVICE = {
           deepPath: 'CREATE_DEVICE.topic',
           required: true,
           label: 'Topic',
-          validations: [validationFactory('isString', { min: 2, max: 100, startsWith: "/" })]
+          validations: [validationFactory('isString', { min: 2, max: 100, startsWith: "/", pattern: /^(\/[a-zA-Z\d]+){3}$/ })]
      },
      publicRead: {
           deepPath: 'CREATE_DEVICE.publicRead',
@@ -170,7 +170,7 @@ const EDIT_DEVICE = {
           deepPath: 'EDIT_DEVICE.topic',
           required: true,
           label: 'Topic',
-          validations: [validationFactory('isString', { min: 2, max: 100, startsWith: "/" })]
+          validations: [validationFactory('isString', { min: 2, max: 100, startsWith: "/", pattern: /\/.+\/.+\/.+/ })]
      },
 }
 

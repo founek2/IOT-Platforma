@@ -1,20 +1,12 @@
 import React, { Fragment, Component, useEffect, useMemo } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import SensorBox from './sensors/SensorBox'
 import Card from '@material-ui/core/Card'
-import IconButton from '@material-ui/core/IconButton'
-import AddCircle from '@material-ui/icons/AddCircle'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { filter, curry, merge, fromPairs } from 'ramda'
 import { bindActionCreators } from 'redux'
-import { isNotEmpty } from 'ramda-extension'
-
-import { getUserPresence, isUrlHash } from 'framework-ui/src/utils/getters'
 import { getDevices, getSensors, getQueryName } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import * as sensorsActions from '../store/actions/application/sensors'
-import io from '../webSocket'
 import Typography from '@material-ui/core/Typography';
 import Chart from './sensorDetail/Chart'
 import DetailTable from './sensorDetail/DetailTable'
@@ -92,10 +84,10 @@ function transformData(sensorsData, sensorRecipe, sensorName) {
             if (sum.day)
                 oneDay.sum.day[key] += sum.day[key]
 
-            if (sum.night) 
+            if (sum.night)
                 oneDay.sum.night[key] += sum.night[key]
-            
-                // null is for non recoreded values
+
+            // null is for non recoreded values
             if (oneDay.min[key] === null || oneDay.min[key] > min[key]) oneDay.min[key] = min[key]
             if (oneDay.max[key] === null || oneDay.max[key] < max[key]) oneDay.max[key] = max[key]
         }
@@ -114,13 +106,7 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
             fetchDevicesAction()
             fetchSensorsDataAction(params.deviceId)(resetTime(from))
         } else fetchSensorsDataAction(params.deviceId)(resetTime(from))
-        //   this.listener = updateDevice(this.props.updateDeviceAction)
-        //   io.getSocket().on("sensors", this.listener)
     }, [])
-
-    // componentWillUnmount() {
-    //     //   io.getSocket().off("sensors", this.listener)
-    // }
 
     const hasData =
         device && sensors && sensors.id == device.id && sensors.data &&
@@ -131,8 +117,6 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
                 && (sensors.data[0].nsamples.day || 0) + (sensors.data[0].nsamples.night || 0) >= 2
             )
         )
-    // const [dataArray, sumObject] = hasData ? transformDataMemo(sensors.data, device.sensors.recipe, sensorName) : []
-
     // memoize data, because it always fetches new one, even if they are same
     const [dataArray, sumObject] = useMemo(() =>
         hasData

@@ -4,7 +4,9 @@
  * @param {Date} time 
  * @returns {Array} [text "updated before:", timeout to next change]
  */
-export default function getLastUpdateText(time, prefix="Poslední aktualizace před") {
+export default function getLastUpdateText(time, prefix="Poslední aktualizace před", nowText="Aktuální") {
+     if (time == "Invalid Date") return []
+
     const now = new Date();
     const diff = new Date(now - time);
     const diffSec = Math.round(diff /  1000)
@@ -13,7 +15,7 @@ export default function getLastUpdateText(time, prefix="Poslední aktualizace p�
     const days = Math.floor(hours / 24)
 
     if (diff <= 0 || diffSec < 60)
-         return ['Aktuální', 60 - diffSec];
+         return [nowText, 60 - diffSec];
 
     if ((now.getYear() - time.getYear()) > 0) {
          return [prefix + ' ' + Number(now.getYear() - time.getYear()) + ' rok', null];

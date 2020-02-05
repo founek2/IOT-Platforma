@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import DeviceBox from './devices/DeviceBox'
+import ControlBox from './devices/ControlBox'
 import Card from '@material-ui/core/Card'
 import IconButton from '@material-ui/core/IconButton'
 import AddCircle from '@material-ui/icons/AddCircle'
@@ -77,7 +77,7 @@ class Devices extends Component {
           return (
                <Fragment>
                     {devices.map(data => (
-                         <DeviceBox device={data} key={data.id} onDelete={deleteDeviceAction}/>
+                         <ControlBox device={data} key={data.id} onDelete={deleteDeviceAction}/>
                     ))}
 
                     <Fragment>

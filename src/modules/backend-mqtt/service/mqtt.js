@@ -28,10 +28,9 @@ export default (io) => {
     client.on('message', async function (topic, message) {
         // const idObj = topic.match(/^(?:[^\/]*\/){1}([^\/]*)/)
         // const topicObj = topic.match(/^(?:[^\/]*\/){2}(.*)\//)
-
-        const [_, ownerId, deviceTopic, restTopic] = topic.match(magicRegex);
-        if (!ownerId || !deviceTopic) return;
         try {
+            const [_, ownerId, deviceTopic, restTopic] = topic.match(magicRegex);
+            if (!ownerId || !deviceTopic) return;
             if (restTopic === "" || restTopic === "/") {
 
                 const data = JSON.parse(message.toString())
@@ -78,7 +77,11 @@ export default (io) => {
                 const result = map(flip(contains)(jsonKeys), keys(data))
                 
                 if (data.ack == 1){ // just alive ack
-                    Device.updateAck(ownerId, deviceTopic);
+                    const { permissions: { control = [] }, _id } = await Device.updateAck(ownerId, deviceTopic);
+
+                    control.forEach((id) => {
+                        io.to(id.toString()).emit("ack", {deviceID: _id, updatedAt: updateTime })
+                    })
                 } else if (all(equals(true), result)) { // ack some update
                     console.log("saving to db updateState ack")
                     const { permissions: { control = [] }, _id } = await Device.updateStateByDevice(ownerId, deviceTopic, data, updateTime)

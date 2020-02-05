@@ -30,7 +30,11 @@ const useStyles = makeStyles(theme => ({
     toolbar: {
         minHeight: 0,
         paddingTop: theme.spacing(1),
-        paddingLeft: theme.spacing(2)
+        paddingLeft: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
+    },
+    headCell: {
+        paddingTop: 0,
     }
 }));
 
@@ -68,16 +72,24 @@ function DetailTable({ sensorRecipe: { JSONkey, name, unit }, sumObject }) {
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Datum</TableCell>
+                        <Tooltip title="Den měření" placement="top">
+                            <TableCell className={classes.headCell}>Datum</TableCell>
+                        </Tooltip>
                         <Tooltip title="Od 6h do 20h" placement="top">
-                            <TableCell align="right">Den</TableCell>
+                            <TableCell className={classes.headCell} align="right">Den</TableCell>
                         </Tooltip>
                         <Tooltip title="Od 20h do 6h" placement="top">
-                            <TableCell align="right">Noc</TableCell>
+                            <TableCell className={classes.headCell} align="right">Noc</TableCell>
                         </Tooltip>
-                        <TableCell align="right">Průměr</TableCell>
-                        <TableCell align="right">Min</TableCell>
-                        <TableCell align="right">Max</TableCell>
+                        <Tooltip title="Průměr za celý den" placement="top">
+                            <TableCell className={classes.headCell} align="right">Průměr</TableCell>
+                        </Tooltip>
+                        <Tooltip title="Minimum za celý den" placement="top">
+                            <TableCell className={classes.headCell} align="right">Min</TableCell>
+                        </Tooltip>
+                        <Tooltip title="Maximum za celý den" placement="top">
+                            <TableCell className={classes.headCell} align="right">Max</TableCell>
+                        </Tooltip>
                     </TableRow>
                 </TableHead>
                 <TableBody>

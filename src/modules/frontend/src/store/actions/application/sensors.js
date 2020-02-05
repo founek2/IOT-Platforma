@@ -3,7 +3,7 @@ import { baseLogger } from 'framework-ui/src/Logger'
 import { getFormData, getToken, getFormDescriptors } from 'framework-ui/src/utils/getters'
 import {
      fetchDeviceData as fetchDeviceDataApi
-} from '../../../api/device'
+} from '../../../api/deviceApi'
 import {updateTmpData} from 'framework-ui/src/redux/actions/tmpData'
 
 export function set(data) {

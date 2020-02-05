@@ -11,42 +11,22 @@ import { map, last } from 'ramda'
 import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
 import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip';
+import DeviceBox from '../../components/DeviceBox'
 
 const styles = theme => ({
-     card: {
-          width: "25%",
-          float: 'left',
-          marginBottom: 1,
-
-          [theme.breakpoints.down('sm')]: {
-               width: "100%"
-          },
-     },
-     media: {
-          height: 0,
-          paddingTop: '56.25%' // 16:9
-     },
      data: {
-          //  color: "rgba(0, 0, 0, 0.54)",
-          fontSize: 15
+          fontSize: 15,
      },
      dataContainer: {
-          paddingTop: 17
+          paddingTop: 17,
+          display: "flex",
+          flexDirection: 'column',
      },
      created: {
           fontSize: 11
      },
      'p+p': {
           paddingTop: 100
-     },
-     content: {
-          position: "relative",
-          [theme.breakpoints.up('md')]: {
-               height: 250,
-               paddingLeft: theme.spacing(3),
-               paddingRight: theme.spacing(3),
-               paddingBottom: 0
-          },
      },
      description: {
           maxHeight: 72,
@@ -60,7 +40,7 @@ const styles = theme => ({
                position: "absolute",
                right: 0,
                bottom: 0
-               
+
           },
      }
 
@@ -68,7 +48,7 @@ const styles = theme => ({
 
 function convertDataView(classes, currentData, id) {
      return ({ name, unit, JSONkey, description }) => {
-          const content = <Typography component="p" className={classes.data} color="primary">
+          const content = <Typography component="span" className={classes.data} color="primary">
                {name} : {currentData ? currentData[JSONkey] : "***"} {unit}
           </Typography>
           const contentFInal = description ? <Tooltip title={description} placement="left">
@@ -82,40 +62,40 @@ function convertDataView(classes, currentData, id) {
      }
 }
 
-// TODO přidat komponentu s časem do frameworku - forceUpdate
 class SensorBox extends React.Component {
      render() {
           const { classes, device } = this.props
 
-          const { info: {imgPath, title, description}, sensors, id } = device
+          const { info: { imgPath, title, description }, sensors, id } = device
 
           return (
-               <Card className={classes.card}>
-                    <CardMedia className={classes.media} image={imgPath} />
-                    <CardContent className={classes.content}>
-                         <Link to={`/sensor/${id}`}>
-                              <Typography gutterBottom variant="h5" component="h2">
-                                   {title}
-                              </Typography>
-                         </Link>
-                         <Typography component="p" className={classes.description}>
-                              {description}
+               <DeviceBox
+                    actions={
+                         <CardActions>
+                              <Button size="small" color="primary" disabled>
+                                   Notify
+                              </Button>
+                              <Button size="small" color="primary" disabled>
+                                   Learn More
+                              </Button>
+                         </CardActions>
+                    }
+                    imgPath={imgPath}
+               >
+                    <Link to={`/sensor/${id}`}>
+                         <Typography gutterBottom variant="h5" component="h2">
+                              {title}
                          </Typography>
-                         {sensors.current ?
-                              <Fragment>
-                                   <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
-                                   <UpdatedBefore time={new Date(sensors.current.updatedAt)} className={classes.updatedBefore} />
-                              </Fragment> : null}
-                    </CardContent>
-                    <CardActions>
-                         <Button size="small" color="primary" disabled>
-                              Notify
-                         </Button>
-                         <Button size="small" color="primary" disabled>
-                              Learn More
-                         </Button>
-                    </CardActions>
-               </Card>
+                    </Link>
+                    <Typography component="p" className={classes.description}>
+                         {description}
+                    </Typography>
+                    {sensors.current ?
+                         <Fragment>
+                              <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
+                              <UpdatedBefore time={new Date(sensors.current.updatedAt)} className={classes.updatedBefore} />
+                         </Fragment> : null}
+               </DeviceBox>
           )
      }
 }

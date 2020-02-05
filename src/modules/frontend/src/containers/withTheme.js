@@ -24,7 +24,14 @@ const theme = createMuiTheme({
           },
      },
 	errorColor: '#f44336',
-	grey: '#bdbdbd'
+     grey: '#bdbdbd',
+     // overrides: {
+     //      MuiTooltip: {
+     //        tooltip: {
+     //          fontSize: "0.625rem",
+     //        }
+     //      }
+     //    }
 })
 
 function withTheme(Component) {

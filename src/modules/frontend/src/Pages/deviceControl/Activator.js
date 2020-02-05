@@ -1,59 +1,59 @@
 import React, { Fragment, useState } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import Box from './components/BorderBox';
 import SendIcon from '@material-ui/icons/Send'
-import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography';
 import Loader from 'framework-ui/src/Components/Loader'
+import OnlineCircle from '../../components/OnlineCircle';
+import boxHoc from './components/boxHoc'
 
-const styles = theme => ({
-    rightIcon: {
-        marginLeft: theme.spacing(1),
-    },
+const styles = {
     button: {
-        backgroundColor: "#c0c3c0",
         marginTop: 3,
-        marginBottom: 3,
+        paddingBottom: 5,
+    },
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        textAlign: 'center',
+    },
+    header: {
+        height: "1.7em",
+        overflow: 'hidden',
     },
     circle: {
-        width: 15,
-        height: 15,
-        backgroundColor: "#62bd19",
-        borderRadius: "50%",
-        position: "absolute",
-        top: 23,
-        left: 23,
+        top: 3,
+        right: 3,
+        position: 'absolute',
     }
-})
+}
 
-// TODO zobrazit afk při starším updatedAt
-function Activator({ classes, name, onClick, data, className }) {
+
+function Activator({ classes, name, onClick, data, ackTime, afk }) {
     const [pending, setPending] = useState(false)
-    const { state, updatedAt, inTransition } = data;
+    const { updatedAt, inTransition } = data;
 
-    async function handleClick(e) {
+    async function handleClick() {
         setPending(true)
         await onClick(1)
         setPending(false)
     }
-    return (
-        <Box className={className}>
-            <Typography>{name}</Typography>
-            <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                disabled={pending}
-                onClick={handleClick}
-            >
-                Send
-        {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
-                <SendIcon className={classes.rightIcon} />
 
-            </Button>
+    return (
+        <div onClick={() => !afk && handleClick()} className={classes.root}>
+            <OnlineCircle
+                inTransition={inTransition}
+                ackTime={ackTime}
+                changeTime={updatedAt}
+                afk={afk}
+                className={classes.circle}
+            />
+            <Typography className={classes.header}>{name}</Typography>
+            <IconButton aria-label="delete" className={classes.button} disabled={afk}>
+                <SendIcon fontSize="large" className={classes.icon} />
+            </IconButton>
             <Loader open={pending} className="marginAuto" />
-        </Box>
-    )
+        </div>)
 }
 
-export default withStyles(styles)(Activator)
+export default boxHoc(withStyles(styles)(Activator))

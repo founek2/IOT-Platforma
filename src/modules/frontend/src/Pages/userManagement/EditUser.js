@@ -64,7 +64,7 @@ const styles = theme => ({
           }
      },
      chipArray: {
-          height: 90
+          maxHeight: 120
      }
 })
 

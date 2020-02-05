@@ -26,3 +26,5 @@ export const ControlTypes = [
 	// {value: "switch", label: "vypínač"},
 	// {value: "switch", label: "vypínač"},
 ]
+
+export const AFK_INTERVAL = 10 * 60 * 1000 // 10 min

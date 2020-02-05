@@ -36,7 +36,6 @@ const styles = theme => ({
 
 function updateDevice(updateDeviceAction) {
      return ({ data, deviceID }) => {
-          console.log(data, deviceID)
           updateDeviceAction({
                id: deviceID,
                control: {
@@ -48,14 +47,29 @@ function updateDevice(updateDeviceAction) {
      }
 }
 
+function updateAckDevice(updateDeviceAction) {
+     return ({ updatedAt, deviceID }) => {
+          updateDeviceAction({
+               id: deviceID,
+               ack: updatedAt,
+          })
+     }
+}
+
 function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceStateA, updateDeviceAction }) {
      useEffect(() => {
           fetchDevicesAction()
           const listener = updateDevice(updateDeviceAction)
           io.getSocket().on("control", listener)
 
-          return () => io.getSocket().off("sensors", listener);
-     }, [])
+          const listenerAck = updateAckDevice(updateDeviceAction)
+          io.getSocket().on("ack", listenerAck)
+
+          return () => {
+               io.getSocket().off("sensors", listener)
+               io.getSocket().off("ack", listenerAck)
+          };
+     }, []);
      const arr = [];
      devices.forEach(device => {
           device.control.recipe.forEach(({ name, type, JSONkey, description }) => {
