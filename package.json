@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "devFE": "node scripts/start.js",
-    "build": "env GENERATE_SOURCEMAP=false node scripts/build.js",
+    "build": "rm -rf build/* && env GENERATE_SOURCEMAP=false node scripts/build.js",
     "testttttttt": "node scripts/test.js",
     "test": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/backend/test ./src/modules/framework-ui/test ./src/modules/framework/test --require @babel/register",
     "mochaBackend": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/backend/test --require @babel/register",
