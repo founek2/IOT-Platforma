@@ -5,6 +5,7 @@ import { saveImageBase64, validateFileExtension, deleteImage } from '../service/
 import { transformSensorsForBE, transformControlForBE } from 'frontend/src/utils/transform'
 import fetch from 'node-fetch'
 import {toPairs} from 'ramda'
+import { IMAGES_DEVICES_FOLDER } from '../constants'
 
 export default ({ config, db }) =>
      resource({
@@ -165,7 +166,7 @@ export default ({ config, db }) =>
                const { id } = params;
                Device
                     .delete(id, user)
-                    .then(({ imgPath }) => deleteImage(imgPath))
+                    .then(({ info }) => deleteImage(info.imgPath.replace("/" + IMAGES_DEVICES_FOLDER, "")))
                     .then(() => res.sendStatus(204))
                     .catch(processError(res))
           }

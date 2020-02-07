@@ -6,6 +6,7 @@ import hat from 'hat'
 import { devLog } from 'framework/src/Logger'
 import SensorData from './SensorData'
 import { keys } from 'ramda'
+import { IMAGES_DEVICES_FOLDER } from '../constants'
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -94,7 +95,7 @@ deviceSchema.statics.create = async function ({ topic, ...object }, imgExtension
           permissions: { read: [objID], write: [objID], control: [objID] },
           topic: topic
      })
-     if (imgExtension) newDevice.info.imgPath = `images/devices/${newDevice.id}.${imgExtension}`
+     if (imgExtension) newDevice.info.imgPath = `/${IMAGES_DEVICES_FOLDER}/${newDevice.id}.${imgExtension}`
      devLog("Creating device", newDevice)
      return newDevice
           .save()

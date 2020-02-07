@@ -11,6 +11,7 @@ import { map, last } from 'ramda'
 import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
 import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip';
+import {IMAGES_PREFIX_FOLDER} from '../constants'
 
 const styles = theme => ({
      card: {
@@ -68,7 +69,7 @@ class DeviceBox extends React.Component {
 
           return (
                <Card className={`deviceBox ${classes.card}`}>
-                    <CardMedia className={classes.media} image={imgPath} />
+                    <CardMedia className={classes.media} image={IMAGES_PREFIX_FOLDER + imgPath} />
                     <CardContent className={classes.content}>
                          {children}
                     </CardContent>

@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
 import { bindActionCreators } from 'redux'
 import { prop, omit } from 'ramda'
+import {IMAGES_PREFIX_FOLDER} from '../../constants'
 
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import * as deviceActions from '../../store/actions/application/devices'
@@ -149,7 +150,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                          <div className={classes.contentInner}>
                               <div>
                                    <div className={classes.mediaWrapper}>
-                                        <CardMedia className={classes.media} image={(newImg && newImg.url) || device.info.imgPath} />
+                                        <CardMedia className={classes.media} image={(newImg && newImg.url) || IMAGES_PREFIX_FOLDER + device.info.imgPath} />
                                    </div>
                                    <FieldConnector
                                         component="FileLoader"

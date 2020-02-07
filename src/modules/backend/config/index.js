@@ -1,13 +1,14 @@
 module.exports = {
-    dbUser: process.env.DB_USER ,
-    dbPwd: process.env.DB_PASSWD ,
-    port: 8085 || process.env.BACKEND_PORT,
+    dbUser: process.env.IOT_DB_USER ,
+    dbPwd: process.env.IOT_DB_PASSWD ,
+    port: 8085 || process.env.IOT_BACKEND_PORT,
     portAuth: 8084,
-    bodyLimit: process.env.BODY_LIMIT || "100kb",
-    privateKey: process.env.PRIVATE_KEY || "/Users/martas/Work/certs/jwtRS256.key",
-    publicKey: process.env.PUBLIC_KEY || "/Users/martas/Work/certs/jwtRS256.key.pub",
-    mqttUser: process.env.MQTT_USER,
-    mqttPassword: process.env.MQTT_PASSWD,
+    bodyLimit: process.env.IOT_BODY_LIMIT || "100kb",
+    privateKey: process.env.IOT_PRIVATE_KEY_PATH,
+    publicKey: process.env.IOT_PUBLIC_KEY_PATH,
+    mqttUser: process.env.IOT_MQTT_USER,
+    mqttPassword: process.env.IOT_MQTT_PASSWD,
+    imagesPath: process.env.IOT_IMAGES_PATH,
     testUser: "test1",
     testPassword: "123456"
   };

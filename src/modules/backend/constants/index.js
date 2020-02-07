@@ -1,4 +1,4 @@
 
 
 
-export const IMAGES_DEVICES_FOLDER = `/images/devices`
+export const IMAGES_DEVICES_FOLDER = `devices`
