@@ -6,6 +6,7 @@ import OnlineCircle from '../../../components/OnlineCircle';
 import isAfk from '../../../utils/isAfk'
 import forceUpdateHoc from 'framework-ui/src/Components/forceUpdateHoc'
 import ControlDetail from './ControlDetail'
+import Loader from 'framework-ui/src/Components/Loader'
 
 const styles = {
     circle: {
@@ -30,8 +31,16 @@ const defaultProps = {
     position: "relative",
 };
 
-function BorderBox({ children, className, data, ackTime, component, name, classes, ...other }) {
+function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, ...other }) {
     const [detailOpen, setOpen] = useState(false)
+    const [pending, setPending] = useState(false)
+
+    async function handleClick(e) {
+        setPending(true)
+        await onClick(state ? 0 : 1)
+        setPending(false)
+    }
+
     function handleContext(e) {
         e.preventDefault()
         console.log("context")
@@ -55,7 +64,8 @@ function BorderBox({ children, className, data, ackTime, component, name, classe
                 afk={afk}
                 className={classes.circle}
             />
-            <Component data={data} afk={afk} ackTime={ackTime} name={name} {...other}/>
+            <Component data={data} afk={afk} ackTime={ackTime} name={name} onClick={handleClick} pending={pending} {...other}/>
+            <Loader open={pending} className="marginAuto" />
             <div onContextMenu={handleContext} className={classes.contextMenu}></div>
             <ControlDetail open={detailOpen} data={data} name={name} ackTime={ackTime} handleClose={() => setOpen(false)}/>
         </Box>)

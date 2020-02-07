@@ -20,17 +20,11 @@ const styles = theme => ({
     },
 })
 
-function MySwitch({ classes, name, description, onClick, data, className, ackTime,afk, forceUpdate, ...props }) {
-    const [pending, setPending] = useState(false)
+function MySwitch({ classes, name, description, onClick, data, className, ackTime,afk,pending, forceUpdate, ...props }) {
     const { state } = data;
-    async function handleClick(e) {
-        setPending(true)
-        await onClick(state ? 0 : 1)
-        setPending(false)
-    }
 
     return (
-        <div className={classes.root} onClick={(e) => !afk && handleClick(e)}>
+        <div className={classes.root} onClick={(e) => !afk && !pending && onClick(state ? 0 : 1)}>
             <div className={classes.header}>
                 <Typography component="span" >{name}</Typography>
             </div>
@@ -53,7 +47,6 @@ function MySwitch({ classes, name, description, onClick, data, className, ackTim
                     checked={!!state}
                 />
             </div>
-            <Loader open={pending} className="marginAuto" />
         </div>)
 
 }

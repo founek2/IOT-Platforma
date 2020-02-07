@@ -28,23 +28,13 @@ const styles = {
 }
 
 
-function Activator({ classes, name, onClick, data, ackTime, afk }) {
-    const [pending, setPending] = useState(false)
-    const { updatedAt, inTransition } = data;
-
-    async function handleClick() {
-        setPending(true)
-        await onClick(1)
-        setPending(false)
-    }
-
+function Activator({ classes, name, onClick, data, ackTime, afk, pending }) {
     return (
-        <div onClick={() => !afk && handleClick()} className={classes.root}>
+        <div onClick={() => !afk && !pending && onClick(1)} className={classes.root}>
             <Typography className={classes.header}>{name}</Typography>
-            <IconButton aria-label="delete" className={classes.button} disabled={afk}>
+            <IconButton aria-label="delete" className={classes.button} disabled={afk || pending}>
                 <SendIcon fontSize="large" className={classes.icon} />
             </IconButton>
-            <Loader open={pending} className="marginAuto" />
         </div>)
 }
 

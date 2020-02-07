@@ -67,7 +67,7 @@ class SensorBox extends React.Component {
           const { classes, device } = this.props
 
           const { info: { imgPath, title, description }, sensors, id } = device
-
+          const time = new Date(sensors.current.updatedAt);
           return (
                <DeviceBox
                     actions={
@@ -93,7 +93,7 @@ class SensorBox extends React.Component {
                     {sensors.current ?
                          <Fragment>
                               <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
-                              <UpdatedBefore time={new Date(sensors.current.updatedAt)} className={classes.updatedBefore} />
+                              <UpdatedBefore updateTime={time} time={time} className={classes.updatedBefore} />
                          </Fragment> : null}
                </DeviceBox>
           )
