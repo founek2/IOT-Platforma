@@ -19,7 +19,7 @@
     "buildBE": "babel src/modules -d distBE",
     "server1": "node distBE/backend/index.js",
     "server2": "node distBE/backend-mqtt/index.js",
-    "serveFE": "cp -r build/* \"$IOT_DEPLOY_PATH\"",
+    "serveFE": "rm -rf \"$IOT_DEPLOY_PATH\"/* && cp -r build/* \"$IOT_DEPLOY_PATH\"",
     "deploy": "yarn build && yarn serveFE && yarn buildBE"
   },
   "dependencies": {
