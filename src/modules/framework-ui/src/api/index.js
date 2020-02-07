@@ -16,16 +16,19 @@ const processResponse = (dispatch, successMessage) => response => {
           dispatch(addNotification({ message: ErrorMessages.getMessage('payloadTooLarge'), variant: 'error', duration: 3000 }))
           throw new Error('breakChain')
      } else if (status === 204) {
-          if (response.status === 204) {
-               if (successMessage)
-                    return dispatch(
-                         addNotification({
-                              message: SuccessMessages.getMessage(successMessage),
-                              variant: 'success',
-                              duration: 3000
-                         })
-                    )
-          }
+
+          if (successMessage)
+               return dispatch(
+                    addNotification({
+                         message: SuccessMessages.getMessage(successMessage),
+                         variant: 'success',
+                         duration: 3000
+                    })
+               )
+
+     } else if (status != 200 && status != 208) { // 208 - my error code
+          dispatch(addNotification({ message: ErrorMessages.getMessage('unexpectedError'), variant: 'error', duration: 3000 }))
+          throw new Error('breakChain')
      } else {
           return response.json().then(json => {
                const { message, dontShow } = json
@@ -79,7 +82,7 @@ export const jsonSender = async ({ url, token = '', onSuccess, onError, onFinish
                body: JSON.stringify(body)
           })
           json = await processResponse(dispatch, successMessage)(response)
-          if(onSuccess) onSuccess(json)
+          if (onSuccess) onSuccess(json)
      } catch (e) {
           checkError(onError)(e)
      }

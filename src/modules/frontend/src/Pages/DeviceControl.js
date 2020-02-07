@@ -35,14 +35,15 @@ const styles = theme => ({
 })
 
 function updateDevice(updateDeviceAction) {
-     return ({ data, deviceID }) => {
+     return ({ data, deviceID, updatedAt }) => {
           updateDeviceAction({
                id: deviceID,
                control: {
                     current: {
                          data
                     }
-               }
+               },
+               ack: updatedAt,
           })
      }
 }
@@ -65,9 +66,12 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
           const listenerAck = updateAckDevice(updateDeviceAction)
           io.getSocket().on("ack", listenerAck)
 
+          window.addEventListener('focus', fetchDevicesAction)   // TODO fetch only control part of devices
+
           return () => {
                io.getSocket().off("sensors", listener)
                io.getSocket().off("ack", listenerAck)
+               window.removeEventListener('focus', fetchDevicesAction)
           };
      }, []);
      const arr = [];

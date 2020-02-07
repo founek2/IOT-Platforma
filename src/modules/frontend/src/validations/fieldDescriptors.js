@@ -196,7 +196,7 @@ const EDIT_SENSORS = {
      },
      'JSONkey[]': {
           deepPath: 'EDIT_SENSORS.JSONkey[]',
-          label: 'Klíč',
+          label: 'Označení',
           required: true,
           validations: [validationFactory('isString', { min: 1, max: 20, notEqual: "time" })]
      },

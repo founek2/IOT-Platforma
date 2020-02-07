@@ -24,7 +24,7 @@ export default function (WrappedComponent) {
             console.log("on focus")
             window.addEventListener('focus', forceUpdate)
             return () => window.removeEventListener('focus', forceUpdate)
-        }, [updateState])
+        }, [])
 
         return  <WrappedComponent forceUpdate={val} {...props} />
     }

@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import SensorBox from './sensors/SensorBox'
 import Card from '@material-ui/core/Card'
@@ -42,30 +42,25 @@ function updateDevice(updateDeviceAction) {
 }
 
 // TODO stáhnout nová data, pokud na event focus budou starší jak cca 30min?
-class Sensors extends Component {
-     componentDidMount() {
-          this.props.fetchDevicesAction()
-          this.listener = updateDevice(this.props.updateDeviceAction)
-          io.getSocket().on("sensors", this.listener)
-     }
+function Sensors({ fetchDevicesAction,updateDeviceAction, devices, classes }) {
+     useEffect(() => {
+          fetchDevicesAction()
+          const listener = updateDevice(updateDeviceAction)
+          io.getSocket().on("sensors", listener)
+          return () => io.getSocket().off("sensors", listener)
+     }, [])
 
-     componentWillUnmount() {
-          io.getSocket().off("sensors", this.listener)
-     }
-
-     render() {
-          const { devices, classes } = this.props;
-          return (
-               <Fragment>
-                    {isNotEmpty(devices)
-                         ? devices.map(data => (
-                              <SensorBox device={data} key={data.id} />
-                         ))
-                         : <Typography className={classes.noDevices}>Nebyla nalezena žádná zařízení s naměřenými daty</Typography>}
-               </Fragment>
-          )
-     }
+     return (
+          <Fragment>
+               {isNotEmpty(devices)
+                    ? devices.map(data => (
+                         <SensorBox device={data} key={data.id} />
+                    ))
+                    : <Typography className={classes.noDevices}>Nebyla nalezena žádná zařízení s naměřenými daty</Typography>}
+          </Fragment>
+     )
 }
+
 
 const _mapStateToProps = state => ({
      devices: filter(readableWithSensors, getDevices(state))

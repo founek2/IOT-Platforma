@@ -97,6 +97,7 @@ export function updatePermissions(id) {
 
 export function deleteDevice(id) {
      return async function (dispatch, getState) {
+          baseLogger("DELETE_DEVICE")
           return deleteDeviceApi({
                token: getToken(getState()),
                id,
@@ -130,6 +131,7 @@ export function add(data) {
 
 export function fetch() {
      return function (dispatch, getState) {
+          baseLogger("FETCH_DEVICES")
           return fetchDevicesApi(
                {
                     token: getToken(getState()),

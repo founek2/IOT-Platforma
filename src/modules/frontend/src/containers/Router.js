@@ -7,20 +7,15 @@ import Sensors from '../Pages/Sensors'
 import SensorDetail from '../Pages/SensorDetail'
 import RegisterUser from '../Pages/RegisterUser'
 import { bindActionCreators } from 'redux'
-import { isNotEmpty } from 'ramda-extension'
 import { head, map, is } from 'ramda'
 import { getPathsWithComp } from 'framework-ui/src/privileges'
 
 import { getHistory, getUserPresence, getGroups, getToken } from 'framework-ui/src/utils/getters'
-import { hydrateState } from 'framework-ui/src/redux/actions'
 import { updateHistory, setHistory } from 'framework-ui/src/redux/actions/history'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
-import objectDiff from 'framework-ui/src/utils/objectDiff'
 import Loader from 'framework-ui/src/Components/Loader'
 import parseQuery from 'framework-ui/src/utils/parseQuery'
-import webSocket from '../webSocket'
-import LoginCallbacks from 'framework-ui/src/callbacks/login'
-import LogoutCallbacks from 'framework-ui/src/callbacks/logout'
+import { hydrateState } from 'framework-ui/src/redux/actions'
 
 import '../privileges' // init
 
@@ -35,14 +30,7 @@ function createRoute({ path, Component }) {
 class Router extends Component {
      constructor(props) {
           super(props)
-
-          const state = this.props.hydrateStateAction()
-          if (state) {
-               webSocket.init(getToken(state))
-          } else webSocket.init()
-
-          LoginCallbacks.register((token) => webSocket.init(token))
-          LogoutCallbacks.register(() => webSocket.init())
+          this.props.hydrateStateAction() // must be done before rendering
 
           this.props.setHistoryAction({
                pathname: defLocation.pathname,
@@ -71,9 +59,7 @@ class Router extends Component {
           }
 
           return (
-               
                <Suspense fallback={<Loader open={true} />}>
-                 
                     <RouterReact history={history}>
                               <Layout history={history}/>
                               <Switch>
@@ -98,15 +84,16 @@ const _mapStateToProps = state => ({
 const _mapActionsToProps = dispatch => ({
      ...bindActionCreators(
           {
-               hydrateStateAction: hydrateState,
                updateHistoryAction: updateHistory,
                setHistoryAction: setHistory,
                updateTmpDataAction: updateTmpData,
+               hydrateStateAction: hydrateState,
 
           },
           dispatch
      )
 })
+
 export default connect(
      _mapStateToProps,
      _mapActionsToProps

@@ -1,19 +1,54 @@
 import io from 'socket.io-client'
+import { devLog } from 'framework-ui/src/Logger'
+import {T} from "ramda"
 
-let socket;
+class MySocket {
+    constructor() {
+        this._on = [];
+        this.socket = {on: T, off: T, close: T}
+    }
 
-function init(token = "") {
-    if (socket) socket.close()
-    socket = io( {
+    init = (token) => {
+        const newCon = io({
             query: {
                 token
             },
         })
-        socket.open()
+        newCon.open()
+        mySocket.applyListeners(newCon)
+    
+        this.socket = newCon;
+    }
+
+    on = (action, fn) => {
+        this.socket.on(action, fn)
+        this._on.push([action, fn])
+    }
+
+    off = (action, fn) => {
+        this.socket.off(action, fn)
+        this._on.filter(([a, f]) => action != a && f != fn)
+    }
+    applyListeners = (socket) => {
+        this._on.forEach(([action, fn]) => socket.on(action, fn))
+    }
+
+    close = () => {
+        this.socket.close()
+    }
+}
+
+const mySocket = new MySocket();
+
+function init(token = "") {
+    devLog("connecting to socket")
+    mySocket.close();
+    mySocket.init(token)
+    
 }
 
 function getSocket() {
-    return socket
+    return mySocket
 }
 
 export default {

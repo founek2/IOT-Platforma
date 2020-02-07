@@ -14,8 +14,8 @@ export function validationFactoryFn(validationFns) {
 					return true; // Validation passed
 				}
 			} else {
-				throw new Error("Missing validation Fn named: " + functionName)
 				errorLog("Missing validation Fn named: " + functionName);
+				throw new Error("Missing validation Fn named: " + functionName)
 			}
 		}
 	}

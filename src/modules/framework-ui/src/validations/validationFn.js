@@ -11,9 +11,9 @@ export const isBool = value =>
 export const isString = (value, { min, max, startsWith, notEqual, pattern } = {}) => {
      if (!is(String, value)) return `notString`
 
+     if (startsWith && !(new RegExp(`^${startsWith}`).test(value))) return 'notStartsWith'
      if (min && !minLength(value, min)) return 'lowerLength'
      if (max && !maxLength(value, max)) return 'higherLength'
-     if (startsWith && !(new RegExp(`^${startsWith}`).test(value))) return 'notStartsWith'
      if (pattern && !pattern.test(value)) return 'notMatchPattern'
      if (notEqual && equals(value, notEqual)) return "stringCannotEqualTo"
      return true

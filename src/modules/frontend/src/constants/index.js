@@ -28,3 +28,5 @@ export const ControlTypes = [
 ]
 
 export const AFK_INTERVAL = 10 * 60 * 1000 // 10 min
+
+export const IMAGES_PREFIX_FOLDER = "/images"
