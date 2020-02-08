@@ -2,7 +2,9 @@ import { errorLog } from '../Logger';
 import ValiadtionMessages from '../localization/validationMessages';
 import * as validationFunctions from './validationFn';
 
-export function validationFactoryFn(validationFns) {
+let validationFns = validationFunctions;
+
+export function validationFactoryFn() {
 	return function(functionName, arg) {
 		return function(fieldValue) {
 			const Fn = validationFns[functionName];
@@ -21,6 +23,8 @@ export function validationFactoryFn(validationFns) {
 	}
 }
 
-export default validationFactoryFn({
-	...validationFunctions,
-});
+export function registerFunctions(functions) {
+	validationFns = {...validationFns, ...functions}
+}
+
+export default validationFactoryFn();

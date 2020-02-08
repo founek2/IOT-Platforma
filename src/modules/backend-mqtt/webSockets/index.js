@@ -22,14 +22,10 @@ export default (io) => {
                 next()
             })
             .catch(() => next())
-
-
-
-        // return next(new Error('authentication error'));
     });
 
     io.on("connection", socket => {
-        console.log("New client connected");
+        console.log("New client connected", socket.request.user ? socket.request.user.id : "unknown");
         if (socket.request.user) socket.join(socket.request.user.id)
 
         socket.join("public")

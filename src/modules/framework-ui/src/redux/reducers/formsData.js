@@ -44,7 +44,6 @@ export const updateRegisteredField = {
 export const updateRegisteredFields = {
 	next(state, {payload}) {
 		const fieldState = getInPath('registeredFields', state);
-		console.log("merging", fieldState, payload)
 		const newFieldState = merge(fieldState, payload);
 		const updatedState = setInPath('registeredFields', newFieldState, state)
           return updatedState;

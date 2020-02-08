@@ -43,4 +43,4 @@ export const isEmail = value => /[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.
 
 export const isFile = value => and(or(has('data', value), has('url', value)), has('name', value)) || 'isNotFile'    // TODO validate extension
 
-export const isOneOf = (value, array) => array.some(obj => value === obj.value) || "isNotOneOf"
+export const isOneOf = (value, {values}) => values.some(obj => value === obj.value) || "isNotOneOf"

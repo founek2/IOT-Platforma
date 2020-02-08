@@ -14,7 +14,6 @@ import { is } from 'ramda'
 import chainHandler from '../utils/chainHandler'
 import { isNotNil } from 'ramda-extension'
 import { errorLog } from '../Logger'
-// import TextField from '@material-ui/core/TextField'
 import Select from '../Components/Select'
 import ChipArray from './ChipArray'
 import FileLoader from './fieldConnector/FileLoader'
@@ -25,8 +24,8 @@ import Checkbox from './fieldConnector/Checkbox'
 const Components = {
      TextField: TextField,
      Select: Select,
-	ChipArray: ChipArray,
-	FileLoader: FileLoader,
+     ChipArray: ChipArray,
+     FileLoader: FileLoader,
      PasswordField: PasswordField,
      Checkbox: Checkbox,
 }
@@ -38,14 +37,14 @@ class fieldConnector extends Component {
           super(props)
           const { updateFormField, deepPath, descriptor, value, state } = this.props
           // registerField(deepPath)
-          if (descriptor && !value && descriptor.defaultValue !== undefined){
+          if (descriptor && !value && descriptor.defaultValue !== undefined) {
                console.log("setting", deepPath, value, state)
                console.log("val", getFieldVal(deepPath, state))
                // updateFormField(deepPath, descriptor.defaultValue);
           }
      }
      componentDidMount() {
-          const {registerField, deepPath, value, validateField} = this.props
+          const { registerField, deepPath, value, validateField } = this.props
           registerField(deepPath)
           if (value) validateField(deepPath, true)
      }
@@ -94,51 +93,40 @@ class fieldConnector extends Component {
                onChange && onChange(e)
           }
           if (isNotNil(descriptor)) {
-               const required = isRequired(descriptor, formsData)
+               const required = isRequired(descriptor, formsData)     // check when condition 
                const finalLabel = label ? label : descriptor.label;
-               if (is(Object, component)) {
-                    const compWithProps = React.cloneElement(component, {
-                         value: value || '',
-                         onChange: onChangeHandler,
-                         helperText: errorMessages && errorMessages[0],
-                         FormHelperTextProps: { error: !valid },
-                         error: !valid,
-                         label: finalLabel
-                    })
-                    return compWithProps
-               } else {
-                    const Component = Components[component]
-                    let options = {}
-                    let dontHaveRequired
-                    if (component === 'Select') {
-                         options = { selectOptions }
-                         dontHaveRequired = true
-                    }
-                    if (component === 'ChipArray') options = { optionsData }
-                    return (
-                         <Component
-                              onChange={onChangeHandler}
-                              value={value || ''}
-                              className={className}
-                              error={!valid}
-                              required={required}
-                              helperText={errorMessages && errorMessages[0]}
-                              FormHelperTextProps={{ error: !valid }}
-                              onFocus={onFocus}
-                              onBlur={chainHandler([
-                                   () => pristine && value && this._changePristine(),
-                                   this._validateField,
-                                   onBlur
-                              ])}
-                              name={name}
-                              autoFocus={autoFocus}
-                              onKeyDown={onEnter && onEnterRun(onEnter)}
-                              label={required && dontHaveRequired ? finalLabel + ' *' : finalLabel}
-                              {...options}
-                              {...fieldProps}
-                         />
-                    )
+ 
+               const Component = is(String, component) ? Components[component] : component;
+               let options = {}
+               let dontHaveRequired
+               if (component === 'Select') {
+                    options = { selectOptions }
+                    dontHaveRequired = true
                }
+               if (component === 'ChipArray') options = { optionsData }
+               return (
+                    <Component
+                         onChange={onChangeHandler}
+                         value={value || ''}
+                         className={className}
+                         error={!valid}
+                         required={required}
+                         helperText={errorMessages && errorMessages[0]}
+                         FormHelperTextProps={{ error: !valid }}
+                         onFocus={onFocus}
+                         onBlur={chainHandler([
+                              () => pristine && value && this._changePristine(),
+                              this._validateField,
+                              onBlur
+                         ])}
+                         name={name}
+                         autoFocus={autoFocus}
+                         onKeyDown={onEnter && onEnterRun(onEnter)}
+                         label={required && dontHaveRequired ? finalLabel + ' *' : finalLabel}
+                         {...options}
+                         {...fieldProps}
+                    />
+               )
           } else {
                errorLog('Missing descriptor: ' + deepPath)
                return null
