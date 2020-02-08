@@ -1,5 +1,5 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory'
-import { AuthTypes, ControlTypes, SampleIntervals } from '../constants'
+import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE } from '../constants'
 import { evolve, replace, mapObjIndexed, assocPath } from 'ramda'
 
 function transformToForm(formName, fields) {
@@ -224,7 +224,7 @@ const EDIT_CONTROL = {
           deepPath: 'EDIT_SENSORS.type[]',
           label: 'Typ',
           required: true,
-          validations: [validationFactory('isOneOf', ControlTypes)]
+          validations: [validationFactory('isOneOf', { values: ControlTypes })]
      },
      'JSONkey[]': {
           deepPath: 'EDIT_SENSORS.JSONkey[]',
@@ -245,6 +245,22 @@ const EDIT_CONTROL = {
      }
 }
 
+const EDIT_RGB = {
+     "type": {
+          deepPath: 'EDIT_RGB.type',
+          label: 'Typ',
+          required: true,
+          validations: [validationFactory('isOneOf', {values: RgbTypes})]
+     },
+     "color": {
+          deepPath: 'EDIT_RGB.color',
+          label: 'Barva',
+          required: true,
+          when: ({ type }) => type === LINEAR_TYPE,
+          validations: [validationFactory('isColor')]
+     },
+}
+
 const USER_MANAGEMENT = {
      selected: {
           deepPath: 'USER_MANAGEMENT.selected',
@@ -257,11 +273,13 @@ const EDIT_PERMISSIONS = {
      read: {
           deepPath: 'EDIT_PERMISSIONS.read',
           label: "Čtení"
-     }, write: {
+     },
+     write: {
           deepPath: 'EDIT_PERMISSIONS.write',
           required: true,
           label: "Editace"
-     }, control: {
+     },
+     control: {
           deepPath: 'EDIT_PERMISSIONS.control',
           label: "Ovládání"
      }
@@ -277,4 +295,5 @@ export default {
      EDIT_SENSORS,
      EDIT_PERMISSIONS,
      EDIT_CONTROL,
+     EDIT_RGB,
 }

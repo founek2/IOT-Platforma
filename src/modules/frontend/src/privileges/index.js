@@ -1,6 +1,6 @@
 import BuildIcon from '@material-ui/icons/Build'
 import DevicesIcon from '@material-ui/icons/DevicesOther'
-import privilegesFactory from 'framework-ui/src/privileges'
+import initPrivileges from 'framework-ui/src/privileges'
 import { lazy } from 'react'
 
 import groupsHeritage from './groupsHeritage'
@@ -26,4 +26,4 @@ export const routes = {
      root: {}
 }
 
-privilegesFactory(routes, groupsHeritage)
+initPrivileges(routes, groupsHeritage)

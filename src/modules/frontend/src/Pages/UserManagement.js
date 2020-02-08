@@ -92,18 +92,19 @@ class UserManagement extends Component {
                               <FieldConnector
                                    deepPath="USER_MANAGEMENT.selected"
                                    component={
-                                        <EnchancedTable
-                                             dataProps={userProps(getAllowedGroups(groups))}
-                                             data={users}
-                                             toolbarHead="Seznam"
-                                             onDelete={this.handleDelete}
-                                             orderBy="userName"
-                                             // enableCreation={isAdmin}
-                                             onAdd={() => this.updateCreateForm({ open: true })}
-                                             enableEdit={isAdmin}
-                                             onEdit={id => history.push({ hash: "editUser", search: "?id=" + id })}
-                                             rowsPerPage={10}
-                                        />
+                                        () =>
+                                             <EnchancedTable
+                                                  dataProps={userProps(getAllowedGroups(groups))}
+                                                  data={users}
+                                                  toolbarHead="Seznam"
+                                                  onDelete={this.handleDelete}
+                                                  orderBy="userName"
+                                                  // enableCreation={isAdmin}
+                                                  onAdd={() => this.updateCreateForm({ open: true })}
+                                                  enableEdit={isAdmin}
+                                                  onEdit={id => history.push({ hash: "editUser", search: "?id=" + id })}
+                                                  rowsPerPage={10}
+                                             />
                                    }
                               />
                          </CardContent>

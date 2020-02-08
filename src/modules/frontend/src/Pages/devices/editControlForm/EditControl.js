@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles'
 import ClearIcon from '@material-ui/icons/Clear'
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import React from 'react'
-import { ControlTypes } from "../../../constants/index"
+import { ControlTypes } from "../../../constants"
 
 const styles = theme => ({
     contentInner: {

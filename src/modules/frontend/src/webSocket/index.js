@@ -16,7 +16,6 @@ class MySocket {
         })
         newCon.open()
         mySocket.applyListeners(newCon)
-    
         this.socket = newCon;
     }
 
@@ -30,7 +29,9 @@ class MySocket {
         this._on.filter(([a, f]) => action != a && f != fn)
     }
     applyListeners = (socket) => {
-        this._on.forEach(([action, fn]) => socket.on(action, fn))
+        this._on.forEach(([action, fn]) => {
+            socket.on(action, fn)
+        })
     }
 
     close = () => {

@@ -2,7 +2,6 @@ import React, { Fragment, useState } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
-import Loader from 'framework-ui/src/Components/Loader'
 import switchCss from './components/switch/css'
 import boxHoc from './components/boxHoc'
 
@@ -20,7 +19,7 @@ const styles = theme => ({
     },
 })
 
-function MySwitch({ classes, name, description, onClick, data, className, ackTime,afk,pending, forceUpdate, ...props }) {
+function MySwitch({ classes, name, description, onClick, data, ackTime,afk,pending, forceUpdate, ...props }) {
     const { state } = data;
 
     return (
@@ -51,4 +50,6 @@ function MySwitch({ classes, name, description, onClick, data, className, ackTim
 
 }
 
-export default boxHoc(withStyles(styles)(MySwitch))
+export const Content = withStyles(styles)(MySwitch)
+
+export default boxHoc(Content)

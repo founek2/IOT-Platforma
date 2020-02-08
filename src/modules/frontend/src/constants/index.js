@@ -22,7 +22,15 @@ export const SampleIntervals = [
 export const ControlTypes = [
 	{value: "switch", label: "vypínač"},
 	{value: "activator", label: "Aktivátor"},
+	{value: "rgbSwitch", label: "RGB led"},
 	// {value: "switch", label: "vypínač"},
+	// {value: "switch", label: "vypínač"},
+]
+
+export const LINEAR_TYPE = "linear";
+
+export const RgbTypes = [
+	{value: LINEAR_TYPE, label: "Stálá barva"},
 	// {value: "switch", label: "vypínač"},
 	// {value: "switch", label: "vypínač"},
 ]

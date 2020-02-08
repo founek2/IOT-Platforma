@@ -9,11 +9,8 @@ import { bindActionCreators } from 'redux'
 
 function WebSocket({ children, token }) {
     useEffect(() => {
-        webSocket.init()
-
-        LoginCallbacks.register((token) => webSocket.init(token))
-        LogoutCallbacks.register(() => webSocket.init())
-    }, [])
+        webSocket.init(token)
+    }, [token])
 
     return children;
 }

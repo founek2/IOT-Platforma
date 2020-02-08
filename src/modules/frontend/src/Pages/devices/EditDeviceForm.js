@@ -130,11 +130,6 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
           await updateDeviceAction(device.id)
           setPending(false)
      }
-     const handleDelete = async () => {
-          setPending(true)
-          await deleteDeviceAction(device.id)
-          setPending(false)
-     }
 
      const handleFetchApiKey = async () => {
           setPending(true)
@@ -247,7 +242,10 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                />
                <AlertDialog
                     open={openDeleteDialog}
-                    onAgree={() => { setOpenDeleteDialog(false); handleDelete() }}
+                    onAgree={async () => { 
+                         await deleteDeviceAction(device.id)
+                         return setOpenDeleteDialog(false)
+                    }}
                     onClose={() => setOpenDeleteDialog(false)}
                     title="Odstranění zařízení"
                     content="Opravdu chcete odstranit zařízení? Tato akce je nevratná."

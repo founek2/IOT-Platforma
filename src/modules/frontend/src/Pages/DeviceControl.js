@@ -10,10 +10,12 @@ import { bindActionCreators } from 'redux'
 import * as deviceActions from '../store/actions/application/devices'
 import { Typography } from '@material-ui/core'
 import io from '../webSocket'
+import RgbSwitch from './deviceControl/RgbSwitch'
 
 const compMapper = {
      activator: Activator,
      switch: Switch,
+     rgbSwitch: RgbSwitch,
 }
 
 function isControllable(device) {
@@ -36,26 +38,17 @@ const styles = theme => ({
 
 function updateDevice(updateDeviceAction) {
      return ({ data, deviceID, updatedAt }) => {
-          updateDeviceAction({
+          console.log("web socket GOT")
+          const updateObj = {
                id: deviceID,
-               control: {
-                    current: {
-                         data
-                    }
-               },
                ack: updatedAt,
-          })
+          };
+          if (data) updateObj.control = { current: { data } }
+
+          updateDeviceAction(updateObj)
      }
 }
 
-function updateAckDevice(updateDeviceAction) {
-     return ({ updatedAt, deviceID }) => {
-          updateDeviceAction({
-               id: deviceID,
-               ack: updatedAt,
-          })
-     }
-}
 
 function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceStateA, updateDeviceAction }) {
      useEffect(() => {
@@ -63,15 +56,15 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
           const listener = updateDevice(updateDeviceAction)
           io.getSocket().on("control", listener)
 
-          const listenerAck = updateAckDevice(updateDeviceAction)
+          const listenerAck = updateDevice(updateDeviceAction)
           io.getSocket().on("ack", listenerAck)
 
-          window.addEventListener('focus', fetchDevicesAction)   // TODO fetch only control part of devices
+          // window.addEventListener('focus', fetchDevicesAction)   // TODO fetch only control part of devices
 
           return () => {
-               io.getSocket().off("sensors", listener)
+               io.getSocket().off("control", listener)
                io.getSocket().off("ack", listenerAck)
-               window.removeEventListener('focus', fetchDevicesAction)
+               // window.removeEventListener('focus', fetchDevicesAction)
           };
      }, []);
      const arr = [];

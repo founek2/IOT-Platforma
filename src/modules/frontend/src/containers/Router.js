@@ -17,8 +17,6 @@ import Loader from 'framework-ui/src/Components/Loader'
 import parseQuery from 'framework-ui/src/utils/parseQuery'
 import { hydrateState } from 'framework-ui/src/redux/actions'
 
-import '../privileges' // init
-
 const history = createBrowserHistory()
 
 const defLocation = history.location

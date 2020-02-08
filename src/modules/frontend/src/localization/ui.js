@@ -1,6 +1,7 @@
 import { messageFactory } from 'framework-ui/src/localization';
 import "./successMessages"
 import "./errorMessages"
+import "./validationMessages"
 
 const mainMenu = {
      dashboard: 'Dashboard',

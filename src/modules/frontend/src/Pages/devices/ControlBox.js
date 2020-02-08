@@ -103,7 +103,6 @@ function ControlBox({ classes, device, onDelete }) {
                     onAgree={async () => await onDelete(device.id)}
                     onClose={() => setOpenDeleteDialog(false)}
                     title="Odstranění zařízení"
-                    notDisablePending
                     content="Opravdu chcete odstranit zařízení? Tato akce je nevratná."
                />
           </Fragment>

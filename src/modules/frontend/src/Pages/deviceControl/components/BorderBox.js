@@ -35,9 +35,9 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
     const [detailOpen, setOpen] = useState(false)
     const [pending, setPending] = useState(false)
 
-    async function handleClick(e) {
+    async function handleClick(newState) {
         setPending(true)
-        await onClick(state ? 0 : 1)
+        await onClick(newState)
         setPending(false)
     }
 
