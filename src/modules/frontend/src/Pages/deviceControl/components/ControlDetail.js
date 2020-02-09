@@ -20,7 +20,7 @@ function ControlDetail({ data, open, handleClose, ackTime, name }) {
             </DialogTitle>
             <DialogContent dividers>
                 <Typography gutterBottom>
-                    Stav: {state}<br></br>
+                    Stav: {JSON.stringify(state)}<br></br>
                     Změna: {toDateTime(updatedAt)}<br></br>
                     Aktivní: {toDateTime(ackTime)}<br></br>
                     V přechodu: {inTransition ? "ano" : "ne"}<br></br>
