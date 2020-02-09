@@ -47,7 +47,7 @@ const styles = theme => ({
      },
      description: {
           maxHeight: 72,
-          overflowY: 'scroll'
+          overflowY: 'auto'
      },
      updatedBefore: {
           fontSize: 11,

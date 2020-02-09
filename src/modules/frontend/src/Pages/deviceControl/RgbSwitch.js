@@ -40,7 +40,16 @@ const styles = theme => ({
     loader: {
         position: "absolute",
         margin: "0 auto"
-    }
+    },
+    textField: {
+        marginTop: theme.spacing(1),
+        marginLeft: 0,
+        marginRight: 0,
+        width: 200,
+        [theme.breakpoints.down('sm')]: {
+             width: "100%"
+        }
+  }
 })
 
 function RgbSwitch({
@@ -64,10 +73,18 @@ function RgbSwitch({
     const { on } = state;
 
     const onClose = () => setOpen(false);
-    const handleAgree = async () => {
+    // const handleAgree = async () => {
+    //     if (validateForm().valid) {
+    //         setMyPending(true)
+    //         await onClick({ ...formData, on: 1 })
+    //         setMyPending(false)
+    //     }
+    // }
+    const changeColor = async (e) => {
         if (validateForm().valid) {
             setMyPending(true)
-            await onClick({ ...formData, on: 1 })
+            const newData = Object.assign(formData, {color: e.target.value, on: 1}) // formData are old -> add actual color + add on:1 to turnOn led
+            await onClick(newData)
             setMyPending(false)
         }
     }
@@ -86,7 +103,7 @@ function RgbSwitch({
                 afk={afk}
                 onClick={() => !afk && !pending && onClick({ ...state, on: on === 1 ? 0 : 1 })}
             />
-            <IconButton size="small" className={classes.button} onClick={handleOpen}>
+            <IconButton size="small" className={classes.button} onClick={handleOpen} disabled={afk}>
                 <TuneIcon className={classes.icon} />
             </IconButton>
 
@@ -101,6 +118,7 @@ function RgbSwitch({
                     <FieldConnector
                         component="Select"
                         deepPath='EDIT_RGB.type'
+                        className={classes.textField}
                         selectOptions={RgbTypes
                             .map(
                                 ({ value, label }) =>
@@ -114,9 +132,10 @@ function RgbSwitch({
                     {LINEAR_TYPE == colorType ? <FieldConnector
                         deepPath="EDIT_RGB.color"
                         component={ColorPicker}
+                        onChange={changeColor}
                     /> : null}
                 </DialogContent>
-                <DialogActions className={classes.actions}>
+                {/* <DialogActions className={classes.actions}>
                     <Button onClick={onClose} color="primary">
                         Zrušit
                     </Button>
@@ -127,7 +146,7 @@ function RgbSwitch({
                         </Button>
 
                     </div>
-                </DialogActions>
+                </DialogActions> */}
             </Dialog>
         </Fragment>
     )

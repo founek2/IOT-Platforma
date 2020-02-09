@@ -7,13 +7,20 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 const styles = theme => ({
     colorWrap: {
         width: 196,
-        margin: `${theme.spacing(2)}px auto 0`
+        margin: `${theme.spacing(2)}px auto 0`,
+        paddingBottom: 14   // to negate -14px padding of colorPicker
     },
     colored: {
         height: 30,
         borderRadius: 4
     },
-    textField: textFieldStyles(theme).textField,
+    textField: {
+          marginTop: theme.spacing(1),
+          width: 200,
+          [theme.breakpoints.down('sm')]: {
+               width: "100%"
+          }
+    }
 })
 
 function ColorPicker({ value, onChange, classes, error, FormHelperTextProps, helperText }) {
@@ -28,6 +35,7 @@ function ColorPicker({ value, onChange, classes, error, FormHelperTextProps, hel
                     color={value}
                     onChange={(color) => onChange({ target: { value: color.hex } })}
                     width="200"
+                    style={{marginBottom: 0}}
                 />
             </div>
         </div>)
