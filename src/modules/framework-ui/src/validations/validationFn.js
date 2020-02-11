@@ -1,4 +1,4 @@
-import { is, and, has, or, equals } from 'ramda'
+import { is, and, has, or, equals, isNil } from 'ramda'
 import { isNotEmpty } from 'ramda-extension'
 
 const maxLength = (value, max) => value && value.length <= max
@@ -33,7 +33,7 @@ export const isNumber = (value, { max, min } = {}) => {
      return true
 }
 
-export const isRequired = value => (value && isNotEmpty(value)) || 'isRequired'
+export const isRequired = value => (!isNil(value) && isNotEmpty(value)) || 'isRequired'
 
 export const isNotEmptyArray = value => (is(Array, value) && isNotEmpty(value)) || 'isRequired'
 
