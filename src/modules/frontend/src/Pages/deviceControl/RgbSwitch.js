@@ -7,7 +7,7 @@ import TuneIcon from '@material-ui/icons/Tune';
 import IconButton from '@material-ui/core/IconButton'
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import { RgbTypes, LINEAR_TYPE } from "../../constants"
-import Button from '@material-ui/core/Button';
+import Slider from './components/Slider'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -115,6 +115,12 @@ function RgbSwitch({
             >
                 <DialogTitle id="alert-dialog-title">Změna barvy</DialogTitle>
                 <DialogContent className={classes.content}>
+                    <FieldConnector
+                        deepPath='EDIT_RGB.bright'
+                        className={classes.textField}
+                        component={Slider}
+                        onChange={changeBright}
+                    />
                     <FieldConnector
                         component="Select"
                         deepPath='EDIT_RGB.type'
