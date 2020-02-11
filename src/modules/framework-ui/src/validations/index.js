@@ -1,4 +1,4 @@
-import { values, forEach, keys, is, clone, forEachObjIndexed, uniq, F } from 'ramda';
+import { values, forEach, keys, is, clone, forEachObjIndexed, uniq, F, isNil } from 'ramda';
 import { isNotEmpty } from 'ramda-extension';
 import getInPath from '../utils/getInPath';
 import {
@@ -14,6 +14,7 @@ import setInPath from '../utils/setInPath';
 import validationFactory from './validationFactory';
 
 const requiredFn = validationFactory('isRequired');
+const notEmptyVal = (val) => requiredFn == true
 
 export const validateField = (deepPath, state, ignorePristine = false, ignoreRequired = false) => {
      const pristine = getPristine(deepPath, state);
@@ -34,7 +35,7 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
           // console.log(deepPath, value)
           if (!when || (typeof when === 'function' && when(formsData[formName] || {}))) {
                if (required) {
-                    if (value && isNotEmpty(value)) {
+                    if (notEmptyVal(value)) {
                          const result = createValidationsResult(value, validations);
                          return createFieldState(result);
                     } else {

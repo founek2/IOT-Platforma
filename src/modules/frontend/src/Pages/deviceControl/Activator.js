@@ -30,7 +30,7 @@ const styles = {
 
 function Activator({ classes, name, onClick, data, ackTime, afk, pending }) {
     return (
-        <div onClick={() => !afk && !pending && onClick(1)} className={classes.root}>
+        <div onClick={() => !afk && !pending && onClick({ on: 1 })} className={classes.root}>
             <Typography className={classes.header}>{name}</Typography>
             <IconButton aria-label="delete" className={classes.button} disabled={afk || pending}>
                 <SendIcon fontSize="large" className={classes.icon} />

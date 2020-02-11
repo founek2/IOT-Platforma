@@ -28,6 +28,7 @@ const styles = theme => ({
     content: {
         display: 'flex',
         flexDirection: 'column',
+        paddingBottom: 16   // same padding as dialogTitle
     },
     colorWrap: {
         width: 196,
@@ -47,9 +48,9 @@ const styles = theme => ({
         marginRight: 0,
         width: 200,
         [theme.breakpoints.down('sm')]: {
-             width: "100%"
+            width: "100%"
         }
-  }
+    }
 })
 
 function RgbSwitch({
@@ -70,26 +71,29 @@ function RgbSwitch({
     const [open, setOpen] = useState(false)
     const [myPending, setMyPending] = useState(false)
     const { state = { on: 0 } } = data;
-    const { on } = state;
 
     const onClose = () => setOpen(false);
-    // const handleAgree = async () => {
-    //     if (validateForm().valid) {
-    //         setMyPending(true)
-    //         await onClick({ ...formData, on: 1 })
-    //         setMyPending(false)
-    //     }
-    // }
+
     const changeColor = async (e) => {
         if (validateForm().valid) {
             setMyPending(true)
-            const newData = Object.assign(formData, {color: e.target.value, on: 1}) // formData are old -> add actual color + add on:1 to turnOn led
+            const newData =  { color: e.target.value, on: 1, type: formData.type } // formData are old -> add actual color + add on:1 to turnOn led
             await onClick(newData)
             setMyPending(false)
         }
     }
+
+    const changeBright = async (e) => {
+        if (validateForm().valid) {
+            setMyPending(true)
+            const newData =  { bright: e.target.value, on: 1 } // formData are old -> add actual color + add on:1 to turnOn led
+            await onClick(newData)
+            setMyPending(false)
+        }
+    }
+
     const handleOpen = () => {
-        fillForm({ type: state.type, color: state.color })
+        fillForm({ type: state.type, color: state.color, bright: state.bright })
         setOpen(true)
     }
 
@@ -97,11 +101,11 @@ function RgbSwitch({
         <Fragment>
             <Switch
                 name={name}
-                data={{state: on}}
+                data={{ state: {on: state.on} }}
                 ackTime={ackTime}
                 pending={pending}
                 afk={afk}
-                onClick={() => !afk && !pending && onClick({ ...state, on: on === 1 ? 0 : 1 })}
+                onClick={() => !afk && !pending && onClick({ on: state.on ? 0 : 1 })}
             />
             <IconButton size="small" className={classes.button} onClick={handleOpen} disabled={afk}>
                 <TuneIcon className={classes.icon} />
@@ -141,18 +145,6 @@ function RgbSwitch({
                         onChange={changeColor}
                     /> : null}
                 </DialogContent>
-                {/* <DialogActions className={classes.actions}>
-                    <Button onClick={onClose} color="primary">
-                        Zrušit
-                    </Button>
-                    <div className={classes.agreeButton}>
-                        <Button onClick={handleAgree} color="primary" autoFocus disabled={myPending} >
-                            Uložit
-                            <Loader open={myPending} className={classes.loader} />
-                        </Button>
-
-                    </div>
-                </DialogActions> */}
             </Dialog>
         </Fragment>
     )

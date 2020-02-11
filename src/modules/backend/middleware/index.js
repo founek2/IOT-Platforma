@@ -20,7 +20,7 @@ export default ({ config, db }) => {
      router.use('/api/device', tokenAuthMIddleware({ methods: ["POST", "PUT", "PATCH", "DELETE"] }))
      router.get('/api/device', tokenAuthMIddleware({ restricted: false }))
      router.get('/api/device/*', tokenAuthMIddleware({ restricted: false }))
-     router.use('/api/device', formDataChecker(fieldDescriptors, { methods: ["POST", "PUT"] }))
+     router.use('/api/device', formDataChecker(fieldDescriptors, { methods: ["POST", "PUT", "PATCH"] }))
      // router.patch('/api/device/*', formDataChecker(fieldDescriptors, { ingoreRequired: true }))
 
      return router

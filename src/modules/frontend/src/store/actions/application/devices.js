@@ -192,7 +192,7 @@ export function updateControl(id) {
      }
 }
 
-export function updateState(id, JSONkey, data) {
+export function updateState(id, JSONkey, data, formName) {
      return async function (dispatch, getState) {
 
           const EDIT_CONTROL = 'UPDATE_STATE_DEVICE'
@@ -200,11 +200,15 @@ export function updateState(id, JSONkey, data) {
 
           return updateStateApi({
                token: getToken(getState()),
-               body: { state: { [JSONkey]: data } },
+               body: {
+                    formData: {
+                         [formName]: { JSONkey: JSONkey, state: data }
+                    }
+               },
                id,
                onSuccess: json => {
                     // const { sampleInterval, sensors } = transformSensorsForBE(formData);
-                    dispatch(update({ id, control: json.data}))
+                    dispatch(update({ id, control: json.data }))
                }
           }, dispatch)
      }

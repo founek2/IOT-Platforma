@@ -19,37 +19,39 @@ const styles = theme => ({
     },
 })
 
-function MySwitch({ classes, name, description, onClick, data, ackTime,afk,pending, forceUpdate, ...props }) {
+function MySwitch({ classes, name, description, onClick, data, ackTime, afk, pending, forceUpdate, ...props }) {
     const { state } = data;
 
     return (
-        <div className={classes.root} onClick={(e) => !afk && !pending && onClick(state ? 0 : 1)}>
-            <div className={classes.header}>
-                <Typography component="span" >{name}</Typography>
-            </div>
+        <div
+            className={classes.root}
+            onClick={(e) => !afk && !pending && onClick({ on: state.on ? 0 : 1 })} >
+                <div className={classes.header}>
+                    <Typography component="span" >{name}</Typography>
+                </div>
 
-            <div className={classes.switchContainer}>
-                <Switch
-                    focusVisibleClassName={classes.focusVisible}
-                    disableRipple
-                    classes={{
-                        root: classes.switchRoot,
-                        switchBase: classes.switchBase,
-                        thumb: classes.thumb,
-                        track: classes.track,
-                        checked: classes.checked,
-                        disabled: classes.disabled
-                    }}
-                    disabled={pending || afk}
-                    {...props}
-                    // onClick={handleClick}
-                    checked={!!state}
-                />
-            </div>
-        </div>)
-
-}
-
-export const Content = withStyles(styles)(MySwitch)
-
+                <div className={classes.switchContainer}>
+                    <Switch
+                        focusVisibleClassName={classes.focusVisible}
+                        disableRipple
+                        classes={{
+                            root: classes.switchRoot,
+                            switchBase: classes.switchBase,
+                            thumb: classes.thumb,
+                            track: classes.track,
+                            checked: classes.checked,
+                            disabled: classes.disabled
+                        }}
+                        disabled={pending || afk}
+                        {...props}
+                        // onClick={handleClick}
+                        checked={!!state.on}
+                    />
+                </div>
+        </ div>)
+        
+        }
+        
+        export const Content = withStyles(styles)(MySwitch)
+        
 export default boxHoc(Content)

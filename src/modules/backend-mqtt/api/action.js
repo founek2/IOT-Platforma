@@ -6,21 +6,19 @@ import { forEach, flip, contains, map, keys, all, equals } from 'ramda'
 export default ({ config, db }) =>
     resource({
         patchId({ body, params: { id } }, res) {
-            const { state } = body
-            if (state) {
-                Device.findById(id, "topic control createdBy ").lean().then(doc => {
+            const formData = body   // {JSONkey: rgb, state: patchState}
+            if (formData) {
+                Device.findById(id, "topic control.recipe createdBy ").lean().then(doc => {
                     console.log("doc", doc)
                     if (doc) {
                         // TODO send to mqtt, there wait for ack, responde and here save to DB
                         const jsonKeys = doc.control.recipe.map(obj => obj.JSONkey)
-                        const result = map(flip(contains)(jsonKeys), keys(state))
-                        if (all(equals(true), result)) {
-                            console.log("publish to", `/${doc.createdBy}${doc.topic}/update`, state)
-                            publish(`/${doc.createdBy}${doc.topic}/update`, state)
+
+                        if (jsonKeys.some(key => formData.JSONkey === key)){
+                            console.log("publish to", `/${doc.createdBy}${doc.topic}/update`, formData.state)
+                            publish(`/${doc.createdBy}${doc.topic}/update`,  {[formData.JSONkey]: formData.state})
                             res.sendStatus(200)
-                        }  else {
-                            throw new Error("Invalid keys")
-                        }
+                        }else  throw new Error("Invalid key")
                     } else res.sendStatus(500)
                 }).catch((err) => {
                     console.log("cant publish:", err)

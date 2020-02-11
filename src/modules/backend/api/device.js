@@ -4,7 +4,7 @@ import processError from 'framework/src/utils/processError'
 import { saveImageBase64, validateFileExtension, deleteImage } from '../service/files'
 import { transformSensorsForBE, transformControlForBE } from 'frontend/src/utils/transform'
 import fetch from 'node-fetch'
-import {toPairs} from 'ramda'
+import { toPairs } from 'ramda'
 import { IMAGES_DEVICES_FOLDER } from '../constants'
 
 export default ({ config, db }) =>
@@ -128,28 +128,27 @@ export default ({ config, db }) =>
           },
 
           patchId({ body, user, params: { id } }, res) {
-               const { state } = body
-               console.log("state", state)
-               if (state) {
+               const formData = body.formData.CHANGE_DEVICE_STATE_SWITCH || body.formData.CHANGE_DEVICE_STATE_RGB
+               console.log("data", formData)
+               if (formData) {
                     Device.canControl(id, user).then(output => {
                          if (output) {
                               // BE validate keys
                               fetch(`http://localhost:${config.portAuth}/api/action/${id}`, {
                                    headers: { 'Content-Type': 'application/json' },
                                    method: "patch",
-                                   body: JSON.stringify(body),
+                                   body: JSON.stringify(formData),
                               }).then(response => {
                                    if (response.ok) {
-                                        // Device.updateState(id, state, user).then(({ control }) => {
-                                        //      console.log("control", control.current.data.power2)
-                                        //      res.send({ data: control })
-                                        // })
-                                        let data = {};
-                                        toPairs(state).forEach(([key, val]) => {
-                                             data[key] = { state: val, inTransition: true, transitionStarted: new Date()}
-                                         })
-                                        res.send({data:  {current: {data}}})
-
+                                        res.send({
+                                             data: {
+                                                  current: {
+                                                       data: {
+                                                            [formData.JSONkey]: { state: formData.state, inTransition: true, transitionStarted: new Date() }
+                                                       }
+                                                  }
+                                             }
+                                        })
                                    } else res.sendStatus(500)
                               }).catch((err) => {
                                    console.log("mqtt BE action err", err)

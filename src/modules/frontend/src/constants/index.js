@@ -20,12 +20,16 @@ export const SampleIntervals = [
 ]
 
 export const ControlTypes = [
-	{value: "switch", label: "vypínač"},
-	{value: "activator", label: "Aktivátor"},
-	{value: "rgbSwitch", label: "RGB led"},
-	// {value: "switch", label: "vypínač"},
-	// {value: "switch", label: "vypínač"},
+	{value: "switch", label: "vypínač", formName: "CHANGE_DEVICE_STATE_SWITCH"},
+	{value: "activator", label: "Aktivátor", formName: "CHANGE_DEVICE_STATE_SWITCH"},
+	{value: "rgbSwitch", label: "RGB led",  formName: "CHANGE_DEVICE_STATE_RGB"},
 ]
+
+export const ControlTypesFormNames = {
+	switch: "CHANGE_DEVICE_STATE_SWITCH",
+	activator: "CHANGE_DEVICE_STATE_SWITCH",
+	rgbSwitch: "CHANGE_DEVICE_STATE_RGB",
+}
 
 export const LINEAR_TYPE = "linear";
 

@@ -11,6 +11,7 @@ import * as deviceActions from '../store/actions/application/devices'
 import { Typography } from '@material-ui/core'
 import io from '../webSocket'
 import RgbSwitch from './deviceControl/RgbSwitch'
+import {ControlTypesFormNames} from '../constants'
 
 const compMapper = {
      activator: Activator,
@@ -71,13 +72,14 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
      devices.forEach(device => {
           device.control.recipe.forEach(({ name, type, JSONkey, description }) => {
                // console.log("name", name, type, compMapper[type])
+               console.log(ControlTypesFormNames[type], type)
                const Comp = compMapper[type]
                const data = (device.control.current && device.control.current.data[JSONkey] && device.control.current.data[JSONkey]) || {}
                arr.push(<Comp
                     key={`${device.id}/${JSONkey}`}
                     name={name}
                     description={description}
-                    onClick={(val) => updateDeviceStateA(device.id, JSONkey, val)}
+                    onClick={(val) => updateDeviceStateA(device.id, JSONkey, val, ControlTypesFormNames[type])}
                     data={data}
                     className={classes.item}
                     ackTime={device.ack}

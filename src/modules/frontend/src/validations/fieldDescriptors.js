@@ -2,7 +2,7 @@ import validationFactory from 'framework-ui/src/validations/validationFactory'
 import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE } from '../constants'
 import { evolve, replace, mapObjIndexed, assocPath } from 'ramda'
 
-function transformToForm(formName, fields) {
+function transformToForm(formName, fields) {           // TODO doesnt work for nested fields
      const modify = evolve({ deepPath: replace(/[^.]*/, formName) })
      return mapObjIndexed(modify, fields)
 }
@@ -249,8 +249,8 @@ const EDIT_RGB = {
      "type": {
           deepPath: 'EDIT_RGB.type',
           label: 'Typ',
-          required: true,
-          validations: [validationFactory('isOneOf', {values: RgbTypes})]
+          // required: true,
+          validations: [validationFactory('isOneOf', { values: RgbTypes })]
      },
      "color": {
           deepPath: 'EDIT_RGB.color',
@@ -259,6 +259,64 @@ const EDIT_RGB = {
           when: ({ type }) => type === LINEAR_TYPE,
           validations: [validationFactory('isColor')]
      },
+     "bright": {
+          deepPath: 'EDIT_RGB.bright',
+          label: 'Jas',
+          // required: true,
+          validations: [validationFactory('isNumber', { min: 0, max: 100 })]
+     },
+     "on": {
+          deepPath: 'EDIT_RGB.on',
+          label: 'Zapnuto',
+          // required: true,
+          validations: [validationFactory('isNumber', { min: 0, max: 1 })]
+     },
+}
+
+const CHANGE_DEVICE_STATE_RGB = {
+     JSONkey: {
+          deepPath: 'CHANGE_DEVICE_STATE_RGB.JSONkey',
+          required: true
+     },
+     state: {
+          "type": {
+               deepPath: 'CHANGE_DEVICE_STATE_RGB.state.type',
+               label: 'Typ',
+               validations: [validationFactory('isOneOf', { values: RgbTypes })]
+          },
+          "color": {
+               deepPath: 'CHANGE_DEVICE_STATE_RGB.state.color',
+               label: 'Barva',
+               when: ({ type }) => type === LINEAR_TYPE,
+               required: true,
+               validations: [validationFactory('isColor')]
+          },
+          "bright": {
+               deepPath: 'CHANGE_DEVICE_STATE_RGB.state.bright',
+               label: 'Jas',
+               validations: [validationFactory('isNumber', { min: 0, max: 100 })]
+          },
+          "on": {
+               deepPath: 'CHANGE_DEVICE_STATE_RGB.state.on',
+               label: 'Zapnuto',
+               validations: [validationFactory('isNumber', { min: 0, max: 1 })]
+          },
+     }
+}
+
+const CHANGE_DEVICE_STATE_SWITCH = {
+     JSONkey: {
+          deepPath: 'CHANGE_DEVICE_STATE_SWITCH.JSONkey',
+          required: true
+     },
+     state: {
+          "on": {
+               deepPath: 'CHANGE_DEVICE_STATE_SWITCH.state.on',
+               label: 'Zapnuto',
+               required: true,
+               validations: [validationFactory('isNumber', { min: 0, max: 1 })]
+          }
+     }
 }
 
 const USER_MANAGEMENT = {
@@ -296,4 +354,6 @@ export default {
      EDIT_PERMISSIONS,
      EDIT_CONTROL,
      EDIT_RGB,
+     CHANGE_DEVICE_STATE_RGB,
+     CHANGE_DEVICE_STATE_SWITCH
 }

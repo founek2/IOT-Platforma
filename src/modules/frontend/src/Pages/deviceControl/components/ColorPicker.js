@@ -8,7 +8,6 @@ const styles = theme => ({
     colorWrap: {
         width: 196,
         margin: `${theme.spacing(2)}px auto 0`,
-        paddingBottom: 14   // to negate -14px padding of colorPicker
     },
     colored: {
         height: 30,
@@ -23,7 +22,7 @@ const styles = theme => ({
     }
 })
 
-function ColorPicker({ value, onChange, classes, error, FormHelperTextProps, helperText }) {
+function ColorPicker({ value, onChange, classes, error, FormHelperTextProps, helperText, ...other }) {
     return (
         <div>
             <div className={classes.textField}>
@@ -36,6 +35,7 @@ function ColorPicker({ value, onChange, classes, error, FormHelperTextProps, hel
                     onChange={(color) => onChange({ target: { value: color.hex } })}
                     width="200"
                     style={{marginBottom: 0}}
+                    {...other}
                 />
             </div>
         </div>)

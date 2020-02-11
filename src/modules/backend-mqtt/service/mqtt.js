@@ -84,6 +84,7 @@ export default (io) => {
                     })
                 } else if (all(equals(true), result)) { // ack some update
                     console.log("saving to db updateState ack")
+                    // TODO missing validation of state -> need to look into db for type -> validate -> update document
                     const { permissions: { control = [] }, _id } = await Device.updateStateByDevice(ownerId, deviceTopic, data, updateTime)
 
                     let newData = {};

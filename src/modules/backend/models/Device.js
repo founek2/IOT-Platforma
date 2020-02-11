@@ -65,7 +65,7 @@ deviceSchema.statics.updateAck = async function (ownerId, topic) {
 
 deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, state, updateTime) {
      const updateStateQuery = prepareStateUpdate(state, updateTime)
-
+     console.log("update query", updateStateQuery)
      const doc = await this.model('Device').findOneAndUpdate(
           { createdBy: mongoose.Types.ObjectId(createdBy), topic },
           { $set: { ...updateStateQuery, ack: updateTime } },
@@ -364,11 +364,17 @@ deviceSchema.statics.updateControlRecipe = async function (deviceID, controlReci
 
 function prepareStateUpdate(data, updatedAt) {
      const result = {}
+     const result2 = {}
      keys(data).forEach(key => {
           result["control.current.data." + key] = { state: data[key], updatedAt }
+          keys(data[key]).forEach(propKey => {
+               result2["control.current.data." + key + ".state." + propKey] = data[key][propKey]
+          })
+          result2["control.current.data." + key + ".updatedAt"] = updatedAt
+          console.log(result2)
      })
 
-     return result
+     return result2
 }
 
 
