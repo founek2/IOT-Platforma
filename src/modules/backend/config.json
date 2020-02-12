@@ -1,6 +1,0 @@
-{
-	"port": 8085,
-	"bodyLimit": "100kb",
-	"privateKey": "/Users/martas/Work/certs/jwtRS256.key",
-	"publicKey": "/Users/martas/Work/certs/jwtRS256.key.pub"
-}
