@@ -67,7 +67,7 @@ class SensorBox extends React.Component {
           const { classes, device } = this.props
 
           const { info: { imgPath, title, description }, sensors, id } = device
-          const time = new Date(sensors.current.updatedAt);
+          const time = sensors.current ? new Date(sensors.current.updatedAt) : null;
           return (
                <DeviceBox
                     actions={
