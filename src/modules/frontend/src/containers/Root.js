@@ -8,10 +8,9 @@ import {registerFunctions} from 'framework-ui/src/validations/validationFactory'
 import * as fns from '../validations/customFn'
 
 import '../privileges' // init
-console.log("registr", fns)
 registerFunctions(fns);  // register custom validation functions
 
-function Root({ component, hydrateStateAction }) {
+function Root({ component }) {
      const Component = component
      console.log("root")
      return (

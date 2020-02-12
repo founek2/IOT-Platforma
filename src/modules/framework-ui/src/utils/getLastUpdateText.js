@@ -14,8 +14,8 @@ export default function getLastUpdateText(time, prefix = "Poslední aktualizace 
      const hours = Math.floor(min / 60)
      const days = Math.floor(hours / 24)
 
-     if (diff <= 0 || diffSec < 10)
-          return [nowText, 10 - diffSec];
+     if (diff <= 0 || diffSec < 60)
+          return [nowText, 60 - diffSec];
 
      if ((now.getYear() - time.getYear()) > 0) {
           return [prefix + ' ' + Number(now.getYear() - time.getYear()) + ' rok', null];
@@ -25,9 +25,10 @@ export default function getLastUpdateText(time, prefix = "Poslední aktualizace 
           return [prefix + ' ' + days + ' dny', (days + 1) * 24 * 60 * 60 - diffSec];
      } else if (hours >= 1) {
           return [prefix + ' ' + hours + ' hod', (hours + 1) * 60 * 60 - diffSec];
-     } else if (min > 0) {
-          return [prefix + ' ' + min + ' min', (min + 1) * 60 - diffSec];
      } else {
-          return [prefix + ' ' + diffSec % 60 + ' sec', 1];
+          return [prefix + ' ' + min + ' min', (min + 1) * 60 - diffSec];
      }
+     //  else {
+     //      return [prefix + ' ' + diffSec % 60 + ' sec', 1];
+     // }
 }

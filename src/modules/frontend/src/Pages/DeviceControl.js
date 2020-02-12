@@ -71,8 +71,7 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
      const arr = [];
      devices.forEach(device => {
           device.control.recipe.forEach(({ name, type, JSONkey, description }) => {
-               // console.log("name", name, type, compMapper[type])
-               console.log(ControlTypesFormNames[type], type)
+
                const Comp = compMapper[type]
                const data = (device.control.current && device.control.current.data[JSONkey] && device.control.current.data[JSONkey]) || {}
                arr.push(<Comp
@@ -83,7 +82,7 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
                     data={data}
                     className={classes.item}
                     ackTime={device.ack}
-                    updateTime={device.ack}     // for force updating
+                    updateTime={device.ack}     // to force updating
                />)
           })
      })
