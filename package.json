@@ -27,7 +27,7 @@
     "reloadBE": "yarn stopBE && yarn startBE",
     "deployFE": "rm -rf \"$IOT_DEPLOY_PATH\"frontend/* && cp -r build/* \"$IOT_DEPLOY_PATH\"frontend",
     "deployBE": "rm -rf \"$IOT_DEPLOY_PATH\"backend/* && cp -r build/* \"$IOT_DEPLOY_PATH\"backend",
-    "deploy": "yarn build && yarn deployFE && yarn deployBE && deployDocs",
+    "deploy": "yarn build && yarn deployFE && yarn deployBE && yarn deployDocs",
     "deployDocs": "cp -r docs/* \"$IOT_DEPLOY_PATH\"docs"
   },
   "dependencies": {
