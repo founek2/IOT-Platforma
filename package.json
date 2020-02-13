@@ -21,7 +21,7 @@
     "server2": "node distBE/backend-mqtt/index.js",
     "serveFE": "rm -rf \"$IOT_DEPLOY_PATH\"/* && cp -r build/* \"$IOT_DEPLOY_PATH\" && yarn deployDocs",
     "deploy": "yarn build && yarn serveFE && yarn buildBE",
-    "deployDocs": "cp -r docs/* \"IOT_DOCS_PATH\""
+    "deployDocs": "cp -r docs/* \"$IOT_DOCS_PATH\""
   },
   "dependencies": {
     "@svgr/webpack": "4.1.0",
