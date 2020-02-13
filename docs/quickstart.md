@@ -30,6 +30,6 @@ Pro správné fungování aplikace je potřeba si nastavit následující env pr
 * IOT_PUBLIC_KEY_PATH - cesta k public key pro validace JWT tokenů
 
 volitelné:
-* IOT_DEPLOY_PATH - cesta k nasazení aplikace
+* IOT_DEPLOY_PATH - cesta k nasazení aplikace [frontend se nasazuje do IOT_DEPLOY_PATH/frontend a BE do IOT_DEPLOY_PATH/backend]
+    * z bezpečnostních důvodu je potřeba aby tato cesta měla na konci `/`
 * IOT_IMAGES_PATH - cesta k ukládání obrázků [default pro vývoj `public/images`]
-* IOT_DOCS_PATH - cesta k deploy dokumentace

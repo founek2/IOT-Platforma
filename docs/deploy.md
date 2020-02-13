@@ -7,6 +7,5 @@ yarn deploy
 ```
 Přikazy pro spuštění jednolivých serverů (backend, backend mqtt):
 ```
-yarn server1    # backend
-yarn server2    # backend-mqtt
+yarn startBE
 ```
