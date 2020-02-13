@@ -76,22 +76,22 @@ if [ -z "$IOT_DEPLOY_PATH" ];then
     echo "ERROR: variable IOT_DEPLOY_PATH is not defined" >&2
     exit 1
 fi
-if [[ ! -d "$IOT_DEPLOY_PATH" ]]
+if [ ! -d "$IOT_DEPLOY_PATH" ]
 then
     echo "Deploy dir: $IOT_DEPLOY_PATH does not exists."
 fi
 
-if [[ ! -d "$IOT_DEPLOY_PATH"/backend ]]
+if [ ! -d "$IOT_DEPLOY_PATH"/backend ]
 then
     echo "Trying to create dir: $IOT_DEPLOY_PATH/backend"
     mkdir "$IOT_DEPLOY_PATH"/backend || { echo "Deploy dir: $IOT_DEPLOY_PATH/backend can't create."; exit 1; }
 fi
-if [[ ! -d "$IOT_DEPLOY_PATH"/frontend ]]
+if [ ! -d "$IOT_DEPLOY_PATH"/frontend ]
 then
     echo "Trying to create dir: $IOT_DEPLOY_PATH/frontend"
     mkdir "$IOT_DEPLOY_PATH"/frontend || { echo "Deploy dir: $IOT_DEPLOY_PATH/frontend can't create."; exit 1; }
 fi
-if [[ ! -d "$IOT_DEPLOY_PATH"/docs ]]
+if [ ! -d "$IOT_DEPLOY_PATH"/docs ]
 then
     echo "Trying to create dir: $IOT_DEPLOY_PATH/docs"
     mkdir "$IOT_DEPLOY_PATH"/docs || { echo "Deploy dir: $IOT_DEPLOY_PATH/docs can't create."; exit 1; }
