@@ -2,7 +2,6 @@ import resource from 'framework/src/middlewares/resource-router-middleware'
 import UserModel from '../models/user'
 import processError from 'framework/src/utils/processError'
 import { assocPath, o, omit } from 'ramda'
-import * as rabbitmq from '../service/rabbitmq'
 
 function removeUser(id) {
      return function (doc) {
@@ -12,13 +11,6 @@ function removeUser(id) {
 
 export default ({ config, db }) =>
      resource({
-          /** Property name to store preloaded entity on `request`. */
-          // id: 'facet',
-
-          /** For requests with an `id`, you can auto-load the entity.
-           *  Errors terminate the request, success sets `req[id] = data`.
-           */
-
           /** GET / - List all entities */
           index({ user, root, query: { type } }, res) {
                // console.log(user)
