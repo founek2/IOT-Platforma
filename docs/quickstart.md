@@ -23,3 +23,4 @@ Pro správné fungování aplikace je potřeba si nastavit následující env pr
 volitelné:
 * IOT_DEPLOY_PATH - cesta k nasazení aplikace [default `build`]
 * IOT_IMAGES_PATH - cesta k ukládání obrázků [default `build/images`]
+* IOT_DOCS_PATH - cesta k deploy dokumentace
