@@ -260,7 +260,6 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                          </DialogContentText>
                          <FieldConnector
                               deepPath="EDIT_DEVICE.topic"
-                              name="topic"
                               autoFocus
                               onEnter={() => setOpenTopicDialog(false)}
                               className={classes.textArea}

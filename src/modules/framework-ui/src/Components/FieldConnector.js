@@ -119,7 +119,7 @@ class fieldConnector extends Component {
                               this._validateField,
                               onBlur
                          ])}
-                         name={name}
+                         name={name || descriptor.name}
                          autoFocus={autoFocus}
                          onKeyDown={onEnter && onEnterRun(onEnter)}
                          label={required && dontHaveRequired ? finalLabel + ' *' : finalLabel}

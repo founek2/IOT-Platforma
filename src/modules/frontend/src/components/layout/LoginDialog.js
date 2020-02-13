@@ -91,7 +91,6 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
                <DialogContent className={classes.content}>
                     <FieldConnector
                          deepPath="LOGIN.userName"
-                         name="userName"
                          autoFocus
                          className={classes.textField}
                          onEnter={actionHandler}
@@ -105,7 +104,6 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
                          <FieldConnector
                               deepPath="LOGIN.password"
                               component="PasswordField"
-                              name="password"
                               autoFocus
                               className={classes.textField}
                               onEnter={actionHandler}

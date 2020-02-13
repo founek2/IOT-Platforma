@@ -12,6 +12,7 @@ const LOGIN = {
           deepPath: 'LOGIN.userName',
           required: true,
           label: 'Uživatelské jméno',
+          name: "username",
           validations: [validationFactory('isString', { min: 4, max: 30 })]
      },
      password: {
@@ -19,12 +20,14 @@ const LOGIN = {
           required: true,
           when: ({ authType }) => authType === AuthTypes.PASSWD,
           label: 'Heslo',
+          name: "password",
           validations: [validationFactory('isString', { min: 4, max: 20 })]
      },
      authType: {
           deepPath: 'LOGIN.authType',
           required: true,
           label: 'Pokročilá autentizace',
+          name: "authtype",
           validations: [validationFactory('isString', { min: 4, max: 20 })]
      }
 }
@@ -34,28 +37,33 @@ const userFields = {
                deepPath: 'REGISTRATION.info.userName',
                required: true,
                label: 'Uživatelské jméno',
+               name: "username",
                validations: [validationFactory('isString', { min: 4, max: 30 })]
           },
           firstName: {
                deepPath: 'REGISTRATION.info.firstName',
                required: true,
                label: 'Jméno',
+               name: "firstname",
                validations: [validationFactory('isString', { min: 2, max: 20 })]
           },
           lastName: {
                deepPath: 'REGISTRATION.info.lastName',
                required: true,
                label: 'Příjmení',
+               name: "lastname",
                validations: [validationFactory('isString', { min: 2, max: 20 })]
           },
           email: {
                deepPath: 'REGISTRATION.info.email',
                label: 'Email',
+               name: "email",
                validations: [validationFactory('isEmail')]
           },
           phoneNumber: {
                deepPath: 'REGISTRATION.info.phoneNumber',
                label: 'Telefonní číslo',
+               name: "phonenumber",
                validations: [validationFactory('isPhoneNumber')]
           },
      },
@@ -64,6 +72,7 @@ const userFields = {
                deepPath: 'REGISTRATION.auth.type',
                // required: true,
                label: 'Pokročilá autentizace',
+               name: "authtype",
                validations: [validationFactory('isString', { min: 4, max: 20 })]
           },
      }
@@ -73,6 +82,7 @@ const passwd = {
      deepPath: 'REGISTRATION.auth.password',
      required: true,
      label: 'Heslo',
+     name: "password",
      validations: [validationFactory('isString', { min: 4, max: 20 })]
 };
 
@@ -101,17 +111,20 @@ const CREATE_DEVICE = {
                deepPath: 'CREATE_DEVICE.info.title',
                required: true,
                label: 'Název',
+               name: "title",
                validations: [validationFactory('isString', { min: 4, max: 20 })]
           },
           description: {
                deepPath: 'CREATE_DEVICE.info.description',
                label: 'Popis',
+               name: "description",
                validations: [validationFactory('isString', { min: 2, max: 200 })]
           },
           image: {
                deepPath: 'CREATE_DEVICE.info.image',
                required: true,
                label: 'Obrázek',
+               name: "image",
                validations: [validationFactory('isFile')]
           },
      },
@@ -126,11 +139,13 @@ const CREATE_DEVICE = {
           deepPath: 'CREATE_DEVICE.topic',
           required: true,
           label: 'Topic',
+          name: "topic",
           validations: [validationFactory('isString', { min: 2, max: 100, startsWith: "/", pattern: /^(\/[a-zA-Z\d]+){3}$/ })]
      },
      publicRead: {
           deepPath: 'CREATE_DEVICE.publicRead',
           label: 'Veřejné zařízení',
+          name: "public",
           validations: [validationFactory('isBool')]
      },
 }
@@ -141,22 +156,26 @@ const EDIT_DEVICE = {
                deepPath: 'EDIT_DEVICE.info.title',
                required: true,
                label: 'Název',
+               name: "title",
                validations: [validationFactory('isString', { min: 4, max: 20 })]
           },
           description: {
                deepPath: 'EDIT_DEVICE.info.description',
                label: 'Popis',
+               name: "description",
                validations: [validationFactory('isString', { min: 2, max: 200 })]
           },
           image: {
                deepPath: 'EDIT_DEVICE.info.image',
                label: 'Obrázek',
+               name: "image",
                validations: [validationFactory('isFile')]
           },
      },
      publicRead: {
           deepPath: 'EDIT_DEVICE.publicRead',
           label: 'Veřejné zařízení',
+          name: "public",
           validations: [validationFactory('isBool')]
      },
      gps: {
@@ -170,6 +189,7 @@ const EDIT_DEVICE = {
           deepPath: 'EDIT_DEVICE.topic',
           required: true,
           label: 'Topic',
+          name: "topic",
           validations: [validationFactory('isString', { min: 2, max: 100, startsWith: "/", pattern: /\/.+\/.+\/.+/ })]
      },
 }
@@ -179,6 +199,7 @@ const EDIT_SENSORS = {
           deepPath: 'EDIT_SENSORS.sampleInterval',
           required: true,
           label: 'Interval samplování',
+          name: "sampleinterval",
           validations: [validationFactory('isOneOf', SampleIntervals)]
      },
 
@@ -209,6 +230,7 @@ const EDIT_SENSORS = {
      "count": {
           deepPath: 'EDIT_SENSORS.count',
           label: 'Popis',
+          name:"count",
           validations: [validationFactory('isNumber')]
      }
 }
@@ -241,6 +263,7 @@ const EDIT_CONTROL = {
      "count": {
           deepPath: 'EDIT_SENSORS.count',
           label: 'Popis',
+          name: "count",
           validations: [validationFactory('isNumber')]
      }
 }

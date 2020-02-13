@@ -10,6 +10,15 @@ yarn devBE  # spustí lokální vývojový server pro backend
 yarn devBE-mqtt  # spustí lokální vývojový server pro backend-mqtt
 ```
 
+## Generování JWT certifikátů
+```
+ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
+# Don't add passphrase
+openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+cat jwtRS256.key
+cat jwtRS256.key.pub
+```
+
 ## Enviroment promněné
 Pro správné fungování aplikace je potřeba si nastavit následující env promněné:
 
@@ -21,6 +30,6 @@ Pro správné fungování aplikace je potřeba si nastavit následující env pr
 * IOT_PUBLIC_KEY_PATH - cesta k public key pro validace JWT tokenů
 
 volitelné:
-* IOT_DEPLOY_PATH - cesta k nasazení aplikace [default `build`]
-* IOT_IMAGES_PATH - cesta k ukládání obrázků [default `build/images`]
+* IOT_DEPLOY_PATH - cesta k nasazení aplikace
+* IOT_IMAGES_PATH - cesta k ukládání obrázků [default pro vývoj `public/images`]
 * IOT_DOCS_PATH - cesta k deploy dokumentace
