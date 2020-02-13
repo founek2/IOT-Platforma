@@ -5,7 +5,7 @@
   "author": "Martin Skalický",
   "license": "MIT",
   "private": true,
-  "dependencies": {
+  "devDependencies": {
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
     "clipboard-copy": "^3.1.0",

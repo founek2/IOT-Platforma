@@ -14,7 +14,6 @@ import checkAndCreateRoot from 'framework/src/services/checkAndCreateRoot'
 import Jwt from 'framework/src/services/jwt'
 import { devLog } from 'framework/src/Logger'
 // import proxy from 'express-http-proxy'
-import proxy from 'http-proxy-middleware'
 // let config = getConfig()
 
 const app = express()
@@ -71,6 +70,7 @@ initializeDb(config, db => {
      // app.use("/websocket", webSockets(app.io))
 
      if (process.env.NODE_ENV === "development"){
+          const proxy = require("http-proxy-middleware");
           var wsProxy = proxy('/socket.io', {
                target: 'ws://localhost:8084',
                // pathRewrite: {

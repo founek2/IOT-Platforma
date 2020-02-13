@@ -7,7 +7,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 const styles = theme => ({
     colorWrap: {
         width: 196,
-        margin: `${theme.spacing(2)}px auto 0`,
+        margin: `${theme.spacing(2)}px auto 16px`,
     },
     colored: {
         height: 30,
