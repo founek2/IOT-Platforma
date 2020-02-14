@@ -6,18 +6,18 @@
     "src/modules/*"
   ],
   "scripts": {
-    "devFE": "node scripts/start.js",
     "buildFE": "env GENERATE_SOURCEMAP=false node scripts/build.js",
-    "build": "yarn buildBE && yarn buildFE",
+    "buildBE": "babel src/modules -d distBE",
+    "build": "scripts/deploy.sh build",
     "test_unused": "node scripts/test.js",
     "test": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/backend/test ./src/modules/framework-ui/test ./src/modules/framework/test --require @babel/register",
     "mochaBackend": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/backend/test --require @babel/register",
     "mochaFrontend": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/frontend/test",
     "mochaFramework-ui": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/framework-ui/test --require @babel/register",
     "mochaFramework": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/framework/test --require @babel/register",
+    "devFE": "node scripts/start.js",
     "devBE": "nodemon --watch src/modules/backend --exec env IOT_IMAGES_PATH=${PWD}/public/images babel-node ./src/modules/backend/index.js ",
     "devBE-mqtt": "nodemon --watch src/modules/backend --watch src/modules/backend-mqtt --exec babel-node ./src/modules/backend-mqtt/index.js",
-    "buildBE": "babel src/modules -d distBE",
     "server1": "forever start distBE/backend/index.js",
     "server2": "forever start distBE/backend-mqtt/index.js",
     "server1stop": "forever stop distBE/backend/index.js",
@@ -25,10 +25,10 @@
     "startBE": "yarn server1 && yarn server2",
     "stopBE": "yarn server1stop && yarn server2stop",
     "reloadBE": "yarn stopBE && yarn startBE",
-    "deployFE": "rm -rf \"$IOT_DEPLOY_PATH\"frontend/* && cp -r build/* \"$IOT_DEPLOY_PATH\"frontend",
-    "deployBE": "rm -rf \"$IOT_DEPLOY_PATH\"backend/* && cp -r build/* \"$IOT_DEPLOY_PATH\"backend",
-    "deploy": "yarn build && yarn deployFE && yarn deployBE && yarn deployDocs",
-    "deployDocs": "cp -r docs/* \"$IOT_DEPLOY_PATH\"docs"
+    "copyFE": "scripts/deploy.sh copyFE",
+    "copyBE": "scripts/deploy.sh copyBE",
+    "copyDocs": "scripts/deploy.sh copyDocs",
+    "deploy": "scripts/deploy.sh deploy"
   },
   "dependencies": {
     "core-js": "^3.6.4"

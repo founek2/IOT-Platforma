@@ -9,28 +9,34 @@ export NODE_ENV=production
 
 build_src() {
     echo "Building optimized frontend..."
-    yarn build > /dev/null
+    yarn buildFE > /dev/null
     echo "Transpiling backend..."
     yarn buildBE > /dev/null
     echo "Building done"
 }
 
-deploy_fe() {
+copy_fe() {
     echo "Copying frontend files..."
     rm -rf "$IOT_DEPLOY_PATH"/frontend/*
     cp -r build/* "$IOT_DEPLOY_PATH"/frontend
 }
 
-deploy_be() {
+copy_be() {
     echo "Copying backend files..."
     rm -rf "$IOT_DEPLOY_PATH"/backend/*
     cp -r distBE/* "$IOT_DEPLOY_PATH"/backend
 }
 
-deploy_docs() {
+copy_docs() {
     echo "Copying docs files..."
     rm -rf "$IOT_DEPLOY_PATH"/docs/*
     cp -r docs/* "$IOT_DEPLOY_PATH"/docs
+}
+
+copy_all() {
+    copy_fe
+    copy_be
+    copy_docs
 }
 
 check_forever() {
@@ -62,16 +68,6 @@ start_processes() {
     forever list
 }
 
-deploy_all() {
-    build_src
-
-    deploy_fe
-
-    deploy_be
-
-    deploy_docs
-}
-
 if [ -z "$IOT_DEPLOY_PATH" ];then
     echo "ERROR: variable IOT_DEPLOY_PATH is not defined" >&2
     exit 1
@@ -83,26 +79,28 @@ fi
 
 if [ ! -d "$IOT_DEPLOY_PATH"/backend ]
 then
-    echo "Trying to create dir: $IOT_DEPLOY_PATH/backend"
+    echo "Creating deploy dir: $IOT_DEPLOY_PATH/backend"
     mkdir "$IOT_DEPLOY_PATH"/backend || { echo "Deploy dir: $IOT_DEPLOY_PATH/backend can't create."; exit 1; }
 fi
+
 if [ ! -d "$IOT_DEPLOY_PATH"/frontend ]
 then
-    echo "Trying to create dir: $IOT_DEPLOY_PATH/frontend"
-    mkdir "$IOT_DEPLOY_PATH"/frontend || { echo "Deploy dir: $IOT_DEPLOY_PATH/frontend can't create."; exit 1; }
+    echo "Creating deploy dir: $IOT_DEPLOY_PATH/frontend"
+    mkdir "$IOT_DEPLOY_PATH"/frontend || { echo "Deploy dir: $IOT_DEPLOY_PATH/frontend can't create."; exit 1; }
 fi
+
 if [ ! -d "$IOT_DEPLOY_PATH"/docs ]
 then
-    echo "Trying to create dir: $IOT_DEPLOY_PATH/docs"
+    echo "Creating deploy dir: $IOT_DEPLOY_PATH/docs"
     mkdir "$IOT_DEPLOY_PATH"/docs || { echo "Deploy dir: $IOT_DEPLOY_PATH/docs can't create."; exit 1; }
 fi
 
 case "$1" in
 	deploy)
-        #yarn --cwd "$SCRIPTPATH/../src/modules/backend" --modules-folder "$IOT_DEPLOY_PATH/node_modules" --prod install 
-        
         yarn --modules-folder "$IOT_DEPLOY_PATH/node_modules" --prod install 
-        deploy_all
+
+        build_src
+        copy_all
         ;;
 	build)
 		build_src
@@ -124,17 +122,20 @@ case "$1" in
 
         start_processes
 		;;
-    run)
-        check_forever
-
-        build_all
-
-        stop_processes
-
-        start_processes
-		;;
+    copy)
+        copy_all
+        ;;
+    copyFE)
+        copy_fe
+        ;;
+    copyBE)
+        copy_be
+        ;;
+    copyDocs)
+        copy_docs
+        ;;
     *)
-		echo "Usage: $NAME {start|stop|restart|build|deploy|run}" >&2
+		echo "Usage: $NAME {start|stop|restart|build|deploy|copy|copyFE|copyBE|copyDocs}" >&2
 		exit 3
 		;;
 esac
