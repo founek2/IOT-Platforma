@@ -72,7 +72,7 @@ function DetailTable({ sensorRecipe: { JSONkey, name, unit }, sumObject }) {
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow>
-                        <Tooltip title="Den měření" placement="top">
+                        <Tooltip title="Den měření" placement="top-start">
                             <TableCell className={classes.headCell}>Datum</TableCell>
                         </Tooltip>
                         <Tooltip title="Od 6h do 20h" placement="top">
