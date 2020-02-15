@@ -53,11 +53,11 @@ stop_processes() {
     echo "Stoping running processes..."
 
     if forever list | grep "$BE_PATH" >/dev/null; then
-        forever stop "$BE_PATH"
+        forever stop "$BE_PATH" >/dev/null
         echo "Stopped $BE_PATH"
     fi
     if forever list | grep "$BE_MQTT_PATH" >/dev/null; then
-        forever stop "$BE_MQTT_PATH"
+        forever stop "$BE_MQTT_PATH" >/dev/null
         echo "Stopped $BE_MQTT_PATH"
     fi
 }
