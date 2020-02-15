@@ -21,10 +21,6 @@ const userSchema = new Schema(
           // created: { type: Date, default: Date.now },
           groups: { type: [String], default: ['user'] },
           devices: Object, // {sensors: {order: [id, id, id]}, }
-          deviceUser: {
-               userName: { type: String, index: { unique: true } },
-               password: String
-          }
      },
      {
           toObject: {

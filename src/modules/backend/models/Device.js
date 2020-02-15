@@ -229,7 +229,7 @@ deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtensi
                          if (result) throw Error('topicAlreadyUsed')
                     }
                     const origImgPath = doc.info.imgPath
-                    if (imgExtension) formData.info.imgPath = `images/devices/${doc.id}.${imgExtension}`
+                    if (imgExtension) formData.info.imgPath = `/devices/${doc.id}.${imgExtension}`
 
                     const formDataNested = { ...formData, info: { ...doc.info, ...(formData.info) } }    // merge original nested object "info"
                     console.log("updating Device> ", formDataNested)
