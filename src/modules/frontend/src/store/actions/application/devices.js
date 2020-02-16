@@ -9,6 +9,7 @@ import { keys, head } from 'ramda'
 import {
      createDevice as createDeviceApi,
      fetchDevices as fetchDevicesApi,
+     fetchDeviceControl as fetchDeviceControlApi,
      updateDevice as updateDeviceApi,
      putDevice as putDeviceApi,
      deleteDevice as deleteDeviceApi,
@@ -115,6 +116,13 @@ export function update(device) {
      }
 }
 
+export function updateAll(devices) {
+     return {
+          type: ActionTypes.UPDATE_DEVICES,
+          payload: devices
+     }
+}
+
 export function remove(id) {
      return {
           type: ActionTypes.REMOVE_DEVICE,
@@ -138,6 +146,22 @@ export function fetch() {
                     onSuccess: json => {
                          dispatch(set(json.docs))
                          dispatch(dehydrateState())
+                    }
+               },
+               dispatch
+          )
+     }
+}
+
+export function fetchControl() {
+     return function (dispatch, getState) {
+          baseLogger("FETCH_DEVICES_CONTROL")
+          return fetchDeviceControlApi(
+               {
+                    token: getToken(getState()),
+                    onSuccess: json => {
+                         dispatch(updateAll(json.docs))
+                         // dispatch(dehydrateState())
                     }
                },
                dispatch

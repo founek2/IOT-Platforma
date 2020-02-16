@@ -120,10 +120,26 @@ const aggregationFields = {
      ack: 1,
 }
 
-deviceSchema.statics.findForUser = function (userID, devices) {
+const controlFields = {
+     id: '$_id',
+     _id: 0,
+     control: 1,
+     ack: 1,
+}
+
+deviceSchema.statics.findForUser = function (userID, options = {}) {
+     const { controlOnly } = options;
+     const userObjID = mongoose.Types.ObjectId(userID)
+
+     if (controlOnly) {
+          return this.model('Device')
+               .find({ "permissions.control": userObjID, "control": { $exists: true } })
+               .select('control ack')
+     }
+
      console.log("loking for devices, userID=", userID)
      //return this.model('Device').find({ _id: { $in: arrayOfIDs.map(id => mongoose.Types.ObjectId(id)) } })
-     const userObjID = mongoose.Types.ObjectId(userID)
+
      return this.model('Device')
           .aggregate([
                {
@@ -183,11 +199,24 @@ deviceSchema.statics.findForUser = function (userID, devices) {
           .catch(catcher('device'))
 }
 
-deviceSchema.statics.findForAdmin = function () {
+deviceSchema.statics.findForAdmin = function (options = {}) {
+     const { controlOnly } = options;
+
+     if (controlOnly)
+          return this.model('Device')
+               .aggregate(
+                    [ { $match: { control: {$exists: true} } },{
+                         $project: controlFields
+                    }]
+               )
+               .then(docs => {
+                    return docs
+               }).catch(catcher('device'))
+
      return this.model('Device')
           .aggregate(
                [{
-                    $project: {
+                    $project: controlOnly ? controlFields : {
                          ...aggregationFields,
                          control: 1,
                          sensors: 1,
@@ -367,7 +396,7 @@ function prepareStateUpdate(data, updatedAt) {
      const result2 = {}
      keys(data).forEach(key => {
           result["control.current.data." + key] = { state: data[key], updatedAt }
-          keys(data[key]).forEach(propKey => {
+          keys(data[key]).forEach(propKey => {
                result2["control.current.data." + key + ".state." + propKey] = data[key][propKey]
           })
           result2["control.current.data." + key + ".updatedAt"] = updatedAt

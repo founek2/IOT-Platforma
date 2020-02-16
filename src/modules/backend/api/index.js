@@ -4,12 +4,16 @@ import user from './user'
 import device from './device'
 import iot from './iot'
 import auth from './auth'
+import control from './control'
 
 export default ({ config, db }) => {
      let api = Router()
      // mount the user resource
      api.use('/user', user({ config }))
 
+
+     api.use('/device/control', control({config}))
+     
      api.use('/device', device({ config }))
 
      api.use('/iot', iot({config}))

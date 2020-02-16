@@ -51,21 +51,22 @@ function updateDevice(updateDeviceAction) {
 }
 
 
-function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceStateA, updateDeviceAction }) {
+function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceStateA, updateDeviceAction, updateControlAction }) {
      useEffect(() => {
           fetchDevicesAction()
+          // updateControlAction()
           const listener = updateDevice(updateDeviceAction)
           io.getSocket().on("control", listener)
 
           const listenerAck = updateDevice(updateDeviceAction)
           io.getSocket().on("ack", listenerAck)
 
-          // window.addEventListener('focus', fetchDevicesAction)   // TODO fetch only control part of devices
+          window.addEventListener('focus', updateControlAction)   // TODO fetch only control part of devices
 
           return () => {
                io.getSocket().off("control", listener)
                io.getSocket().off("ack", listenerAck)
-               // window.removeEventListener('focus', fetchDevicesAction)
+               window.removeEventListener('focus', updateControlAction)
           };
      }, []);
      const arr = [];
@@ -103,6 +104,7 @@ const _mapDispatchToProps = dispatch =>
                fetchDevicesAction: deviceActions.fetch,
                updateDeviceStateA: deviceActions.updateState,
                updateDeviceAction: deviceActions.update,
+               updateControlAction: deviceActions.fetchControl,
           },
           dispatch
      )

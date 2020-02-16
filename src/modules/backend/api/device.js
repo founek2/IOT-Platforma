@@ -117,7 +117,7 @@ export default ({ config, db }) =>
                          res.send({ docs })
                     })
                } else if (user) {  // tested
-                    Device.findForUser(user.id, user.devices).then(docs => {
+                    Device.findForUser(user.id).then(docs => {
                          res.send({ docs })
                     })
                } else {
