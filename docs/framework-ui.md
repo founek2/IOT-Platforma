@@ -44,10 +44,10 @@ frontend
         └───validationFn.js         - implementace validačních funkcí
 ```
 
-## Formuláře a validace
+### Formuláře a validace
 Framework se stárá o centralizované ukládání hodnot jednotlivých fieldů a jejich následnou validaci. Pro každý field je potřeba nejprve vytvořit jeho `field descriptor` a potom ho napojit do frameowrku pomocí komponenty `FieldConnector`.
 
-### Jak to funguje?
+## Jak to funguje?
 Při renderu field konektor se vytvoří v reduxu záznam (v cestě formsData.registeredFields.${deepPath}), který obsahuje tyto atributy:
 * valid (jak dopadla validace)
 * errorMessages - pole error zpráv z výsledku validací.
@@ -61,7 +61,7 @@ Konektor následně předá svému potomkovi tyto data, který je zobrazí uživ
 
 Volání validací je velmi chytré. První validace se na field zavolá až když uživatel poprvé změnil hodnotu (pristine = false) a zavolal se onBlur event. Potom se již validace volají na každou změnu hodnoty. Toto řešení je velice uživatelsky přívětivé.
 
-### Field descriptory
+## Field descriptory
 Do storu je potřeba načíst pod atribut fieldDescriptors definice všech formulářů a jejich fieldů v následujícím tvaru:
 ```
     {
@@ -80,7 +80,7 @@ Do storu je potřeba načíst pod atribut fieldDescriptors definice všech formu
 ```
 První úroveň je tedy název formuláře, potom může být libovolná hloubka a nakonec objekt, který musí obsahovat definice atribut `deepPath`.
 
-### Field connector
+## Field connector
 Jedná se o komponentu v Reactu, která se stará o napojení do Reduxu a správné volání validací. Ukázka nejjednodušší definice, která zobrazí TextField:
 ```
 <FieldConnector deepPath={`FORM_NAME.info.firstName`} />
