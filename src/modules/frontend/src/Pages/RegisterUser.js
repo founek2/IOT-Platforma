@@ -74,13 +74,15 @@ const styles = theme => ({
 
 export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }]
 
-function RegisterUser({ classes, registerAndLoginAction, authType, registerAction, getChallengeAction }) {
+function RegisterUser({ classes, registerAndLoginAction, authType, registerAction, getChallengeAction, history }) {
      const [pending, setPending] = useState(false)
      const [autoLogin, setAutoLogin] = useState(true)
      const handleRegister = async () => {
           setPending(true)
           const action = autoLogin ? registerAndLoginAction : registerAction
-          await action()
+          await action().then(success => {
+               if (autoLogin && success) history.push("/")
+          })
           setPending(false)
      }
 
