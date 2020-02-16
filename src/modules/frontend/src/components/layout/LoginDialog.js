@@ -34,6 +34,7 @@ const styles = theme => ({
           width: 400,
           marginLeft: theme.spacing(2),
           marginRight: theme.spacing(2),
+          overflowY: "visible",
 
           [theme.breakpoints.down('sm')]: {
                width: "100%",
@@ -44,6 +45,7 @@ const styles = theme => ({
      loginFooter: {
           textAlign: 'center',
           paddingBottom: theme.spacing(2),
+          overflowY: "visible",
      },
      registerButton: {
           cursor: 'pointer'
