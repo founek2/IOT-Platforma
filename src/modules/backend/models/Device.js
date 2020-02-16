@@ -135,6 +135,7 @@ deviceSchema.statics.findForUser = function (userID, options = {}) {
           return this.model('Device')
                .find({ "permissions.control": userObjID, "control": { $exists: true } })
                .select('control ack')
+               .lean()
      }
 
      console.log("loking for devices, userID=", userID)
