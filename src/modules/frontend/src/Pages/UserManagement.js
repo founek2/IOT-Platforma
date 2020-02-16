@@ -92,7 +92,7 @@ class UserManagement extends Component {
                               <FieldConnector
                                    deepPath="USER_MANAGEMENT.selected"
                                    component={
-                                        () =>
+                                        ({onChange, value}) =>
                                              <EnchancedTable
                                                   dataProps={userProps(getAllowedGroups(groups))}
                                                   data={users}
@@ -104,6 +104,8 @@ class UserManagement extends Component {
                                                   enableEdit={isAdmin}
                                                   onEdit={id => history.push({ hash: "editUser", search: "?id=" + id })}
                                                   rowsPerPage={10}
+                                                  onChange={onChange}
+                                                  value={value}
                                              />
                                    }
                               />

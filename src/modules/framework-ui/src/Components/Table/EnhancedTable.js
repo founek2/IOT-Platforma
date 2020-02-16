@@ -53,7 +53,6 @@ class EnhancedTable extends React.Component {
           this.state = {
                order: 'asc',
                orderBy: props.orderBy,
-               selected: [],
                data: [...props.data],
                page: 0,
                rowsPerPage: props.rowsPerPage,
@@ -88,7 +87,7 @@ class EnhancedTable extends React.Component {
      };
 
      handleClick = (event, id) => {
-          const { selected } = this.state;
+          const selected = this.props.value ? this.props.value : [];     // ignore
           const selectedIndex = selected.indexOf(id);
           let newSelected = [];
 
@@ -107,8 +106,7 @@ class EnhancedTable extends React.Component {
 
      changeSelected = newSelected => {
           const { onChange } = this.props;
-          this.setState({ selected: newSelected });
-          if (onChange) onChange({ target: { value: newSelected } });
+          onChange({ target: { value: newSelected } });
      };
 
      handleChangePage = (event, page) => {
@@ -119,7 +117,7 @@ class EnhancedTable extends React.Component {
           this.setState({ rowsPerPage: event.target.value });
      };
 
-     isSelected = id => this.state.selected.indexOf(id) !== -1;
+     isSelected = id => this.props.value.indexOf(id) !== -1;
 
      handleDelete = e => {
           this.props.onDelete(e);
@@ -128,7 +126,8 @@ class EnhancedTable extends React.Component {
 
      render() {
           const { classes, dataProps, toolbarHead, onAdd, enableCreation, enableEdit, onEdit } = this.props;
-          const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
+          const selected = this.props.value;
+          const { data, order, orderBy, rowsPerPage, page } = this.state;
           const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
           return (
@@ -219,7 +218,8 @@ class EnhancedTable extends React.Component {
 }
 
 EnhancedTable.defaultProps = {
-	rowsPerPage: 5
+     rowsPerPage: 5,
+     value: []
 }
 
 EnhancedTable.propTypes = {

@@ -33,16 +33,17 @@ const onEnterRun = Fn => e => {
      if (e.keyCode === 13) Fn(e)
 }
 class fieldConnector extends Component {
-     constructor(props) {
-          super(props)
-          const { updateFormField, deepPath, descriptor, value, state } = this.props
-          // registerField(deepPath)
-          if (descriptor && !value && descriptor.defaultValue !== undefined) {
-               console.log("setting", deepPath, value, state)
-               console.log("val", getFieldVal(deepPath, state))
-               // updateFormField(deepPath, descriptor.defaultValue);
-          }
-     }
+     // constructor(props) {
+     //      super(props)
+     //      const { updateFormField, deepPath, descriptor, value, state } = this.props
+     //      // registerField(deepPath)
+     //      console.log("defa", descriptor, value, descriptor.defaultValue)
+     //      if (descriptor && value === undefined && descriptor.defaultValue !== undefined) {
+     //           console.log("setting", deepPath, value, state)
+     //           console.log("val", getFieldVal(deepPath, state))
+     //           // updateFormField(deepPath, descriptor.defaultValue);
+     //      }
+     // }
      componentDidMount() {
           const { registerField, deepPath, value, validateField } = this.props
           registerField(deepPath)
@@ -97,6 +98,7 @@ class fieldConnector extends Component {
                const finalLabel = label ? label : descriptor.label;
  
                const Component = is(String, component) ? Components[component] : component;
+               const finValue = component === TextField
                let options = {}
                let dontHaveRequired
                if (component === 'Select') {
@@ -107,7 +109,7 @@ class fieldConnector extends Component {
                return (
                     <Component
                          onChange={onChangeHandler}
-                         value={value || ''}
+                         value={value}
                          className={className}
                          error={!valid}
                          required={required}
