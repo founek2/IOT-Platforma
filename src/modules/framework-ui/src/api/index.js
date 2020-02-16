@@ -70,7 +70,7 @@ function buildParams(params) {
 }
 
 export const jsonSender = async ({ url, token = '', onSuccess, onError, onFinish, method, body, dispatch, successMessage }) => {
-     let json = {};
+     let catched = false
      try {
           const response = await fetch(url, {
                method,
@@ -81,13 +81,14 @@ export const jsonSender = async ({ url, token = '', onSuccess, onError, onFinish
                },
                body: JSON.stringify(body)
           })
-          json = await processResponse(dispatch, successMessage)(response)
+          const json = await processResponse(dispatch, successMessage)(response)
           if (onSuccess) onSuccess(json)
      } catch (e) {
           checkError(onError)(e)
+          catched = true;
      }
      onFinish && onFinish()
-     return json;
+     return !catched;
 }
 
 export const paramSender = async ({ url, token = '', onSuccess, onError, onFinish, method = 'GET', dispatch, params }) => {
