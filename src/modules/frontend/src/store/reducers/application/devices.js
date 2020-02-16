@@ -36,7 +36,6 @@ const updateAll = {
      next({ lastFetch, data }, action) {
           const updateData = action.payload
           const newData = clone(data)
-
           updateData.forEach(({ id: updateId, control, ack }) => {
                const i = data.findIndex(({ id }) => updateId === id)
 
