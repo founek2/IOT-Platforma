@@ -1,4 +1,4 @@
-# IOT Platforma
+# TODO
 
 ## Features
 ### `Senzory`

@@ -10,4 +10,5 @@
 - Guide
   - [Deploy](deploy.md)
 
+- [Todo](todo.md)
 - [Changelog](CHANGELOG.md)
