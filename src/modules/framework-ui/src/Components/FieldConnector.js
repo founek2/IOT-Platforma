@@ -98,7 +98,6 @@ class fieldConnector extends Component {
                const finalLabel = label ? label : descriptor.label;
  
                const Component = is(String, component) ? Components[component] : component;
-               const finValue = component === TextField
                let options = {}
                let dontHaveRequired
                if (component === 'Select') {

@@ -16,5 +16,8 @@ function MyCheckbox({ label, onChange, value }) {
         />
     )
 }
+MyCheckbox.defaultProps = {
+    value: false
+}
 
 export default MyCheckbox

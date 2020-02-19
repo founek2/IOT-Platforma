@@ -7,4 +7,8 @@ function MyTextField({ classes, className, ...props }) {
      return <TextField className={`${classes.textField} ${className || ""}`} {...props} />
 }
 
+MyTextField.defaultProps = {
+     value: ""
+}
+
 export default withStyles(styles)(MyTextField)

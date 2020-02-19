@@ -14,7 +14,7 @@ function OwnSelect(props) {
                {label && <InputLabel htmlFor={`select-label-placeholder-${name}`}>{label}</InputLabel>}
                <Select
                     onChange={onChange}
-                    value={value || ''}
+                    value={value}
                     error={error}
                     required={required}
                     onFocus={onFocus}
@@ -30,5 +30,7 @@ function OwnSelect(props) {
           </FormControl>
      );
 }
-
+EnhancedTable.defaultProps = {
+     value: ""
+}
 export default withStyles(styles)(OwnSelect);

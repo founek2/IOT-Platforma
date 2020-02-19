@@ -28,5 +28,8 @@ function PasswordField({className, classes, ...props}) {
           />
      )
 }
+PasswordField.defaultProps = {
+     value: ""
+}
 
 export default withStyles(styles)(PasswordField)
