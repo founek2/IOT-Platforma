@@ -1,5 +1,5 @@
 import resource from 'framework/src/middlewares/resource-router-middleware'
-import Device from 'backend/models/Device'
+import Device from 'backend/src/models/Device'
 import { publish } from '../service/mqtt'
 import { forEach, flip, contains, map, keys, all, equals } from 'ramda'
 

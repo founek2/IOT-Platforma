@@ -1,7 +1,7 @@
 import mqtt from 'mqtt'
 // import { getConfig } from './config'
 import config from "backend/config/index.js"
-import Device from 'backend/models/Device'
+import Device from 'backend/src/models/Device'
 import { map, flip, keys, all, equals, contains, toPairs, _ } from 'ramda';
 
 let mqttClient = null

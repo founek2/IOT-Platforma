@@ -49,7 +49,7 @@ class FileLoader extends Component {
 
           return (
                <div className={`${classes.textField} ${className || ""} ${classes.root}`}>
-                    <TextField value={value.name || ''} disabled label={label} fullWidth {...other} />
+                    <TextField value={value.name} disabled label={label} fullWidth {...other} />
                     <div>
                          <Fab color="primary" aria-label="Add" size="small" className={classes.button} component="label">
                               <input type="file" style={{ display: 'none' }} onChange={this.handleChange} />
@@ -59,5 +59,9 @@ class FileLoader extends Component {
                </div>
           )
      }
+}
+
+FileLoader.defaultProps = {
+value: {name: ""}
 }
 export default withStyles(styles)(FileLoader)

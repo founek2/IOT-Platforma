@@ -8,7 +8,7 @@ const getUserToken = require("./lib/getUserToken")
 const forms = require("./resources/deviceForm")
 const authChecker = require("./lib/authChecker")
 const formDataChecker = require("./lib/formDataChecker")
-import { deleteImage } from '../service/files'
+import { deleteImage } from '../src/service/files'
 
 const server = supertest.agent(config.url);
 
@@ -47,7 +47,7 @@ describe("Device API test", async function () {
                     should.exist(res.body.apiKey)
                     should.exist(res.body.doc)
 
-                    deleteImage(res.body.doc.imgPath)   // delete img
+                    deleteImage(res.body.doc.info.imgPath)   // delete img
                     done()
                 }).finally(async () => {
                     const result = await collection.deleteOne({ createdBy: new mongo.ObjectID(user.id) })
@@ -150,7 +150,7 @@ describe("Device API test", async function () {
                             const result = await collection.find({ createdBy: new mongo.ObjectID(user.id) }).toArray()
 
                             should.equal(result.length, 1)
-                            should.equal(result[0].title, "Zmeneno")
+                            should.equal(result[0].info.title, "Zmeneno")
                             return done()
                         })
                 }).finally(async () => {
@@ -184,7 +184,8 @@ describe("Device API test", async function () {
                                 {
                                     name: 'Vlhkost',
                                     JSONkey: 'hum',
-                                    unit: '%'
+                                    unit: '%',
+                                    description: "",
                                 }]
                         }
                     )

@@ -5,6 +5,7 @@ import { trimFields } from 'framework-ui/src/validations';
 // TODO probably array validations do not work properly
 export default function formDataChecker(fieldDescriptors, { ingoreRequired, methods } = {}) {
      return (req, res, next) => {
+          console.log("formData", req.body.formData)
           if (methods === undefined || methods.some(method => method === req.method)) {
                infoLog('Validating formData')
                const { formData } = req.body

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
-import Jwt from '../../framework/src/services/jwt'
+import Jwt from 'framework/src/services/jwt'
 import { createHash, compare } from '../lib/password'
 import catcher from 'framework/src/mongoose/catcher'
 import { keys } from 'ramda'

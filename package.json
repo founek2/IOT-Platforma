@@ -16,7 +16,7 @@
     "mochaFramework-ui": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/framework-ui/test --require @babel/register",
     "mochaFramework": "env IOT_IMAGES_PATH=${PWD}/public/images mocha ./src/modules/framework/test --require @babel/register",
     "devFE": "node scripts/start.js",
-    "devBE": "nodemon --watch src/modules/backend --exec env IOT_IMAGES_PATH=${PWD}/public/images babel-node ./src/modules/backend/index.js ",
+    "devBE": "nodemon --watch src/modules/backend  --watch src/modules/framework --exec env IOT_IMAGES_PATH=${PWD}/public/images babel-node ./src/modules/backend/src/index.js ",
     "devBE-mqtt": "nodemon --watch src/modules/backend --watch src/modules/backend-mqtt --exec babel-node ./src/modules/backend-mqtt/index.js",
     "server1": "forever start distBE/backend/index.js",
     "server2": "forever start distBE/backend-mqtt/index.js",

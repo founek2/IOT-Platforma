@@ -7,7 +7,7 @@ import initializeDb from './db'
 import middleware from './middleware'
 import api from './api'
 // import { getConfig } from './service/config'
-import config  from "./config/index"
+import config  from "../config/index"
 import helmet from 'helmet'
 import path from 'path'
 import checkAndCreateRoot from 'framework/src/services/checkAndCreateRoot'

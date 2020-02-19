@@ -30,7 +30,7 @@ function OwnSelect(props) {
           </FormControl>
      );
 }
-EnhancedTable.defaultProps = {
+OwnSelect.defaultProps = {
      value: ""
 }
 export default withStyles(styles)(OwnSelect);

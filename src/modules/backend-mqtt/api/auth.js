@@ -1,6 +1,6 @@
 import express from 'express'
-import Device from 'backend/models/Device'
-import User from 'backend/models/user'
+import Device from 'backend/src/models/Device'
+import User from 'backend/src/models/user'
 
 const router = express.Router();
 

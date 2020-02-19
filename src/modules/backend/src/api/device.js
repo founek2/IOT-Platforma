@@ -4,11 +4,22 @@ import processError from 'framework/src/utils/processError'
 import { saveImageBase64, validateFileExtension, deleteImage } from '../service/files'
 import { transformSensorsForBE, transformControlForBE } from 'frontend/src/utils/transform'
 import fetch from 'node-fetch'
-import { toPairs } from 'ramda'
 import { IMAGES_DEVICES_FOLDER } from '../constants'
+import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'
+import formDataChecker from 'framework/src/middlewares/formDataChecker'
+
+import fieldDescriptors from 'fieldDescriptors'
 
 export default ({ config, db }) =>
      resource({
+          middlewares: {
+               index: [tokenAuthMIddleware({ restricted: false })],
+               read: [tokenAuthMIddleware({ restricted: false })],
+               updateId: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
+               create: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
+               patchId: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
+               deleteId: [tokenAuthMIddleware()],
+          },
           /** GET /:param - List all entities */
           read({ params: { id }, query: { from, to = new Date(), type }, user }, res) {
                if (type === "sensors") {
@@ -165,7 +176,7 @@ export default ({ config, db }) =>
                const { id } = params;
                Device
                     .delete(id, user)
-                    .then(({ info }) => deleteImage(info.imgPath.replace("/" + IMAGES_DEVICES_FOLDER, "")))
+                    .then(({ info }) => deleteImage(info.imgPath))
                     .then(() => res.sendStatus(204))
                     .catch(processError(res))
           }
