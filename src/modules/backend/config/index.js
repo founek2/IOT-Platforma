@@ -1,6 +1,9 @@
-module.exports = {
-    dbUser: process.env.IOT_DB_USER ,
-    dbPwd: process.env.IOT_DB_PASSWD ,
+export default process.env.IOT_CONFIG
+  ? require(process.env.IOT_CONFIG)
+  : ({
+    dbUser: process.env.IOT_DB_USER,
+    dbPwd: process.env.IOT_DB_PASSWD,
+    dbName: process.env.IOT_DB_NAME || "IOTPlatform",
     port: 8085 || process.env.IOT_BACKEND_PORT,
     portAuth: 8084,
     bodyLimit: process.env.IOT_BODY_LIMIT || "100kb",
@@ -11,4 +14,4 @@ module.exports = {
     imagesPath: process.env.IOT_IMAGES_PATH,
     testUser: "test1",
     testPassword: "123456"
-  };
+  })

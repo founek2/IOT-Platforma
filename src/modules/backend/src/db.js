@@ -6,7 +6,7 @@ export default (config, callback) => {
 	  //   .connect(`mongodb://${config.dbUser}:${config.dbPwd}@localhost:27017/IOTPlatform`, { useNewUrlParser: true })
 	
      mongoose
-	  .connect(`mongodb://${config.dbUser}:${config.dbPwd}@localhost:27017/IOTPlatform`, { useNewUrlParser: true, useCreateIndex: true,  useFindAndModify: false, useUnifiedTopology: true } )
+	  .connect(`mongodb://${config.dbUser}:${config.dbPwd}@localhost:27017/${config.dbName}`, { useNewUrlParser: true, useCreateIndex: true,  useFindAndModify: false, useUnifiedTopology: true } )
           .then(() => {
 			console.log('connected to mongoDB');
 			callback();
