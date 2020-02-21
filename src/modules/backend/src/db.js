@@ -9,7 +9,7 @@ export default (config, callback) => {
 	  .connect(`mongodb://${config.dbUser}:${config.dbPwd}@localhost:27017/${config.dbName}`, { useNewUrlParser: true, useCreateIndex: true,  useFindAndModify: false, useUnifiedTopology: true } )
           .then(() => {
 			console.log('connected to mongoDB');
-			callback();
+			callback(mongoose.connection);
           })
           .catch(err => {
                // mongoose connection error will be handled here

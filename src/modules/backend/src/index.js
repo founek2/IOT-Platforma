@@ -56,7 +56,7 @@ initializeDb(config, db => {
      Jwt.init(config)
      console.log("IMAGES path", process.env.IOT_IMAGES_PATH)
 
-     checkAndCreateRoot() // check for roor existence, if not, then ask for password in terminal
+     // checkAndCreateRoot() // check for roor existence, if not, then ask for password in terminal
 
      // internal middleware
      app.use(middleware({ config, db }))
@@ -95,10 +95,22 @@ initializeDb(config, db => {
 
      app.server.listen(process.env.PORT || config.port, () => {
           console.log(`Started on port ${app.server.address().port}`)
+          
      })
 
-     // mqttService(app.io); //init
-
+     process.once('SIGINT', function (code) {
+          console.log('SIGINT received...');
+          app.server.close();
+          db.close();
+        });
+      
+       // vs.
+      
+        process.once('SIGTERM', function (code) {
+          console.log('SIGTERM received...');
+          app.server.close();
+          db.close();
+        });
 })
 
 export default app

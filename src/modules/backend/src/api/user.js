@@ -18,13 +18,9 @@ export default ({ config, db }) =>
      resource({
           middlewares: {
                index: [tokenAuthMIddleware()],
-               // read: [tokenAuthMIddleware({ restricted: false })],
-               updateId: [tokenAuthMIddleware(),groupRestriction('admin'), formDataChecker(fieldDescriptors)],
-
+               updateId: [tokenAuthMIddleware(), groupRestriction('admin'), formDataChecker(fieldDescriptors)],
                create: [formDataChecker(fieldDescriptors)],
-               // patchId: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
-
-               delete: [tokenAuthMIddleware(),groupRestriction('admin'), formDataChecker(fieldDescriptors)],
+               delete: [tokenAuthMIddleware(), groupRestriction('admin'), formDataChecker(fieldDescriptors)],
           },
           /** GET / - List all entities */
           index({ user, root, query: { type } }, res) {
@@ -115,6 +111,7 @@ export default ({ config, db }) =>
                console.log("data", body.formData)
                UserModel.removeUsers(body.formData.USER_MANAGEMENT.selected)
                     .then(result => {
+                         console.log("deleting result> ", result)
                          if (result.deletedCount >= 1) res.sendStatus(204)
                          else res.status(208).send({ message: 'noneUserFoundForDelete' })
                     })

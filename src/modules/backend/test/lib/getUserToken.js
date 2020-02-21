@@ -1,13 +1,14 @@
-const supertest = require("supertest");
-const should = require("should");
-const config = require("../resources/config.json")
-const config_be = require("../../config/index")
-const forms = require("../resources/userForms")
+import supertest from "supertest";
+import should from "should";
+import config from "../resources/config.js";
+
+import config_be from "../resources/configBE";
+import forms from "../resources/userForms";
 
 const server = supertest.agent(config.url);
 
 
-module.exports = async function () {
+export default async function () {
     return server
         .post("/api/user")
         .send(forms.login(config_be.testUser, config_be.testPassword))

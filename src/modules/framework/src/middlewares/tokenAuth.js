@@ -1,6 +1,7 @@
 import Jwt from '../services/jwt'
 import mongoose from 'mongoose'
 import { equals, T } from 'ramda';
+import { infoLog, warningLog } from '../Logger'
 
 import groupsHeritage from 'frontend/src/privileges/groupsHeritage'
 import privilegesFactory, { enrichGroups } from 'framework-ui/src/privileges'
@@ -23,12 +24,14 @@ export default function (options = { restricted: true}) {
                                    .findById(obj.id)
                                    .then(user => {
                                         if (user) {
+                                             infoLog(`Verified user=${user.user}, groups=${user.groups.join(",")}`)
                                              req.user = user.toObject()
                                              req.user.groups = enrichGroups(req.user.groups)
                                              if (req.user.groups.some(equals("root"))) req.root = true;
                                              if (req.user.groups.some(equals("admin"))) req.user.admin = true;
                                              next()
                                         } else {
+                                             warningLog("userDoesNotExist")
                                              res.status(208).send({ error: 'userDoesNotExist', command: 'logOut' })
                                         }
                                    })

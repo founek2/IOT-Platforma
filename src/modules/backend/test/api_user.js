@@ -1,27 +1,34 @@
-const supertest = require("supertest");
-const should = require("should");
-const config = require("./resources/config.json")
-const forms = require("./resources/userForms")
-const MongoClient = require('mongodb').MongoClient;
-const config_be = require("../config/index")
-const getAdminToken = require("./lib/getAdminToken")
-const getUserToken = require("./lib/getUserToken")
-const authChecker = require("./lib/authChecker")
-const formDataChecker = require("./lib/formDataChecker")
-const adminRestrictionChecker = require("./lib/adminRestrictionChecker")
+import supertest from "supertest";
+import should from "should";
+import config from "./resources/config.js"
+import config_be from './resources/configBE'
+import forms from "./resources/userForms"
+import getAdminToken from "./lib/getAdminToken"
+import getUserToken from "./lib/getUserToken"
+import authChecker from "./lib/authChecker"
+import formDataChecker from "./lib/formDataChecker"
+import adminRestrictionChecker from "./lib/adminRestrictionChecker"
+import {spawnChild, waitForServer, killChild} from './lib/startServer'
+import dbConnect from './lib/db'
+import mongoose from 'mongoose'
+const ObjectId = mongoose.Types.ObjectId;
+
+import User from '../src/models/user'
 
 const server = supertest.agent(config.url);
 
-const db_url = `mongodb://${config_be.dbUser}:${config_be.dbPwd}@localhost:27017/IOTPlatform`
-const db_opt = { useNewUrlParser: true, useUnifiedTopology: true }
+const startServer = spawnChild;
+// const startServer = () => ({kill: () => {}});
 
 describe("User API test", function () {
-    let client;
-    let collection;
+    let child;
+    let db;
     before(async function () {
-        client = await MongoClient.connect(db_url, db_opt)
-        const db = client.db("IOTPlatform")
-        collection = db.collection("users")
+        this.timeout(10 * 1000);
+        child = startServer()
+        await waitForServer()
+
+        db = await dbConnect()
     })
 
 
@@ -40,8 +47,8 @@ describe("User API test", function () {
                 should.exist(res.body.token)
             }).finally(async () => {
                 // cleaning
-                const result = await collection.deleteOne({ "info.userName": forms.registration_form_test10.formData.REGISTRATION.info.userName })
-                result.result.n.should.equal(1)
+                const result = await User.deleteOne({ "info.userName": forms.registration_form_test10.formData.REGISTRATION.info.userName }).exec()
+                result.n.should.equal(1)
                 done();
             })
 
@@ -134,13 +141,12 @@ describe("User API test", function () {
                     .set('Authorization-JWT', token)
                     .expect(204) // THis is HTTP response
                     .then(async function (res) {
-                    }).finally(async () => {
-                        const result = await collection.deleteOne({
+
+                        const result = await User.deleteOne({
                             "info.userName": forms.update_user_test10_lastName.formData.EDIT_USER.info.userName,
                             "info.lastName": forms.update_user_test10_lastName.formData.EDIT_USER.info.lastName
-                        })
-
-                        result.result.n.should.equal(1)
+                        }).exec()
+                        result.n.should.equal(1)
                         done();
                     })
 
@@ -150,18 +156,22 @@ describe("User API test", function () {
     });
 
     after(function (done) {
-        client.close()
+        killChild(child)
+        db.close();
         done()
     })
 });
 
 describe("User API test2", async function () {
-    let client;
-    let collection;
+    let child;
+    let db;
     before(async function () {
-        client = await MongoClient.connect(db_url, db_opt)
-        const db = client.db("IOTPlatform")
-        collection = db.collection("users")
+        this.timeout(10 * 1000);
+        
+        child = startServer()
+        await waitForServer()
+
+        db = await dbConnect()
     })
 
     it("should get list of all users", function (done) {
@@ -176,8 +186,10 @@ describe("User API test2", async function () {
                     should.not.exist(err);
                     should.exist(res.body.users)
 
-                    const count = await collection.find({}).count()
-                    should.equal(res.body.users.length, count - 2) // 2 - (root and loged user)
+                    const count = await User.find({
+                        groups: {$ne: "root"}
+                    }).countDocuments()
+                    should.equal(res.body.users.length, count  -1 ) // 1 - logged user
                     done();
                 });
         })
@@ -198,7 +210,7 @@ describe("User API test2", async function () {
                 const user = res.body.user
 
                 // check if user was created
-                const count = await collection.find({ "info.userName": user.info.userName }).count()
+                const count = await User.find({ "info.userName": user.info.userName }).countDocuments()
                 should.equal(count, 1)
 
                 const token = await getAdminToken()
@@ -208,14 +220,11 @@ describe("User API test2", async function () {
                     .send(forms.user_management_selected(user.id))
                     .set('Authorization-JWT', token)
                     .expect(204)
-                    .end(function (err, res) {
-                        should.not.exist(err)
-
+                    .then(async function (res) {
                         // check if user was deleted
-                        collection.find({ "info.userName": user.info.userName }).count(function (err, count) {
-                            should.equal(count, 0)
-                            done();
-                        })
+                        const count = await User.find({ "info.userName": user.info.userName }).countDocuments();
+                        should.equal(count, 0)
+                        done()
                     })
             });
     })
@@ -245,20 +254,13 @@ describe("User API test2", async function () {
                 .end(async function (err, res) {
                     should.not.exist(err)
 
-                    const userNames = await collection.find({ groups: { $ne:  "root" } }, { projection: { "info.userName": 1 } }).sort({ "info.userName": 1 }).toArray()
+                    const userNames = await User.find({ groups: { $ne:  "root" } }).select("info.userName").sort("info.userName").lean()
                     res.body.data.should.be.eql(userNames.map(({ _id, info: { userName } }) => ({ _id: _id.toString(), userName })))
                     done()
                 })
         })
     })
 
-    after(function (done) {
-        client.close()
-        done()
-    })
-})
-
-describe("User API check middlewares", function () {
     it("should check auth middleware", async function () {
         should.equal(await authChecker("/api/user", "get"), true)
         should.equal(await authChecker("/api/user", "delete"), true)
@@ -275,5 +277,11 @@ describe("User API check middlewares", function () {
         should.equal(await adminRestrictionChecker("/api/user", "get", 500), false)     // Restriction was removed
         should.equal(await adminRestrictionChecker("/api/user", "delete"), true)
         should.equal(await adminRestrictionChecker("/api/user/42kjhk42kjlj2442", "put"), true)
+    })
+
+    after(function (done) {
+        killChild(child)
+        db.close();
+        done()
     })
 })
