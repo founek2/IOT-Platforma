@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# -u substitude with parametr, for undefined parametr expansion shall fail ${#parameter}
+# -e when any command fails, the sjall emmediately exit
+set -u -e 
+
+
 BE_PATH="$IOT_DEPLOY_PATH/backend/backend/index.js"
 BE_MQTT_PATH="$IOT_DEPLOY_PATH/backend/backend-mqtt/index.js"
 
@@ -142,7 +147,7 @@ copyDocs)
     copy_docs
     ;;
 *)
-    echo "Usage: $NAME {start|stop|restart|build|deploy|copy|copyFE|copyBE|copyDocs}" >&2
+    echo "Usage: {start|stop|restart|build|deploy|copy|copyFE|copyBE|copyDocs}" >&2
     exit 3
     ;;
 esac
