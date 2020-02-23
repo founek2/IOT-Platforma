@@ -17,10 +17,10 @@ BE_MQTT_TEST_PATH=${PREFIX}/src/modules/backend-mqtt/test
 FE_TEST_PATH=${PREFIX}/src/modules/frontend/test
 FRAMEWORK_TEST_PATH=${PREFIX}/src/modules/framewrok/test
 FRAMEWORK_UI_TEST_PATH=${PREFIX}/src/modules/framework-ui/test
-NYC_PATH=${PREFIX}/node_modules/.bin/nyc
 
 TMUX_SESSION="Testing BE server"
 run_server(){
+    tmux kill-session -t "$TMUX_SESSION" > /dev/null 2>&1
     tmux new -s "$TMUX_SESSION" -d 'yarn babel-node ./src/modules/backend/src/index.js'
 }
 
@@ -38,17 +38,9 @@ check_running() {
 
 case "$1" in
 all-results)
-    # "$NYC_PATH" --reporter=lcov mocha \
-    # "$BE_TEST_PATH" \
-    # "$BE_MQTT_TEST_PATH" \
-    #  "$FE_TEST_PATH" \
-    #  "$FRAMEWORK_TEST_PATH" \
-    #  "$FRAMEWORK_UI_TEST_PATH" \
-    #  --require @babel/register --reporter xunit --reporter-options output=test-results.xml
     run_server
 
     check_running
-    
     yarn mochaReport \
     "$BE_TEST_PATH" \
     "$BE_MQTT_TEST_PATH" \
@@ -67,9 +59,33 @@ all)
 
     stop_server
     ;;
+FE)
+    yarn mocha "$FE_TEST_PATH"
+    ;;
+BE)
+    run_server
 
+    check_running
+    yarn mocha "$BE_TEST_PATH"
+
+    stop_server
+    ;;
+BE-mqtt)
+    run_server
+
+    check_running
+    yarn mocha "$BE_MQTT_TEST_PATH"
+
+    stop_server
+    ;;
+f)
+    yarn mocha "$FRAMEWORK_TEST_PATH"
+    ;;
+f-ui)
+    yarn mocha "$FRAMEWORK_UI_TEST_PATH"
+    ;;
 *)
-    echo "Usage: {all|all-results|BE|BE-mqtt|FE|f|f-mqtt}" >&2
+    echo "Usage: {all|all-results|BE|BE-mqtt|FE|f|f-ui}" >&2
     exit 3
     ;;
 esac
