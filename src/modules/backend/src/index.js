@@ -7,7 +7,7 @@ import initializeDb from './db'
 import middleware from './middleware'
 import api from './api'
 // import { getConfig } from './service/config'
-import config  from "../config/index"
+import config from "../config/index"
 import helmet from 'helmet'
 import path from 'path'
 import checkAndCreateRoot from 'framework/src/services/checkAndCreateRoot'
@@ -28,7 +28,7 @@ app.io = require("socket.io")(app.server, { path: "/websocket/io" })
 app.use(express.urlencoded({ extended: true }))
 
 // logger
-app.use("/api",morgan('dev'))
+app.use("/api", morgan('dev'))
 
 // 3rd party middleware
 app.options('*', cors())
@@ -69,7 +69,7 @@ initializeDb(config, db => {
 
      // app.use("/websocket", webSockets(app.io))
 
-     if (process.env.NODE_ENV === "development"){
+     if (process.env.NODE_ENV === "development") {
           const proxy = require("http-proxy-middleware");
           var wsProxy = proxy('/socket.io', {
                target: 'ws://localhost:8084',
@@ -80,7 +80,7 @@ initializeDb(config, db => {
                changeOrigin: true, // for vhosted sites, changes host header to match to target's host
                ws: true, // enable websocket proxy
                logLevel: 'info'
-             });
+          });
 
           app.use(wsProxy);
           app.server.on("upgrade", wsProxy.upgrade)
@@ -95,22 +95,26 @@ initializeDb(config, db => {
 
      app.server.listen(process.env.PORT || config.port, () => {
           console.log(`Started on port ${app.server.address().port}`)
-          
+
      })
 
      process.once('SIGINT', function (code) {
           console.log('SIGINT received...');
           app.server.close();
           db.close();
-        });
-      
-       // vs.
-      
-        process.once('SIGTERM', function (code) {
+     });
+
+     process.once('SIGTERM', function (code) {
           console.log('SIGTERM received...');
           app.server.close();
           db.close();
-        });
+     });
+
+     process.once('SIGHUP', function (code) {
+          console.log('SIGHUP received...');
+          app.server.close();
+          db.close();
+     });
 })
 
 export default app

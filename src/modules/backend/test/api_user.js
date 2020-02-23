@@ -8,7 +8,6 @@ import getUserToken from "./lib/getUserToken"
 import authChecker from "./lib/authChecker"
 import formDataChecker from "./lib/formDataChecker"
 import adminRestrictionChecker from "./lib/adminRestrictionChecker"
-import {spawnChild, waitForServer, killChild} from './lib/startServer'
 import dbConnect from './lib/db'
 import mongoose from 'mongoose'
 const ObjectId = mongoose.Types.ObjectId;
@@ -17,17 +16,10 @@ import User from '../src/models/user'
 
 const server = supertest.agent(config.url);
 
-const startServer = spawnChild;
-// const startServer = () => ({kill: () => {}});
 
 describe("User API test", function () {
-    let child;
     let db;
     before(async function () {
-        this.timeout(10 * 1000);
-        child = startServer()
-        await waitForServer()
-
         db = await dbConnect()
     })
 
@@ -156,21 +148,14 @@ describe("User API test", function () {
     });
 
     after(function (done) {
-        killChild(child)
         db.close();
         done()
     })
 });
 
 describe("User API test2", async function () {
-    let child;
     let db;
     before(async function () {
-        this.timeout(10 * 1000);
-        
-        child = startServer()
-        await waitForServer()
-
         db = await dbConnect()
     })
 
@@ -280,7 +265,6 @@ describe("User API test2", async function () {
     })
 
     after(function (done) {
-        killChild(child)
         db.close();
         done()
     })

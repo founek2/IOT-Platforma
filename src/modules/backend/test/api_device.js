@@ -6,7 +6,6 @@ import forms from "./resources/deviceForm"
 import authChecker from "./lib/authChecker"
 import formDataChecker from "./lib/formDataChecker"
 import { deleteImage } from '../src/service/files'
-import {spawnChild, waitForServer, killChild} from './lib/startServer'
 import dbConnect from './lib/db'
 import mongoose from 'mongoose'
 const ObjectId = mongoose.Types.ObjectId;
@@ -14,9 +13,6 @@ const ObjectId = mongoose.Types.ObjectId;
 import Device from '../src/models/Device'
 
 const server = supertest.agent(config.url);
-
-const child = spawnChild();
-// const child = {kill: () => {}}
 
 function createDevice(form, token) {
     return server  // create device
@@ -36,9 +32,6 @@ function createDevice(form, token) {
 describe("Device API test", async function () {
     let db;
     before(async function () {
-        this.timeout(10 * 1000);
-        await waitForServer()
-
         db = await dbConnect()
     })
 
@@ -249,7 +242,6 @@ describe("Device API test", async function () {
     })
 
     after(function (done) {
-       killChild(child)
         db.close();
         done()
     })

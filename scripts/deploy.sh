@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # -u substitude with parametr, for undefined parametr expansion shall fail ${#parameter}
-# -e when any command fails, the sjall emmediately exit
+# -e when any command fails, the script emmediately exit
 set -u -e 
 
 
