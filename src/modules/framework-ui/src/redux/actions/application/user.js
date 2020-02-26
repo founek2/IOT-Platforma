@@ -6,7 +6,7 @@ import {
      sendActive as apiActive,
      getUserAuthType as getUserAuthTypeApi,
 } from '../../../api/userApi'
-import { resetForm, updateFormField, validateRegisteredFields } from '../formsData'
+import { resetForm, updateFormField, validateRegisteredFields, validateField } from '../formsData'
 import { addNotification } from './notifications'
 import SuccessMessages from '../../../localization/successMessages'
 import { dehydrateState } from '../'
@@ -26,6 +26,7 @@ const LOGIN = 'LOGIN'
 export function login() {
      return async function (dispatch, getState) {
           const result = dispatch(validateRegisteredFields(LOGIN)())
+          logger.info(LOGIN)
           if (result.valid) {
                const formData = getFormData(LOGIN)(getState())
                return loginApi(
@@ -48,6 +49,7 @@ export function login() {
 export function register() {
      return async function (dispatch, getState) {
           const REGISTRATION = 'REGISTRATION'
+          logger.info(REGISTRATION)
           const result = dispatch(validateRegisteredFields(REGISTRATION)())
           if (result.valid) {
                const formData = getFormData(REGISTRATION)(getState())
@@ -68,6 +70,7 @@ export function register() {
 export function registerAngLogin() {
      return async function (dispatch, getState) {
           const REGISTRATION = 'REGISTRATION'
+          logger.info("REGISTER_AND_LOGIN")
           const result = dispatch(validateRegisteredFields(REGISTRATION)())
           if (result.valid) {
                const formData = getFormData(REGISTRATION)(getState())
@@ -109,7 +112,8 @@ export function userLogOut() {
 
 export function fetchAuthType() {
      return async function (dispatch, getState) {
-          const result = dispatch(validateRegisteredFields(LOGIN)())
+          const result = dispatch(validateField("LOGIN.userName", true))
+          logger.info("FETCH_AUTH_TYPE")
           if (result.valid) {
                const userName = prop('userName', getFormData(LOGIN)(getState()))
                return getUserAuthTypeApi(

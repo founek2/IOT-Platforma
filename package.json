@@ -38,7 +38,10 @@
     "core-js": "^3.6.4"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "globals": {
+      "logger": true
+  }
   },
   "browserslist": [
     ">0.2%",

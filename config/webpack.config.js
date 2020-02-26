@@ -244,7 +244,7 @@ module.exports = function(webpackEnv) {
                     // Support React Native Web
                     // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
                     'react-native': 'react-native-web',
-                    'framework-ui': path.join(paths.appSrc, 'modules', 'framework-ui')
+                    // 'logger': path.join(paths.appSrc, 'modules', 'framework-ui/Logger')
                },
                plugins: [
                     // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -444,6 +444,9 @@ module.exports = function(webpackEnv) {
                ]
           },
           plugins: [
+               new webpack.ProvidePlugin({
+                    'logger': 'framework-ui/src/Logger'
+                  }),
                // Generates an `index.html` file with the <script> injected.
                new HtmlWebpackPlugin(
                     Object.assign(

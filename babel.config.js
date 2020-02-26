@@ -27,7 +27,7 @@ module.exports = function (api) {
                               "fieldDescriptors": "./src/modules/frontend/src/validations/fieldDescriptors",
                               'framework-ui': './src/modules/framework-ui',
                               'frontend': './src/modules/frontend',
-                              'backend': './src/modules/backend'
+                              'backend': './src/modules/backend',
                          }
                     }
                ],

@@ -32,7 +32,6 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
 
 
           const value = getInPath(deepPath, formsData);
-          // console.log(deepPath, value)
           if (!when || (typeof when === 'function' && when(formsData[formName] || {}))) {
                if (required) {
                     if (notEmptyVal(value)) {
@@ -61,7 +60,10 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
                     errorMessages: []
                };
           }
-     }
+     }else return {
+          valid: true,
+          errorMessages: []
+     };
 };
 
 function recursive(transform, predicate, arrayPredicate, object) {

@@ -69,6 +69,7 @@ export function validateField(deepPath, ignorePristine) {
           baseLogger('VALIDATE_FIELD:', deepPath);
           const fieldState = ValidateField(deepPath, getState(), ignorePristine);
           dispatch(updateRegisteredField(deepPath, fieldState));
+          return fieldState
      };
 }
 
