@@ -86,7 +86,7 @@ function recursive(transform, predicate, arrayPredicate, object) {
 const isObject = (val) => Object.prototype.toString.call(val) === "[object Object]"
 
 export const validateForm = (formName, state, ignoreRequiredFields = false) => {
-     throw new Error("unstable");
+     // TODO check why it adds formName itself
      const formDescriptors = getFormDescriptors(formName, state);
      const formData = getFormData(formName)(state)
 
