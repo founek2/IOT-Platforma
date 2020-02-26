@@ -26,7 +26,7 @@ const LOGIN = 'LOGIN'
 export function login() {
      return async function (dispatch, getState) {
           const result = dispatch(validateRegisteredFields(LOGIN)())
-          logger.info(LOGIN)
+          logger.log(LOGIN)
           if (result.valid) {
                const formData = getFormData(LOGIN)(getState())
                return loginApi(
@@ -49,7 +49,7 @@ export function login() {
 export function register() {
      return async function (dispatch, getState) {
           const REGISTRATION = 'REGISTRATION'
-          logger.info(REGISTRATION)
+          logger.log(REGISTRATION)
           const result = dispatch(validateRegisteredFields(REGISTRATION)())
           if (result.valid) {
                const formData = getFormData(REGISTRATION)(getState())
@@ -70,7 +70,7 @@ export function register() {
 export function registerAngLogin() {
      return async function (dispatch, getState) {
           const REGISTRATION = 'REGISTRATION'
-          logger.info("REGISTER_AND_LOGIN")
+          logger.log("REGISTER_AND_LOGIN")
           const result = dispatch(validateRegisteredFields(REGISTRATION)())
           if (result.valid) {
                const formData = getFormData(REGISTRATION)(getState())
@@ -113,7 +113,7 @@ export function userLogOut() {
 export function fetchAuthType() {
      return async function (dispatch, getState) {
           const result = dispatch(validateField("LOGIN.userName", true))
-          logger.info("FETCH_AUTH_TYPE")
+          logger.log("FETCH_AUTH_TYPE")
           if (result.valid) {
                const userName = prop('userName', getFormData(LOGIN)(getState()))
                return getUserAuthTypeApi(

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
 import resetTime from 'framework/src/utils/resetTime'
+const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 

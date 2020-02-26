@@ -1,6 +1,6 @@
+import { isNotEmpty } from 'ramda-extension';
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-import { isNotEmpty } from 'ramda-extension';
 
 const errorSchema = new Schema(
      {
