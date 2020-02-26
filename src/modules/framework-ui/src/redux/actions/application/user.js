@@ -6,10 +6,9 @@ import {
      sendActive as apiActive,
      getUserAuthType as getUserAuthTypeApi,
 } from '../../../api/userApi'
-import { validateForm, resetForm, updateFormField } from '../formsData'
+import { resetForm, updateFormField, validateRegisteredFields } from '../formsData'
 import { addNotification } from './notifications'
 import SuccessMessages from '../../../localization/successMessages'
-import * as currenPosition from '../../../utils/currentPosition'
 import { dehydrateState } from '../'
 import { prop } from 'ramda'
 import LoginCallbacks from '../../../callbacks/login'
@@ -25,9 +24,8 @@ export function update(data) {
 const LOGIN = 'LOGIN'
 
 export function login() {
-     return function (dispatch, getState) {
-          const result = dispatch(validateForm(LOGIN)())
-          console.log("login")
+     return async function (dispatch, getState) {
+          const result = dispatch(validateRegisteredFields(LOGIN)())
           if (result.valid) {
                const formData = getFormData(LOGIN)(getState())
                return loginApi(
@@ -48,9 +46,9 @@ export function login() {
 }
 
 export function register() {
-     return function (dispatch, getState) {
+     return async function (dispatch, getState) {
           const REGISTRATION = 'REGISTRATION'
-          const result = dispatch(validateForm(REGISTRATION)())
+          const result = dispatch(validateRegisteredFields(REGISTRATION)())
           if (result.valid) {
                const formData = getFormData(REGISTRATION)(getState())
                return createUserApi(
@@ -68,9 +66,9 @@ export function register() {
 }
 
 export function registerAngLogin() {
-     return function (dispatch, getState) {
+     return async function (dispatch, getState) {
           const REGISTRATION = 'REGISTRATION'
-          const result = dispatch(validateForm(REGISTRATION)())
+          const result = dispatch(validateRegisteredFields(REGISTRATION)())
           if (result.valid) {
                const formData = getFormData(REGISTRATION)(getState())
                return createUserApi(
@@ -98,72 +96,34 @@ export function setUser(data) {
 }
 
 export function userLogOut() {
-     return function (dispatch) {
-          return new Promise((resolve) => {
-               dispatch({
-                    type: actionTypes.RESET_TO_DEFAULT
-               })
-               dispatch(
-                    addNotification({ message: SuccessMessages.getMessage('successfullyLogOut'), variant: 'success', duration: 3000 })
-               )
-               LogoutCallbacks.exec()
-               resolve()
+     return async function (dispatch) {
+          dispatch({
+               type: actionTypes.RESET_TO_DEFAULT
           })
+          dispatch(
+               addNotification({ message: SuccessMessages.getMessage('successfullyLogOut'), variant: 'success', duration: 3000 })
+          )
+          LogoutCallbacks.exec()
      }
 }
 
 export function fetchAuthType() {
-     return function (dispatch, getState) {
-          const userName = prop('userName', getFormData(LOGIN)(getState()))
-          return getUserAuthTypeApi(
-               {
-                    userName: userName.trim(),
-                    params: { attribute: 'authType' },
-                    onSuccess: ({ authType }) => {
-                         dispatch(updateFormField(`${LOGIN}.authType`, authType))
-                    },
-                    onError: () => dispatch(updateFormField(`${LOGIN}.authType`, ''))
-               },
-               dispatch
-          )
-     }
-}
-
-export function updateLastPosition() {
-     return function (dispatch) {
-          return dispatch(update({ lastPositionUpdate: new Date() }))
-     }
-}
-
-export function sendCurrentPosition() {
-     return function (dispatch, getState) {
-          currenPosition.get(
-               position => {
-                    const { latitude, longitude } = position.coords
-                    apiActive(
-                         {
-                              body: { formData: { POSITION: { latitude, longitude } } },
-                              token: getToken(getState()),
-                              onSuccess: json => dispatch(updateLastPosition())
+     return async function (dispatch, getState) {
+          const result = dispatch(validateRegisteredFields(LOGIN)())
+          if (result.valid) {
+               const userName = prop('userName', getFormData(LOGIN)(getState()))
+               return getUserAuthTypeApi(
+                    {
+                         userName: userName,
+                         params: { attribute: 'authType' },
+                         onSuccess: ({ authType }) => {
+                              dispatch(updateFormField(`${LOGIN}.authType`, authType))
                          },
-                         dispatch
-                    )
-               },
-               () => console.log('notFoundPosition')
-          )
-     }
-}
-let interval = null
-export function enableSendingCurrPosition() {
-     return function (dispatch) {
-          dispatch(sendCurrentPosition())
-          interval = setInterval(() => dispatch(sendCurrentPosition()), POSITION_UPDATE_INTERVAL)
-     }
-}
-
-export function disableSendingCurrPosition() {
-     return function (dispatch) {
-          clearInterval(interval)
+                         onError: () => dispatch(updateFormField(`${LOGIN}.authType`, ''))
+                    },
+                    dispatch
+               )
+          }
      }
 }
 

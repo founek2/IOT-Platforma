@@ -42,7 +42,7 @@ export function fetchAll() {
 }
 
 export function create() {
-     return function(dispatch, getState) {
+     return async function(dispatch, getState) {
           const USER = 'USER';
           const result = dispatch(validateForm(USER)());
           if (result.valid) {
@@ -92,7 +92,7 @@ export function updateUser(id) {
 }
 
 export function deleteUsers() {
-     return function(dispatch, getState) {
+     return async function(dispatch, getState) {
           const USER_MANAGEMENT = 'USER_MANAGEMENT';
           const result = dispatch(validateForm(USER_MANAGEMENT)());
           if (result.valid) {
@@ -109,23 +109,6 @@ export function deleteUsers() {
      };
 }
 
-export function getActiveUsers() {
-	return function(dispatch, getState) {
-          apiGetUsersActiveBefore({
-			token: getToken(getState()),
-			params: {before: new Date().getTime() - POSITION_UPDATE_INTERVAL},
-			onSuccess: json => dispatch(addPositions(json.docs))
-		},
-		dispatch)
-     };
-}
-
-export function addPositions(docs) {
-	return {
-		type: actionTypes.ADD_POSITIONS,
-          payload: docs
-	}
-}
 export default{
 	remove,
 	set,
