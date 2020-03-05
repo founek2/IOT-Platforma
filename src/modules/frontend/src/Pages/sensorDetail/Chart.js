@@ -21,6 +21,8 @@ const styles = theme => ({
     }
 })
 
+// TODO when multiple legends disabling is not working properly -> maybe onClick event and manual remove from dataset
+
 const options = (hAxisTitle, vAxisTitle) => ({
     // chart: {
     //     title: 'Graf průběhu v čase',

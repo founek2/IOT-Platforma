@@ -40,8 +40,8 @@ const useStyles = makeStyles(theme => ({
 
 function DetailTable({ sensorRecipe: { JSONkey, name, unit }, sumObject }) {
     const classes = useStyles();
-    console.log("DetailTable", name, sumObject)
-    const days = Object.keys(sumObject)
+
+    const days = Object.keys(sumObject).reverse()   // TODO object might not preserve order -> use map instead
     const rows = []
     days.forEach(date => {
         const { sum, nsamples: { day = 0, night = 0 }, min, max } = sumObject[date]
