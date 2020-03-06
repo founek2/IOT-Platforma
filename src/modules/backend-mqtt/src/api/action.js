@@ -11,13 +11,13 @@ export default ({ config, db }) =>
                 Device.findById(id, "topic control.recipe createdBy ").lean().then(doc => {
                     console.log("doc", doc)
                     if (doc) {
-                        // TODO send to mqtt, there wait for ack, responde and here save to DB
                         const jsonKeys = doc.control.recipe.map(obj => obj.JSONkey)
 
-                        if (jsonKeys.some(key => formData.JSONkey === key)){
+                            if (jsonKeys.some(key => formData.JSONkey === key)){
+                                res.sendStatus(200) // response first -> mqtt is otherwise faster
+
                             console.log("publish to", `/${doc.createdBy}${doc.topic}/update`, formData.state)
                             publish(`/${doc.createdBy}${doc.topic}/update`,  {[formData.JSONkey]: formData.state})
-                            res.sendStatus(200)
                         }else  throw new Error("Invalid key")
                     } else res.sendStatus(500)
                 }).catch((err) => {
