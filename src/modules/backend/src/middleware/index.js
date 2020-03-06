@@ -16,7 +16,7 @@ export default ({ config, db }) => {
      // router.get('/api/user', groupRestriction('admin'))
      // router.use('/api/user', formDataChecker(fieldDescriptors, { methods: ["POST", "DELETE", "PUT"] }))
 
-     router.get('/api/device/control', tokenAuthMIddleware())
+     // router.get('/api/device/control', tokenAuthMIddleware())
 
      // router.use('/api/device', tokenAuthMIddleware({ methods: ["POST", "PUT", "PATCH", "DELETE"] }))
      // router.get('/api/device', tokenAuthMIddleware({ restricted: false, methods: ["GET"] }))

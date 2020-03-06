@@ -127,13 +127,19 @@ const controlFields = {
      ack: 1,
 }
 
+const sensorsFields = {
+     id: '$_id',
+     _id: 0,
+     sensors: 1,
+}
+
 deviceSchema.statics.findForUser = function (userID, options = {}) {
-     const { controlOnly } = options;
+     const { controlOnly, sensorsOnly } = options;
      const userObjID = mongoose.Types.ObjectId(userID)
 
      console.log("loking for devices, userID=", userID)
 
-     if (controlOnly) {
+     if (controlOnly)
           return this.model('Device')
                .find({ "permissions.control": userObjID, "control": { $exists: true } })
                .select('control ack')
@@ -142,7 +148,17 @@ deviceSchema.statics.findForUser = function (userID, options = {}) {
                     delete doc._id;
                     return doc;
                }))
-     }
+
+     if (sensorsOnly)
+          return this.model('Device')
+               .find({ "permissions.read": userObjID, "sensors": { $exists: true } })
+               .select('sensors')
+               .lean().then(docs => docs.map(doc => {
+                    doc.id = doc._id;
+                    delete doc._id;
+                    return doc;
+               }))
+
 
      return this.model('Device')
           .aggregate([
@@ -203,13 +219,24 @@ deviceSchema.statics.findForUser = function (userID, options = {}) {
 }
 
 deviceSchema.statics.findForAdmin = function (options = {}) {
-     const { controlOnly } = options;
+     const { controlOnly, sensorsOnly } = options;
 
      if (controlOnly)
           return this.model('Device')
                .aggregate(
                     [{ $match: { control: { $exists: true } } }, {
                          $project: controlFields
+                    }]
+               )
+               .then(docs => {
+                    return docs
+               }).catch(catcher('device'))
+
+     if (sensorsOnly)
+          return this.model('Device')
+               .aggregate(
+                    [{ $match: { sensors: { $exists: true } } }, {
+                         $project: sensorsFields
                     }]
                )
                .then(docs => {
@@ -232,7 +259,20 @@ deviceSchema.statics.findForAdmin = function (options = {}) {
           }).catch(catcher('device'))
 }
 
-deviceSchema.statics.findPublic = function () {
+deviceSchema.statics.findPublic = function ({ sensorsOnly } = {}) {
+     if (sensorsOnly)
+          return this.model('Device')
+               .aggregate(
+                    [
+                         { $match: { publicRead: true } },
+                         {
+                              $project: sensorsFields
+                         }]
+               )
+               .then(docs => {
+                    return docs
+               }).catch(catcher('device'))
+
      return this.model('Device')
           .aggregate(
                [

@@ -9,12 +9,14 @@ import { keys, head } from 'ramda'
 import {
      createDevice as createDeviceApi,
      fetchDevices as fetchDevicesApi,
+     fetchDeviceSensors as fetchDeviceSensorsApi,
      fetchDeviceControl as fetchDeviceControlApi,
      updateDevice as updateDeviceApi,
      putDevice as putDeviceApi,
      deleteDevice as deleteDeviceApi,
      fetchDeviceData as fetchDeviceDataApi,
      updateState as updateStateApi,
+
 } from '../../../api/deviceApi'
 import { getDevices } from '../../../utils/getters'
 import objectDiff from 'framework-ui/src/utils/objectDiff'
@@ -157,6 +159,22 @@ export function fetchControl() {
      return function (dispatch, getState) {
           baseLogger("FETCH_DEVICES_CONTROL")
           return fetchDeviceControlApi(
+               {
+                    token: getToken(getState()),
+                    onSuccess: json => {
+                         dispatch(updateAll(json.docs))
+                         // dispatch(dehydrateState())
+                    }
+               },
+               dispatch
+          )
+     }
+}
+
+export function fetchSensors() {
+     return function (dispatch, getState) {
+          baseLogger("FETCH_DEVICES_SENSORS")
+          return fetchDeviceSensorsApi(
                {
                     token: getToken(getState()),
                     onSuccess: json => {

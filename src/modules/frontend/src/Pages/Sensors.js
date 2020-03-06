@@ -42,12 +42,18 @@ function updateDevice(updateDeviceAction) {
 }
 
 // TODO stáhnout nová data, pokud na event focus budou starší jak cca 30min?
-function Sensors({ fetchDevicesAction,updateDeviceAction, devices, classes }) {
+function Sensors({ fetchDevicesAction,updateDeviceAction, devices, classes, updateSensorsAction }) {
      useEffect(() => {
           fetchDevicesAction()
           const listener = updateDevice(updateDeviceAction)
           io.getSocket().on("sensors", listener)
-          return () => io.getSocket().off("sensors", listener)
+
+          window.addEventListener('focus', updateSensorsAction)
+
+          return () => {
+               io.getSocket().off("control", listener)
+               window.removeEventListener('focus', updateSensorsAction)
+          };
      }, [])
 
      return (
@@ -70,7 +76,8 @@ const _mapDispatchToProps = dispatch =>
      bindActionCreators(
           {
                fetchDevicesAction: deviceActions.fetch,
-               updateDeviceAction: deviceActions.update
+               updateDeviceAction: deviceActions.update,
+               updateSensorsAction: deviceActions.fetchSensors,
           },
           dispatch
      )

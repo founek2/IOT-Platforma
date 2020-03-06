@@ -32,6 +32,13 @@ export const fetchDeviceControl = (object, dispatch) =>
           dispatch
      })
 
+export const fetchDeviceSensors = (object, dispatch) =>
+     paramSender({
+          url: API_URL + '/device/sensors',
+          ...object,
+          dispatch
+     })
+
 export const updateDevice = ({ id, ...object }, dispatch) =>
      patchJson({
           url: API_URL + `/device/${id}`,

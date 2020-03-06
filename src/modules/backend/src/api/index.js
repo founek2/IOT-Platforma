@@ -5,6 +5,7 @@ import device from './device'
 import iot from './iot'
 import auth from './auth'
 import control from './control'
+import sensors from './sensors'
 
 export default ({ config, db }) => {
      let api = Router()
@@ -13,6 +14,8 @@ export default ({ config, db }) => {
 
 
      api.use('/device/control', control({config}))
+
+     api.use('/device/sensors', sensors({config}))
      
      api.use('/device', device({ config }))
 
