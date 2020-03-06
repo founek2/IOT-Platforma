@@ -41,7 +41,6 @@ function updateDevice(updateDeviceAction) {
      }
 }
 
-// TODO stáhnout nová data, pokud na event focus budou starší jak cca 30min?
 function Sensors({ fetchDevicesAction,updateDeviceAction, devices, classes, updateSensorsAction }) {
      useEffect(() => {
           fetchDevicesAction()
