@@ -131,6 +131,8 @@ deviceSchema.statics.findForUser = function (userID, options = {}) {
      const { controlOnly } = options;
      const userObjID = mongoose.Types.ObjectId(userID)
 
+     console.log("loking for devices, userID=", userID)
+
      if (controlOnly) {
           return this.model('Device')
                .find({ "permissions.control": userObjID, "control": { $exists: true } })
@@ -138,17 +140,13 @@ deviceSchema.statics.findForUser = function (userID, options = {}) {
                .lean().then(docs => docs.map(doc => {
                     doc.id = doc._id;
                     delete doc._id;
-                    return doc;    // TODO quick flexBasis: 
+                    return doc;
                }))
      }
-
-     console.log("loking for devices, userID=", userID)
-     //return this.model('Device').find({ _id: { $in: arrayOfIDs.map(id => mongoose.Types.ObjectId(id)) } })
 
      return this.model('Device')
           .aggregate([
                {
-                    // $match: { _id: { $in: devices.map(({ id }) => id) } }
                     $match: {
                          $or: [
                               { publicRead: true },
@@ -210,7 +208,7 @@ deviceSchema.statics.findForAdmin = function (options = {}) {
      if (controlOnly)
           return this.model('Device')
                .aggregate(
-                    [ { $match: { control: {$exists: true} } },{
+                    [{ $match: { control: { $exists: true } } }, {
                          $project: controlFields
                     }]
                )
@@ -221,7 +219,7 @@ deviceSchema.statics.findForAdmin = function (options = {}) {
      return this.model('Device')
           .aggregate(
                [{
-                    $project: controlOnly ? controlFields : {
+                    $project: {
                          ...aggregationFields,
                          control: 1,
                          sensors: 1,
@@ -255,8 +253,9 @@ deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtensi
      return this.model('Device')
           .findOne({ _id: mongoose.Types.ObjectId(deviceID) })
           .select('permissions createdBy imgPath info')
+          .lean()
           .then(async doc => {
-               if (doc.permissions.write.some(id => id.toString() == id) || admin) { // two eq (==) are required
+               if (doc.permissions.write.some(ID => ID.toString() === id) || admin) {
                     const { topic } = formData
                     if (topic) {
                          const result = await this.model('Device').find({ topic, createdBy: doc.createdBy, _id: { $ne: mongoose.Types.ObjectId(deviceID) } }).lean().count()
@@ -265,9 +264,10 @@ deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtensi
                     const origImgPath = doc.info.imgPath
                     if (imgExtension) formData.info.imgPath = `/devices/${doc.id}.${imgExtension}`
 
-                    const formDataNested = { ...formData, info: { ...doc.info, ...(formData.info) } }    // merge original nested object "info"
+                    const formDataNested = { ...formData, info: { ...doc.info, ...(formData.info) } }    // merge original nested object "info" to preserve imagePath
+
                     console.log("updating Device> ", formDataNested)
-                    return doc.updateOne(formDataNested).then(() => origImgPath)
+                    return this.model('Device').updateOne({ _id: mongoose.Types.ObjectId(deviceID) }, formDataNested).then(() => origImgPath)
                } else {
                     throw Error("invalidPermissions")
                }
@@ -338,7 +338,7 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
           })
 }
 
-deviceSchema.statics.delete = async function (deviceID, user) {  // TODO smazat případná data o zařízení u uživatelů
+deviceSchema.statics.delete = async function (deviceID, user) {
      return this.model('Device')
           .findOneAndDelete({
                _id: mongoose.Types.ObjectId(deviceID),
@@ -405,7 +405,6 @@ function prepareStateUpdate(data, updatedAt) {
                result2["control.current.data." + key + ".state." + propKey] = data[key][propKey]
           })
           result2["control.current.data." + key + ".updatedAt"] = updatedAt
-          console.log(result2)
      })
 
      return result2
