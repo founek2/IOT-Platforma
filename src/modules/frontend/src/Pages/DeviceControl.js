@@ -61,7 +61,7 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
           const listenerAck = updateDevice(updateDeviceAction)
           io.getSocket().on("ack", listenerAck)
 
-          window.addEventListener('focus', updateControlAction)   // TODO fetch only control part of devices
+          window.addEventListener('focus', updateControlAction)
 
           return () => {
                io.getSocket().off("control", listener)

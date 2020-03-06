@@ -18,8 +18,8 @@ export default function (options = { restricted: true}) {
                     return Jwt.verify(token)
                          .then(obj => {
                               req.user = obj
-                              // next()
-                              mongoose  // TODO bad implementation - framework doesnt have User model
+
+                              mongoose
                                    .model('User')
                                    .findById(obj.id)
                                    .then(user => {

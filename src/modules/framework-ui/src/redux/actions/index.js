@@ -38,7 +38,7 @@ export function hydrateState() {
 					return;
 				} 
                }
-               delete state.dehydrationTime // TODO calculate age of State
+               delete state.dehydrationTime
                dispatch({
                     type: actionTypes.HYDRATE_STATE,
                     payload: state
