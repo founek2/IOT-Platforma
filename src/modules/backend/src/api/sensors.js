@@ -22,7 +22,7 @@ export default ({ config, db }) =>
                          res.send({ docs })
                     })
                } else {
-                    Device.findPublic(user.id, { sensorsOnly: true }).then(docs => {
+                    Device.findPublic({ sensorsOnly: true }).then(docs => {
                          res.send({ docs })
                     })
                }
