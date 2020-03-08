@@ -14,7 +14,7 @@ import setInPath from '../utils/setInPath';
 import validationFactory from './validationFactory';
 
 const requiredFn = validationFactory('isRequired');
-const notEmptyVal = (val) => requiredFn == true
+const notEmptyVal = (val) => requiredFn(val) === true
 
 export const validateField = (deepPath, state, ignorePristine = false, ignoreRequired = false) => {
      const pristine = getPristine(deepPath, state);
@@ -30,8 +30,8 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
           const { required, when, validations } = descriptor;
           const formName = deepPath.split('.')[0];
 
-
           const value = getInPath(deepPath, formsData);
+
           if (!when || (typeof when === 'function' && when(formsData[formName] || {}))) {
                if (required) {
                     if (notEmptyVal(value)) {
@@ -97,7 +97,6 @@ export const validateForm = (formName, state, ignoreRequiredFields = false) => {
      // find all deePaths of - fields and array of fields
      const arrayRegex = /\[\]$/;
      recursive((val, deepPath) => {
-          // if (deepPath === formName) debugger
           if (arrayRegex.test(deepPath)) arrayOfArrayFields.push(deepPath.replace(arrayRegex, ""))
           else arraOfPaths.push(deepPath)
      }, (val) => {
@@ -106,7 +105,6 @@ export const validateForm = (formName, state, ignoreRequiredFields = false) => {
 
      // find all array of fields in formData
      recursive((val, deepPath) => {
-          // if (deepPath === formName) debugger
           arraOfPaths.push(deepPath)
      }, isObject,
           (val, deepPath) =>
@@ -119,7 +117,6 @@ export const validateForm = (formName, state, ignoreRequiredFields = false) => {
      if (regFields && regFields[formName]) {
           const fields = regFields[formName];
           recursive((val, deepPath) => {
-               // if (deepPath === formName) debugger
                arraOfPaths.push(deepPath)
           }, val => isObject(val) && val.valid == undefined,
                (val, deepPath) =>
@@ -129,7 +126,7 @@ export const validateForm = (formName, state, ignoreRequiredFields = false) => {
 
 
      const uniqArray = uniq(arraOfPaths)
-     console.log(uniqArray)
+     // console.log("uniq deepPaths", uniqArray)
      forEach((deepPath) => {
           const out = validateField(deepPath, state, true, ignoreRequiredFields);
           result = setInPath(deepPath, out, result);
