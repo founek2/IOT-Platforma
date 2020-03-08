@@ -1,10 +1,29 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory'
 import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE } from '../constants'
-import { evolve, replace, mapObjIndexed, assocPath } from 'ramda'
+import { evolve, replace, mapObjIndexed, assocPath, is, forEachObjIndexed } from 'ramda'
+import setInPath from 'framework-ui/src/utils/setInPath'
+
+function recursive(transform, predicate, object) {
+     const func = (accum = '') => (value, key) => {
+          if (predicate(value)) return rec(value, accum + key + ".")
+          transform(value, accum + key)
+     }
+
+     function rec(obj, accum) {
+          forEachObjIndexed(func(accum), obj)
+     }
+     rec(object)
+}
 
 function transformToForm(formName, fields) {           // TODO doesnt work for nested fields
-     const modify = evolve({ deepPath: replace(/[^.]*/, formName) })
-     return mapObjIndexed(modify, fields)
+     let result = {};
+     recursive((val, deepPath) => {
+          console.log(val, deepPath)
+          const newVal = {...val, deepPath: val.deepPath.replace(/[^.]*/, formName)}
+          result = setInPath(deepPath, newVal, result)
+     }, (val) => is(Object, val) && !val.deepPath, fields)
+
+     return result;
 }
 
 const LOGIN = {
