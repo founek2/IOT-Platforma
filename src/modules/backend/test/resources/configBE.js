@@ -11,7 +11,7 @@ module.exports=  {
     publicKey: path.join(__dirname, "keys", "jwtRS256.key.pub"),
     mqttUser: "admin",
     mqttPassword: "12345666",
-    imagesPath: process.env.IOT_IMAGES_PATH,
+    imagesPath: "/tmp/images/",
     testUser: "test1",
     testPassword: "123456",
     mode: "test",

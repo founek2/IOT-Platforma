@@ -11,6 +11,7 @@ import config from "../config/index"
 import helmet from 'helmet'
 import path from 'path'
 import checkAndCreateRoot from 'framework/src/services/checkAndCreateRoot'
+import * as Files from './service/files'
 import Jwt from 'framework/src/services/jwt'
 import { devLog } from 'framework/src/Logger'
 // import proxy from 'express-http-proxy'
@@ -54,7 +55,7 @@ app.use((req, res, next) =>
 // connect to db
 initializeDb(config, db => {
      Jwt.init(config)
-     console.log("IMAGES path", process.env.IOT_IMAGES_PATH)
+     Files.init(config)
 
      // checkAndCreateRoot() // check for roor existence, if not, then ask for password in terminal
 

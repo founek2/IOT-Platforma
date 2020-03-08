@@ -11,12 +11,16 @@ SCRIPTPATH="$(
 PREFIX=${SCRIPTPATH}/..
 export IOT_IMAGES_PATH=${SCRIPTPATH}/../public/images
 export IOT_CONFIG=${SCRIPTPATH}/../src/modules/backend/test/resources/configBE.js
+export NODE_ENV=development
 
 BE_TEST_PATH=${PREFIX}/src/modules/backend/test
 BE_MQTT_TEST_PATH=${PREFIX}/src/modules/backend-mqtt/test
 FE_TEST_PATH=${PREFIX}/src/modules/frontend/test
 FRAMEWORK_TEST_PATH=${PREFIX}/src/modules/framewrok/test
 FRAMEWORK_UI_TEST_PATH=${PREFIX}/src/modules/framework-ui/test
+
+# prepare folder for testing
+mkdir -p /tmp/images/devices
 
 TMUX_SESSION="Testing BE server"
 run_server(){

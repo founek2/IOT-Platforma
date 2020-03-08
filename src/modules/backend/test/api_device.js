@@ -5,7 +5,6 @@ import getUserToken from "./lib/getUserToken"
 import forms from "./resources/deviceForm"
 import authChecker from "./lib/authChecker"
 import formDataChecker from "./lib/formDataChecker"
-import { deleteImage } from '../src/service/files'
 import dbConnect from './lib/db'
 import mongoose from 'mongoose'
 const ObjectId = mongoose.Types.ObjectId;
@@ -42,8 +41,7 @@ describe("Device API test", async function () {
                 .then(async function (res) {
                     should.exist(res.body.apiKey)
                     should.exist(res.body.doc)
-
-                    deleteImage(res.body.doc.info.imgPath)   // delete img
+                    
                     done()
                 }).finally(async () => {
                     const result = await Device.deleteOne({ createdBy: new ObjectId(user.id) }).exec();

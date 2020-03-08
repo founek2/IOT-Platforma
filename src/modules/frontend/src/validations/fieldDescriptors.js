@@ -18,7 +18,6 @@ function recursive(transform, predicate, object) {
 function transformToForm(formName, fields) {           // TODO doesnt work for nested fields
      let result = {};
      recursive((val, deepPath) => {
-          console.log(val, deepPath)
           const newVal = {...val, deepPath: val.deepPath.replace(/[^.]*/, formName)}
           result = setInPath(deepPath, newVal, result)
      }, (val) => is(Object, val) && !val.deepPath, fields)
@@ -219,7 +218,7 @@ const EDIT_SENSORS = {
           required: true,
           label: 'Interval samplování',
           name: "sampleinterval",
-          validations: [validationFactory('isOneOf', SampleIntervals)]
+          validations: [validationFactory('isOneOf', {values: SampleIntervals})]
      },
 
      'name[]': {
