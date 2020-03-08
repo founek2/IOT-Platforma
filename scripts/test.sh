@@ -20,6 +20,7 @@ FRAMEWORK_TEST_PATH=${PREFIX}/src/modules/framewrok/test
 FRAMEWORK_UI_TEST_PATH=${PREFIX}/src/modules/framework-ui/test
 
 # prepare folder for testing
+rm -rf /tmp/images
 mkdir -p /tmp/images/devices
 
 TMUX_SESSION="Testing BE server"
