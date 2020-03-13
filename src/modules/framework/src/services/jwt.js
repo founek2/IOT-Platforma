@@ -14,7 +14,7 @@ const init = function (config) {
 
 const sign = function(object) {
      return new Promise(function(resolve, reject) {
-          jwt.sign(object, privKey, { algorithm: 'RS256', expiresIn: '336h' }, function(err, token) {
+          jwt.sign(object, privKey, { algorithm: 'RS256', expiresIn: '14 days' }, function(err, token) {
                if (!err) {
                     resolve(token);
                } else {
@@ -34,6 +34,7 @@ const verify = function(token) {
           });
      });
 };
+
 
 export default {
      sign,

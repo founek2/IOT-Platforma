@@ -2,10 +2,20 @@ import { merge, flip, o, toPairs, forEach, curry, T } from 'ramda'
 import { addNotification } from '../redux/actions/application/notifications'
 import ErrorMessages from '../localization/errorMessages'
 import SuccessMessages from '../localization/successMessages'
-import { warningLog } from '../Logger'
+import { warningLog, infoLog } from '../Logger'
+import {update} from '../redux/actions/application/user'
+import {dehydrateState} from '../redux/actions/'
 
 const processResponse = (dispatch, successMessage) => response => {
      const { status } = response
+     // set new jwt token, when provided from backend
+     const newToken = response.headers.get("authorization-jwt-new")
+     if (newToken){
+          infoLog("Setting resigned token")
+          dispatch(update({token: newToken}))
+          dispatch(dehydrateState())
+     }
+
      if (status === 500) {
           dispatch(addNotification({ message: ErrorMessages.getMessage('unexpectedError'), variant: 'error', duration: 3000 }))
           throw new Error('breakChain')

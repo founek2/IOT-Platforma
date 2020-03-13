@@ -8,38 +8,48 @@ import privilegesFactory, { enrichGroups } from 'framework-ui/src/privileges'
 
 privilegesFactory([], groupsHeritage)
 
-export default function (options = { restricted: true}) {
-     return (req, res, next) => {
+export default function (options = { restricted: true }) {
+     return async (req, res, next) => {
           const { restricted, methods } = options;
           // if (req.url !== '/login') {
           if (methods === undefined || methods.some(method => method === req.method)) {
                const token = req.get('Authorization-JWT')
                if (token) {
-                    return Jwt.verify(token)
-                         .then(obj => {
-                              req.user = obj
+                    try {
+                         const obj = await Jwt.verify(token)
 
-                              mongoose
-                                   .model('User')
-                                   .findById(obj.id)
-                                   .then(user => {
-                                        if (user) {
-                                             infoLog(`Verified user=${user.info.userName}, groups=${user.groups.join(",")}`)
-                                             req.user = user.toObject()
-                                             req.user.groups = enrichGroups(req.user.groups)
-                                             if (req.user.groups.some(equals("root"))) req.root = true;
-                                             if (req.user.groups.some(equals("admin"))) req.user.admin = true;
-                                             next()
-                                        } else {
-                                             warningLog("userDoesNotExist")
-                                             res.status(208).send({ error: 'userDoesNotExist', command: 'logOut' })
-                                        }
-                                   })
-                         })
-                         .catch(err => {
-                              console.log("token problem", err)
-                              res.status(208).send({ error: 'invalidToken' })
-                         })
+                         const days7_sec = 7 * 24 * 60 * 60
+                         const now_sec = new Date().getTime() / 1000
+
+                         if (obj.exp - now_sec < days7_sec) {
+                              infoLog("Resigning jwt token")
+                              const newToken = await Jwt.sign({ id: obj.id })
+                              res.set("Authorization-JWT-new", newToken)
+                         }
+                         req.user = obj
+
+                         const user = await mongoose
+                              .model('User')
+                              .findById(obj.id)
+                              .exec()
+
+                         if (user) {
+                              infoLog(`Verified user=${user.info.userName}, groups=${user.groups.join(",")}`)
+                              req.user = user.toObject()
+                              req.user.groups = enrichGroups(req.user.groups)
+                              if (req.user.groups.some(equals("root"))) req.root = true;
+                              if (req.user.groups.some(equals("admin"))) req.user.admin = true;
+                              next()
+                         } else {
+                              warningLog("userDoesNotExist")
+                              res.status(208).send({ error: 'userDoesNotExist', command: 'logOut' })
+                         }
+                    } catch (err) {
+                         console.log("token problem", err)
+                         res.status(208).send({ error: 'invalidToken' })
+                    }
+
+
                } else if (!restricted) {
                     next()
                } else {
