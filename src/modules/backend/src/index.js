@@ -57,7 +57,7 @@ initializeDb(config, db => {
      Jwt.init(config)
      Files.init(config)
 
-     // checkAndCreateRoot() // check for roor existence, if not, then ask for password in terminal
+     if (process.env.NODE_ENV_TEST !== "true") checkAndCreateRoot() // check for roor existence, if not, then ask for password in terminal
 
      // internal middleware
      app.use(middleware({ config, db }))

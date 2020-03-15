@@ -12,6 +12,7 @@ PREFIX=${SCRIPTPATH}/..
 export IOT_IMAGES_PATH=${SCRIPTPATH}/../public/images
 export IOT_CONFIG=${SCRIPTPATH}/../src/modules/backend/test/resources/configBE.js
 export NODE_ENV=development
+export NODE_ENV_TEST=true
 
 BE_TEST_PATH=${PREFIX}/src/modules/backend/test
 BE_MQTT_TEST_PATH=${PREFIX}/src/modules/backend-mqtt/test
