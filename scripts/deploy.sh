@@ -137,6 +137,10 @@ restart)
 copy)
     copy_all
     ;;
+install)
+    yarn --modules-folder "$IOT_DEPLOY_PATH/node_modules" --prod install
+    copy_all
+    ;;
 copyFE)
     copy_fe
     ;;
@@ -147,7 +151,7 @@ copyDocs)
     copy_docs
     ;;
 *)
-    echo "Usage: {start|stop|restart|build|deploy|copy|copyFE|copyBE|copyDocs}" >&2
+    echo "Usage: {start|stop|restart|build|deploy|copy|copyFE|copyBE|copyDocs|install}" >&2
     exit 3
     ;;
 esac
