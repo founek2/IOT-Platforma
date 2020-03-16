@@ -10,6 +10,8 @@ import formDataChecker from 'framework/src/middlewares/formDataChecker'
 
 import fieldDescriptors from 'fieldDescriptors'
 
+// TODO - iot library -> on reconnect device doesnt send actual status
+
 export default ({ config, db }) =>
      resource({
           middlewares: {
@@ -113,7 +115,7 @@ export default ({ config, db }) =>
                                              delete doc.apiKey
                                              res.send({ doc, apiKey })
                                         })
-                                        .catch(err => res.sendStatus(500))
+                                        .catch(err => res.sendStatus(500)) // TODO - při chybě ukládání obrázku zůstane vytvořené zařízení bez obrázku
                               })
                               .catch(processError(res))
 
