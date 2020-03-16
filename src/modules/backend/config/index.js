@@ -6,6 +6,7 @@ export default process.env.IOT_CONFIG
     dbName: process.env.IOT_DB_NAME || "IOTPlatform",
     port: process.env.IOT_BACKEND_PORT || 8085,
     portAuth: process.env.IOT_AUTH_PORT || 8084,
+    portMqtt: process.env.IOT_MQTT_PORT || 8883,
     bodyLimit: process.env.IOT_BODY_LIMIT || "100kb",
     privateKey: process.env.IOT_PRIVATE_KEY_PATH,
     publicKey: process.env.IOT_PUBLIC_KEY_PATH,

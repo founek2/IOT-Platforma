@@ -14,7 +14,7 @@ export function publish(topic, message, opt = { qos: 2 }) {
 const magicRegex = /^(?:\/([\w]*)([\/]\w+[\/]\w+[\/]\w+)(.*))/;
 export default (io) => {
     console.log("connecting to mqtt")
-    const client = mqtt.connect('mqtts://localhost', { username: `${config.mqttUser}`, password: `${config.mqttPassword}`, port: 8883, connectTimeout: 20 * 1000, rejectUnauthorized: false })
+    const client = mqtt.connect('mqtts://localhost', { username: `${config.mqttUser}`, password: `${config.mqttPassword}`, port: config.portMqtt, connectTimeout: 20 * 1000, rejectUnauthorized: false })
     mqttClient = client
 
     client.on('connect', function () {
