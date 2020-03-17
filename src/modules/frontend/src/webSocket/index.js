@@ -35,7 +35,8 @@ class MySocket {
     }
 
     close = () => {
-        this.socket.close()
+        if (this.socket.connected)
+            this.socket.close()
     }
 }
 

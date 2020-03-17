@@ -39,7 +39,6 @@ const updateAll = {
           updateData.forEach(({ id: updateId, control, ack }) => {
                const i = data.findIndex(({ id }) => updateId === id)
 
-               console.log("index", i)
                if (i >= 0) {
                     newData[i].control = control
                     newData[i].ack = ack

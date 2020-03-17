@@ -21,14 +21,10 @@ if ("function" === typeof importScripts) {
       // window.location.reload();
     });
 
-    let refreshing;
     self.addEventListener('message', function (event) {
       if (event.data.action === 'skipWaiting') {
         console.log("Skipping waiting")
         self.skipWaiting();
-        if (refreshing) return;
-        window.location.reload();
-        refreshing = true;
       }
     });
 

@@ -60,6 +60,8 @@ function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
+      if (registration.waiting) config.onUpdate(registration.waiting);
+
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
         if (installingWorker == null) {
@@ -78,7 +80,7 @@ function registerValidSW(swUrl, config) {
 
               // Execute callback
               if (config && config.onUpdate) {
-                config.onUpdate(registration);
+                config.onUpdate(installingWorker);
               }
             } else {
               // At this point, everything has been precached.
@@ -88,7 +90,7 @@ function registerValidSW(swUrl, config) {
 
               // Execute callback
               if (config && config.onSuccess) {
-                config.onSuccess(registration);
+                config.onSuccess(installingWorker);
               }
             }
           }
@@ -97,6 +99,13 @@ function registerValidSW(swUrl, config) {
     })
     .catch(error => {
       console.error('Error during service worker registration:', error);
+    });
+
+    let refreshing;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (refreshing) return;
+      window.location.reload();
+      refreshing = true;
     });
 }
 

@@ -13,21 +13,25 @@ import Button from '@material-ui/core/Button'
 import '../privileges' // init
 registerFunctions(fns);  // register custom validation functions
 
-let forceInstall = () => {console.log("nothing to install")};
+let place_holder = () => console.log("nothing to install");
 function Root({ component }) {
      const [newVersion, setNewVersion] = useState(false)
+     const [forceInstall, setForceInstall] = useState(() => place_holder)
+
      useEffect(() => {
           const config = {
-               onUpdate: function (registration) {  // new version available
+               onUpdate: function (installingWorker) {  // new version available
                     setNewVersion(true)
-                    forceInstall = () => registration.installing.postMessage({ action: 'skipWaiting' });
+                    setForceInstall(() => () => {
+                         installingWorker.postMessage({ action: 'skipWaiting' })
+                         setNewVersion(false)
+                    })
                }
           }
           serviceWorker.register(config)
      }, [])
 
      const Component = component
-     console.log("root")
      return (
           <Fragment>
                <Provider store={store}>
