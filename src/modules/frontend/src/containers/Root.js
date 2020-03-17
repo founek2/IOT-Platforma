@@ -49,7 +49,7 @@ function Root({ component }) {
                     message="K dispozici je nová verze"
                     action={
                          <Button color="secondary" size="small" onClick={forceInstall}>
-                              nainstalovat
+                              aktualizovat
                          </Button>}
                />
           </Fragment>
