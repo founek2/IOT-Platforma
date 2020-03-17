@@ -7,7 +7,7 @@ import getLastUpdateText from 'framework-ui/src/utils/getLastUpdateText'
  * @param {*} param0 
  */
 export default function (WrappedComponent) {
-    return function ({ updateTime, ...props }) {
+    return function ({ updateTime, ...props }, ref) {
         const [val, updateState] = useState(0);
         const forceUpdate = useCallback(() => updateState(1 + val), [val]);  // ++val is causing after some time "read only exception"
         const [_, timeOut] = getLastUpdateText(new Date(updateTime))
@@ -26,6 +26,6 @@ export default function (WrappedComponent) {
             return () => window.removeEventListener('focus', forceUpdate)
         }, [])
 
-        return  <WrappedComponent forceUpdate={val} {...props} />
+        return  <WrappedComponent forceUpdate={val} {...props} forwardRef={ref} />
     }
 }

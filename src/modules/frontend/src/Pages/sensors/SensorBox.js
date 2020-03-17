@@ -12,6 +12,7 @@ import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
 import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip';
 import DeviceBox from '../../components/DeviceBox'
+import toDateTime from '../../utils/toDateTime'
 
 const styles = theme => ({
      data: {
@@ -93,7 +94,9 @@ class SensorBox extends React.Component {
                     {sensors.current ?
                          <Fragment>
                               <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
-                              <UpdatedBefore updateTime={time} time={time} className={classes.updatedBefore} />
+                              <Tooltip title={toDateTime(time)} placement="bottom" arrow={true}>
+                                   <UpdatedBefore updateTime={time} time={time} className={classes.updatedBefore} />
+                              </Tooltip>
                          </Fragment> : null}
                </DeviceBox>
           )

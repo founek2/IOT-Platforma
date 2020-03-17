@@ -4,14 +4,13 @@ import getLastUpdateText from '../utils/getLastUpdateText'
 import forceUpdateHoc from './forceUpdateHoc';
 
 // TODO Tests
-function UpdatedBefore({ time, prefix, forceUpdate, ...other }) {
+function UpdatedBefore({ time, prefix, forceUpdate,forwardRef, ...other }) {
      const [text] = getLastUpdateText(time, prefix)
-
      return (
-          <Typography {...other}>
-               {text}
-          </Typography>
+               <Typography {...other} ref={forwardRef}>
+                    {text}
+               </Typography>
      )
 }
 
-export default forceUpdateHoc(UpdatedBefore)
+export default React.forwardRef(forceUpdateHoc(UpdatedBefore))
