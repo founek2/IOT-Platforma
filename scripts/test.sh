@@ -54,6 +54,12 @@ all-results)
 
     stop_server
     ;;
+runBE)
+    run_server
+    ;;
+stopBE)
+    stop_server
+    ;;
 all)
     run_server
 
@@ -91,7 +97,7 @@ f-ui)
     yarn mocha "$FRAMEWORK_UI_TEST_PATH"
     ;;
 *)
-    echo "Usage: {all|all-results|BE|BE-mqtt|FE|f|f-ui}" >&2
+    echo "Usage: {all|all-results|BE|BE-mqtt|FE|f|f-ui|runBE|stopBE}" >&2
     exit 3
     ;;
 esac
