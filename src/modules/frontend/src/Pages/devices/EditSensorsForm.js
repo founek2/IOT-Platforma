@@ -136,7 +136,7 @@ class EditDeviceDialog extends Component {
      setPending = b => this.setState({ pending: b })
 
      removeSensorByIndex = id => {
-          const { dispatch, sensorCount, editForm } = this.props;
+          const { sensorCount, editForm, fillEditFormAction } = this.props;
           
           const newEditForm = clone(editForm);
           for (let i = id + 1; i < sensorCount; i++) {
@@ -150,7 +150,7 @@ class EditDeviceDialog extends Component {
           if (newEditForm.description && id < newEditForm.description.length) newEditForm.description.pop();
           if (newEditForm.JSONkey && id < newEditForm.JSONkey.length) newEditForm.JSONkey.pop();
           newEditForm.count = sensorCount - 1;
-          dispatch(formsActions.setFormData("EDIT_SENSORS", newEditForm))
+          fillEditFormAction(newEditForm)
      }
 
      render() {
@@ -165,7 +165,7 @@ class EditDeviceDialog extends Component {
           return device ? (
                <Fragment>
                     <Card className={classes.card}>
-                         <CardHeader className={classes.header} title={device.title} titleTypographyProps={{ variant: "h3" }} />
+                         <CardHeader className={classes.header} title={device.info.title} titleTypographyProps={{ variant: "h3" }} />
                          <CardContent className={classes.content}>
                               <FieldConnector
                                    component="Select"
@@ -223,11 +223,10 @@ const _mapDispatchToProps = dispatch => (
                {
                     updateSensorCount: formsActions.updateFormField("EDIT_SENSORS.count"),
                     fillEditFormAction: formsActions.fillForm('EDIT_SENSORS'),
-                    updateSensorsAction: deviceActions.updateSensors,
+                    updateSensorsAction: deviceActions.updateNotifySensors,
                },
-               dispatch
+               dispatch,
           ),
-          dispatch,
      })
 
 export default connect(
