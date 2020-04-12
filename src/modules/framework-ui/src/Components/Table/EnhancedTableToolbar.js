@@ -11,7 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import AlertDialog from '../AlertDialog';
+import Dialog from '../Dialog';
 import {compose} from 'ramda';
 
 const toolbarStyles = theme => ({
@@ -98,10 +98,11 @@ class EnhancedTableToolbar extends React.Component {
                               )}
                          </div>
                     </Toolbar>
-				<AlertDialog 
+				<Dialog 
 					open={this.state.alert.open}
 					onClose={this.closeAlert}
-					onAgree={compose(this.closeAlert,onDelete)}
+                         onAgree={compose(this.closeAlert,onDelete)}
+                         cancelText="Zrušit"
 					content="Opravdu chcete odstranit vybrané položky? Tato akce je nevratná."
 					title="Odstranění vybraných položek"
 				/>

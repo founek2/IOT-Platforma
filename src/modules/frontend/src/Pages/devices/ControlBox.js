@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import DeviceBox from '../../components/DeviceBox'
-import AlertDialog from 'framework-ui/src/Components/AlertDialog'
+import Dialog from 'framework-ui/src/Components/Dialog'
 
 const styles = theme => ({
      data: {
@@ -98,10 +98,11 @@ function ControlBox({ classes, device, onDelete }) {
                     </Link>
                     <MenuItem onClick={() => { handleClose(); setOpenDeleteDialog(true) }}>Smazat</MenuItem>
                </Menu>
-               <AlertDialog
+               <Dialog
                     open={openDeleteDialog}
                     onAgree={async () => await onDelete(device.id)}
                     onClose={() => setOpenDeleteDialog(false)}
+                    cancelText="Zrušit"
                     title="Odstranění zařízení"
                     content="Opravdu chcete odstranit zařízení? Tato akce je nevratná."
                />
