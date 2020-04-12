@@ -11,7 +11,8 @@ import formDataChecker from 'framework/src/middlewares/formDataChecker'
 import fieldDescriptors from 'fieldDescriptors'
 
 // TODO - iot library -> on reconnect device doesnt send actual status
-
+// TODO - api /device just for single device manipulation
+// TODO - udelat middleware protection per method to check read/write permissions
 export default ({ config, db }) =>
      resource({
           middlewares: {
