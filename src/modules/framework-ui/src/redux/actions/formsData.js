@@ -4,7 +4,6 @@ import {
      getFormDescriptors, getFormData, getRegisteredFields
 } from '../../utils/getters';
 import { checkValid } from '../../validations';
-import { keys, forEach } from 'ramda';
 import setInPath from '../../utils/setInPath';
 import {baseLogger} from '../../Logger'
 import {curry, forEachObjIndexed, is} from 'ramda'

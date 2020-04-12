@@ -10,12 +10,15 @@ import { filter } from 'ramda'
 import { bindActionCreators } from 'redux'
 import { isNotEmpty } from 'ramda-extension'
 
+import { getQueryID } from '../utils/getters'
+import FullScreenDialog from 'framework-ui/src/Components/FullScreenDialog'
 import { getUserPresence, isUrlHash } from 'framework-ui/src/utils/getters'
 import { getDevices } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import io from '../webSocket'
 import { Typography } from '@material-ui/core';
-
+import EditSensorsForm from './sensors/EditNotifyForm'
+import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 
 function readableWithSensors(device) {
      return (device.publicRead || (device.permissions && device.permissions.read)) && (device.sensors && device.sensors.recipe)
@@ -41,7 +44,7 @@ function updateDevice(updateDeviceAction) {
      }
 }
 
-function Sensors({ fetchDevicesAction,updateDeviceAction, devices, classes, updateSensorsAction }) {
+function Sensors({ fetchDevicesAction, updateDeviceAction, devices, classes, updateSensorsAction, openNotifyDialog, selectedDevice, resetEditNotifySensorsA, history }) {
      useEffect(() => {
           fetchDevicesAction()
           const listener = updateDevice(updateDeviceAction)
@@ -62,14 +65,29 @@ function Sensors({ fetchDevicesAction,updateDeviceAction, devices, classes, upda
                          <SensorBox device={data} key={data.id} />
                     ))
                     : <Typography className={classes.noDevices}>Nebyla nalezena žádná zařízení s naměřenými daty</Typography>}
+
+               <FullScreenDialog
+                    open={openNotifyDialog && !!selectedDevice}
+                    onClose={() => history.push({ hash: '', search: '' })}
+                    onExited={resetEditNotifySensorsA}
+                    heading="Editace senzorů"
+               >
+                    <EditSensorsForm device={selectedDevice} />
+               </FullScreenDialog>
           </Fragment>
      )
 }
 
 
-const _mapStateToProps = state => ({
-     devices: filter(readableWithSensors, getDevices(state))
-})
+const _mapStateToProps = state => {
+     const devices = filter(readableWithSensors, getDevices(state))
+     const id = getQueryID(state)
+     return {
+          devices,
+          openNotifyDialog: isUrlHash('#editNotify')(state),
+          selectedDevice: devices.find(dev => dev.id === id),
+     }
+}
 
 const _mapDispatchToProps = dispatch =>
      bindActionCreators(
@@ -77,6 +95,7 @@ const _mapDispatchToProps = dispatch =>
                fetchDevicesAction: deviceActions.fetch,
                updateDeviceAction: deviceActions.update,
                updateSensorsAction: deviceActions.fetchSensors,
+               resetEditNotifySensorsA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),
           },
           dispatch
      )

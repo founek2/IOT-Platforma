@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip';
 import DeviceBox from '../../components/DeviceBox'
 import toDateTime from '../../utils/toDateTime'
+import ContextMenu from 'framework-ui/src/Components/ContextMenu'
+import MenuItem from '@material-ui/core/MenuItem';
 
 const styles = theme => ({
      data: {
