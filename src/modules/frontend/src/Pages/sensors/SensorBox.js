@@ -63,45 +63,44 @@ function convertDataView(classes, currentData, id) {
      }
 }
 
-class SensorBox extends React.Component {
-     render() {
-          const { classes, device } = this.props
-
-          const { info: { imgPath, title, description }, sensors, id } = device
-          const time = sensors.current ? new Date(sensors.current.updatedAt) : null;
-          return (
-               <DeviceBox
-                    actions={
-                         <CardActions>
-                              <Button size="small" color="primary" disabled>
+function SensorBox({ classes, device }) {
+     const { info: { imgPath, title, description }, sensors, id } = device
+     const time = sensors.current ? new Date(sensors.current.updatedAt) : null;
+     return (
+          <DeviceBox
+               actions={
+                    <CardActions>
+                         <Link to={{ hash: `editNotify`, search: `?id=${id}` }}>
+                              <Button size="small" color="primary">
                                    Notify
                               </Button>
-                              <Button size="small" color="primary" disabled>
-                                   Learn More
+                         </Link>
+                         <Button size="small" color="primary" disabled>
+                              Learn More
                               </Button>
-                         </CardActions>
-                    }
-                    imgPath={imgPath}
-               >
-                    <Link to={`/sensor/${id}`}>
-                         <Typography gutterBottom variant="h5" component="h2">
-                              {title}
-                         </Typography>
-                    </Link>
-                    <Typography component="p" className={classes.description}>
-                         {description}
+                    </CardActions>
+               }
+               imgPath={imgPath}
+          >
+               <Link to={`/sensor/${id}`}>
+                    <Typography gutterBottom variant="h5" component="h2">
+                         {title}
                     </Typography>
-                    {sensors.current ?
-                         <Fragment>
-                              <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
-                              <Tooltip title={toDateTime(time)} placement="bottom" arrow={true}>
-                                   <UpdatedBefore updateTime={time} time={time} className={classes.updatedBefore} />
-                              </Tooltip>
-                         </Fragment> : null}
-               </DeviceBox>
-          )
-     }
+               </Link>
+               <Typography component="p" className={classes.description}>
+                    {description}
+               </Typography>
+               {sensors.current ?
+                    <Fragment>
+                         <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
+                         <Tooltip title={toDateTime(time)} placement="bottom" arrow={true}>
+                              <UpdatedBefore updateTime={time} time={time} className={classes.updatedBefore} />
+                         </Tooltip>
+                    </Fragment> : null}
+          </DeviceBox>
+     )
 }
+
 SensorBox.propTypes = {
      classes: PropTypes.object.isRequired
 }

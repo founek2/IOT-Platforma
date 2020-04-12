@@ -237,7 +237,7 @@ const EDIT_SENSORS = {
           deepPath: 'EDIT_SENSORS.JSONkey[]',
           label: 'Označení',
           required: true,
-          validations: [validationFactory('isString', { min: 1, max: 20, notEqual: "time" })]
+          validations: [validationFactory('isString', { min: 1, max: 20})]
      },
      "description[]": {
           deepPath: 'EDIT_SENSORS.description[]',
@@ -285,6 +285,45 @@ const EDIT_CONTROL = {
           validations: [validationFactory('isNumber')]
      }
 }
+
+const EDIT_NOTIFY_SENSORS = {
+     'JSONkey[]': {
+          deepPath: 'EDIT_NOTIFY_SENSORS.JSONkey[]',
+          label: 'Označení',
+          required: true,
+          validations: [validationFactory('isString', { min: 1, max: 20 })]
+     },
+     'type[]': {
+          deepPath: 'EDIT_NOTIFY_SENSORS.type[]',
+          label: 'Jednotka',
+          required: true,
+          validations: [validationFactory('isString', { min: 1, max: 6 })]
+     },
+     "value[]": {
+          deepPath: 'EDIT_NOTIFY_SENSORS.value[]',
+          label: 'Mezní hodnota',
+          validations: [validationFactory('isNumber')]
+     },
+     "interval[]": {
+          deepPath: 'EDIT_NOTIFY_SENSORS.interval[]',
+          label: 'Interval',
+          required: true,
+          validations: [validationFactory('isNumber')]
+     },
+     "description[]": {
+          deepPath: 'EDIT_NOTIFY_SENSORS.description[]',
+          defaultValue: "",
+          label: 'Popis',
+          validations: [validationFactory('isString', { min: 1, max: 200 })]
+     },
+     "count": {
+          deepPath: 'EDIT_NOTIFY_SENSORS.count',
+          label: 'Popis',
+          name:"count",
+          validations: [validationFactory('isNumber')]
+     }
+}
+
 
 const EDIT_RGB = {
      "type": {
@@ -396,5 +435,6 @@ export default {
      EDIT_CONTROL,
      EDIT_RGB,
      CHANGE_DEVICE_STATE_RGB,
-     CHANGE_DEVICE_STATE_SWITCH
+     CHANGE_DEVICE_STATE_SWITCH,
+     EDIT_NOTIFY_SENSORS,
 }

@@ -1,6 +1,6 @@
 import { postJson, paramSender, deleteJson, patchJson, putJson } from 'framework-ui/src/api'
 
-const API_URL = '/api'
+export const API_URL = '/api'
 
 export const createDevice = (object, dispatch) =>
      postJson({
