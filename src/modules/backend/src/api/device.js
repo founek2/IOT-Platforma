@@ -9,6 +9,9 @@ import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'
 import formDataChecker from 'framework/src/middlewares/formDataChecker'
 
 import fieldDescriptors from 'fieldDescriptors'
+import checkReadPerm from '../middleware/device/checkReadPerm'
+import checkWritePerm from '../middleware/device/checkWritePerm'
+import checkControlPerm from '../middleware/device/checkControlPerm'
 
 // TODO - iot library -> on reconnect device doesnt send actual status
 // TODO - api /device just for single device manipulation
@@ -17,11 +20,11 @@ export default ({ config, db }) =>
      resource({
           middlewares: {
                index: [tokenAuthMIddleware({ restricted: false })],
-               read: [tokenAuthMIddleware({ restricted: false })],
-               updateId: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
+               read: [tokenAuthMIddleware({ restricted: false }), checkReadPerm()],
+               updateId: [tokenAuthMIddleware(), checkWritePerm(), formDataChecker(fieldDescriptors)],
                create: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
-               patchId: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
-               deleteId: [tokenAuthMIddleware()],
+               patchId: [tokenAuthMIddleware(), checkControlPerm(), formDataChecker(fieldDescriptors)],
+               deleteId: [tokenAuthMIddleware(), checkWritePerm()],
           },
           /** GET /:param - List all entities */
           read({ params: { id }, query: { from, to = new Date(), type }, user }, res) {
@@ -145,32 +148,27 @@ export default ({ config, db }) =>
                const formData = body.formData.CHANGE_DEVICE_STATE_SWITCH || body.formData.CHANGE_DEVICE_STATE_RGB
                console.log("data", formData)
                if (formData) {
-                    Device.canControl(id, user).then(output => {
-                         if (output) {
-                              // BE validate keys
-                              fetch(`http://localhost:${config.portAuth}/api/action/${id}`, {
-                                   headers: { 'Content-Type': 'application/json' },
-                                   method: "patch",
-                                   body: JSON.stringify(formData),
-                              }).then(response => {
-                                   if (response.ok) {
-                                        res.send({
+                    // BE validate keys
+                    fetch(`http://localhost:${config.portAuth}/api/action/${id}`, {
+                         headers: { 'Content-Type': 'application/json' },
+                         method: "patch",
+                         body: JSON.stringify(formData),
+                    }).then(response => {
+                         if (response.ok) {
+                              res.send({
+                                   data: {
+                                        current: {
                                              data: {
-                                                  current: {
-                                                       data: {
-                                                            [formData.JSONkey]: { state: formData.state, inTransition: true, transitionStarted: new Date() }
-                                                       }
-                                                  }
+                                                  [formData.JSONkey]: { state: formData.state, inTransition: true, transitionStarted: new Date() }
                                              }
-                                        })
-                                   } else res.sendStatus(500)
-                              }).catch((err) => {
-                                   console.log("mqtt BE action err", err)
-                                   res.sendStatus(500)
+                                        }
+                                   }
                               })
-                         } else res.status(208).send({ error: "InvalidPermissions" })
+                         } else res.sendStatus(500)
+                    }).catch((err) => {
+                         console.log("mqtt BE action err", err)
+                         res.sendStatus(500)
                     })
-
                } else res.sendStatus(500)
 
           },

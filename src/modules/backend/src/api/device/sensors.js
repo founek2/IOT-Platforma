@@ -12,7 +12,7 @@ export default ({ config, db }) =>
             index: [tokenAuthMIddleware()],
         },
 
-        /** GET / - List all entities */
+        // PUT
         update({params: {id}, body: {formData}}, res) {
             console.log("getting")
             console.log(id, formData)
