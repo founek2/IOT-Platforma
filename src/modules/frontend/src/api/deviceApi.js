@@ -20,21 +20,21 @@ export const updateState = ({ id, ...object }, dispatch) =>
 
 export const fetchDevices = (object, dispatch) =>
      paramSender({
-          url: API_URL + '/device',
+          url: API_URL + '/devices',
           ...object,
           dispatch
      })
 
 export const fetchDeviceControl = (object, dispatch) =>
      paramSender({
-          url: API_URL + '/device/control',
+          url: API_URL + '/devices/control',
           ...object,
           dispatch
      })
 
 export const fetchDeviceSensors = (object, dispatch) =>
      paramSender({
-          url: API_URL + '/device/sensors',
+          url: API_URL + '/devices/sensors',
           ...object,
           dispatch
      })

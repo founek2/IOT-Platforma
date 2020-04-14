@@ -1,1 +1,0 @@
-// TODO - api pro multiple devices

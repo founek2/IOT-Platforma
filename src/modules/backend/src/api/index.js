@@ -4,8 +4,8 @@ import user from './user'
 import device from './device'
 import iot from './iot'
 import auth from './auth'
-import control from './control'
-import sensors from './sensors'
+import control from './devices/control'
+import sensors from './devices/sensors'
 import devSensors from './device/sensors'
 
 export default ({ config, db }) => {
@@ -14,12 +14,12 @@ export default ({ config, db }) => {
      api.use('/user', user({ config }))
 
 
-     api.use('/device/control', control({config}))
+     api.use('/devices/control', control({config}))
 
-     api.use('/device/sensors', sensors({config}))
+     api.use('/devices/sensors', sensors({config}))
 
      api.use('/device/:id/sensors', devSensors({config}))
-     
+
      api.use('/device', device({ config }))
 
      api.use('/iot', iot({config}))
