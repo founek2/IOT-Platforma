@@ -10,6 +10,8 @@ import mongoose from 'mongoose'
 const ObjectId = mongoose.Types.ObjectId;
 
 import Device from '../src/models/Device'
+import getAdminToken from "./lib/getAdminToken.js";
+import permMiddlewareChecker from './lib/permMiddlewareChecker'
 
 const server = supertest.agent(config.url);
 
@@ -41,7 +43,7 @@ describe("Device API test", async function () {
                 .then(async function (res) {
                     should.exist(res.body.apiKey)
                     should.exist(res.body.doc)
-                    
+
                     done()
                 }).finally(async () => {
                     const result = await Device.deleteOne({ createdBy: new ObjectId(user.id) }).exec();
@@ -227,16 +229,45 @@ describe("Device API test", async function () {
     })
 
     it("should check auth middleware", async function () {
-        should.equal(await authChecker("/api/device/42kjhk42kjlj2442", "put"), true)
+        should.equal(await authChecker("/api/device/dasdasdsad", "put"), true)
         should.equal(await authChecker("/api/device", "post"), true)
-        should.equal(await authChecker("/api/device/42kjhk42kjlj2442", "delete"), true)
-        should.equal(await authChecker("/api/device/42kjhk42kjlj2442", "patch"), true)
+        should.equal(await authChecker("/api/device/dasdasda", "delete"), true)
+        should.equal(await authChecker("/api/device/sdadasdasd", "patch"), true)
     })
 
     it("should check formData middleware", async function () {
-        should.equal(await formDataChecker("/api/device/42kjhk42kjlj2442", "put"), true)
-        should.equal(await formDataChecker("/api/device", "post"), true)
-        should.equal(await formDataChecker("/api/device/42kjhk42kjlj244222111", "patch"), true)
+
+        const { token, user } = await getUserToken()
+
+        return createDevice(forms.create_device, token)
+            .then(async function (res) {
+
+                should.equal(await formDataChecker(`/api/device/${res.body.doc.id}`, "put"), true)
+                should.equal(await formDataChecker("/api/device", "post"), true)
+                should.equal(await formDataChecker(`/api/device/${res.body.doc.id}`, "patch"), true)
+
+            }).finally(async () => {
+                const result = await Device.deleteOne({ createdBy: new ObjectId(user.id) }).exec();
+                result.n.should.equal(1)
+            })
+    })
+
+    it("should check perm middleware", async function () {
+        should.equal(await permMiddlewareChecker("/api/device/dsadasd", "put"), "InvalidDeviceId")
+        should.equal(await permMiddlewareChecker("/api/device/dsadasd", "patch"), "InvalidDeviceId")
+        should.equal(await permMiddlewareChecker("/api/device/dsadasd", "delete"), "InvalidDeviceId")
+        should.equal(await permMiddlewareChecker("/api/device/dsadasd", "get"), "InvalidDeviceId")
+
+        const token = await getAdminToken()
+        const res = await createDevice(forms.create_device, token)  // created by admin
+
+        // checking with normal user token
+        should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}`, "put"), "invalidPermissions")
+        should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}`, "patch"), "invalidPermissions")
+        should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}`, "delete"), "invalidPermissions")
+        should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}`, "get"), "invalidPermissions")
+
+        await Device.deleteOne({ _id: new ObjectId(res.body.doc.id) }).exec() // clean
     })
 
     after(function (done) {

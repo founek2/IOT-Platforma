@@ -3,10 +3,9 @@ var Router = require('express').Router;
 var keyed = ['get', 'read', 'put', 'update', 'patch', 'modify', 'del', 'delete'],
 	map = { index: 'get', list: 'get', read: 'get', create: 'post', update: 'put', updateId: "put", patch: 'patch', patchId: "patch", deleteId: "delete" };
 
+	// TODO add middleware for ID checking (24 lenght) -> then remove from Models
 export default function ResourceRouter(route) {
-	route.mergeParams = route.mergeParams ? true : false;
-	var router = Router({ mergeParams: route.mergeParams }),
-		key, fn, url;
+	const router = Router({ mergeParams: !!route.mergeParams })
 
 	if (route.middleware) router.use(route.middleware);
 	if (route.middlewares) mapper(route.middlewares, router)

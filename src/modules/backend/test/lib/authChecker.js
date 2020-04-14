@@ -7,5 +7,11 @@ export default async function (path, method) {
     const res = await server[method](path)
         .set('Authorization-JWT', "123242433")
         .expect(208)
-    return res.body.error === "invalidToken"
+
+    if (res.body.error === "invalidToken")
+        return true
+    else {
+        // console.log("GOT> ", res.body.error, ", Expected> invalidToken")
+        return false
+    }
 }

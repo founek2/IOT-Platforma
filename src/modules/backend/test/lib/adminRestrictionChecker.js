@@ -11,5 +11,10 @@ export default async function(path, method, status = 208) {
         .set('Authorization-JWT', token)
         .expect(status)
     
-    return res.body.error === "notAllowed"
+    if (res.body.error === "notAllowed")
+        return true
+    else {
+        // console.log("GOT> ", res.body.error, ", Expected> notAllowed")
+        return false
+    }
 }
