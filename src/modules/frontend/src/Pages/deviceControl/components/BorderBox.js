@@ -31,7 +31,7 @@ const defaultProps = {
     position: "relative",
 };
 
-function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, ...other }) {
+function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, forwardRef,...other }) {
     const [detailOpen, setOpen] = useState(false)
     const [pending, setPending] = useState(false)
 
@@ -63,6 +63,7 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
                 changeTime={updatedAt}
                 afk={afk}
                 className={classes.circle}
+                ref={forwardRef}
             />
             <Component data={data} afk={afk} ackTime={ackTime} name={name} onClick={handleClick} pending={pending} {...other}/>
             <Loader open={pending} className="marginAuto" />

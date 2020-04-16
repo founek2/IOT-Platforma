@@ -38,7 +38,7 @@ const CircleComponent = React.forwardRef(
     }
 )
 
-function Circle({ classes, ackTime, changeTime, afk, className, inTransition }) {
+const Circle = React.forwardRef(function ({ classes, ackTime, changeTime, afk, className, inTransition }, ref) {
     const time = afk ? new Date(ackTime) : new Date(changeTime)
     const invalidTime = time == "Invalid Date";
 
@@ -50,9 +50,9 @@ function Circle({ classes, ackTime, changeTime, afk, className, inTransition }) 
         : afk ? textOnline : textChange;
     return (
         <Tooltip title={inTransition ? "Čeká na potvrzení" : title} placement="bottom" arrow={true}>
-            <CircleComponent color={getCircleColor(inTransition, ackTime)} classes={classes} className={className} />
+            <CircleComponent color={getCircleColor(inTransition, ackTime)} classes={classes} className={className} ref={ref}/>
         </Tooltip>)
 
-}
+})
 
 export default withStyles(styles)(Circle)
