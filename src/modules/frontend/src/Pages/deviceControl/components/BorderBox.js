@@ -63,7 +63,6 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
                 changeTime={updatedAt}
                 afk={afk}
                 className={classes.circle}
-                ref={forwardRef}
             />
             <Component data={data} afk={afk} ackTime={ackTime} name={name} onClick={handleClick} pending={pending} {...other}/>
             <Loader open={pending} className="marginAuto" />
