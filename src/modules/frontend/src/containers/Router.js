@@ -1,5 +1,5 @@
 import React, { Fragment, Component, Suspense } from 'react'
-import {createBrowserHistory} from 'history'
+import { createBrowserHistory } from 'history'
 import { Router as RouterReact, Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Layout from '../components/Layout'
@@ -37,6 +37,12 @@ class Router extends Component {
                query: parseQuery(defLocation.search)
           })
 
+          const lastHistory = localStorage.getItem("history")
+          if (lastHistory)
+               history.push(
+                    JSON.parse(lastHistory)
+               )
+
           history.listen(({ key, state, ...rest }, action) => {
                const { updateHistoryAction, updateTmpDataAction } = this.props
 
@@ -45,6 +51,8 @@ class Router extends Component {
 
                updateHistoryAction(update)
                updateTmpDataAction({ dialog: {} })
+
+               localStorage.setItem("history", JSON.stringify(rest))
           })
      }
      render() {
@@ -59,16 +67,16 @@ class Router extends Component {
           return (
                <Suspense fallback={<Loader open={true} />}>
                     <RouterReact history={history}>
-                              <Layout history={history}/>
-                              <Switch>
-                                   {additionRoutes}
-                                   <Route
-                                        path="/registerUser"
-                                        component={RegisterUser}
-                                   />
-                                   <Route path="/sensor/:deviceId" component={SensorDetail} />
-                                   <Route path="/" component={Sensors} />
-                              </Switch>
+                         <Layout history={history} />
+                         <Switch>
+                              {additionRoutes}
+                              <Route
+                                   path="/registerUser"
+                                   component={RegisterUser}
+                              />
+                              <Route path="/sensor/:deviceId" component={SensorDetail} />
+                              <Route path="/" component={Sensors} />
+                         </Switch>
                     </RouterReact>
                </Suspense>
           )
