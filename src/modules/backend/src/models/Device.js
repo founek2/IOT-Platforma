@@ -337,7 +337,7 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
                if (doc) {
                     console.log("sensorsData updated")
                     const { sampleInterval, sensors } = doc;
-                    const { updatedAt } = sensors.historical
+                    const { historical : {updatedAt}  = {}} = sensors
 
                     // -1 is never
                     if (sampleInterval !== -1 && (!updatedAt || (new Date() - updatedAt) / 1000 > sampleInterval)) {
