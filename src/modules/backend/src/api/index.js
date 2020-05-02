@@ -6,7 +6,7 @@ import iot from './iot'
 import auth from './auth'
 import control from './devices/control'
 import sensors from './devices/sensors'
-import devSensors from './device/sensors'
+import notify from './device/notify'
 
 export default ({ config, db }) => {
      let api = Router()
@@ -18,7 +18,7 @@ export default ({ config, db }) => {
 
      api.use('/devices/sensors', sensors({config}))
 
-     api.use('/device/:id/sensors', devSensors({config}))
+     api.use('/device/:id/notify', notify({config}))
 
      api.use('/device', device({ config }))
 

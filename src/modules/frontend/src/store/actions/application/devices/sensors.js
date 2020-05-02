@@ -3,7 +3,8 @@ import { baseLogger } from 'framework-ui/src/Logger'
 import { getFormData, getToken, getFormDescriptors } from 'framework-ui/src/utils/getters'
 import {
      fetchDeviceData as fetchDeviceDataApi,
-     API_URL
+     API_URL,
+     updateNotify as updateNotifyApi
 } from '../../../../api/deviceApi'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
 import { postJson, paramSender, deleteJson, patchJson, putJson } from 'framework-ui/src/api'
@@ -38,17 +39,15 @@ export function updateNotifySensors(id) {
           const result = dispatch(validateRegisteredFields(EDIT_NOTIFY_SENSORS)())
           const formData = getFormData(EDIT_NOTIFY_SENSORS)(getState())
           if (result.valid) {
-
-               return putJson({
-                    url: API_URL + `/device/${id}/sensors`,
+               return updateNotifyApi({
                     token: getToken(getState()),
                     body: { formData: { [EDIT_NOTIFY_SENSORS]: formData } },
                     id,
                     onSuccess: () => {
+                         console.log("SUCESS notify sensors")
                          // const { sampleInterval, sensors } = transformSensorsForBE(formData);
                          // dispatch(update({ id, sensors, sampleInterval }))
                     },
-                    successMessage: 'deviceUpdated',
                     dispatch
                })
 

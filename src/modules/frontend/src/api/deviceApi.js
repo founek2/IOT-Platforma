@@ -63,10 +63,18 @@ export const deleteDevice = ({ id, ...object }, dispatch) =>
           dispatch
      })
 
-export const fetchDeviceData = ({ id, ...object }, dispatch) => {
+export const fetchDeviceData = ({ id, ...object }, dispatch) =>
      paramSender({
           url: API_URL + `/device/${id}`,
           ...object,
           dispatch
      })
-}
+
+
+export const updateNotify = ({ id, ...object }, dispatch) =>
+     putJson({
+          url: API_URL + `/device/${id}/sensors`,
+          ...object,
+          successMessage: 'deviceUpdated',
+          dispatch
+     })

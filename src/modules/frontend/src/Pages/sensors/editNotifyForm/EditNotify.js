@@ -6,6 +6,8 @@ import ClearIcon from '@material-ui/icons/Clear'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 
+import {NotifyTypes} from '../../../constants'
+
 const styles = theme => ({
     contentInner: {
         display: 'flex',
@@ -47,9 +49,9 @@ function EditSensor({ id, classes, onDelete, recipe = [] }) {
                 selectOptions={
                     recipe.map(
                         ({ name, JSONkey }) =>
-                                <MenuItem value={JSONkey} key={JSONkey}>
-                                    {name}
-                                </MenuItem>
+                            <MenuItem value={JSONkey} key={JSONkey}>
+                                {name}
+                            </MenuItem>
                     )}
             />
             {/* <FieldConnector // in FUTURE - now just strict preffiled
@@ -65,12 +67,17 @@ function EditSensor({ id, classes, onDelete, recipe = [] }) {
                 // }}
                 deepPath={`${FORM_NAME}.value.${id}`}
             />
+
             <FieldConnector
-                component="TextField"
-                // fieldProps={{
-                //     className: classes.unit
-                // }}
-                deepPath={`${FORM_NAME}.interval.${id}`}
+                component="Select"
+                deepPath={`${FORM_NAME}.type.${id}`}
+                selectOptions={
+                    NotifyTypes.map(
+                        ({ value, label }) =>
+                            <MenuItem value={value} key={value}>
+                                {label}
+                            </MenuItem>
+                    )}
             />
         </div>
         <FieldConnector
