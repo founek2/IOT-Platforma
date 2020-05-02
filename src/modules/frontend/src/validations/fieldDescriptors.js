@@ -289,7 +289,7 @@ const EDIT_CONTROL = {
 const EDIT_NOTIFY_SENSORS = {
      'JSONkey[]': {
           deepPath: 'EDIT_NOTIFY_SENSORS.JSONkey[]',
-          label: 'Označení',
+          label: 'Veličina',
           required: true,
           validations: [validationFactory('isString', { min: 1, max: 20 })]
      },

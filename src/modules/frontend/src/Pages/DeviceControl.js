@@ -69,6 +69,7 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
                window.removeEventListener('focus', fetchControlAction)
           };
      }, []);
+
      const arr = [];
      devices.forEach(device => {
           device.control.recipe.forEach(({ name, type, JSONkey, description }) => {

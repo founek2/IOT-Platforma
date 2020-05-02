@@ -31,7 +31,7 @@ const defaultProps = {
     position: "relative",
 };
 
-function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, ...other }) {
+function BorderBox({ children, className, data, ackTime, onClick, component, name, classes,forwardRef, ...other }) {
     const [detailOpen, setOpen] = useState(false)
     const [pending, setPending] = useState(false)
 
@@ -46,6 +46,7 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
         console.log("context")
         setOpen(true)
     }
+
     const { state, inTransition, transitionStarted, updatedAt } = data;
     const afk = isAfk(ackTime);
     const Component = component

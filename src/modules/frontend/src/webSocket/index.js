@@ -45,6 +45,10 @@ class MySocket {
         // if (this.socket.connected)
             this.socket.close()
     }
+
+    emit = (...other) => 
+        this.socket.emit(...other)
+    
 }
 
 const mySocket = new MySocket();

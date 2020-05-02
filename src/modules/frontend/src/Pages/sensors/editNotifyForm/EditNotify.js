@@ -4,7 +4,7 @@ import FormLabel from '@material-ui/core/FormLabel'
 import { withStyles } from '@material-ui/core/styles'
 import ClearIcon from '@material-ui/icons/Clear'
 import IconButton from '@material-ui/core/IconButton'
-
+import MenuItem from '@material-ui/core/MenuItem'
 
 const styles = theme => ({
     contentInner: {
@@ -26,14 +26,14 @@ const styles = theme => ({
     textArea: {
         // width: 'calc(100% - 16px)',
         [theme.breakpoints.up('md')]: {
-             width: `calc(100% - ${theme.spacing(2)}px)`
+            width: `calc(100% - ${theme.spacing(2)}px)`
         }
-   },
+    },
 })
 
 const FORM_NAME = "EDIT_NOTIFY_SENSORS"
 
-function EditSensor({ id, classes, onDelete }) {
+function EditSensor({ id, classes, onDelete, recipe = [] }) {
 
     return (<div className={classes.quantity} key={id}>
         <FormLabel component="legend">Notifikace {id}:</FormLabel>
@@ -42,25 +42,30 @@ function EditSensor({ id, classes, onDelete }) {
         </IconButton>
         <div className={classes.contentInner}>
             <FieldConnector
-                // fieldProps={{
-                //     className: classes.textField
-                // }}
+                component="Select"
                 deepPath={`${FORM_NAME}.JSONkey.${id}`}
+                selectOptions={
+                    recipe.map(
+                        ({ name, JSONkey }) =>
+                                <MenuItem value={JSONkey} key={JSONkey}>
+                                    {name}
+                                </MenuItem>
+                    )}
             />
-            <FieldConnector
+            {/* <FieldConnector // in FUTURE - now just strict preffiled
                 component="TextField"
                 // fieldProps={{
                 //     className: classes.unit
                 // }}
                 deepPath={`${FORM_NAME}.type.${id}`}
-            />
-             <FieldConnector
+            /> */}
+            <FieldConnector
                 // fieldProps={{
                 //     className: classes.unit
                 // }}
                 deepPath={`${FORM_NAME}.value.${id}`}
             />
-              <FieldConnector
+            <FieldConnector
                 component="TextField"
                 // fieldProps={{
                 //     className: classes.unit

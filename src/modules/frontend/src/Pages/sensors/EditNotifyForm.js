@@ -172,7 +172,7 @@ class EditDeviceDialog extends Component {
                          <CardContent className={classes.content}>
                               <div>
                                    {/* <Typography variant="subtitle1" align="center" >Notifikace:</Typography> */}
-                                   {sensorCount > 0 && [...Array(sensorCount).keys()].map(i => <EditNotify id={i} key={i} onDelete={this.removeSensorByIndex} />)}
+                                   {sensorCount > 0 && [...Array(sensorCount).keys()].map(i => <EditNotify id={i} key={i} onDelete={this.removeSensorByIndex} recipe={device.sensors.recipe}/>)}
 
                               </div>
                               <IconButton className={classes.addButton} aria-label="Add a sensor" onClick={() => updateSensorCount(sensorCount + 1)}>

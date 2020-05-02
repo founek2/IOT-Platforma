@@ -22,7 +22,6 @@ const deviceSchema = new Schema(
                type: { type: String, default: 'Point' },
                coordinates: Array
           },
-          sampleInterval: Number,
           sensors: sensorsScheme,
           control: controlScheme,
           apiKey: { type: String, default: hat, index: { unique: true } },
@@ -114,7 +113,7 @@ const aggregationFields = {
      info: 1,
      createdAt: 1,
      createdBy: 1,
-     sampleInterval: 1,
+     // sampleInterval: 1,
      publicRead: 1,
      topic: 1,
      ack: 1,
@@ -317,12 +316,12 @@ deviceSchema.statics.updateSensorsRecipe = async function (deviceId, sampleInter
                     _id: deviceId,
                     // ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
                },
-               { $set: { "sensors.recipe": recipe, sampleInterval } }
+               { $set: { "sensors.recipe": recipe, "sensors.sampleInterval": sampleInterval } }
           )
 }
 
 deviceSchema.statics.getOwnerAndTopic = async function (apiKey) {
-     return this.model('Device').findOne({ apiKey }, { createdBy: 1, topic: 1, sampleInterval: 1 }).lean().then(doc => {
+     return this.model('Device').findOne({ apiKey }, { createdBy: 1, topic: 1 }).lean().then(doc => {
           return doc ? { ownerId: doc.createdBy, topic: doc.topic } : {}
      })
 }
@@ -332,15 +331,15 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
           .findOneAndUpdate(
                { createdBy: ownerId, topic: topic },   // should be ObjectId?
                { $set: { "sensors.current": { data, updatedAt: updateTime } } },
-               { fields: { sampleInterval: 1, "sensors.recipe": 1, publicRead: 1, "sensors.historical.updatedAt": 1, "permissions.read": 1 } }
+               { fields: { "sensors.sampleInterval": 1, "sensors.recipe": 1, publicRead: 1, "sensors.historical.updatedAt": 1, "permissions.read": 1 } }
           ).then(doc => {
                if (doc) {
                     console.log("sensorsData updated")
-                    const { sampleInterval, sensors } = doc;
+                    const { sensors } = doc;
                     const { historical : {updatedAt}  = {}} = sensors
 
                     // -1 is never
-                    if (sampleInterval !== -1 && (!updatedAt || (new Date() - updatedAt) / 1000 > sampleInterval)) {
+                    if (sensors.sampleInterval !== -1 && (!updatedAt || (new Date() - updatedAt) / 1000 > sensors.sampleInterval)) {
                          const update = {}
                          const sum = {}
                          const min = {}

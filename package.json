@@ -21,7 +21,7 @@
     "testFramework": "sh scripts/test.sh f",
     "devFE": "node scripts/start.js",
     "devBE": "nodemon --watch src/modules/backend/src  --watch src/modules/framework/src --exec env IOT_IMAGES_PATH=${PWD}/public/images babel-node ./src/modules/backend/src/index.js ",
-    "devBE-mqtt": "nodemon --watch src/modules/backend/src --watch src/modules/backend-mqtt/src --exec babel-node ./src/modules/backend-mqtt/src/index.js",
+    "devBE-mqtt": "nodemon --watch src/modules/backend-mqtt/src --watch src/modules/backend/src --exec babel-node ./src/modules/backend-mqtt/src/index.js",
     "server1": "forever start distBE/backend/index.js",
     "server2": "forever start distBE/backend-mqtt/index.js",
     "server1stop": "forever stop distBE/backend/index.js",

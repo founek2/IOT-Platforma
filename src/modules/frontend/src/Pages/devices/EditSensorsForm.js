@@ -128,8 +128,8 @@ class EditDeviceDialog extends Component {
      preFillForm = device => {
           if (device.sensors && device.sensors.recipe) {
                const { fillEditFormAction } = this.props;
-               fillEditFormAction(transformSensorsForForm(device.sensors.recipe, device.sampleInterval))
-               console.log("prefill")
+               fillEditFormAction(transformSensorsForForm(device.sensors.recipe, device.sensors.sampleInterval))
+               console.log("prefill> ", transformSensorsForForm(device.sensors.recipe, device.sensors.sampleInterval))
           }
      }
 
@@ -223,7 +223,7 @@ const _mapDispatchToProps = dispatch => (
                {
                     updateSensorCount: formsActions.updateFormField("EDIT_SENSORS.count"),
                     fillEditFormAction: formsActions.fillForm('EDIT_SENSORS'),
-                    updateSensorsAction: deviceActions.updateNotifySensors,
+                    updateSensorsAction: deviceActions.updateSensors,
                },
                dispatch,
           ),

@@ -144,34 +144,34 @@ export default ({ config, db }) =>
                }
           },
 
-          patchId({ body, user, params: { id } }, res) {
-               const formData = body.formData.CHANGE_DEVICE_STATE_SWITCH || body.formData.CHANGE_DEVICE_STATE_RGB
-               console.log("data", formData)
-               if (formData) {
-                    // BE validate keys
-                    fetch(`http://localhost:${config.portAuth}/api/action/${id}`, {
-                         headers: { 'Content-Type': 'application/json' },
-                         method: "patch",
-                         body: JSON.stringify(formData),
-                    }).then(response => {
-                         if (response.ok) {
-                              res.send({
-                                   data: {
-                                        current: {
-                                             data: {
-                                                  [formData.JSONkey]: { state: formData.state, inTransition: true, transitionStarted: new Date() }
-                                             }
-                                        }
-                                   }
-                              })
-                         } else res.sendStatus(500)
-                    }).catch((err) => {
-                         console.log("mqtt BE action err", err)
-                         res.sendStatus(500)
-                    })
-               } else res.sendStatus(500)
+          // patchId({ body, user, params: { id } }, res) {
+          //      const formData = body.formData.CHANGE_DEVICE_STATE_SWITCH || body.formData.CHANGE_DEVICE_STATE_RGB
+          //      console.log("data", formData)
+          //      if (formData) {
+          //           // BE validate keys
+          //           fetch(`http://localhost:${config.portAuth}/api/action/${id}`, {
+          //                headers: { 'Content-Type': 'application/json' },
+          //                method: "patch",
+          //                body: JSON.stringify(formData),
+          //           }).then(response => {
+          //                if (response.ok) {
+          //                     res.send({
+          //                          data: {
+          //                               current: {
+          //                                    data: {
+          //                                         [formData.JSONkey]: { state: formData.state, inTransition: true, transitionStarted: new Date() }
+          //                                    }
+          //                               }
+          //                          }
+          //                     })
+          //                } else res.sendStatus(500)
+          //           }).catch((err) => {
+          //                console.log("mqtt BE action err", err)
+          //                res.sendStatus(500)
+          //           })
+          //      } else res.sendStatus(500)
 
-          },
+          // },
           /** DELETE - Delete a given entities */
           deleteId({ params, user }, res) {  // tested, 2
                const { id } = params;

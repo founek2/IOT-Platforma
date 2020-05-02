@@ -6,7 +6,7 @@ let validationFns = validationFunctions;
 
 export function validationFactoryFn() {
 	return function(functionName, arg) {
-		return function(fieldValue) {
+		return function (fieldValue) {
 			const Fn = validationFns[functionName];
 			if (Fn) {
 				const result = Fn(fieldValue, arg);

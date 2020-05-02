@@ -21,6 +21,7 @@ import {
 import { getDevices } from '../../../utils/getters'
 import objectDiff from 'framework-ui/src/utils/objectDiff'
 import { transformSensorsForBE, transformControlForBE } from '../../../utils/transform'
+import io from '../../../webSocket'
 
 export function createDevice() {
      return async function (dispatch, getState) {
@@ -207,7 +208,8 @@ export function updateSensors(id) {
                     id,
                     onSuccess: () => {
                          const { sampleInterval, sensors } = transformSensorsForBE(formData);  // use same logic as BE and update device on FE
-                         dispatch(update({ id, sensors: {recipe: sensors, sampleInterval} }))
+                         console.log("update", { id, sensors: { recipe: sensors, sampleInterval } })
+                         dispatch(update({ id, sensors: { recipe: sensors, sampleInterval } }))
                     }
                }, dispatch)
           }
@@ -227,7 +229,7 @@ export function updateControl(id) {
                     id,
                     onSuccess: () => {
                          const { control } = transformControlForBE(formData);
-                         dispatch(update({ id, control: {recipe: control} }))
+                         dispatch(update({ id, control: { recipe: control } }))
                     }
                }, dispatch)
           }
@@ -240,18 +242,33 @@ export function updateState(id, JSONkey, data, formName) {
           const EDIT_CONTROL = 'UPDATE_STATE_DEVICE'
           baseLogger(EDIT_CONTROL)
 
-          return updateStateApi({
-               token: getToken(getState()),
-               body: {
-                    formData: {
-                         [formName]: { JSONkey: JSONkey, state: data }
-                    }
-               },
-               id,
-               onSuccess: json => {
+          // return updateStateApi({
+          //      token: getToken(getState()),
+          //      body: {
+          //           formData: {
+          //                [formName]: { JSONkey: JSONkey, state: data }
+          //           }
+          //      },
+          //      id,
+          //      onSuccess: json => {
+          //           dispatch(update({ id, control: json.data }))
+          //      }
+          // }, dispatch)
+
+          io.getSocket().emit("updateState", {
+               formData: {
+                    [formName]: { JSONkey: JSONkey, state: data }
+               }
+          }, id, function (json) {
+               if (json.error){
+                    // TODO
+               }else {
+                    console.log("respone", json)
                     dispatch(update({ id, control: json.data }))
                }
-          }, dispatch)
+
+          })
+          console.log("soc", io.getSocket())
      }
 }
 

@@ -17,7 +17,7 @@ import { getDevices } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import io from '../webSocket'
 import { Typography } from '@material-ui/core';
-import EditSensorsForm from './sensors/EditNotifyForm'
+import EditNotifyForm from './sensors/EditNotifyForm'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 
 function readableWithSensors(device) {
@@ -72,7 +72,7 @@ function Sensors({ fetchDevicesAction, updateDeviceAction, devices, classes, upd
                     onExited={resetEditNotifySensorsA}
                     heading="Editace senzorů"
                >
-                    <EditSensorsForm device={selectedDevice} />
+                    <EditNotifyForm device={selectedDevice} />
                </FullScreenDialog>
           </Fragment>
      )
