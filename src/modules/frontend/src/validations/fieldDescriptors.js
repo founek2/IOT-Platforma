@@ -295,13 +295,15 @@ const EDIT_NOTIFY_SENSORS = {
      },
      'type[]': {
           deepPath: 'EDIT_NOTIFY_SENSORS.type[]',
-          label: 'Jednotka',
+          label: 'Akce',
           required: true,
           validations: [validationFactory('isString', { min: 1, max: 6 })]
      },
      "value[]": {
           deepPath: 'EDIT_NOTIFY_SENSORS.value[]',
           label: 'Mezní hodnota',
+          required: true,
+          when: ({type}, {i}) =>  !type || type[i] !== "change",  // needs constant
           validations: [validationFactory('isNumber')]
      },
      "interval[]": {
@@ -318,8 +320,8 @@ const EDIT_NOTIFY_SENSORS = {
      },
      "count": {
           deepPath: 'EDIT_NOTIFY_SENSORS.count',
-          label: 'Popis',
           name:"count",
+          required: true,
           validations: [validationFactory('isNumber')]
      }
 }

@@ -16,6 +16,11 @@ import validationFactory from './validationFactory';
 const requiredFn = validationFactory('isRequired');
 const notEmptyVal = (val) => requiredFn(val) === true
 
+const getWhenOpt = deepPath => {
+     const idx = deepPath.split(".").pop()
+     return /[0-9]+/.test(idx) ?  {deepPath, i: Number.parseInt(idx)} : {deepPath}
+}
+
 export const validateField = (deepPath, state, ignorePristine = false, ignoreRequired = false) => {
      const pristine = getPristine(deepPath, state);
      if (!pristine || ignorePristine) {
@@ -32,7 +37,9 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
 
           const value = getInPath(deepPath, formsData);
 
-          if (!when || (typeof when === 'function' && when(formsData[formName] || {}))) {
+
+
+          if (!when || (typeof when === 'function' && when(formsData[formName] || {}, getWhenOpt(deepPath)))) {
                if (required) {
                     if (notEmptyVal(value)) {
                          const result = createValidationsResult(value, validations);
@@ -173,11 +180,11 @@ export const validateRegisteredFields = (formName, state, ignoreRequiredFields =
      return result;
 };
 
-export const isRequired = (descriptor, formData) => {
+export const isRequired = (descriptor, formData, origDeepPath) => {
      const { required, when, deepPath } = descriptor;
      const formName = deepPath.split('.')[0];
      if (typeof when === 'function') {
-          return when(formData[formName] || {}) && required;
+          return when(formData[formName] || {}, getWhenOpt(origDeepPath)) && required;
      } else {
           return required;
      }
