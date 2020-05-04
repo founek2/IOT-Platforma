@@ -4,11 +4,13 @@ import { getFormData, getToken, getFormDescriptors } from 'framework-ui/src/util
 import {
      fetchDeviceData as fetchDeviceDataApi,
      API_URL,
-     updateNotify as updateNotifyApi
+     updateNotify as updateNotifyApi,
+     getNotify as getNotifyApi,
 } from '../../../../api/deviceApi'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
 import { postJson, paramSender, deleteJson, patchJson, putJson } from 'framework-ui/src/api'
-import { validateForm, resetForm, validateRegisteredFields } from 'framework-ui/src/redux/actions/formsData'
+import { validateForm, resetForm, validateRegisteredFields, fillForm } from 'framework-ui/src/redux/actions/formsData'
+import {transformNotifyForFE} from '../../../../utils/transform'
 
 export function fetchData(id) {
      return (dispatch, getState) =>
@@ -28,7 +30,7 @@ export function fetchData(id) {
                     onSuccess: json => {
                          dispatch(updateTmpData({ sensors: { data: json.data, id } }))
                     }
-               })
+               }, dispatch)
           }
 }
 
@@ -47,10 +49,24 @@ export function updateNotifySensors(id) {
                          console.log("SUCESS notify sensors")
                          // const { sampleInterval, sensors } = transformSensorsForBE(formData);
                          // dispatch(update({ id, sensors, sampleInterval }))
-                    },
-                    dispatch
-               })
-
+                    }
+               }, dispatch)
           }
+     }
+}
+
+export function prefillNotifySensors(id) {
+     return async function (dispatch, getState) {
+          return getNotifyApi({
+               token: getToken(getState()),
+               params: {
+                    type: "sensors"
+               },
+               id,
+               onSuccess: (json) => {
+                    const formData = transformNotifyForFE(json.doc.items);
+                    dispatch(fillForm("EDIT_NOTIFY_SENSORS")(formData))
+               }
+          }, dispatch)
      }
 }

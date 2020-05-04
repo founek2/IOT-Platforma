@@ -1,4 +1,4 @@
-import React, { Fragment, useState, Component } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import IconButton from '@material-ui/core/IconButton'
@@ -23,19 +23,8 @@ import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 import { SampleIntervals } from '../../constants'
 import EditNotify from './editNotifyForm/EditNotify'
 import Typography from '@material-ui/core/Typography';
-import {transformSensorsForForm} from '../../utils/transform'
+import { transformSensorsForForm } from '../../utils/transform'
 import * as sensorsActions from '../../store/actions/application/devices/sensors'
-
-function OnlyWritable(device) {
-     return device.permissions
-}
-
-// const SampleIntervalWithText = SampleIntervals.map(val => {
-//      const min = val / 60;
-//      if (min > 0) return { value: val, text: min < 60 ? min + ' min' : min / 60 + ' h' }
-//      else if (val === 0)  return { value: "0", text: "Vždy" }
-//      return { value: val, text: "Nikdy" }
-// })
 
 const styles = theme => ({
      textField: {
@@ -115,88 +104,74 @@ const styles = theme => ({
 
 const FIELDS = ["JSONkey", "type", "value", "interval", "description"]
 
-class EditDeviceDialog extends Component {
-     constructor(props) {
-          super(props)
-          this.state = {
-               pending: false,
-               errorOpen: true,
-               filled: false,
+function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, device, fillEditFormAction, editForm, sensorCount, classes, updateNotifySensorsAction }) {
+     const [pending, setPending] = useState(false)
+     const [loaded, setLoaded] = useState(false)
+
+     useEffect(() => {
+          async function preFill() {
+               setPending(true)
+               if (await prefillNotifySensorsAction(device.id)) {
+                    setPending(false)
+                    setLoaded(true)
+               } else setPending(false)
           }
-          const { device, updateSensorCount } = this.props
-          updateSensorCount(0); // init
-          this.preFillForm(device)
-     }
+          preFill()
+     }, [])
 
-     preFillForm = device => {
-          if (device.sensors && device.sensors.recipe) {
-               const { fillEditFormAction } = this.props;
-            //    fillEditFormAction(transformSensorsForForm(device.sensors.recipe, device.sampleInterval))
-               console.log("prefill")
-          }
-     }
+     function removeSensorByIndex(idx) {
 
-     setPending = b => this.setState({ pending: b })
-
-     removeSensorByIndex = idx => {
-          const { sensorCount, editForm, fillEditFormAction } = this.props;
-          
           const newEditForm = clone(editForm);
           for (let i = idx + 1; i < sensorCount; i++) {
-            FIELDS.forEach(key => {
-                  console.log(key, newEditForm[key], newEditForm)
-                if (newEditForm[key]) newEditForm[key][i - 1] = editForm[key][i];
-              })
+               FIELDS.forEach(key => {
+                    console.log(key, newEditForm[key], newEditForm)
+                    if (newEditForm[key]) newEditForm[key][i - 1] = editForm[key][i];
+               })
           }
           FIELDS.forEach(key => {
-            if (newEditForm[key] && idx < newEditForm[key].length) newEditForm[key].pop();
+               if (newEditForm[key] && idx < newEditForm[key].length) newEditForm[key].pop();
           })
 
           newEditForm.count = sensorCount - 1;
           fillEditFormAction(newEditForm)
      }
 
-     render() {
-          const { classes, updateSensorCount, device, sensorCount, updateNotifySensorsAction } = this.props
-          const { pending } = this.state
-          const handleSave = async () => {
-               this.setPending(true)
-               await updateNotifySensorsAction(device.id)
-               this.setPending(false)
-          }
-
-          return device ? (
-               <Fragment>
-                    <Card className={classes.card}>
-                         <CardHeader className={classes.header} title={device.info.title} titleTypographyProps={{ variant: "h3" }} />
-                         <CardContent className={classes.content}>
-                              <div>
-                                   {/* <Typography variant="subtitle1" align="center" >Notifikace:</Typography> */}
-                                   {sensorCount > 0 && [...Array(sensorCount).keys()].map(i => <EditNotify id={i} key={i} onDelete={this.removeSensorByIndex} recipe={device.sensors.recipe}/>)}
-
-                              </div>
-                              <IconButton className={classes.addButton} aria-label="Add a sensor" onClick={() => updateSensorCount(sensorCount + 1)}>
-                                   <AddCircle className={classes.addIcon} />
-                              </IconButton>
-                         </CardContent>
-                         <CardActions className={classes.actions}>
-                              <Button
-                                   color="primary"
-                                   variant="contained"
-                                   className={classes.button}
-                                   onClick={handleSave}
-                                   disabled={pending}
-                              >
-                                   Uložit
-                              </Button>
-                              <Loader open={pending} />
-                         </CardActions>
-                    </Card>
-               </Fragment>
-          ) : (
-                    <div />
-               ) // redux is faster than closing -> before close is device undefined
+     const handleSave = async () => {
+          setPending(true)
+          await updateNotifySensorsAction(device.id)
+          setPending(false)
      }
+
+     return loaded ? (
+          <Fragment>
+               <Card className={classes.card}>
+                    <CardHeader className={classes.header} title={device.info.title} titleTypographyProps={{ variant: "h3" }} />
+                    <CardContent className={classes.content}>
+                         <div>
+                              {/* <Typography variant="subtitle1" align="center" >Notifikace:</Typography> */}
+                              {sensorCount > 0 && [...Array(sensorCount).keys()].map(i => <EditNotify id={i} key={i} onDelete={removeSensorByIndex} recipe={device.sensors.recipe} />)}
+
+                         </div>
+                         <IconButton className={classes.addButton} aria-label="Add a sensor" onClick={() => updateSensorCount(sensorCount + 1)}>
+                              <AddCircle className={classes.addIcon} />
+                         </IconButton>
+                    </CardContent>
+                    <CardActions className={classes.actions}>
+                         <Button
+                              color="primary"
+                              variant="contained"
+                              className={classes.button}
+                              onClick={handleSave}
+                              disabled={pending}
+                         >
+                              Uložit
+                              </Button>
+                         <Loader open={pending} />
+                    </CardActions>
+               </Card>
+          </Fragment>
+     ) : pending ? <Loader open={pending} /> : <Typography >Nelze načíst data</Typography>
+
 }
 
 const _mapStateToProps = state => {
@@ -215,6 +190,7 @@ const _mapDispatchToProps = dispatch => (
                     updateSensorCount: formsActions.updateFormField("EDIT_NOTIFY_SENSORS.count"),
                     fillEditFormAction: formsActions.fillForm('EDIT_NOTIFY_SENSORS'),
                     updateNotifySensorsAction: sensorsActions.updateNotifySensors,
+                    prefillNotifySensorsAction: sensorsActions.prefillNotifySensors,
                },
                dispatch,
           ),

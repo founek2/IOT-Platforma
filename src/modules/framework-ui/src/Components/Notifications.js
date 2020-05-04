@@ -74,7 +74,7 @@ class NotificationsProvider extends Component {
           const { snacks } = this.state;
           let snacksCopy = JSON.parse(JSON.stringify(snacks));
           snacksCopy = snacksCopy.filter(item => item.open === true);
-          snacksCopy[0].open = false;
+          snacksCopy[0].open = false;   // TODO one time it throwed exception "Cannot set property 'open' of undefined"
           this.setState({ snacks: snacksCopy });
      };
 
