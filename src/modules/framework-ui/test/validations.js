@@ -40,7 +40,6 @@ describe("Validations test", function () {
         validations.checkValid({
             REGISTRATION: {
                 info: {
-                    userName: { valid: true, errorMessages: [] },
                     userName: { valid: false, errorMessages: ["required"] },
                 }
             }
@@ -92,12 +91,12 @@ describe("Validation factory", function () {
         fn([]).should.equal("notString")
         fn(3).should.equal("notString")
         fn({}).should.equal("notString")
-        
+
         validationFn.isString("ble", { min: 3, max: 10 }).should.be.true()
-        validationFn.isString("1234567891",{ min: 3, max: 10 }).should.be.true()
-        validationFn.isString("b",{ min: 3, max: 10 }).should.equal("lowerLength")
-        validationFn.isString("blablablablabla",{ min: 3, max: 10 }).should.equal("higherLength")
-        validationFn.isString("b",  { startsWith: "/" }).should.equal("notStartsWith")
+        validationFn.isString("1234567891", { min: 3, max: 10 }).should.be.true()
+        validationFn.isString("b", { min: 3, max: 10 }).should.equal("lowerLength")
+        validationFn.isString("blablablablabla", { min: 3, max: 10 }).should.equal("higherLength")
+        validationFn.isString("b", { startsWith: "/" }).should.equal("notStartsWith")
         done()
     })
 
@@ -181,8 +180,8 @@ describe("Validation factory", function () {
         validationFactory("isString")("kekel").should.be.true()
 
         try {
-             validationFactory("noNumbessadas")("kekel")
-        }catch(err) {
+            validationFactory("noNumbessadas")("kekel")
+        } catch (err) {
             if (err instanceof Error && err.message === "Missing validation Fn named: noNumbessadas") done()
         }
     })

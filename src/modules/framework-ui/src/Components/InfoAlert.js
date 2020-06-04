@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-function InfoAlert({onClose, open, content, title}) {
+function InfoAlert({onClose, open, content, title, closeText="Potvrdit"}) {
      return (
           
                <Dialog
@@ -23,7 +23,7 @@ function InfoAlert({onClose, open, content, title}) {
                     </DialogContent>
                     <DialogActions>
                          <Button onClick={onClose} color="primary" autoFocus>
-                              Potvrdit
+                              {closeText}
                          </Button>
                     </DialogActions>
                </Dialog>

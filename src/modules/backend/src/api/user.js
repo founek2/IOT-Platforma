@@ -6,7 +6,7 @@ import formDataChecker from 'framework/src/middlewares/formDataChecker'
 import groupRestriction from 'framework/src/middlewares/groupRestriction'
 
 import fieldDescriptors from 'fieldDescriptors'
-
+import checkWritePerm from '../middleware/user/checkWritePerm'
 
 function removeUser(id) {
      return function (doc) {
@@ -18,7 +18,7 @@ export default ({ config, db }) =>
      resource({
           middlewares: {
                index: [tokenAuthMIddleware()],
-               updateId: [tokenAuthMIddleware(), groupRestriction('admin'), formDataChecker(fieldDescriptors)],
+               updateId: [tokenAuthMIddleware(), checkWritePerm(), formDataChecker(fieldDescriptors)],   // TODO add test when user can change his userName
                create: [formDataChecker(fieldDescriptors)],
                delete: [tokenAuthMIddleware(), groupRestriction('admin'), formDataChecker(fieldDescriptors)],
           },
@@ -121,11 +121,7 @@ export default ({ config, db }) =>
           updateId({ body, params }, res) {  // tested
                const { id } = params
                if (body.formData.EDIT_USER) {
-                    const { EDIT_USER } = body.formData;
-                    // if (!EDIT_USER.authType) res.status(208).send({ error: 'missingAuthType' })
-                    UserModel.updateUser(id, EDIT_USER).then(() => res.sendStatus(204))
-
-
-               } else res.sendStatus(500)
+                    UserModel.updateUser(id, body.formData.EDIT_USER).then(() => res.sendStatus(204))
+               } else res.sendStatus(400)
           },
      })

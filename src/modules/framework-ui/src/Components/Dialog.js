@@ -21,7 +21,7 @@ const styles = {
     }
 }
 
-function AlertDialog({ onAgree, classes, onClose, open, title, content, cancelText = "Zrušit", agreeText = "Souhlasím", disablePending = false }) {
+function AlertDialog({ onAgree, classes, onClose, open, title, content, cancelText, agreeText = "Souhlasím", disablePending = false }) {
     const [pending, setPending] = useState(false)
     async function handleAgree(e) {
         if (!disablePending) setPending(true)
@@ -37,20 +37,24 @@ function AlertDialog({ onAgree, classes, onClose, open, title, content, cancelTe
         >
             <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    {content}
-                </DialogContentText>
+                {
+                    typeof content == "string"
+                        ? <DialogContentText id="alert-dialog-description">
+                            {content}
+                        </DialogContentText>
+                        : content
+                }
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="primary">
+                {cancelText ? <Button onClick={onClose} color="primary">
                     {cancelText}
-                </Button>
+                </Button> : null}
                 <div className={classes.agreeButton}>
-                <Button onClick={handleAgree} color="primary" autoFocus disabled={pending} >
-                    {agreeText}
-                 
-                </Button>
-                <Loader open={pending} className={classes.loader}/>
+                    <Button onClick={handleAgree} color="primary" autoFocus disabled={pending} >
+                        {agreeText}
+
+                    </Button>
+                    <Loader open={pending} className={classes.loader} />
                 </div>
             </DialogActions>
         </Dialog>

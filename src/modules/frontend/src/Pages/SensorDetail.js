@@ -6,7 +6,7 @@ import { filter, curry, merge, fromPairs } from 'ramda'
 import { bindActionCreators } from 'redux'
 import { getDevices, getSensors, getQueryName } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
-import * as sensorsActions from '../store/actions/application/sensors'
+import * as sensorsActions from '../store/actions/application/devices/sensors'
 import Typography from '@material-ui/core/Typography';
 import Chart from './sensorDetail/Chart'
 import DetailTable from './sensorDetail/DetailTable'

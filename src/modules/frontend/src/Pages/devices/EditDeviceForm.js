@@ -10,11 +10,7 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
 import { bindActionCreators } from 'redux'
@@ -26,11 +22,9 @@ import * as deviceActions from '../../store/actions/application/devices'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
 import { getDialogTmp, getFieldVal, getRegisteredField } from 'framework-ui/src/utils/getters'
 import InfoAlert from 'framework-ui/src/Components/InfoAlert'
-import { getQueryID, getDevices } from '../../utils/getters'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
-import AlertDialog from 'framework-ui/src/Components/AlertDialog'
+import Dialog from 'framework-ui/src/Components/Dialog'
 import TextField from 'framework-ui/src/Components/fieldConnector/TextField.js'
-import { Tooltip } from '@material-ui/core'
 import CopyToClipboard from 'framework-ui/src/Components/CopyToClipboard'
 
 const styles = theme => ({
@@ -240,7 +234,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                     onClose={() => updateTmpDataAction({ dialog: {} })}
                     open={!!apiKey}
                />
-               <AlertDialog
+               <Dialog
                     open={openDeleteDialog}
                     onAgree={async () => { 
                          await deleteDeviceAction(device.id)
@@ -249,13 +243,17 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                     onClose={() => setOpenDeleteDialog(false)}
                     title="Odstranění zařízení"
                     content="Opravdu chcete odstranit zařízení? Tato akce je nevratná."
+                    cancelText="Zrušit"
                />
-               <Dialog open={openTopicDialog} onClose={() => setOpenTopicDialog(false)} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title" >
-                         Upozornění!
-               </DialogTitle>
-                    <DialogContent >
-                         <DialogContentText>
+               <Dialog 
+                    open={openTopicDialog}
+                    onAgree={() => setOpenTopicDialog(false)}
+                    onClose={() => setOpenTopicDialog(false)}
+                    title="Upozornění!"
+                    agreeText="Zavřít"
+                    content={
+                         <Fragment>
+                               <DialogContentText>
                               Pokud upravíte topic, tak je třeba pře-flashovat zařízení, aby si stáhl aktuální topic do paměti jinak přestane fungovat.
                          </DialogContentText>
                          <FieldConnector
@@ -264,16 +262,9 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                               onEnter={() => setOpenTopicDialog(false)}
                               className={classes.textArea}
                          />
-                    </DialogContent>
-                    <DialogActions className={classes.loginActions}>
-                         <Button
-                              color="primary"
-                              onClick={() => setOpenTopicDialog(false)}>
-                              Zavřít
-                         </Button>
-                         <Loader open={pending} />
-                    </DialogActions>
-               </Dialog>
+                         </Fragment>
+                    }
+               />
           </Fragment>
      ) : (
                <div />

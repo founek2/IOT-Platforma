@@ -16,6 +16,7 @@ const sensorSchema = new Schema({
      historical: {
           updatedAt: Date     // to calculate interval
      }, // {temp1: [[10, timestamp], ...]}
+     sampleInterval: Number,
 },
 {
      toObject: {

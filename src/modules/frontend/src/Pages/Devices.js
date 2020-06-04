@@ -131,7 +131,6 @@ class Devices extends Component {
                          >
                               <EditPermissions device={selectedDevice} />
                          </FullScreenDialog>
-
                     </Fragment>
                </Fragment>
           )

@@ -94,7 +94,7 @@ class fieldConnector extends Component {
                onChange && onChange(e)
           }
           if (isNotNil(descriptor)) {
-               const required = isRequired(descriptor, formsData)     // check when condition 
+               const required = isRequired(descriptor, formsData, deepPath)     // check when condition 
                const finalLabel = label ? label : descriptor.label;
  
                const Component = is(String, component) ? Components[component] : component;

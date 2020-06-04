@@ -31,7 +31,7 @@ const defaultProps = {
     position: "relative",
 };
 
-function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, forwardRef,...other }) {
+function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, forwardRef, ...other }) {
     const [detailOpen, setOpen] = useState(false)
     const [pending, setPending] = useState(false)
 
@@ -46,6 +46,7 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
         console.log("context")
         setOpen(true)
     }
+
     const { state, inTransition, transitionStarted, updatedAt } = data;
     const afk = isAfk(ackTime);
     const Component = component
@@ -64,10 +65,10 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
                 afk={afk}
                 className={classes.circle}
             />
-            <Component data={data} afk={afk} ackTime={ackTime} name={name} onClick={handleClick} pending={pending} {...other}/>
+            <Component data={data} afk={afk} ackTime={ackTime} name={name} onClick={handleClick} pending={pending} {...other} />
             <Loader open={pending} className="marginAuto" />
             <div onContextMenu={handleContext} className={classes.contextMenu}></div>
-            <ControlDetail open={detailOpen} data={data} name={name} ackTime={ackTime} handleClose={() => setOpen(false)}/>
+            <ControlDetail open={detailOpen} data={data} name={name} ackTime={ackTime} handleClose={() => setOpen(false)} />
         </Box>)
 }
 

@@ -43,11 +43,10 @@ const updateUsers = {
 
 const addPositions = {
      next(state, action) {
-		const docs = action.payload; // [{id: "", positions: []}]
-		const arrayofIDs = docs.map(obj => obj.id)
-		let newState = filter(willRemove(action.payload, arrayofIDs), state);
+          const docs = action.payload; // [{id: "", positions: []}]
+          let newState = filter(willRemove(action.payload), state);
 
-          forEach(function(doc) {
+          forEach(function (doc) {
                newState = append(doc, newState);
           }, docs);
           return newState;

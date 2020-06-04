@@ -16,6 +16,13 @@ class MySocket {
         })
         newCon.open()
         mySocket.applyListeners(newCon)
+        // newCon.on("connect", function() {
+        //     console.log("connected")
+
+        //     newCon.on("disconnect", function() {
+        //         console.log("DC")
+        //     })
+        // })
         this.socket = newCon;
     }
 
@@ -35,9 +42,13 @@ class MySocket {
     }
 
     close = () => {
-        if (this.socket.connected)
+        // if (this.socket.connected)
             this.socket.close()
     }
+
+    emit = (...other) => 
+        this.socket.emit(...other)
+    
 }
 
 const mySocket = new MySocket();

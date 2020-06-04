@@ -1,5 +1,5 @@
 import resource from 'framework/src/middlewares/resource-router-middleware'
-import Device from '../models/Device'
+import Device from '../../models/Device'
 import processError from 'framework/src/utils/processError'
 import { assocPath, o, omit } from 'ramda'
 import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'

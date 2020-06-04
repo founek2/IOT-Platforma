@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip';
 import DeviceBox from '../../components/DeviceBox'
 import toDateTime from '../../utils/toDateTime'
+import ContextMenu from 'framework-ui/src/Components/ContextMenu'
+import MenuItem from '@material-ui/core/MenuItem';
 
 const styles = theme => ({
      data: {
@@ -63,45 +65,48 @@ function convertDataView(classes, currentData, id) {
      }
 }
 
-class SensorBox extends React.Component {
-     render() {
-          const { classes, device } = this.props
-
-          const { info: { imgPath, title, description }, sensors, id } = device
-          const time = sensors.current ? new Date(sensors.current.updatedAt) : null;
-          return (
-               <DeviceBox
-                    actions={
-                         <CardActions>
-                              <Button size="small" color="primary" disabled>
+function SensorBox({ classes, device, enableNotify = false }) {
+     const { info: { imgPath, title, description }, sensors, id } = device
+     const time = sensors.current ? new Date(sensors.current.updatedAt) : null;
+     return (
+          <DeviceBox
+               actions={
+                    <CardActions>
+                         {enableNotify ?
+                              <Link to={{ hash: `editNotify`, search: `?id=${id}` }}>
+                                   <Button size="small" color="primary">
+                                        Notify
+                              </Button>
+                              </Link> : <Button size="small" color="primary" disabled>
                                    Notify
                               </Button>
-                              <Button size="small" color="primary" disabled>
-                                   Learn More
+                         }
+                         <Button size="small" color="primary" disabled>
+                              Learn More
                               </Button>
-                         </CardActions>
-                    }
-                    imgPath={imgPath}
-               >
-                    <Link to={`/sensor/${id}`}>
-                         <Typography gutterBottom variant="h5" component="h2">
-                              {title}
-                         </Typography>
-                    </Link>
-                    <Typography component="p" className={classes.description}>
-                         {description}
+                    </ CardActions>
+               }
+               imgPath={imgPath}
+          >
+               <Link to={`/sensor/${id}`}>
+                    <Typography gutterBottom variant="h5" component="h2">
+                         {title}
                     </Typography>
-                    {sensors.current ?
-                         <Fragment>
-                              <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
-                              <Tooltip title={toDateTime(time)} placement="bottom" arrow={true}>
-                                   <UpdatedBefore updateTime={time} time={time} className={classes.updatedBefore} />
-                              </Tooltip>
-                         </Fragment> : null}
-               </DeviceBox>
-          )
-     }
+               </Link>
+               <Typography component="p" className={classes.description}>
+                    {description}
+               </Typography>
+               {sensors.current ?
+                    <Fragment>
+                         <div className={classes.dataContainer}>{map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}</div>
+                         <Tooltip title={toDateTime(time)} placement="bottom" arrow={true}>
+                              <UpdatedBefore updateTime={time} time={time} className={classes.updatedBefore} />
+                         </Tooltip>
+                    </Fragment> : null}
+          </DeviceBox>
+     )
 }
+
 SensorBox.propTypes = {
      classes: PropTypes.object.isRequired
 }

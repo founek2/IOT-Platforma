@@ -21,7 +21,7 @@ const styles = theme => ({
 
 function MySwitch({ classes, name, description, onClick, data, ackTime, afk, pending, forceUpdate, ...props }) {
     const { state = { on: 0 } } = data;
-
+    
     return (
         <div
             className={classes.root}

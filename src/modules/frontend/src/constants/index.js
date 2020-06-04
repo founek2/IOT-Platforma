@@ -19,6 +19,12 @@ export const SampleIntervals = [
 	{value: 300 * 60, label: "5 hod"},
 ]
 
+export const NotifyTypes = [
+	{value: "over", label: "Nad"},
+	{value: "below", label: "Pod"},
+	{value: "change", label: "Změna"},
+]
+
 export const ControlTypes = [
 	{value: "switch", label: "vypínač", formName: "CHANGE_DEVICE_STATE_SWITCH"},
 	{value: "activator", label: "Aktivátor", formName: "CHANGE_DEVICE_STATE_SWITCH"},

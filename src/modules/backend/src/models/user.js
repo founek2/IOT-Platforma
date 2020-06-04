@@ -87,6 +87,14 @@ userSchema.statics.checkCreditals = function ({ userName, password, authType }) 
           .catch(catcher('user'))
 }
 
+userSchema.statics.checkExist = async function (userID= "") {
+     if (userID.length != 24) return false
+
+     return await this.model('User').exists({
+          _id: mongoose.Types.ObjectId(userID),
+     })
+}
+
 userSchema.statics.findAll = function () {
      return this.model('User')
           .find({}, '-password')
@@ -130,12 +138,11 @@ userSchema.statics.updateUser = async function (userID, data) {
      }
      return this.model('User')
           .findOneAndUpdate({ _id: mongoose.Types.ObjectId(userID) }, { $set: data })
-          .catch(catcher('user'))
 }
 
 userSchema.statics.findAllUserNames = function () {
      return this.model("User").find({
-           groups: { $ne: "root" }
+          groups: { $ne: "root" }
      }, "info.userName").lean().sort({ "info.userName": 1 })
 
 }
