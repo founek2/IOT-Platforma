@@ -44,7 +44,7 @@ function updateDevice(updateDeviceAction) {
      }
 }
 
-function Sensors({ fetchDevicesAction, updateDeviceAction, devices, classes, updateSensorsAction, openNotifyDialog, selectedDevice, resetEditNotifySensorsA, history }) {
+function Sensors({ fetchDevicesAction, updateDeviceAction, devices, classes, updateSensorsAction, openNotifyDialog, selectedDevice, resetEditNotifySensorsA, history, isUserPresent }) {
      useEffect(() => {
           fetchDevicesAction()
           const listener = updateDevice(updateDeviceAction)
@@ -62,7 +62,7 @@ function Sensors({ fetchDevicesAction, updateDeviceAction, devices, classes, upd
           <Fragment>
                {isNotEmpty(devices)
                     ? devices.map(data => (
-                         <SensorBox device={data} key={data.id} />
+                         <SensorBox device={data} key={data.id} enableNotify={isUserPresent} />
                     ))
                     : <Typography className={classes.noDevices}>Nebyla nalezena žádná zařízení s naměřenými daty</Typography>}
 
@@ -86,6 +86,7 @@ const _mapStateToProps = state => {
           devices,
           openNotifyDialog: isUrlHash('#editNotify')(state),
           selectedDevice: devices.find(dev => dev.id === id),
+          isUserPresent: getUserPresence(state)
      }
 }
 

@@ -142,7 +142,7 @@ function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, devic
           setPending(false)
      }
 
-     return loaded ? (
+     return loaded && device ? (
           <Fragment>
                <Card className={classes.card}>
                     <CardHeader className={classes.header} title={device.info.title} titleTypographyProps={{ variant: "h3" }} />

@@ -65,22 +65,26 @@ function convertDataView(classes, currentData, id) {
      }
 }
 
-function SensorBox({ classes, device }) {
+function SensorBox({ classes, device, enableNotify = false }) {
      const { info: { imgPath, title, description }, sensors, id } = device
      const time = sensors.current ? new Date(sensors.current.updatedAt) : null;
      return (
           <DeviceBox
                actions={
                     <CardActions>
-                         <Link to={{ hash: `editNotify`, search: `?id=${id}` }}>
-                              <Button size="small" color="primary">
+                         {enableNotify ?
+                              <Link to={{ hash: `editNotify`, search: `?id=${id}` }}>
+                                   <Button size="small" color="primary">
+                                        Notify
+                              </Button>
+                              </Link> : <Button size="small" color="primary" disabled>
                                    Notify
                               </Button>
-                         </Link>
+                         }
                          <Button size="small" color="primary" disabled>
                               Learn More
                               </Button>
-                    </CardActions>
+                    </ CardActions>
                }
                imgPath={imgPath}
           >
