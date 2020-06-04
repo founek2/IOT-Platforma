@@ -182,7 +182,8 @@ describe("Device API test", async function () {
                                     JSONkey: 'hum',
                                     unit: '%',
                                     description: "",
-                                }]
+                                }],
+                            sampleInterval: 120,
                         }
                     )
                     done()
