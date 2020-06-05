@@ -1,5 +1,5 @@
-import { pick, prop, forEach, map, sortBy, o, compose, when, uniqBy, difference, flip, equals, find, uniq as Runiq } from 'ramda';
-import { isNotNaN, isNotNil } from 'ramda-extension';
+import { pick, prop, forEach, map, o, compose, when, uniqBy, flip, equals, uniq as Runiq } from 'ramda';
+import { isNotNil } from 'ramda-extension';
 
 
 const getRoutes = prop("routes");

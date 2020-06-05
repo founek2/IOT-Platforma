@@ -1,17 +1,12 @@
-import React, { Component, useState } from 'react'
-import Button from '@material-ui/core/Button'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Typography from '@material-ui/core/Typography'
+import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/CloudUpload'
 import { withStyles } from '@material-ui/core/styles'
 import fieldStyle from './styles'
 
-import blobToBase64 from '../../utils/blobToBase64'
 import { errorLog } from '../../Logger'
 import MyFile from '../../dto/MyFile'
-import MyFileData from '../../dto/MyFileData'
 
 const styles = theme => ({
      root: {
@@ -25,12 +20,6 @@ const styles = theme => ({
 })
 
 class FileLoader extends Component {
-     // constructor(props) {
-     // 	super(props);
-     // 	// to reset hydrated state -> objectURL is destroyed afted document unmount
-     // 	this.props.onChange({target: {value: {}}}); 
-     // }
-
      handleChange = e => {
           const { onChange } = this.props
           e.preventDefault()
@@ -62,6 +51,6 @@ class FileLoader extends Component {
 }
 
 FileLoader.defaultProps = {
-value: {name: ""}
+     value: { name: "" }
 }
 export default withStyles(styles)(FileLoader)

@@ -1,41 +1,21 @@
-import React, { Fragment, useState, Component, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
-import IconButton from '@material-ui/core/IconButton'
-import AddCircle from '@material-ui/icons/AddCircle'
 import { connect } from 'react-redux'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
-import FormLabel from '@material-ui/core/FormLabel'
 import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
-import Divider from '@material-ui/core/Divider'
 import { bindActionCreators } from 'redux'
 import { map } from 'ramda'
-import MenuItem from '@material-ui/core/MenuItem'
-import { Link } from 'react-router-dom'
 
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import * as deviceActions from '../../store/actions/application/devices'
-import { getDialogTmp, getFormData } from 'framework-ui/src/utils/getters'
 import { getUserNames } from '../../utils/getters'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
-import { SampleIntervals } from '../../constants'
-import EditSensor from './editSensorsForm/EditSensor'
 import Typography from '@material-ui/core/Typography';
 import * as userNamesActions from '../../store/actions/application/userNames'
-
-function OnlyWritable(device) {
-    return device.permissions
-}
-
-// const SampleIntervalWithText = SampleIntervals.map(val => {
-//      const min = val / 60;
-//      if (min > 0) return { value: val, text: min < 60 ? min + ' min' : min / 60 + ' h' }
-//      else if (val === 0)  return { value: "0", text: "Vždy" }
-//      return { value: val, text: "Nikdy" }
-// })
 
 const styles = theme => ({
     card: {
@@ -99,7 +79,7 @@ const styles = theme => ({
     chipArray: {
         width: "50%",
         maxHeight: 200,
-        marginBottom:  theme.spacing(2),
+        marginBottom: theme.spacing(2),
         [theme.breakpoints.down('sm')]: {
             width: '100%'
             //height: '100%'
@@ -145,7 +125,7 @@ function EditDeviceDialog({ fillEditFormAction, device, classes, updatePermissio
                                 optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
                                 className={classes.chipArray}
                             />
-                        </Fragment> : <Typography component="span">Načítám uživatele <Loader open className={classes.loader}/></Typography>}
+                        </Fragment> : <Typography component="span">Načítám uživatele <Loader open className={classes.loader} /></Typography>}
                 </CardContent>
                 <CardActions className={classes.actions}>
                     <Button

@@ -1,20 +1,15 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import { map, last } from 'ramda'
+import { map } from 'ramda'
 import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
 import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip';
 import DeviceBox from '../../components/DeviceBox'
 import toDateTime from '../../utils/toDateTime'
-import ContextMenu from 'framework-ui/src/Components/ContextMenu'
-import MenuItem from '@material-ui/core/MenuItem';
 
 const styles = theme => ({
      data: {

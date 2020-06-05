@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import MenuItem from '@material-ui/core/MenuItem'
 import { withStyles } from '@material-ui/core/styles'
-import { o } from 'ramda'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 

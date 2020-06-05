@@ -1,25 +1,20 @@
 import { ActionTypes } from '../../../constants/redux'
-import { getFormData, getToken, getFormDescriptors } from 'framework-ui/src/utils/getters'
-import { validateForm, resetForm, validateRegisteredFields } from 'framework-ui/src/redux/actions/formsData'
+import { getFormData, getToken } from 'framework-ui/src/utils/getters'
+import { resetForm, validateRegisteredFields } from 'framework-ui/src/redux/actions/formsData'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
 import { baseLogger } from 'framework-ui/src/Logger'
 import loadFilesInFormData from 'framework-ui/src/utils/loadFilesInFormData'
 import { dehydrateState } from 'framework-ui/src/redux/actions'
-import { keys, head } from 'ramda'
 import {
      createDevice as createDeviceApi,
      fetchDevices as fetchDevicesApi,
      fetchDeviceSensors as fetchDeviceSensorsApi,
      fetchDeviceControl as fetchDeviceControlApi,
-     updateDevice as updateDeviceApi,
      putDevice as putDeviceApi,
      deleteDevice as deleteDeviceApi,
      fetchDeviceData as fetchDeviceDataApi,
-     updateState as updateStateApi,
 
 } from '../../../api/deviceApi'
-import { getDevices } from '../../../utils/getters'
-import objectDiff from 'framework-ui/src/utils/objectDiff'
 import { transformSensorsForBE, transformControlForBE } from '../../../utils/transform'
 import io from '../../../webSocket'
 
@@ -260,9 +255,9 @@ export function updateState(id, JSONkey, data, formName) {
                     [formName]: { JSONkey: JSONkey, state: data }
                }
           }, id, function (json) {
-               if (json.error){
+               if (json.error) {
                     // TODO
-               }else {
+               } else {
                     console.log("respone", json)
                     dispatch(update({ id, control: json.data }))
                }

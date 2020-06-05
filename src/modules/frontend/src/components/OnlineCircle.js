@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Tooltip from '@material-ui/core/Tooltip'
 import getLastUpdateText from 'framework-ui/src/utils/getLastUpdateText'
@@ -40,7 +40,7 @@ const CircleComponent = React.forwardRef(
 
 function Circle({ classes, ackTime, changeTime, afk, className, inTransition }) {
     const time = afk ? new Date(ackTime) : new Date(changeTime)
-    const invalidTime = time == "Invalid Date";
+    const invalidTime = String(time) === "Invalid Date";
 
     const [textOnline] = getLastUpdateText(new Date(ackTime), "Aktivní před", "Nyní aktivní")
     const [textChange] = getLastUpdateText(new Date(changeTime), "Poslední změna před", "Právě změněno")

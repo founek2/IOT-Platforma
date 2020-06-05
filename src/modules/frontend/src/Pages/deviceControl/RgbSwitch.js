@@ -9,10 +9,8 @@ import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import { RgbTypes, LINEAR_TYPE } from "../../constants"
 import Slider from './components/Slider'
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Loader from 'framework-ui/src/Components/Loader'
 import ColorPicker from './components/ColorPicker'
 import { validateRegisteredFields, fillForm } from 'framework-ui/src/redux/actions/formsData'
 import { getFormData, getFieldVal } from 'framework-ui/src/utils/getters'
@@ -69,26 +67,21 @@ function RgbSwitch({
     fillForm,
     ...props }) {
     const [open, setOpen] = useState(false)
-    const [myPending, setMyPending] = useState(false)
     const { state = { on: 0 } } = data;
 
     const onClose = () => setOpen(false);
 
     const changeColor = async (e) => {
         if (validateForm().valid) {
-            setMyPending(true)
-            const newData =  { color: e.target.value, on: 1, type: formData.type } // formData are old -> add actual color + add on:1 to turnOn led
+            const newData = { color: e.target.value, on: 1, type: formData.type } // formData are old -> add actual color + add on:1 to turnOn led
             await onClick(newData)
-            setMyPending(false)
         }
     }
 
     const changeBright = async (e) => {
         if (validateForm().valid) {
-            setMyPending(true)
-            const newData =  { bright: e.target.value, on: 1 } // formData are old -> add actual color + add on:1 to turnOn led
+            const newData = { bright: e.target.value, on: 1 } // formData are old -> add actual color + add on:1 to turnOn led
             await onClick(newData)
-            setMyPending(false)
         }
     }
 
@@ -101,7 +94,7 @@ function RgbSwitch({
         <Fragment>
             <Switch
                 name={name}
-                data={{ state: {on: state.on} }}
+                data={{ state: { on: state.on } }}
                 ackTime={ackTime}
                 pending={pending}
                 afk={afk}
@@ -137,9 +130,7 @@ function RgbSwitch({
                                     </MenuItem>)
                             )}
                     />
-
-
-                    {LINEAR_TYPE == colorType ? <FieldConnector
+                    {LINEAR_TYPE === colorType ? <FieldConnector
                         deepPath="EDIT_RGB.color"
                         component={ColorPicker}
                         onChange={changeColor}

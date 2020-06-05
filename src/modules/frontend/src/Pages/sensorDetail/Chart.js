@@ -89,9 +89,6 @@ const options = (hAxisTitle, vAxisTitle) => ({
 })
 
 function getConvertOptionsFunc(chartType) {
-    if (window.google && window.google.charts) {
-        const keyssss = Object.keys(window.google.charts)
-    }
     return window.google && window.google.charts && window.google.charts[chartType]
         ? window.google.charts[chartType].convertOptions
         : null;

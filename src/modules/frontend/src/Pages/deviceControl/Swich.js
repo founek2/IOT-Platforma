@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
@@ -21,7 +21,7 @@ const styles = theme => ({
 
 function MySwitch({ classes, name, description, onClick, data, ackTime, afk, pending, forceUpdate, ...props }) {
     const { state = { on: 0 } } = data;
-    
+
     return (
         <div
             className={classes.root}

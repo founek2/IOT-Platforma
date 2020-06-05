@@ -5,7 +5,7 @@
  * @returns {Array} [text "updated before:", timeout to next change]
  */
 export default function getLastUpdateText(time, prefix = "Poslední aktualizace před", nowText = "Aktuální") {
-     if (time == "Invalid Date") return []
+     if (String(time) === "Invalid Date") return []
 
      const now = new Date();
      const diff = new Date(now - time);

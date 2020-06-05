@@ -1,4 +1,4 @@
-import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip";
+import Tooltip from "@material-ui/core/Tooltip";
 import copy from "clipboard-copy";
 import React, { useState } from "react";
 
@@ -17,7 +17,7 @@ function CopyToClipboard({ TooltipProps, children }) {
       {children({
         copy: (content) => {
           copy(content);
-          setShowTooltip( true );
+          setShowTooltip(true);
         }
       })}
     </Tooltip>

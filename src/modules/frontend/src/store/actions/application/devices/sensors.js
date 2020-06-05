@@ -1,16 +1,13 @@
-import { ActionTypes } from '../../../../constants/redux'
 import { baseLogger } from 'framework-ui/src/Logger'
-import { getFormData, getToken, getFormDescriptors } from 'framework-ui/src/utils/getters'
+import { getFormData, getToken } from 'framework-ui/src/utils/getters'
 import {
      fetchDeviceData as fetchDeviceDataApi,
-     API_URL,
      updateNotify as updateNotifyApi,
      getNotify as getNotifyApi,
 } from '../../../../api/deviceApi'
 import { updateTmpData } from 'framework-ui/src/redux/actions/tmpData'
-import { postJson, paramSender, deleteJson, patchJson, putJson } from 'framework-ui/src/api'
-import { validateForm, resetForm, validateRegisteredFields, fillForm } from 'framework-ui/src/redux/actions/formsData'
-import {transformNotifyForFE} from '../../../../utils/transform'
+import { validateRegisteredFields, fillForm } from 'framework-ui/src/redux/actions/formsData'
+import { transformNotifyForFE } from '../../../../utils/transform'
 
 export function fetchData(id) {
      return (dispatch, getState) =>

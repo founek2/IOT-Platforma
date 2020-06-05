@@ -1,8 +1,8 @@
-import React, { Fragment, Component, useEffect, useMemo } from 'react'
+import React, { Fragment, useEffect, useMemo } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import { connect } from 'react-redux'
-import { filter, curry, merge, fromPairs } from 'ramda'
+import { filter, fromPairs } from 'ramda'
 import { bindActionCreators } from 'redux'
 import { getDevices, getSensors, getQueryName } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
@@ -29,25 +29,11 @@ const styles = theme => ({
     }
 })
 
-function updateDevice(updateDeviceAction) {
-    return ({ data, deviceID, updatedAt }) => {
-        updateDeviceAction({
-            id: deviceID,
-            sensors: {
-                current: {
-                    data,
-                    updatedAt
-                }
-            }
-        })
-    }
-}
-
 function transformData(sensorsData, sensorRecipe, sensorName) {
     const arr = [["Čas"]]
     const keys = []
     if (sensorName) {   // Only data from specific sensor
-        const { name, JSONkey, unit } = sensorRecipe.find(({ name }) => name === sensorName)
+        const { name, JSONkey } = sensorRecipe.find(({ name }) => name === sensorName)
         arr[0].push(name)
         keys.push(JSONkey)
     } else { // all sensors
@@ -109,11 +95,11 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
     }, [])
 
     const hasData =
-        device && sensors && sensors.id == device.id && sensors.data &&
+        device && sensors && sensors.id === device.id && sensors.data &&
         (
             sensors.data.length >= 2
             || (
-                sensors.data.length == 1
+                sensors.data.length === 1
                 && (sensors.data[0].nsamples.day || 0) + (sensors.data[0].nsamples.night || 0) >= 2
             )
         )

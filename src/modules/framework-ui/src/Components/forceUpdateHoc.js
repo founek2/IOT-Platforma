@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useCallback, Component } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import getLastUpdateText from 'framework-ui/src/utils/getLastUpdateText'
 
 /**
@@ -11,7 +11,7 @@ export default function (WrappedComponent) {
         const [val, updateState] = useState(0);
         const forceUpdate = useCallback(() => updateState(1 + val), [val]);  // ++val is causing after some time "read only exception"
         const [_, timeOut] = getLastUpdateText(new Date(updateTime))
-       
+
 
         useEffect(() => {
             console.log("timeout", timeOut, "s")
@@ -26,6 +26,6 @@ export default function (WrappedComponent) {
             return () => window.removeEventListener('focus', forceUpdate)
         }, [])
 
-        return  <WrappedComponent forceUpdate={val} {...props} forwardRef={ref} />
+        return <WrappedComponent forceUpdate={val} {...props} forwardRef={ref} />
     }
 }

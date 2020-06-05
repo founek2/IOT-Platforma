@@ -1,17 +1,16 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
 import Switch from './deviceControl/Swich'
 import Activator from './deviceControl/Activator'
 import { connect } from 'react-redux'
 import { getDevices } from '../utils/getters'
-import { filter, isEmpty, keys } from 'ramda'
+import { filter, isEmpty } from 'ramda'
 import { bindActionCreators } from 'redux'
 import * as deviceActions from '../store/actions/application/devices'
 import { Typography } from '@material-ui/core'
 import io from '../webSocket'
 import RgbSwitch from './deviceControl/RgbSwitch'
-import {ControlTypesFormNames} from '../constants'
+import { ControlTypesFormNames } from '../constants'
 
 const compMapper = {
      activator: Activator,

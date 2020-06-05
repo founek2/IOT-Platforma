@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { adjust, lensProp, assoc, append, mergeDeepRight, findIndex, propEq, filter, clone } from 'ramda'
+import { assoc, append, mergeDeepRight, findIndex, propEq, filter, clone } from 'ramda'
 import { ActionTypes } from '../../../constants/redux'
 
 

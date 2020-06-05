@@ -1,11 +1,9 @@
-import React, { Fragment, useState, Component, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import IconButton from '@material-ui/core/IconButton'
-import AddCircle from '@material-ui/icons/AddCircle'
 import FileCopy from '@material-ui/icons/FileCopy'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -15,7 +13,7 @@ import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
 import { bindActionCreators } from 'redux'
 import { prop, omit } from 'ramda'
-import {IMAGES_PREFIX_FOLDER} from '../../constants'
+import { IMAGES_PREFIX_FOLDER } from '../../constants'
 
 import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import * as deviceActions from '../../store/actions/application/devices'
@@ -112,7 +110,7 @@ const styles = theme => ({
 function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, apiKey, device, fillEditFormAction, deleteDeviceAction, editFormTopic, fetchApiKeyAction, topicRegisteredField, newImg }) {
      useEffect(() => {
           const { info, publicRead, topic, gps } = device
-          
+
           fillEditFormAction({ info: omit(["imgPath"], info), publicRead, topic, gps })
      }, [])
      const [pending, setPending] = useState(false)
@@ -130,7 +128,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
           await fetchApiKeyAction(device.id)
           setPending(false)
      }
-     const topicVal = device && `/${device.createdBy}${editFormTopic || ""}` || ""
+     const topicVal = (device && `/${device.createdBy}${editFormTopic || ""}`) || ""
      return device ? (
           <Fragment>
                <Card className={classes.card}>
@@ -236,7 +234,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                />
                <Dialog
                     open={openDeleteDialog}
-                    onAgree={async () => { 
+                    onAgree={async () => {
                          await deleteDeviceAction(device.id)
                          return setOpenDeleteDialog(false)
                     }}
@@ -245,7 +243,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                     content="Opravdu chcete odstranit zařízení? Tato akce je nevratná."
                     cancelText="Zrušit"
                />
-               <Dialog 
+               <Dialog
                     open={openTopicDialog}
                     onAgree={() => setOpenTopicDialog(false)}
                     onClose={() => setOpenTopicDialog(false)}
@@ -253,15 +251,15 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                     agreeText="Zavřít"
                     content={
                          <Fragment>
-                               <DialogContentText>
-                              Pokud upravíte topic, tak je třeba pře-flashovat zařízení, aby si stáhl aktuální topic do paměti jinak přestane fungovat.
+                              <DialogContentText>
+                                   Pokud upravíte topic, tak je třeba pře-flashovat zařízení, aby si stáhl aktuální topic do paměti jinak přestane fungovat.
                          </DialogContentText>
-                         <FieldConnector
-                              deepPath="EDIT_DEVICE.topic"
-                              autoFocus
-                              onEnter={() => setOpenTopicDialog(false)}
-                              className={classes.textArea}
-                         />
+                              <FieldConnector
+                                   deepPath="EDIT_DEVICE.topic"
+                                   autoFocus
+                                   onEnter={() => setOpenTopicDialog(false)}
+                                   className={classes.textArea}
+                              />
                          </Fragment>
                     }
                />

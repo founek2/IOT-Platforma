@@ -1,8 +1,7 @@
 import { ActionTypes } from '../../../constants/redux'
 import { baseLogger } from 'framework-ui/src/Logger'
 import { getUsers } from 'framework-ui/src/api/userApi'
-import { getFormData, getToken, getFormDescriptors } from 'framework-ui/src/utils/getters'
-import { validateForm, resetForm, updateFormField } from 'framework-ui/src/redux/actions/formsData'
+import { getToken } from 'framework-ui/src/utils/getters'
 
 export function set(data) {
     baseLogger("SET_USER_NAMES")

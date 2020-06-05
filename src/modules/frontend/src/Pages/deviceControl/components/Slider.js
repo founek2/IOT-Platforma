@@ -1,9 +1,9 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import Slider from '@material-ui/core/Slider';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Typography from '@material-ui/core/Typography';
 
-function MySlider({ onChange, label, value, min=0, max=100, error, FormHelperTextProps, helperText, ...other }) {
+function MySlider({ onChange, label, value, min = 0, max = 100, error, FormHelperTextProps, helperText, ...other }) {
     const [val, setVal] = useState(value);
     return <div>
         <Typography id="continuous-slider" gutterBottom>
@@ -19,7 +19,7 @@ function MySlider({ onChange, label, value, min=0, max=100, error, FormHelperTex
             max={max}
             {...other}
         />
-         {error && <FormHelperText {...FormHelperTextProps}>{helperText}</FormHelperText>}
+        {error && <FormHelperText {...FormHelperTextProps}>{helperText}</FormHelperText>}
     </div>
 }
 

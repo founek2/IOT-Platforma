@@ -1,6 +1,6 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory'
 import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE } from '../constants'
-import { evolve, replace, mapObjIndexed, assocPath, is, forEachObjIndexed } from 'ramda'
+import { assocPath, is, forEachObjIndexed } from 'ramda'
 import setInPath from 'framework-ui/src/utils/setInPath'
 
 function recursive(transform, predicate, object) {
@@ -18,7 +18,7 @@ function recursive(transform, predicate, object) {
 function transformToForm(formName, fields) {           // TODO doesnt work for nested fields
      let result = {};
      recursive((val, deepPath) => {
-          const newVal = {...val, deepPath: val.deepPath.replace(/[^.]*/, formName)}
+          const newVal = { ...val, deepPath: val.deepPath.replace(/[^.]*/, formName) }
           result = setInPath(deepPath, newVal, result)
      }, (val) => is(Object, val) && !val.deepPath, fields)
 
@@ -218,7 +218,7 @@ const EDIT_SENSORS = {
           required: true,
           label: 'Interval samplování',
           name: "sampleinterval",
-          validations: [validationFactory('isOneOf', {values: SampleIntervals})]
+          validations: [validationFactory('isOneOf', { values: SampleIntervals })]
      },
 
      'name[]': {
@@ -237,7 +237,7 @@ const EDIT_SENSORS = {
           deepPath: 'EDIT_SENSORS.JSONkey[]',
           label: 'Označení',
           required: true,
-          validations: [validationFactory('isString', { min: 1, max: 20})]
+          validations: [validationFactory('isString', { min: 1, max: 20 })]
      },
      "description[]": {
           deepPath: 'EDIT_SENSORS.description[]',
@@ -248,7 +248,7 @@ const EDIT_SENSORS = {
      "count": {
           deepPath: 'EDIT_SENSORS.count',
           label: 'Popis',
-          name:"count",
+          name: "count",
           validations: [validationFactory('isNumber')]
      }
 }
@@ -303,7 +303,7 @@ const EDIT_NOTIFY_SENSORS = {
           deepPath: 'EDIT_NOTIFY_SENSORS.value[]',
           label: 'Mezní hodnota',
           required: true,
-          when: ({type}, {i}) =>  !type || type[i] !== "change",  // needs constant
+          when: ({ type }, { i }) => !type || type[i] !== "change",  // needs constant
           validations: [validationFactory('isNumber')]
      },
      "interval[]": {
@@ -320,7 +320,7 @@ const EDIT_NOTIFY_SENSORS = {
      },
      "count": {
           deepPath: 'EDIT_NOTIFY_SENSORS.count',
-          name:"count",
+          name: "count",
           required: true,
           validations: [validationFactory('isNumber')]
      }
