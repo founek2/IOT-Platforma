@@ -6,7 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 
-import {NotifyTypes} from '../../../constants'
+import { NotifyTypes } from '../../../constants'
 
 const styles = theme => ({
     contentInner: {
@@ -35,7 +35,7 @@ const styles = theme => ({
 
 const FORM_NAME = "EDIT_NOTIFY_SENSORS"
 
-function EditSensor({ id, classes, onDelete, recipe = [] }) {
+function EditSensor({ id, classes, onDelete, recipe = [], onTypeChange }) {
 
     return (<div className={classes.quantity} key={id}>
         <FormLabel component="legend">Notifikace {id}:</FormLabel>
@@ -62,13 +62,6 @@ function EditSensor({ id, classes, onDelete, recipe = [] }) {
                 deepPath={`${FORM_NAME}.type.${id}`}
             /> */}
             <FieldConnector
-                // fieldProps={{
-                //     className: classes.unit
-                // }}
-                deepPath={`${FORM_NAME}.value.${id}`}
-            />
-
-            <FieldConnector
                 component="Select"
                 deepPath={`${FORM_NAME}.type.${id}`}
                 selectOptions={
@@ -78,6 +71,13 @@ function EditSensor({ id, classes, onDelete, recipe = [] }) {
                                 {label}
                             </MenuItem>
                     )}
+                onChange={onTypeChange}
+            />
+            <FieldConnector
+                // fieldProps={{
+                //     className: classes.unit
+                // }}
+                deepPath={`${FORM_NAME}.value.${id}`}
             />
         </div>
         <FieldConnector

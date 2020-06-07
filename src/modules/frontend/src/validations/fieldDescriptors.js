@@ -1,5 +1,5 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory'
-import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE } from '../constants'
+import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE, NotifyTypes, NOTIFY_TYPES, NotifyIntervals } from '../constants'
 import { assocPath, is, forEachObjIndexed } from 'ramda'
 import setInPath from 'framework-ui/src/utils/setInPath'
 
@@ -297,20 +297,20 @@ const EDIT_NOTIFY_SENSORS = {
           deepPath: 'EDIT_NOTIFY_SENSORS.type[]',
           label: 'Akce',
           required: true,
-          validations: [validationFactory('isString', { min: 1, max: 6 })]
+          validations: [validationFactory('isOneOf', { values: NotifyTypes })]
      },
      "value[]": {
           deepPath: 'EDIT_NOTIFY_SENSORS.value[]',
           label: 'Mezní hodnota',
           required: true,
-          when: ({ type }, { i }) => !type || type[i] !== "change",  // needs constant
+          when: ({ type }, { i }) => !type || type[i] !== NOTIFY_TYPES.CHANGE,  // needs constant
           validations: [validationFactory('isNumber')]
      },
      "interval[]": {
           deepPath: 'EDIT_NOTIFY_SENSORS.interval[]',
           label: 'Interval',
-          required: true,
-          validations: [validationFactory('isNumber')]
+          // required: true,
+          validations: [validationFactory('isOneOf', { values: NotifyIntervals })]
      },
      "description[]": {
           deepPath: 'EDIT_NOTIFY_SENSORS.description[]',
@@ -425,6 +425,17 @@ const EDIT_PERMISSIONS = {
      }
 }
 
+const FIREBASE_ADD = {
+     token: {
+          deepPath: 'FIREBASE_ADD.token',
+          label: "Token",
+          required: true,
+          validations: [validationFactory('isString', {
+               min: 100
+          })]
+     }
+}
+
 export default {
      LOGIN,
      REGISTRATION,
@@ -439,4 +450,5 @@ export default {
      CHANGE_DEVICE_STATE_RGB,
      CHANGE_DEVICE_STATE_SWITCH,
      EDIT_NOTIFY_SENSORS,
+     FIREBASE_ADD,
 }
