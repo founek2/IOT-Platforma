@@ -5,6 +5,7 @@ import catcher from 'framework/src/mongoose/catcher'
 import { keys } from 'ramda'
 import { devLog } from 'framework/src/Logger'
 
+const ObjectId = mongoose.Types.ObjectId
 const userSchema = new Schema(
      {
           info: {
@@ -21,6 +22,7 @@ const userSchema = new Schema(
           // created: { type: Date, default: Date.now },
           groups: { type: [String], default: ['user'] },
           devices: Object, // {sensors: {order: [id, id, id]}, }
+          notifyTokens: [],
      },
      {
           toObject: {
@@ -28,7 +30,7 @@ const userSchema = new Schema(
                     ret.id = ret._id.toString()
                     delete ret.__v
                     delete ret._id
-                    delete ret.auth.password
+                    if (ret.auth) delete ret.auth.password
                     if (ret.deviceUser) delete ret.deviceUser.password
                }
           },
@@ -87,7 +89,7 @@ userSchema.statics.checkCreditals = function ({ userName, password, authType }) 
           .catch(catcher('user'))
 }
 
-userSchema.statics.checkExist = async function (userID= "") {
+userSchema.statics.checkExist = async function (userID = "") {
      if (userID.length != 24) return false
 
      return await this.model('User').exists({
@@ -145,6 +147,29 @@ userSchema.statics.findAllUserNames = function () {
           groups: { $ne: "root" }
      }, "info.userName").lean().sort({ "info.userName": 1 })
 
+}
+
+userSchema.statics.addNotifyToken = function (userID, token) {
+     return this.model('User')
+          .updateOne(
+               { _id: ObjectId(userID) },
+               { $addToSet: { notifyTokens: token } }
+          )
+}
+
+userSchema.statics.removeNotifyTokens = function (tokens) {
+     return this.model('User').updateMany({
+          "notifyTokens": { $in: tokens }
+     }, {
+          $pull: { "notifyTokens": { $in: tokens } }
+     })
+}
+
+userSchema.statics.getNotifyTokens = function (userID) {
+     return this.model('User')
+          .findOne(
+               { _id: ObjectId(userID) },
+          ).select("notifyTokens").lean()
 }
 
 const User = mongoose.model('User', userSchema)

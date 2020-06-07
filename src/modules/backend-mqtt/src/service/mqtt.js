@@ -3,6 +3,7 @@ import mqtt from 'mqtt'
 import config from "backend/config/index.js"
 import Device from 'backend/src/models/Device'
 import { map, flip, keys, all, equals, contains, toPairs, _ } from 'ramda';
+import { processSensorsData } from './FireBase'
 
 let mqttClient = null
 
@@ -35,7 +36,7 @@ export default (io) => {
 
                 const data = JSON.parse(message.toString())
                 const updateTime = new Date()
-                const { deviceID, publicRead, permissions: { read = [] } } = await Device.updateSensorsData(ownerId, deviceTopic, data, updateTime)
+                const { _id: deviceID, publicRead, permissions: { read = [] }, sensors, info } = await Device.updateSensorsData(ownerId, deviceTopic, data, updateTime)
                 const emitData = { deviceID, data, updatedAt: updateTime }
 
                 if (publicRead) io.to("public").emit("sensors", emitData)
@@ -45,6 +46,9 @@ export default (io) => {
                     })
 
                 console.log("emmiting to public", publicRead)
+
+                processSensorsData({ _id: deviceID, sensors, info }, data)
+
             } else if (restTopic === "/initControl") {
 
                 const data = JSON.parse(message.toString())
@@ -75,12 +79,12 @@ export default (io) => {
                 const dev = await Device.findOne({ createdBy: ownerId, topic: deviceTopic }, "control.recipe")
                 const jsonKeys = dev.control.recipe.map(obj => obj.JSONkey)
                 const result = map(flip(contains)(jsonKeys), keys(data))
-                
-                if (data.ack == 1){ // just alive ack
+
+                if (Number(data.ack) === 1) { // just alive ack
                     const { permissions: { control = [] }, _id } = await Device.updateAck(ownerId, deviceTopic);
 
                     control.forEach((id) => {
-                        io.to(id.toString()).emit("ack", {deviceID: _id, updatedAt: updateTime })
+                        io.to(id.toString()).emit("ack", { deviceID: _id, updatedAt: updateTime })
                     })
                 } else if (all(equals(true), result)) { // ack some update
                     console.log("saving to db updateState ack")
@@ -102,10 +106,7 @@ export default (io) => {
         } catch (err) {
             console.log("error", err)
         }
-    }
-
-        // client.end()
-    )
+    })
 
     client.on("error", function (err) {
         console.log("mqtt connection error")

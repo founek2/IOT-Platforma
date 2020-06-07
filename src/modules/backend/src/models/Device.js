@@ -331,12 +331,12 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
           .findOneAndUpdate(
                { createdBy: ownerId, topic: topic },   // should be ObjectId?
                { $set: { "sensors.current": { data, updatedAt: updateTime } } },
-               { fields: { "sensors.sampleInterval": 1, "sensors.recipe": 1, publicRead: 1, "sensors.historical.updatedAt": 1, "permissions.read": 1 } }
+               { fields: { "sensors.sampleInterval": 1, "sensors.recipe": 1, publicRead: 1, "sensors.historical.updatedAt": 1, "permissions.read": 1, "info.title": 1 } }
           ).then(doc => {
                if (doc) {
                     console.log("sensorsData updated")
                     const { sensors } = doc;
-                    const { historical : {updatedAt}  = {}} = sensors
+                    const { historical: { updatedAt } = {} } = sensors
 
                     // -1 is never
                     if (sensors.sampleInterval !== -1 && (!updatedAt || (new Date() - updatedAt) / 1000 > sensors.sampleInterval)) {
@@ -362,7 +362,15 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
                          doc.updateOne({ "sensors.historical.updatedAt": updateTime }).exec()
                     }
 
-                    return { deviceID: doc._id.toString(), publicRead: doc.publicRead, permissions: { read: doc.permissions.read } }
+                    return {
+                         _id: doc._id.toString(),
+                         info: doc.info,
+                         publicRead: doc.publicRead,
+                         permissions: { read: doc.permissions.read },
+                         sensors: doc.sensors
+
+
+                    }
 
                } else {
                     console.log("ERROR: saving sensors data to unexisting device")
@@ -379,7 +387,7 @@ deviceSchema.statics.delete = async function (deviceID, user) {
 
 deviceSchema.statics.checkWritePerm = async function (deviceID, userId) {
      if (deviceID.length != 24) return false
-     
+
      return await this.model('Device').exists({
           _id: mongoose.Types.ObjectId(deviceID),
           "permissions.write": mongoose.Types.ObjectId(userId)

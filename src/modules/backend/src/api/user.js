@@ -118,10 +118,14 @@ export default ({ config, db }) =>
                     .catch(processError(res))
           },
 
-          updateId({ body, params }, res) {  // tested
+          async updateId({ body, params }, res) {  // tested
                const { id } = params
                if (body.formData.EDIT_USER) {
-                    UserModel.updateUser(id, body.formData.EDIT_USER).then(() => res.sendStatus(204))
+                    await UserModel.updateUser(id, body.formData.EDIT_USER)
+                    res.sendStatus(204)
+               } else if (body.formData.FIREBASE_ADD) {
+                    await UserModel.addNotifyToken(id, body.formData.FIREBASE_ADD.token)
+                    res.sendStatus(204)
                } else res.sendStatus(400)
           },
      })
