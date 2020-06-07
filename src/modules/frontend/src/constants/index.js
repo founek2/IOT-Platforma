@@ -40,9 +40,9 @@ export const CONTROL_TYPES = keymirror({
 })
 
 export const ControlTypes = [
-	{ value: "switch", label: "vypínač", formName: "CHANGE_DEVICE_STATE_SWITCH" },
-	{ value: "activator", label: "Aktivátor", formName: "CHANGE_DEVICE_STATE_SWITCH" },
-	{ value: "rgbSwitch", label: "RGB led", formName: "CHANGE_DEVICE_STATE_RGB" },
+	{ value: CONTROL_TYPES.SWITCH, label: "vypínač", formName: "CHANGE_DEVICE_STATE_SWITCH" },
+	{ value: CONTROL_TYPES.ACTIVATOR, label: "Aktivátor", formName: "CHANGE_DEVICE_STATE_SWITCH" },
+	{ value: CONTROL_TYPES.RGBSWITCH, label: "RGB led", formName: "CHANGE_DEVICE_STATE_RGB" },
 ]
 
 export const ControlTypesFormNames = {
