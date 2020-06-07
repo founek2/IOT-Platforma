@@ -7,10 +7,12 @@ function getMinDiff(d1, d2) {
 }
 
 export default function shouldSend(interval, tmp) {
-    if (interval === -1 && (!tmp || !tmp.lastSatisfied))
-        return true
+    if (interval === -1) {
+        if (!tmp || !tmp.lastSatisfied)
+            return true
+    }
     else if (getMinDiff(new Date(), tmp.lastSendAt) > interval)
         return true
-    else
-        return false
+
+    return false
 }

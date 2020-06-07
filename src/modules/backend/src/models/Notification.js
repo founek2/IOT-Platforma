@@ -17,7 +17,7 @@ const notifySchema = new Schema(
                     interval: { $type: Number, default: -1 },
                     tmp: {
                         lastSendAt: Date,
-                        lastMet: Boolean
+                        lastSatisfied: Boolean
                     }
                 }]
             }
@@ -137,13 +137,15 @@ notifySchema.statics.updateItems = function (deviceId, itemIDs, userIDs, updateO
         })
 }
 
-notifySchema.statics.refreshItems = function (deviceId, itemIDsSended, itemIDsNotSended, userIDs) {
-    userIDs = userIDs.map(id => ObjectId(id))
-    itemIDsSended = itemIDsSended.map(id => ObjectId(id))
-    itemIDsNotSended = itemIDsNotSended.map(id => ObjectId(id))
+notifySchema.statics.refreshItems = function (deviceId, { items: itemsSended, users: usersSended }, { unSatisfiedItems, satisfiedItems, users: usersNotSneded }, userIDs) {
+    usersSended = Array.from(usersSended).map(id => ObjectId(id))
+    usersNotSneded = Array.from(usersNotSneded).map(id => ObjectId(id))
+    itemsSended = itemsSended.map(id => ObjectId(id))
+    satisfiedItems = satisfiedItems.map(id => ObjectId(id))
+    unSatisfiedItems = unSatisfiedItems.map(id => ObjectId(id))
 
-
-    this.model("Notify").updateItems(deviceId, itemIDsSended, userIDs, {
+    // TODO use Bulk write - https://mongoosejs.com/docs/api.html#model_Model.bulkWrite
+    this.model("Notify").updateItems(deviceId, itemsSended, usersSended, {
         $set: {
             "sensors.$[outer].items.$[inner].tmp": {
                 lastSendAt: new Date(),
@@ -152,10 +154,18 @@ notifySchema.statics.refreshItems = function (deviceId, itemIDsSended, itemIDsNo
         }
     }).exec()
 
-    this.model("Notify").updateItems(deviceId, itemIDsNotSended, userIDs, {
+    this.model("Notify").updateItems(deviceId, unSatisfiedItems, usersNotSneded, {
         $set: {
             "sensors.$[outer].items.$[inner].tmp": {
                 lastSatisfied: false,
+            }
+        }
+    }).exec()
+
+    this.model("Notify").updateItems(deviceId, satisfiedItems, usersNotSneded, {
+        $set: {
+            "sensors.$[outer].items.$[inner].tmp": {
+                lastSatisfied: true,
             }
         }
     }).exec()

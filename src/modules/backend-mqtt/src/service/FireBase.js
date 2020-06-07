@@ -30,38 +30,48 @@ export async function processSensorsData({ _id: deviceId, sensors: { recipe }, i
     const docs = await Notify.getSensorItems(deviceId, Object.keys(data))
 
     const output = {}
-    const itemIDsSended = []
-    const itemIDsNotSended = []
+    const sended = { items: [], users: new Set() }
+    const notSended = { unSatisfiedItems: [], satisfiedItems: [], users: new Set() }
     docs.forEach(({ user: userID, sensors }) => {   // per USER
         sensors.items.forEach(({ JSONkey, type, value: limit, interval, _id, tmp }) => {      // per notification rule
             const value = data[JSONkey]
 
             /* Check validity */
-            if (functions[type](value, limit, interval, tmp)) {
-                if (!output[userID]) output[userID] = []
+            const result = functions[type](value, limit, interval, tmp)
+            if (result.ruleSatisfied) {
+                if (result.valid) {
+                    if (!output[userID]) output[userID] = []
 
-                const { name, unit } = recipe.find(({ JSONkey: key }) => key === JSONkey)
+                    const { name, unit } = recipe.find(({ JSONkey: key }) => key === JSONkey)
 
-                output[userID].push({
-                    // title: JSONkey, body: String(value) + " bla",
-                    title,
-                    body: `${name} je ${value} ${unit}`,
-                    icon: '/favicon.png',
-                    click_action: homepageUrl,
-                    // image: obj.imgPath
-                })
-                itemIDsSended.push(_id)
-            } else itemIDsNotSended.push(_id)
-
+                    output[userID].push({
+                        // title: JSONkey, body: String(value) + " bla",
+                        title,
+                        body: `${name} je ${value} ${unit}`,
+                        icon: '/favicon.png',
+                        click_action: homepageUrl,
+                        // image: obj.imgPath
+                    })
+                    sended.items.push(_id)
+                    sended.users.add(userID)
+                } else {
+                    notSended.satisfiedItems.push(_id)
+                }
+            } else {
+                notSended.unSatisfiedItems.push(_id)
+                notSended.users.add(userID)
+            }
         })
     })
 
-    if (itemIDsSended.length > 0) {
-        const userIDs = Object.keys(output)
+    // console.log(notSended)
+    Notify.refreshItems(deviceId, sended, notSended)
 
-        Notify.refreshItems(deviceId, itemIDsSended, itemIDsNotSended, userIDs)
+    if (sended.items.length > 0) {
 
-        const arrOfTokens = await getTokensPerUser(userIDs)
+
+
+        const arrOfTokens = await getTokensPerUser(sended.users)
 
         const invalidTokens = await sendAllNotifications(arrOfTokens, output)
 

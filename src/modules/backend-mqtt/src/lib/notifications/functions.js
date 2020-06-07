@@ -2,15 +2,26 @@ import { NOTIFY_TYPES } from 'frontend/src/constants'
 import shouldSend from '../../utils/shouldSend'
 
 function below(value, limit, interval, tmp) {
-    return value < limit && shouldSend(interval, tmp)
+    const ruleSatisfied = value < limit
+    return {
+        ruleSatisfied,
+        valid: ruleSatisfied && shouldSend(interval, tmp)
+    }
 }
 
 function over(value, limit, interval, tmp) {
-    return value > limit && shouldSend(interval, tmp)
+    const ruleSatisfied = value > limit
+    return {
+        ruleSatisfied,
+        valid: ruleSatisfied && shouldSend(interval, tmp)
+    }
 }
 
 function always(value, limit, interval, tmp) {
-    return true
+    return {
+        ruleSatisfied: true,
+        valid: true
+    }
 }
 
 export default {
