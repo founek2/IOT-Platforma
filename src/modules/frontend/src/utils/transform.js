@@ -30,7 +30,7 @@ export function transformControlForBE({ name = [], type = [], JSONkey = [], coun
  * @param {Object} sensorsFromFE 
  */
 
-export function transformNotifyForBE({ JSONkey = [], type = [], value = [], interval= [],  description = [], count = [] }) {
+export function transformNotifyForBE({ JSONkey = [], type = [], value = [], interval = [], description = [], count = [] }) {
     const resultArr = [];
     for (let i = 0; i < count; i++) {
         resultArr.push({ JSONkey: JSONkey[i], type: type[i], value: value[i], interval: interval[i], description: description[i] || "" })
@@ -56,12 +56,11 @@ export function transformSensorsForForm(arrayOfSensors, sampleInterval) {
 
 export function transformControlForForm(arrayOfSensors) {
     const len = arrayOfSensors.length;
-    const resultObj = { JSONkey: [], type: [], value: [], interval: [],  description: [], count: len };
+    const resultObj = { JSONkey: [], type: [], name: [], description: [], count: len };
     for (let i = 0; i < len; i++) {
-        resultObj["value"].push(arrayOfSensors[i].value)
+        resultObj["name"].push(arrayOfSensors[i].name)
         resultObj["JSONkey"].push(arrayOfSensors[i].JSONkey)
         resultObj["type"].push(arrayOfSensors[i].type)
-        resultObj["interval"].push(arrayOfSensors[i].interval)
         resultObj["description"].push(arrayOfSensors[i].description)
     }
     return resultObj;
