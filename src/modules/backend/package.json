@@ -16,6 +16,7 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "firebase-admin": "^8.12.1",
     "hat": "^0.0.3",
     "helmet": "^3.16.0",
     "mongodb": "^3.3.1",
