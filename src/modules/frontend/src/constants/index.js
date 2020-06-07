@@ -22,14 +22,14 @@ export const SampleIntervals = [
 export const NOTIFY_TYPES = keymirror({
 	OVER: null,
 	BELOW: null,
-	CHANGE: null,
+	// CHANGE: null,
 	ALWAYS: null,
 })
 
 export const NotifyTypes = [
 	{ value: NOTIFY_TYPES.OVER, label: "Nad" },
 	{ value: NOTIFY_TYPES.BELOW, label: "Pod" },
-	{ value: NOTIFY_TYPES.CHANGE, label: "Změna" },
+	// { value: NOTIFY_TYPES.CHANGE, label: "Změna" },
 	{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" },
 ]
 

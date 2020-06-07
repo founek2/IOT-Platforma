@@ -303,7 +303,7 @@ const EDIT_NOTIFY_SENSORS = {
           deepPath: 'EDIT_NOTIFY_SENSORS.value[]',
           label: 'Mezní hodnota',
           required: true,
-          when: ({ type }, { i }) => !type || type[i] !== NOTIFY_TYPES.CHANGE,  // needs constant
+          when: ({ type }, { i }) => !type || type[i] !== NOTIFY_TYPES.ALWAYS,  // needs constant
           validations: [validationFactory('isNumber')]
      },
      "interval[]": {
