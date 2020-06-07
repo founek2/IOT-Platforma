@@ -75,12 +75,12 @@ FE)
     yarn mocha "$FE_TEST_PATH"
     ;;
 BE)
-    run_server
+    # run_server
 
     check_running
     yarn mocha "$BE_TEST_PATH"
 
-    stop_server
+    # stop_server
     ;;
 BE-mqtt)
     run_server

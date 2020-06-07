@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.8",
+    "redux-devtools-extension": "^2.13.8"
   },
   "dependencies": {
     "clsx": "^1.1.0",
