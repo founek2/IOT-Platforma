@@ -63,8 +63,13 @@ export const AFK_INTERVAL = 10 * 60 * 1000 // 10 min
 
 export const IMAGES_PREFIX_FOLDER = "/images"
 
+export const NOTIFY_INTERVALS = {
+	JUST_ONCE: -1,
+	ALWAYS: -2,
+}
+
 export const NotifyIntervals = [
-	{ value: -1, label: "Jednou" },
+	{ value: NOTIFY_INTERVALS.JUST_ONCE, label: "Jednou" },
 	{ value: 1, label: "1 min" },
 	{ value: 5, label: "5 min" },
 	{ value: 10, label: "10 min" },
@@ -72,4 +77,15 @@ export const NotifyIntervals = [
 	{ value: 60, label: "1 hod" },
 	{ value: 60 * 6, label: "6 hod" },
 	{ value: 60 * 12, label: "12 hod" },
+	{ value: NOTIFY_INTERVALS.ALWAYS, label: "Vždy" },
+]
+
+export const daysInWeek = [
+	{ value: 1, label: "Po" },
+	{ value: 2, label: "Út" },
+	{ value: 3, label: "St" },
+	{ value: 4, label: "Čt" },
+	{ value: 5, label: "Pá" },
+	{ value: 6, label: "So" },
+	{ value: 0, label: "Ne" },
 ]

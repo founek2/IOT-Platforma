@@ -20,14 +20,16 @@ import FileLoader from './fieldConnector/FileLoader'
 import PasswordField from './fieldConnector/PasswordField'
 import TextField from './fieldConnector/TextField'
 import Checkbox from './fieldConnector/Checkbox'
+import TimePicker from './fieldConnector/TimePicker'
 
 const Components = {
-     TextField: TextField,
-     Select: Select,
-     ChipArray: ChipArray,
-     FileLoader: FileLoader,
-     PasswordField: PasswordField,
-     Checkbox: Checkbox,
+     TextField,
+     Select,
+     ChipArray,
+     FileLoader,
+     PasswordField,
+     Checkbox,
+     TimePicker
 }
 const onEnterRun = Fn => e => {
      if (e.keyCode === 13) Fn(e)
@@ -87,10 +89,8 @@ function fieldConnector({
 
           const Component = is(String, component) ? Components[component] : component;
           let options = {}
-          let dontHaveRequired
           if (component === 'Select') {
                options = { selectOptions }
-               dontHaveRequired = true
           }
           if (component === 'ChipArray') options = { optionsData }
           return (
@@ -99,7 +99,7 @@ function fieldConnector({
                     value={value}
                     className={className}
                     error={!valid}
-                    required={required}
+                    // required={required}
                     helperText={errorMessages && errorMessages[0]}
                     FormHelperTextProps={{ error: !valid }}
                     onFocus={onFocus}
@@ -111,7 +111,7 @@ function fieldConnector({
                     name={name || descriptor.name}
                     autoFocus={autoFocus}
                     onKeyDown={onEnter && onEnterRun(onEnter)}
-                    label={required && dontHaveRequired ? finalLabel + ' *' : finalLabel}
+                    label={required ? finalLabel + ' *' : finalLabel}
                     {...options}
                     {...fieldProps}
                />

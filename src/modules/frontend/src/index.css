@@ -23,6 +23,14 @@ a {
 	position: relative;
 }
 
+.utils--flex {
+	display: flex
+}
+
+.utils--fullWidth {
+	width: 100%;
+}
+
 /* cyrillic-ext */
 
 @font-face {

@@ -14,10 +14,15 @@ const notifySchema = new Schema(
                     description: String,
                     type: String,   // type is reserver keyword
                     value: String,
-                    interval: { $type: Number, default: -1 },
                     tmp: {
                         lastSendAt: Date,
                         lastSatisfied: Boolean
+                    },
+                    advanced: {
+                        interval: { $type: Number, default: -1 },
+                        from: String,
+                        to: String,
+                        daysOfWeek: [Number],
                     }
                 }]
             }

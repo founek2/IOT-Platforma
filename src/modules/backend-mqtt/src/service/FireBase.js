@@ -33,11 +33,11 @@ export async function processSensorsData({ _id: deviceId, sensors: { recipe }, i
     const sended = { items: [], users: new Set() }
     const notSended = { unSatisfiedItems: [], satisfiedItems: [], users: new Set() }
     docs.forEach(({ user: userID, sensors }) => {   // per USER
-        sensors.items.forEach(({ JSONkey, type, value: limit, interval, _id, tmp }) => {      // per notification rule
+        sensors.items.forEach(({ JSONkey, type, value: limit, advanced, _id, tmp }) => {      // per notification rule
             const value = data[JSONkey]
 
             /* Check validity */
-            const result = functions[type](value, limit, interval, tmp)
+            const result = functions[type](value, limit, advanced, tmp)
             if (result.ruleSatisfied) {
                 if (result.valid) {
                     if (!output[userID]) output[userID] = []
@@ -68,9 +68,6 @@ export async function processSensorsData({ _id: deviceId, sensors: { recipe }, i
     Notify.refreshItems(deviceId, sended, notSended)
 
     if (sended.items.length > 0) {
-
-
-
         const arrOfTokens = await getTokensPerUser(sended.users)
 
         const invalidTokens = await sendAllNotifications(arrOfTokens, output)

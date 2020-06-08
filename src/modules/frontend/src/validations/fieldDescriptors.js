@@ -306,15 +306,8 @@ const EDIT_NOTIFY_SENSORS = {
           when: ({ type }, { i }) => !type || type[i] !== NOTIFY_TYPES.ALWAYS,  // needs constant
           validations: [validationFactory('isNumber')]
      },
-     "interval[]": {
-          deepPath: 'EDIT_NOTIFY_SENSORS.interval[]',
-          label: 'Interval',
-          // required: true,
-          validations: [validationFactory('isOneOf', { values: NotifyIntervals })]
-     },
      "description[]": {
           deepPath: 'EDIT_NOTIFY_SENSORS.description[]',
-          defaultValue: "",
           label: 'Popis',
           validations: [validationFactory('isString', { min: 1, max: 200 })]
      },
@@ -323,6 +316,32 @@ const EDIT_NOTIFY_SENSORS = {
           name: "count",
           required: true,
           validations: [validationFactory('isNumber')]
+     },
+     'advanced': {
+          "daysOfWeek[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.daysOfWeek[]',
+               label: 'Dny v týdnu',
+               // required: true,
+               validations: [validationFactory('isArray', { min: 1, max: 200 })]
+          },
+          "interval[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.interval[]',
+               label: 'Interval',
+               // required: true,
+               validations: [validationFactory('isOneOf', { values: NotifyIntervals })]
+          },
+          "from[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.from[]',
+               label: 'Od',
+               // required: true,
+               validations: [validationFactory('isTime')]
+          },
+          "to[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.to[]',
+               label: 'Do',
+               // required: true,
+               validations: [validationFactory('isTime')]
+          },
      }
 }
 
