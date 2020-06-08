@@ -27,7 +27,8 @@ export const minValue = (value, min) => min <= value
 export const maxValue = (value, max) => value <= max
 
 export const isNumber = (value, { max, min } = {}) => {
-     if ((typeof value != "number" && !(is(String, value) && /[-+]?([0-9]*\.[0-9]+|[0-9]+)/.test(value)))) return `notNumber`  // because input can save it as text
+     if (typeof value != "number"
+          && !(is(String, value) && /^[-+]?([0-9]*\.[0-9]+|[0-9]+)$/.test(value))) return `notNumber`  // because input can save it as text
      if (min && !minValue(value, min)) return 'lowerValue'
      if (max && !maxValue(value, max)) return 'higherValue'
      return true
@@ -37,10 +38,14 @@ export const isRequired = value => (!isNil(value) && isNotEmpty(value)) || 'isRe
 
 export const isNotEmptyArray = value => (is(Array, value) && isNotEmpty(value)) || 'isRequired'
 
+export const isArray = value => (is(Array, value)) || 'isRequired'
+
 export const isPhoneNumber = value => /^(\+420)? ?[1-9][0-9]{2} ?[0-9]{3} ?[0-9]{3}$/.test(value) || 'isNotPhoneNumber'
 
-export const isEmail = value => /[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/.test(value) || 'isNotEmail'
+export const isEmail = value => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(value) || 'isNotEmail'
 
 export const isFile = value => and(or(has('data', value), has('url', value)), has('name', value)) || 'isNotFile'    // TODO validate extension
 
 export const isOneOf = (value, { values }) => values.some(obj => value === obj.value) || "isNotOneOf"
+
+export const isTime = (value) => /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value) || "isNotTime"
