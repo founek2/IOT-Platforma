@@ -110,6 +110,7 @@ class EditDeviceDialog extends Component {
           const { device, updateSensorCount } = this.props
           updateSensorCount(0); // init
           this.preFillForm(device)
+          // TODO uložení nového formuláře a reload -> zobrazí se původní data, ne nová
      }
 
      preFillForm = device => {

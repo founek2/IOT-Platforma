@@ -109,6 +109,9 @@ describe("Validation factory", function () {
         fn("3").should.be.true()
         fn({}).should.equal("notNumber")
         fn("").should.equal("notNumber")
+        fn("3.333ds").should.equal("notNumber")
+        fn("!3.333").should.equal("notNumber")
+        fn("!3.a33").should.equal("notNumber")
 
         validationFn.isNumber(10, { min: 3, max: 10 }).should.be.true()
         validationFn.isNumber(3, { min: 3, max: 10 }).should.be.true()

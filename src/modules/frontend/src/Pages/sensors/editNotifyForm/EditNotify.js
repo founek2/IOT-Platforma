@@ -99,7 +99,6 @@ function EditSensor({ id, classes, onDelete, recipe = [], onTypeChange, editedAd
             onClick={() => setOpen(!openAdvanced)}
         >Rozšířené {editedAdvanced && "⭣"}
         </Typography>
-        {/* TODO přidat nějakou signalizaci že advanced je upravené */}
         {openAdvanced && <div>
             <div className={classes.contentInner}>
                 <FieldConnector
