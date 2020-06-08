@@ -9,11 +9,11 @@
     "redux-devtools-extension": "^2.13.8"
   },
   "dependencies": {
-    "clsx": "^1.1.0",
-    "firebase": "^7.15.0",
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
     "clipboard-copy": "^3.1.0",
+    "clsx": "^1.1.0",
+    "firebase": "^7.15.0",
     "history": "^4.7.2",
     "key-mirror": "^1.0.1",
     "prop-types": "^15.7.2",

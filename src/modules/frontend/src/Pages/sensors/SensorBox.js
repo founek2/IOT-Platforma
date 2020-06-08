@@ -47,7 +47,7 @@ const styles = theme => ({
 function convertDataView(classes, currentData, id) {
      return ({ name, unit, JSONkey, description }) => {
           const content = <Typography component="span" className={classes.data} color="primary">
-               {name} : {currentData ? currentData[JSONkey] : "***"} {unit}
+               {name} : {currentData && currentData[JSONkey] ? currentData[JSONkey] : "***"} {unit}
           </Typography>
           const contentFInal = description ? <Tooltip title={description} placement="left">
                {content}
