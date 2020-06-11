@@ -10,6 +10,7 @@ import * as serviceWorker from '../serviceWorker'
 import Snackbar from '@material-ui/core/Snackbar'
 import Button from '@material-ui/core/Button'
 
+import { init as initFirebase } from '../firebase'
 import '../privileges' // init
 registerFunctions(fns);  // register custom validation functions
 
@@ -29,6 +30,7 @@ function Root({ component }) {
                },
           }
           serviceWorker.register(config)
+          initFirebase()
      }, [])
 
      const Component = component

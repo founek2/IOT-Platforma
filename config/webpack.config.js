@@ -541,7 +541,7 @@ module.exports = function (webpackEnv) {
                // }),
                new WorkboxWebpackPlugin.InjectManifest({
                     swSrc: "./src/modules/frontend/src/sw.js", // custom sw rule
-                    swDest: "firebase-messaging-sw.js", // sw output file (auto-generated
+                    swDest: "sw.js", // sw output file (auto-generated
                     // globDirectory: "build",
                     globPatterns: ["**/*.{js,css,html,svg}"],
                     maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
