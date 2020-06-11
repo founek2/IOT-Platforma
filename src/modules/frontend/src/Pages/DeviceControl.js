@@ -10,12 +10,12 @@ import * as deviceActions from '../store/actions/application/devices'
 import { Typography } from '@material-ui/core'
 import io from '../webSocket'
 import RgbSwitch from './deviceControl/RgbSwitch'
-import { ControlTypesFormNames } from '../constants'
+import { ControlTypesFormNames, CONTROL_TYPES } from '../constants'
 
 const compMapper = {
-     activator: Activator,
-     switch: Switch,
-     rgbSwitch: RgbSwitch,
+     [CONTROL_TYPES.ACTIVATOR]: Activator,
+     [CONTROL_TYPES.SWITCH]: Switch,
+     [CONTROL_TYPES.RGBSWITCH]: RgbSwitch,
 }
 
 function isControllable(device) {

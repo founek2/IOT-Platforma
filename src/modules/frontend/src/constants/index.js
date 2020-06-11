@@ -46,9 +46,9 @@ export const ControlTypes = [
 ]
 
 export const ControlTypesFormNames = {
-	switch: "CHANGE_DEVICE_STATE_SWITCH",
-	activator: "CHANGE_DEVICE_STATE_SWITCH",
-	rgbSwitch: "CHANGE_DEVICE_STATE_RGB",
+	[CONTROL_TYPES.SWITCH]: "CHANGE_DEVICE_STATE_SWITCH",
+	[CONTROL_TYPES.ACTIVATOR]: "CHANGE_DEVICE_STATE_SWITCH",
+	[CONTROL_TYPES.RGBSWITCH]: "CHANGE_DEVICE_STATE_RGB",
 }
 
 export const LINEAR_TYPE = "linear";
