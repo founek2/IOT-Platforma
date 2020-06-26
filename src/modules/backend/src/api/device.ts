@@ -8,7 +8,7 @@ import { IMAGES_DEVICES_FOLDER } from '../constants'
 import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'
 import formDataChecker from 'framework/src/middlewares/formDataChecker'
 
-import fieldDescriptors from 'fieldDescriptors'
+import fieldDescriptors from "frontend/src/validations/fieldDescriptors.js"
 import checkReadPerm from '../middleware/device/checkReadPerm'
 import checkWritePerm from '../middleware/device/checkWritePerm'
 import checkControlPerm from '../middleware/device/checkControlPerm'

@@ -4,7 +4,7 @@ import formDataChecker from 'framework/src/middlewares/formDataChecker'
 import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'
 import groupRestriction from 'framework/src/middlewares/groupRestriction'
 
-import fieldDescriptors from 'fieldDescriptors'
+import fieldDescriptors from 'frontend/src/validations/fieldDescriptors.js'
 
 export default ({ config, db }) => {
      let router = Router()

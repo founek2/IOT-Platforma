@@ -20,7 +20,7 @@
     "testFramework-ui": "sh scripts/test.sh f-ui",
     "testFramework": "sh scripts/test.sh f",
     "devFE": "node scripts/start.js",
-    "devBE": "nodemon --watch src/modules/backend/src  --watch src/modules/framework/src --exec env IOT_IMAGES_PATH=${PWD}/public/images babel-node ./src/modules/backend/src/index.js ",
+    "devBE": "nodemon --watch src/modules/backend/src  --watch src/modules/framework/src --exec env IOT_IMAGES_PATH=${PWD}/public/images ts-node ./src/modules/backend/src/index.js ",
     "devBE-mqtt": "nodemon --watch src/modules/backend-mqtt/src --watch src/modules/backend/src --exec babel-node ./src/modules/backend-mqtt/src/index.js",
     "server1": "forever start distBE/backend/index.js",
     "server2": "forever start distBE/backend-mqtt/index.js",
@@ -35,13 +35,23 @@
     "deploy": "scripts/deploy.sh deploy"
   },
   "dependencies": {
-    "core-js": "^3.6.4"
+    "@types/cors": "^2.8.6",
+    "@types/jest": "^26.0.0",
+    "@types/mongoose": "^5.7.24",
+    "@types/morgan": "^1.9.1",
+    "@types/node": "^14.0.13",
+    "@types/react": "^16.9.36",
+    "@types/react-dom": "^16.9.8",
+    "@types/socket.io": "^2.1.8",
+    "@zerollup/ts-transform-paths": "^1.7.18",
+    "core-js": "^3.6.4",
+    "typescript": "^3.9.5"
   },
   "eslintConfig": {
     "extends": "react-app",
     "globals": {
       "logger": true
-  }
+    }
   },
   "browserslist": [
     ">0.2%",

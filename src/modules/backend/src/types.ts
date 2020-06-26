@@ -1,0 +1,18 @@
+export interface Config {
+    dbUser: String,
+    dbPwd: String,
+    dbName: String,
+    port: Number,
+    portAuth: Number,
+    portMqtt: Number,
+    bodyLimit: String,
+    privateKey: String,
+    publicKey: String,
+    mqttUser: String,
+    mqttPassword: String,
+    imagesPath: String,
+    firebaseAdminPath: String,
+    testUser: String,
+    testPassword: String,
+    homepage: String,
+}

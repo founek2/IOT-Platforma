@@ -1,4 +1,4 @@
-import fieldDescriptors from 'fieldDescriptors'
+import fieldDescriptors from 'frontend/src/validations/fieldDescriptors.js'
 import setInPath from 'framework-ui/src/utils/setInPath'
 
 export const stateValid = {

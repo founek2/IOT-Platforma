@@ -12,6 +12,7 @@
     "nodemon": "^1.19.1"
   },
   "dependencies": {
+    "@types/express": "^4.17.6",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
@@ -26,6 +27,7 @@
     "node-fetch": "^2.6.0",
     "node-pre-gyp": "^0.14.0",
     "ramda": "^0.26.1",
-    "ramda-extension": "^0.7.2"
+    "ramda-extension": "^0.7.2",
+    "ts-node": "^8.10.2"
   }
 }

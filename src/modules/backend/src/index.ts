@@ -6,30 +6,25 @@ import bodyParser from 'body-parser'
 import initializeDb from './db'
 import middleware from './middleware'
 import api from './api'
-// import { getConfig } from './service/config'
 import config from "../config/index"
-import helmet from 'helmet'
-import path from 'path'
 import checkAndCreateRoot from 'framework/src/services/checkAndCreateRoot'
 import * as Files from './service/files'
 import Jwt from 'framework/src/services/jwt'
 import { devLog } from 'framework/src/Logger'
-// import proxy from 'express-http-proxy'
-// let config = getConfig()
+import sockerIo from 'socket.io'
+import * as types from './types'
+import mongoose from 'mongoose'
 
-const app = express()
+type MyServer = express.Application & { server: http.Server, io: sockerIo.Server }
 
-app.server = http.createServer(app)
-
-app.io = require("socket.io")(app.server, { path: "/websocket/io" })
-
-// serve static files
-// app.use(express.static('deploy'))
+const ex = express()
+const server = http.createServer(ex)
+const app: MyServer = Object.assign(ex, { server, io: sockerIo(server, { path: "/websocket/io" }) })
 
 app.use(express.urlencoded({ extended: true }))
 
 // logger
-app.use("/api", morgan('dev'))
+app.use(morgan('dev'))
 
 // 3rd party middleware
 app.options('*', cors())
@@ -41,7 +36,7 @@ app.options('*', cors())
 // }
 // app.use(cors(corsOptions))
 
-function getMaxSize(req) {
+function getMaxSize(req: express.Request) {
      // if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'
      if (/^\/api\/device(\/|$)/.test(req.url) && (req.method == 'POST' || req.method == 'PUT')) return '5mb'
      return '100kb'
@@ -53,7 +48,7 @@ app.use((req, res, next) =>
 )
 
 // connect to db
-initializeDb(config, db => {
+initializeDb(config, (db: mongoose.Connection) => {
      Jwt.init(config)
      Files.init(config)
 

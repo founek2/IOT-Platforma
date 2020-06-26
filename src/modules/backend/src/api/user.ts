@@ -5,16 +5,19 @@ import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'
 import formDataChecker from 'framework/src/middlewares/formDataChecker'
 import groupRestriction from 'framework/src/middlewares/groupRestriction'
 
-import fieldDescriptors from 'fieldDescriptors'
+import fieldDescriptors from 'frontend/src/validations/fieldDescriptors.js'
 import checkWritePerm from '../middleware/user/checkWritePerm'
 
-function removeUser(id) {
-     return function (doc) {
-          return doc.id != id // dont change to !==
+import * as types from '../types'
+import express from 'express'
+
+function removeUser(id: String) {
+     return function (doc: { id: String }) {
+          return String(doc.id) !== id // dont change to !==
      }
 }
 
-export default ({ config, db }) =>
+export default ({ config }: { config: types.Config }) =>
      resource({
           middlewares: {
                index: [tokenAuthMIddleware()],
@@ -23,7 +26,7 @@ export default ({ config, db }) =>
                delete: [tokenAuthMIddleware(), groupRestriction('admin'), formDataChecker(fieldDescriptors)],
           },
           /** GET / - List all entities */
-          index({ user, root, query: { type } }, res) {
+          index({ user, root, query: { type } }: express.Request, res) {
                // console.log(user)
                if (user && type === "userName") {      // tested
                     console.log("retrieving userNames")

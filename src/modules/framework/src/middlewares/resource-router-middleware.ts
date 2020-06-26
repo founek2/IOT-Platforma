@@ -1,11 +1,29 @@
-var Router = require('express').Router;
+import express from 'express'
 
 var keyed = ['get', 'read', 'put', 'update', 'patch', 'modify', 'del', 'delete'],
 	map = { index: 'get', list: 'get', read: 'get', create: 'post', update: 'put', updateId: "put", patch: 'patch', patchId: "patch", deleteId: "delete" };
 
-	// TODO add middleware for ID checking (24 lenght) -> then remove from Models
-export default function ResourceRouter(route) {
-	const router = Router({ mergeParams: !!route.mergeParams })
+interface methods {
+	middlewares: {
+		// TODO
+	},
+	middleware: express.Router,
+	mergeParams: boolean,
+	id: string,
+	load: (req: express.Request, id: string, callback: (err: Error, data: any) => any) => any,
+	index: (req: express.Request, res: express.Response) => any,
+	list: (req: express.Request, res: express.Response) => any,
+	read: (req: express.Request, res: express.Response) => any,
+	create: (req: express.Request, res: express.Response) => any,
+	update: (req: express.Request, res: express.Response) => any,
+	updateId: (req: express.Request, res: express.Response) => any,
+	patch: (req: express.Request, res: express.Response) => any,
+	patchId: (req: express.Request, res: express.Response) => any,
+	deleteId: (req: express.Request, res: express.Response) => any,
+}
+
+export default function ResourceRouter(route: methods) {
+	const router = express.Router({ mergeParams: !!route.mergeParams })
 
 	if (route.middleware) router.use(route.middleware);
 	if (route.middlewares) mapper(route.middlewares, router)

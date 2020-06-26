@@ -5,7 +5,7 @@ import { assocPath, o, omit } from 'ramda'
 import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'
 import formDataChecker from 'framework/src/middlewares/formDataChecker'
 
-import fieldDescriptors from 'fieldDescriptors'
+import fieldDescriptors from 'frontend/src/validations/fieldDescriptors.js'
 import checkReadPerm from '../../middleware/device/checkReadPerm'
 import Notify from '../../models/Notification'
 import { transformNotifyForBE } from 'frontend/src/utils/transform'
@@ -21,12 +21,14 @@ export default ({ config, db }) =>
 
         index({ params: { id }, user }, res) {
             console.log("index", id, user.id)
-            
+
             Notify.getSensors(id, user.id).then(doc => {
                 // console.log("items", doc.items)
-                res.send({doc: {
-                    items: doc && doc.items ? doc.items : []
-                }});
+                res.send({
+                    doc: {
+                        items: doc && doc.items ? doc.items : []
+                    }
+                });
             })
         },
 

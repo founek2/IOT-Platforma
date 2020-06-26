@@ -1,6 +1,8 @@
-export default process.env.IOT_CONFIG
+import * as types from '../src/types'
+
+export default <types.Config>(process.env.IOT_CONFIG
   ? require(process.env.IOT_CONFIG)
-  : ({
+  : {
     dbUser: process.env.IOT_DB_USER,
     dbPwd: process.env.IOT_DB_PASSWD,
     dbName: process.env.IOT_DB_NAME || "IOTPlatform",
