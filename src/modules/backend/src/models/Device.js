@@ -4,9 +4,12 @@ import sensorsScheme from './schema/sensors'
 import controlScheme from './schema/control'
 import hat from 'hat'
 import { devLog } from 'framework/src/Logger'
-import SensorData from './SensorData'
+import SensorHistory from './SensorHistory'
 import { keys } from 'ramda'
 import { IMAGES_DEVICES_FOLDER } from '../constants'
+import { isDay } from '../lib/util'
+import prepareControlHistoryData from '../lib/prepareControlHistoryData'
+import ControlHistory from './ControlHistory'
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -68,8 +71,19 @@ deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, sta
      const doc = await this.model('Device').findOneAndUpdate(
           { createdBy: mongoose.Types.ObjectId(createdBy), topic },
           { $set: { ...updateStateQuery, ack: updateTime } },
-          { fields: { "permissions.control": 1 } }).lean()
-     if (!doc) throw new Error("Invalid device")
+          {
+               fields: {
+                    "control.sampleInterval": 1,
+                    "control.recipe": 1,
+                    "control.historical.updatedAt": 1,
+                    "permissions.control": 1,
+               }
+          }).lean()
+     if (!doc) throw new Error("Invalid device") // TODO remove
+
+     const query = prepareControlHistoryData(state, doc.control, updateTime)
+     ControlHistory.saveData(doc._id, query, updateTime)
+
      return doc
 }
 
@@ -338,27 +352,27 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
                     const { sensors } = doc;
                     const { historical: { updatedAt } = {} } = sensors
 
-                    // -1 is never
+                    // sampleInterval === -1 means never save
                     if (sensors.sampleInterval !== -1 && (!updatedAt || (new Date() - updatedAt) / 1000 > sensors.sampleInterval)) {
                          const update = {}
                          const sum = {}
                          const min = {}
                          const max = {}
-                         const isDay = updateTime.getHours() >= 6 && updateTime.getHours() < 20
+                         const day = isDay(updateTime)
                          doc.sensors.recipe.forEach(({ JSONkey }) => {
                               const val = Number(data[JSONkey])
                               update["samples." + JSONkey] = val
                               update["timestamps"] = updateTime
                               min["min." + JSONkey] = val;
                               max["max." + JSONkey] = val
-                              if (isDay) {    // day
+                              if (day) {    // day
                                    sum["sum.day." + JSONkey] = val
                               } else {   // night
                                    sum["sum.night." + JSONkey] = val
                               }
                          })
 
-                         SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay)
+                         SensorHistory.saveData(doc._id, update, sum, min, max, updateTime, day)
                          doc.updateOne({ "sensors.historical.updatedAt": updateTime }).exec()
                     }
 
@@ -428,11 +442,11 @@ deviceSchema.statics.checkExist = async function (deviceID = "") {
 }
 
 deviceSchema.statics.getSensorsDataForAdmin = async function (deviceID, from, to) {
-     return SensorData.getData(deviceID, from, to)
+     return SensorHistory.getData(deviceID, from, to)
 }
 
 deviceSchema.statics.getSensorsData = async function (deviceID, from, to, user = {}) {
-     return SensorData.getData(deviceID, from, to)
+     return SensorHistory.getData(deviceID, from, to)
 }
 
 deviceSchema.statics.getApiKey = async function (id, user = {}) {
@@ -485,6 +499,8 @@ deviceSchema.statics.initControl = async function (createdBy, topic, state, upda
           $set: updateStateQuery
      }, { fields: { "permissions.control": 1 }, new: true }).lean()
      if (!doc) throw new Error("invalidPermissions")
+
+
      return doc;
 }
 
