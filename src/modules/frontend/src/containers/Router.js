@@ -65,13 +65,13 @@ class Router extends Component {
                     <Suspense fallback={<Loader open={true} />}>
                          <Layout history={history} />
                          <Switch>
+                              <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} />
                               {additionRoutes}
                               <Route
                                    path="/registerUser"
                                    component={RegisterUser}
                               />
                               <Route path="/sensor/:deviceId" component={SensorHistoryLazy} />
-                              <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} />
                               <Route path="/" component={Sensors} />
                          </Switch>
                     </Suspense>

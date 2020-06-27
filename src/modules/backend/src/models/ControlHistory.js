@@ -5,11 +5,12 @@ import { isDay as isDayFn } from '../lib/util'
 
 HistoricalSchema.index({ device: 1, day: -1 })
 
-HistoricalSchema.statics.saveData = function (deviceID, query, updateTime) {
+HistoricalSchema.statics.saveData = function (deviceID, JSONkey, query, updateTime) {
     const nsamples = isDayFn(updateTime) ? "nsamples.day" : "nsamples.night"
     return this.model("ControlHistory").updateOne(
         {
             device: mongoose.Types.ObjectId(deviceID),
+            JSONkey,
             "nsamples.day": { $lt: 200 },
             "nsamples.night": { $lt: 200 },
             day: resetTime(new Date())
@@ -18,17 +19,18 @@ HistoricalSchema.statics.saveData = function (deviceID, query, updateTime) {
             $push: query.update,
             $min: { first: updateTime, ...query.min },
             $max: { last: updateTime, ...query.max },
-            $inc: { [nsamples]: 1, ...query.inc },
+            $inc: { [nsamples]: 1, ...query.sum },
         }, { upsert: true, setDefaultsOnInsert: true }).exec() // setDefaultsOnInsert is required to properly work with $lt and upsert
 }
 
-HistoricalSchema.statics.getData = function (deviceID, from, to) {
+HistoricalSchema.statics.getData = function (deviceID, JSONkey, from, to) {
     return this.model("ControlHistory").find({
         device: mongoose.Types.ObjectId(deviceID),
+        JSONkey,
         day: {
             $gte: from, $lte: to
         }
-    }).sort({ "first": 1 }).then(docs => {
+    }).sort({ "first": 1 }).lean().then(docs => {
         return docs
     })
 }

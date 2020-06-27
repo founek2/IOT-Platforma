@@ -95,7 +95,7 @@ function getConvertOptionsFunc(chartType) {
 }
 
 
-function MyChart({ classes, fetchData, data, vAxisTitle, hAxisTitle }) {
+function MyChart({ classes, fetchData, data, vAxisTitle, hAxisTitle, chartType }) {
     const [convertFunc, setConvertFunc] = useState(null)
 
     const chartEvents = [
@@ -117,7 +117,7 @@ function MyChart({ classes, fetchData, data, vAxisTitle, hAxisTitle }) {
                 width="100%"
                 height="400px"
 
-                chartType="LineChart"
+                chartType={chartType}
                 legendToggle
                 loader={<span className={classes.loading}>Načítám graf<Loader open className={classes.loader} /></span>}
                 data={data}

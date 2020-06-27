@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
-
+import { DAY_START_HOURS, DAY_END_HOURS } from '../../constants'
 
 const round2 = (num) =>
     Math.round(num * 100) / 100
@@ -75,10 +75,10 @@ function DetailTable({ sensorRecipe: { JSONkey, name, unit }, sumObject }) {
                         <Tooltip title="Den měření" placement="top-start">
                             <TableCell className={classes.headCell}>Datum</TableCell>
                         </Tooltip>
-                        <Tooltip title="Od 6h do 20h" placement="top">
+                        <Tooltip title={`Od ${DAY_START_HOURS}h do ${DAY_END_HOURS}h`} placement="top">
                             <TableCell className={classes.headCell} align="right">Den</TableCell>
                         </Tooltip>
-                        <Tooltip title="Od 20h do 6h" placement="top">
+                        <Tooltip title={`Od ${DAY_END_HOURS}h do ${DAY_START_HOURS}h`} placement="top">
                             <TableCell className={classes.headCell} align="right">Noc</TableCell>
                         </Tooltip>
                         <Tooltip title="Průměr za celý den" placement="top">

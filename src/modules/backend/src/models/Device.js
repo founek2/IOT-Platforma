@@ -5,7 +5,7 @@ import controlScheme from './schema/control'
 import hat from 'hat'
 import { devLog } from 'framework/src/Logger'
 import SensorHistory from './SensorHistory'
-import { keys } from 'ramda'
+import { keys, head } from 'ramda'
 import { IMAGES_DEVICES_FOLDER } from '../constants'
 import { isDay } from '../lib/util'
 import prepareControlHistoryData from '../lib/prepareControlHistoryData'
@@ -65,8 +65,8 @@ deviceSchema.statics.updateAck = async function (ownerId, topic) {
      return doc;
 }
 
-deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, state, updateTime) {
-     const updateStateQuery = prepareStateUpdate(state, updateTime)
+deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, data, updateTime) {
+     const updateStateQuery = prepareStateUpdate(data, updateTime)
      console.log("update query", updateStateQuery)
      const doc = await this.model('Device').findOneAndUpdate(
           { createdBy: mongoose.Types.ObjectId(createdBy), topic },
@@ -81,8 +81,11 @@ deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, sta
           }).lean()
      if (!doc) throw new Error("Invalid device") // TODO remove
 
-     const query = prepareControlHistoryData(state, doc.control, updateTime)
-     ControlHistory.saveData(doc._id, query, updateTime)
+     const JSONkey = head(keys(data))
+     const state = data[JSONkey]
+     const query = prepareControlHistoryData(state, JSONkey, doc.control, updateTime)
+
+     ControlHistory.saveData(doc._id, JSONkey, query, updateTime)
 
      return doc
 }
@@ -447,6 +450,10 @@ deviceSchema.statics.getSensorsDataForAdmin = async function (deviceID, from, to
 
 deviceSchema.statics.getSensorsData = async function (deviceID, from, to, user = {}) {
      return SensorHistory.getData(deviceID, from, to)
+}
+
+deviceSchema.statics.getControlData = async function (deviceID, JSONkey, from, to, user = {}) {
+     return ControlHistory.getData(deviceID, JSONkey, from, to)
 }
 
 deviceSchema.statics.getApiKey = async function (id, user = {}) {

@@ -3,8 +3,6 @@ import Device from '../models/Device'
 import processError from 'framework/src/utils/processError'
 import { saveImageBase64, validateFileExtension, deleteImage } from '../service/files'
 import { transformSensorsForBE, transformControlForBE } from 'frontend/src/utils/transform'
-import fetch from 'node-fetch'
-import { IMAGES_DEVICES_FOLDER } from '../constants'
 import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'
 import formDataChecker from 'framework/src/middlewares/formDataChecker'
 
@@ -13,21 +11,32 @@ import checkReadPerm from '../middleware/device/checkReadPerm'
 import checkWritePerm from '../middleware/device/checkWritePerm'
 import checkControlPerm from '../middleware/device/checkControlPerm'
 
+function checkRead(req, res, next) {
+     if (req.query.type === "sensors")
+          return checkReadPerm()(req, res, next)
+
+     if (req.query.type === "control")
+          return checkControlPerm()(req, res, next)
+
+     if (req.query.type === "apiKey")
+          return checkWritePerm(req, res, next)
+     res.status(208).send({ error: 'InvalidParam' })
+}
+
 // TODO - iot library -> on reconnect device doesnt send actual status
 // TODO - api /device just for single device manipulation
-// TODO - udelat middleware protection per method to check read/write permissions
 export default ({ config, db }) =>
      resource({
           middlewares: {
                index: [tokenAuthMIddleware({ restricted: false })],
-               read: [tokenAuthMIddleware({ restricted: false }), checkReadPerm()],
+               read: [tokenAuthMIddleware({ restricted: false }), checkRead],
                updateId: [tokenAuthMIddleware(), checkWritePerm(), formDataChecker(fieldDescriptors)],
                create: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
                patchId: [tokenAuthMIddleware(), checkControlPerm(), formDataChecker(fieldDescriptors)],
                deleteId: [tokenAuthMIddleware(), checkWritePerm()],
           },
           /** GET /:param - List all entities */
-          read({ params: { id }, query: { from, to = new Date(), type }, user }, res) {
+          read({ params: { id }, query: { from, to = new Date(), type, JSONkey }, user }, res) {
                if (type === "sensors") {
                     if (user && user.admin) {
                          Device.getSensorsDataForAdmin(id, new Date(Number(from)), new Date(Number(to))).then(docs => {
@@ -40,8 +49,14 @@ export default ({ config, db }) =>
                               // res.sendStatus(204)
                          }).catch(processError(res))
                     }
+               } else if (type === "control") {
+                    Device.getControlData(id, JSONkey, new Date(Number(from)), new Date(Number(to)), user).then(docs => {
+                         res.send({ data: docs })
+                         // res.sendStatus(204)
+                    }).catch(processError(res))
+
                } else if (type === "apiKey") {
-                    Device.getApiKey(id, user).then((apiKey) => res.send({ apiKey })).catch(processError(res))
+                    Device.getApiKey(id, user).then((apiKey) => res.send({ apiKey })).catch(processError(res))     // TODO not protected for notOwner?
                } else res.sendStatus(404)
           },
 

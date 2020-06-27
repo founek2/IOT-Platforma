@@ -3,7 +3,7 @@ import { isDay as isDayFn } from '../lib/util'
 
 const isNumber = (val) => !isNaN(val)
 
-export default function (data, { recipe }, updateTime) {
+export default function (state, JSONkey, { recipe }, updateTime) {
     const query = {
         update: {},
         sum: {},
@@ -11,10 +11,10 @@ export default function (data, { recipe }, updateTime) {
         max: {}
     }
     const isDay = isDayFn(updateTime)
-    recipe.forEach(({ JSONkey, type }) => {
-        const val = data[JSONkey]
-        transformFn[type](val, JSONkey, updateTime, query, isDay)
-    })
+    const { type } = recipe.find(({ JSONkey: key }) => JSONkey === key)
+
+    transformFn[type](state, updateTime, query, isDay)
+
 
     return query
 }
@@ -25,18 +25,18 @@ const transformFn = {
     [CONTROL_TYPES.RGBSWITCH]: transformGeneral,
 }
 
-function transformGeneral(val, JSONkey, updateTime, query, isDay) {
+function transformGeneral(state, updateTime, query, isDay) {
     query.update["timestamps"] = updateTime
-    Object.keys(val).forEach(key => {
-        query.update[`samples.${JSONkey}`] = val
+    Object.keys(state).forEach(key => {
+        query.update[`samples`] = state
 
-        if (isNumber(val[key])) {
-            query.min[`min.${JSONkey}.${key}`] = val[key];
-            query.max[`max.${JSONkey}.${key}`] = val[key]
+        if (isNumber(state[key])) {
+            query.min[`min.${key}`] = state[key];
+            query.max[`max.${key}`] = state[key]
             if (isDay) {    // day
-                query.sum[`sum.day.${JSONkey}.${key}`] = val[key]
+                query.sum[`sum.day.${key}`] = state[key]
             } else {   // night
-                query.sum[`sum.night.${JSONkey}.${key}`] = val[key]
+                query.sum[`sum.night.${key}`] = state[key]
             }
         }
     })

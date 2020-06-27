@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 
 export default new Schema({
     device: { type: 'ObjectId', ref: 'Device' },
+    JSONkey: String,
     day: Date,
     first: Date,
     last: Date,

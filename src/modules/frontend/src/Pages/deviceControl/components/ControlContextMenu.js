@@ -26,7 +26,7 @@ function ContextMenu({ render, id, name, JSONkey }) {
             open={Boolean(anchorEl)}
             onClose={handleClose}
         >
-            <Link to={{ pathname: `/deviceControl/${id}`, search: `?name=${name}` }}>
+            <Link to={{ pathname: `/deviceControl/${id}`, search: `?JSONkey=${JSONkey}` }}>
                 <MenuItem onClick={handleClose}>Historie</MenuItem>
             </Link>
             <Link to={{ search: `?id=${id}&JSONkey=${JSONkey}`, hash: "editNotify" }}>

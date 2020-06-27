@@ -27,7 +27,7 @@ HistoricalSchema.statics.getData = function (deviceID, from, to) {
         day: {
             $gte: from, $lte: to
         }
-    }).sort({ "first": 1 }).then(docs => {
+    }).sort({ "first": 1 }).lean().then(docs => {
         return docs
     })
 }

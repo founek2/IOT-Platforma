@@ -4,16 +4,17 @@ import Card from '@material-ui/core/Card'
 import { connect } from 'react-redux'
 import { filter, fromPairs } from 'ramda'
 import { bindActionCreators } from 'redux'
-import { getDevices, getSensors, getQueryName } from '../utils/getters'
+import { getDevices, getControl, getQueryField } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
-import * as sensorsActions from '../store/actions/application/devices/sensors'
+import * as controlActions from '../store/actions/application/devices/control'
 import Typography from '@material-ui/core/Typography';
-import Chart from '../components/Chart'
 import DetailTable from './sensorHistory/DetailTable'
 import resetTime from 'framework/src/utils/resetTime'
 
-function readableWithSensors(device) {
-    return (device.publicRead || (device.permissions && device.permissions.read)) && (device.sensors && device.sensors.recipe)
+import Chart from '../components/Chart'
+
+function writableWithControl(device) {
+    return (device.permissions && device.permissions.control) && (device.control && device.control.recipe)
 }
 
 const styles = theme => ({
@@ -29,29 +30,25 @@ const styles = theme => ({
     }
 })
 
-function transformData(sensorsData, sensorRecipe, sensorName) {
+function transformData(controlData, controlRecipe, JSONkey) {
     const arr = [["Čas"]]
     const keys = []
-    if (sensorName) {   // Only data from specific sensor
-        const { name, JSONkey } = sensorRecipe.find(({ name }) => name === sensorName)
-        arr[0].push(name)
-        keys.push(JSONkey)
-    } else { // all sensors
-        sensorRecipe.forEach(({ name, JSONkey, unit }) => {
-            arr[0].push(name + " " + unit)
-            keys.push(JSONkey)
-        })
-    }
+
+    const { name, type } = controlRecipe.find(({ JSONkey: key }) => key === JSONkey)
+    arr[0].push(name)
+    keys.push("on")
 
     const sumObject = {};
-    sensorsData.forEach(({ samples, nsamples, timestamps, day, sum, min, max }) => {
-        const len = (nsamples.day || 0) + (nsamples.night || 0)
+
+    // DATA for Graph
+    controlData.forEach(({ samples, nsamples, timestamps, day, sum, min, max }) => {
+        const len = timestamps.length
         for (let i = 0; i < len; ++i) {
             const newArr = [new Date(timestamps[i])]
             for (let j = 0; j < keys.length; j++) {
                 const key = keys[j]
-                if (samples[key]) {
-                    newArr[j + 1] = Number(samples[key][i]) // on index 0 is timestamp
+                if (samples[i][key]) {
+                    newArr[j + 1] = Number(samples[i][key]) // on index 0 is timestamp
                 } else {
                     newArr[j + 1] = null // on index 0 is timestamp
                 }
@@ -59,6 +56,8 @@ function transformData(sensorsData, sensorRecipe, sensorName) {
             arr.push(newArr)
         }
 
+
+        // DATA for table
         const zeroObj = fromPairs(keys.map(k => [k, 0]))
         const nullObj = fromPairs(keys.map(k => [k, null]))
         if (!sumObject[day]) sumObject[day] = { sum: { day: { ...zeroObj }, night: { ...zeroObj } }, nsamples: { day: 0, night: 0 }, min: { ...nullObj }, max: { ...nullObj } }
@@ -80,35 +79,31 @@ function transformData(sensorsData, sensorRecipe, sensorName) {
         oneDay.nsamples.night += nsamples.night || 0
         oneDay.nsamples.day += nsamples.day || 0
     })
+    console.log("output", [arr, sumObject])
     return [arr, sumObject]
 }
 
-function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { params }, classes, sensors, sensorName }) {
+function ControlHistory({ fetchDevicesAction, fetchControlDataAction, device, match: { params }, classes, control, JSONkey, sensorName }) {
     useEffect(() => {
         const from = new Date()
         from.setDate(from.getDate() - 7);   // Go 7 days back
 
         if (!device) {
             fetchDevicesAction()
-            fetchSensorsDataAction(params.deviceId)(resetTime(from))
-        } else fetchSensorsDataAction(params.deviceId)(resetTime(from))
+            fetchControlDataAction(params.deviceId, JSONkey)(resetTime(from))
+        } else fetchControlDataAction(params.deviceId, JSONkey)(resetTime(from))
     }, [])
 
     const hasData =
-        device && sensors && sensors.id === device.id && sensors.data &&
-        (
-            sensors.data.length >= 2
-            || (
-                sensors.data.length === 1
-                && (sensors.data[0].nsamples.day || 0) + (sensors.data[0].nsamples.night || 0) >= 2
-            )
-        )
+        device && control && control.id === device.id && control.data && control.data.length
+
+
     // memoize data, because it always fetches new one, even if they are same
     const [dataArray, sumObject] = useMemo(() =>
         hasData
-            ? transformData(sensors.data, device.sensors.recipe, sensorName)
+            ? transformData(control.data, device.control.recipe, JSONkey)
             : [],
-        [hasData && sensors.data[0].first, hasData && sensors.data[sensors.data.length - 1].last]) // check from -> to
+        [hasData && control.data[0].first, hasData && control.data[control.data.length - 1].last]) // check from -> to
 
     return (
         <Fragment>
@@ -120,14 +115,11 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
                             data={dataArray}
                             vAxisTitle={sensorName ? device.sensors.recipe.find(({ name }) => name === sensorName).unit : ""}
                             hAxisTitle="Čas"
-                            chartType="LineChart"
+                            chartType="ScatterChart"
                         /> : <Typography className={classes.noDevices}>Nebyla nalezena žádná historická data</Typography>}
-                    {
-                        hasData && sensorName ? <DetailTable sumObject={sumObject} sensorRecipe={device.sensors.recipe.find(({ name }) => name === sensorName)} /> : null
-                    }
-                    {
-                        hasData && !sensorName ? device.sensors.recipe.map(obj => <DetailTable sumObject={sumObject} sensorRecipe={obj} key={obj.JSONkey} />) : null
-                    }
+                    {/* {
+                        hasData && JSONkey ? <DetailTable sumObject={sumObject} sensorRecipe={device.control.recipe.find(({ JSONkey: key }) => JSONkey === key)} /> : null
+                    } */}
 
                 </Card>
                 : <Typography className={classes.noDevices}>Nebylo nalezeno vámi zvolené zařízení</Typography>}
@@ -137,11 +129,11 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
 
 
 const _mapStateToProps = (state, { match: { params } }) => {
-    const devices = filter(readableWithSensors, getDevices(state))
+    const devices = filter(writableWithControl, getDevices(state))
     return {
         device: devices.find(dev => dev.id === params.deviceId),
-        sensors: getSensors(state),
-        sensorName: getQueryName(state),
+        control: getControl(state),
+        JSONkey: getQueryField("JSONkey", state),
     }
 }
 
@@ -149,9 +141,9 @@ const _mapDispatchToProps = dispatch =>
     bindActionCreators(
         {
             fetchDevicesAction: deviceActions.fetch,
-            fetchSensorsDataAction: sensorsActions.fetchData
+            fetchControlDataAction: controlActions.fetchData
         },
         dispatch
     )
 
-export default connect(_mapStateToProps, _mapDispatchToProps)(withStyles(styles)(Sensors))
+export default connect(_mapStateToProps, _mapDispatchToProps)(withStyles(styles)(ControlHistory))
