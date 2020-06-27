@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
      getFormsData,
@@ -66,6 +66,8 @@ function fieldConnector({
           return () => unregisterField(deepPath)
      }, [])
 
+     const [dirty, setDirty] = useState(false);
+
      function _handleChange({ target: { value } }, pristine) {
           updateFormField(deepPath, value)
           !pristine && validateField(deepPath)
@@ -104,13 +106,16 @@ function fieldConnector({
                     FormHelperTextProps={{ error: !valid }}
                     onFocus={onFocus}
                     onBlur={chainHandler([
-                         () => pristine && value && _changePristine(),
+                         () => pristine && (value | dirty) && _changePristine(),
                          _validateField,
                          onBlur
                     ])}
                     name={name || descriptor.name}
                     autoFocus={autoFocus}
-                    onKeyDown={onEnter && onEnterRun(onEnter)}
+                    onKeyDown={chainHandler([
+                         () => !dirty && setDirty(true),
+                         onEnter && onEnterRun(onEnter),
+                    ])}
                     label={required ? finalLabel + ' *' : finalLabel}
                     {...options}
                     {...fieldProps}
