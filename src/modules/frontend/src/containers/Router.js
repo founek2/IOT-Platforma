@@ -1,10 +1,9 @@
-import React, { Component, Suspense } from 'react'
+import React, { Component, Suspense, lazy } from 'react'
 import { createBrowserHistory } from 'history'
 import { Router as RouterReact, Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Layout from '../components/Layout'
 import Sensors from '../Pages/Sensors'
-import SensorDetail from '../Pages/SensorDetail'
 import RegisterUser from '../Pages/RegisterUser'
 import { bindActionCreators } from 'redux'
 import { map } from 'ramda'
@@ -25,6 +24,9 @@ const defLocation = history.location
 function createRoute({ path, Component }) {
      return <Route path={path} key={path} render={props => <Component {...props} />} />
 }
+
+const SensorHistoryLazy = lazy(() => import('../Pages/SensorHistory'));
+const ControlHistoryLazy = lazy(() => import('../Pages/ControlHistory'));
 
 class Router extends Component {
      constructor(props) {
@@ -58,8 +60,9 @@ class Router extends Component {
           }
 
           return (
-               <Suspense fallback={<Loader open={true} />}>
-                    <RouterReact history={history}>
+
+               <RouterReact history={history}>
+                    <Suspense fallback={<Loader open={true} />}>
                          <Layout history={history} />
                          <Switch>
                               {additionRoutes}
@@ -67,11 +70,13 @@ class Router extends Component {
                                    path="/registerUser"
                                    component={RegisterUser}
                               />
-                              <Route path="/sensor/:deviceId" component={SensorDetail} />
+                              <Route path="/sensor/:deviceId" component={SensorHistoryLazy} />
+                              <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} />
                               <Route path="/" component={Sensors} />
                          </Switch>
-                    </RouterReact>
-               </Suspense>
+                    </Suspense>
+               </RouterReact >
+
           )
      }
 }

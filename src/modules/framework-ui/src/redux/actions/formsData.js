@@ -57,6 +57,7 @@ export function unregisterField(deepPath) {
 }
 
 export function updateRegisteredField(deepPath, data) {
+     baseLogger(actionTypes.UPDATE_REGISTERED_FIELD, deepPath);
      return {
           type: actionTypes.UPDATE_REGISTERED_FIELD,
           payload: { deepPath, data }

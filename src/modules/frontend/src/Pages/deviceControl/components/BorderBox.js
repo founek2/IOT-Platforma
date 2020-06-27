@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import OnlineCircle from '../../../components/OnlineCircle';
 import isAfk from '../../../utils/isAfk'
 import forceUpdateHoc from 'framework-ui/src/Components/forceUpdateHoc'
-import ControlDetail from './ControlDetail'
+import ControlDetail from './borderBox/ControlDetail'
 import Loader from 'framework-ui/src/Components/Loader'
 
 const styles = {
@@ -33,6 +33,7 @@ const defaultProps = {
 function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, forwardRef, ...other }) {
     const [detailOpen, setOpen] = useState(false)
     const [pending, setPending] = useState(false)
+    const [menuOpen, setMenuOpen] = useState(false)
 
     async function handleClick(newState) {
         setPending(true)
@@ -46,7 +47,7 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
         setOpen(true)
     }
 
-    const { /* transitionStarted, state */ inTransition, updatedAt } = data;
+    const { inTransition, updatedAt } = data;
     const afk = isAfk(ackTime);
     const Component = component
     return (

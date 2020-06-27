@@ -34,9 +34,9 @@ export const NotifyTypes = [
 ]
 
 export const CONTROL_TYPES = keymirror({
-	SWITCH: null,
-	ACTIVATOR: null,
-	RGBSWITCH: null
+	SWITCH: null,	/* state: {color: [hashColor], type: "linear", bright: [0-255], on: [0,1]} */
+	ACTIVATOR: null,	/* state: {on: 1} */
+	RGBSWITCH: null		/* state: {on: [0,1]} */
 })
 
 export const ControlTypes = [
@@ -89,3 +89,7 @@ export const daysInWeek = [
 	{ value: 6, label: "So" },
 	{ value: 0, label: "Ne" },
 ]
+
+export const DAY_START_HOURS = 6
+
+export const DAY_END_HOURS = 20

@@ -8,8 +8,8 @@ import { getDevices, getSensors, getQueryName } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import * as sensorsActions from '../store/actions/application/devices/sensors'
 import Typography from '@material-ui/core/Typography';
-import Chart from './sensorDetail/Chart'
-import DetailTable from './sensorDetail/DetailTable'
+import Chart from './sensorHistory/Chart'
+import DetailTable from './sensorHistory/DetailTable'
 import resetTime from 'framework/src/utils/resetTime'
 
 function readableWithSensors(device) {
