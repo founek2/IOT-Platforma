@@ -31,14 +31,17 @@ const styles = {
 
 function Activator({ classes, name, onClick, data, ackTime, afk, pending, id, JSONkey }) {
     return (
-        <div onClick={() => !afk && !pending && onClick({ on: 1 })} className={classes.root}>
-            <ControlContextMenu name={name} id={id} JSONkey={JSONkey} render={({ handleOpen }) => {
-                return <Typography className={classes.header} onContextMenu={handleOpen}>{name}</Typography>
-            }} />
-            <IconButton aria-label="delete" className={classes.button} disabled={afk || pending}>
-                <SendIcon fontSize="large" className={classes.icon} />
-            </IconButton>
-        </div>)
+
+        <ControlContextMenu name={name} id={id} JSONkey={JSONkey} render={({ handleOpen }) => {
+            return <div onClick={() => !afk && !pending && onClick({ on: 1 })} className={classes.root}>
+                <Typography className={classes.header} onContextMenu={handleOpen}>{name}</Typography>
+
+                <IconButton aria-label="delete" className={classes.button} disabled={afk || pending}>
+                    <SendIcon fontSize="large" className={classes.icon} />
+                </IconButton>
+            </div>
+        }} />
+    )
 }
 
 export default boxHoc(withStyles(styles)(Activator))

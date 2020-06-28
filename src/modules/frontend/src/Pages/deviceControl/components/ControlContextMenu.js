@@ -8,12 +8,12 @@ function ContextMenu({ render, id, name, JSONkey }) {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleOpen = (event) => {
-        console.log("click")
         event.preventDefault()
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
+    const handleClose = (e) => {
+        // e.preventDefault()
         setAnchorEl(null);
     };
 

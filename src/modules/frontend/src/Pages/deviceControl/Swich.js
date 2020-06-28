@@ -25,35 +25,35 @@ function MySwitch({ classes, name, description, onClick, data, ackTime, afk, pen
     const { state = { on: 0 } } = data;
 
     return (
-        <div
-            className={classes.root}
-            onClick={(e) => !afk && !pending && onClick({ on: state.on ? 0 : 1 })} >
-            <ControlContextMenu name={name} id={id} JSONkey={JSONkey} render={({ handleOpen }) => {
-                return <div className={classes.header} onContextMenu={handleOpen}>
+
+        <ControlContextMenu name={name} id={id} JSONkey={JSONkey} render={({ handleOpen }) => {
+            return <div
+                className={classes.root}
+                onClick={(e) => !afk && !pending && onClick({ on: state.on ? 0 : 1 })} ><div className={classes.header} onContextMenu={handleOpen}>
                     <Typography component="span" >{name}</Typography>
                 </div>
-            }} />
+                <div className={classes.switchContainer}>
+                    <Switch
+                        focusVisibleClassName={classes.focusVisible}
+                        disableRipple
+                        classes={{
+                            root: classes.switchRoot,
+                            switchBase: classes.switchBase,
+                            thumb: classes.thumb,
+                            track: classes.track,
+                            checked: classes.checked,
+                            disabled: classes.disabled
+                        }}
+                        disabled={pending || afk}
+                        {...props}
+                        // onClick={handleClick}
+                        checked={!!state.on}
+                    />
+                </div>
+            </ div>
+        }} />
 
-
-            <div className={classes.switchContainer}>
-                <Switch
-                    focusVisibleClassName={classes.focusVisible}
-                    disableRipple
-                    classes={{
-                        root: classes.switchRoot,
-                        switchBase: classes.switchBase,
-                        thumb: classes.thumb,
-                        track: classes.track,
-                        checked: classes.checked,
-                        disabled: classes.disabled
-                    }}
-                    disabled={pending || afk}
-                    {...props}
-                    // onClick={handleClick}
-                    checked={!!state.on}
-                />
-            </div>
-        </ div>)
+    )
 
 }
 
