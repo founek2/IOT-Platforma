@@ -99,6 +99,7 @@ function RgbSwitch({
                 pending={pending}
                 afk={afk}
                 onClick={() => !afk && !pending && onClick({ on: state.on ? 0 : 1 })}
+                {...props}
             />
             <IconButton size="small" className={classes.button} onClick={handleOpen} disabled={afk}>
                 <TuneIcon className={classes.icon} />
