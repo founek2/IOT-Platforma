@@ -2,7 +2,7 @@ export default function (dateArg) {
     if (!dateArg) return "";
     const date = new Date(dateArg)
     return pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds())
-        + " " + date.getDate() + ". " + (date.getMonth() + 1) + " " + date.getFullYear()
+        + " " + date.getDate() + ". " + (date.getMonth() + 1) + ". " + date.getFullYear()
 }
 
 function pad(val) {

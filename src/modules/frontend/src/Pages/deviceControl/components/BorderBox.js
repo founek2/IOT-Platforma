@@ -33,7 +33,6 @@ const defaultProps = {
 function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, forwardRef, ...other }) {
     const [detailOpen, setOpen] = useState(false)
     const [pending, setPending] = useState(false)
-    const [menuOpen, setMenuOpen] = useState(false)
 
     async function handleClick(newState) {
         setPending(true)
@@ -43,7 +42,6 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
 
     function handleContext(e) {
         e.preventDefault()
-        console.log("context")
         setOpen(true)
     }
 

@@ -4,7 +4,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import { daysInWeek } from '../../../constants'
 import clsx from 'clsx'
 import FormLabel from '@material-ui/core/FormLabel';
-import { assocPath, when, append, includes, not, o, __, ifElse, filter, equals } from 'ramda'
+import { assocPath, append, includes, o, __, ifElse, filter } from 'ramda'
 import { notEqual } from 'ramda-extension';
 
 const styles = theme => ({

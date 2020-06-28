@@ -18,7 +18,7 @@ import { getDevices } from '../utils/getters'
 const compMapper = {
      [CONTROL_TYPES.ACTIVATOR]: Activator,
      [CONTROL_TYPES.SWITCH]: Switch,
-     [CONTROL_TYPES.RGBSWITCH]: RgbSwitch,
+     [CONTROL_TYPES.RGB_SWITCH]: RgbSwitch,
 }
 
 function isControllable(device) {
@@ -77,19 +77,21 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
           device.control.recipe.forEach(({ name, type, JSONkey, description }) => {
 
                const Comp = compMapper[type]
-               const data = (device.control.current && device.control.current.data[JSONkey] && device.control.current.data[JSONkey]) || {}
-               arr.push(<Comp
-                    key={`${device.id}/${JSONkey}`}
-                    name={name}
-                    description={description}
-                    onClick={(val) => updateDeviceStateA(device.id, JSONkey, val, ControlTypesFormNames[type])}
-                    data={data}
-                    className={classes.item}
-                    ackTime={device.ack}
-                    updateTime={device.ack}     // to force updating
-                    id={device.id}
-                    JSONkey={JSONkey}
-               />)
+               if (Comp) {
+                    const data = (device.control.current && device.control.current.data[JSONkey] && device.control.current.data[JSONkey]) || {}
+                    arr.push(<Comp
+                         key={`${device.id}/${JSONkey}`}
+                         name={name}
+                         description={description}
+                         onClick={(val) => updateDeviceStateA(device.id, JSONkey, val, ControlTypesFormNames[type])}
+                         data={data}
+                         className={classes.item}
+                         ackTime={device.ack}
+                         updateTime={device.ack}     // to force updating
+                         id={device.id}
+                         JSONkey={JSONkey}
+                    />)
+               } else { throw new Error("Invalid component type") }
           })
      })
 

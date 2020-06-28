@@ -99,7 +99,7 @@ export default (io) => {
                     control.forEach((id) => {
                         io.to(id.toString()).emit("control", emitData)
                     })
-                } else console.log("error missing keys3")
+                } else console.log("error missing JSONkey")
 
 
             }
