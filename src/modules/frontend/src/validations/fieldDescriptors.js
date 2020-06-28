@@ -110,6 +110,7 @@ const passwdNotReq = {
      deepPath: 'EDIT_USER.auth.password',
      // required: true,
      label: 'Heslo',
+     name: 'password',
      validations: [validationFactory('isString', { min: 4, max: 20 })]
 }
 
@@ -119,6 +120,7 @@ const EDIT_USER = assocPath(["auth", "password"], passwdNotReq, {
           deepPath: 'EDIT_USER.groups',
           label: 'Uživatelské skupiny',
           required: true,
+          name: 'groups',
           validations: [validationFactory('isNotEmptyArray')]
      },
 })
@@ -247,8 +249,6 @@ const EDIT_SENSORS = {
      },
      "count": {
           deepPath: 'EDIT_SENSORS.count',
-          label: 'Popis',
-          name: "count",
           validations: [validationFactory('isNumber')]
      }
 }
@@ -280,8 +280,6 @@ const EDIT_CONTROL = {
      },
      "count": {
           deepPath: 'EDIT_SENSORS.count',
-          label: 'Popis',
-          name: "count",
           validations: [validationFactory('isNumber')]
      }
 }
@@ -313,7 +311,6 @@ const EDIT_NOTIFY_SENSORS = {
      },
      "count": {
           deepPath: 'EDIT_NOTIFY_SENSORS.count',
-          name: "count",
           required: true,
           validations: [validationFactory('isNumber')]
      },
@@ -351,18 +348,21 @@ const EDIT_RGB = {
           deepPath: 'EDIT_RGB.type',
           label: 'Typ',
           // required: true,
+          name: 'type',
           validations: [validationFactory('isOneOf', { values: RgbTypes })]
      },
      "color": {
           deepPath: 'EDIT_RGB.color',
           label: 'Barva',
           required: true,
+          name: 'color',
           when: ({ type }) => type === LINEAR_TYPE,
           validations: [validationFactory('isColor')]
      },
      "bright": {
           deepPath: 'EDIT_RGB.bright',
           label: 'Jas',
+          name: 'brightness',
           // required: true,
           validations: [validationFactory('isNumber', { min: 0, max: 100 })]
      },
@@ -383,11 +383,13 @@ const CHANGE_DEVICE_STATE_RGB = {
           "type": {
                deepPath: 'CHANGE_DEVICE_STATE_RGB.state.type',
                label: 'Typ',
+               name: 'type',
                validations: [validationFactory('isOneOf', { values: RgbTypes })]
           },
           "color": {
                deepPath: 'CHANGE_DEVICE_STATE_RGB.state.color',
                label: 'Barva',
+               name: 'color',
                when: ({ type }) => type === LINEAR_TYPE,
                required: true,
                validations: [validationFactory('isColor')]
@@ -395,6 +397,7 @@ const CHANGE_DEVICE_STATE_RGB = {
           "bright": {
                deepPath: 'CHANGE_DEVICE_STATE_RGB.state.bright',
                label: 'Jas',
+               name: 'brightness',
                validations: [validationFactory('isNumber', { min: 0, max: 100 })]
           },
           "on": {
