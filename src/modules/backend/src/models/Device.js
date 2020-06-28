@@ -437,7 +437,7 @@ deviceSchema.statics.checkReadPerm = async function (deviceID, userId) {
 }
 
 deviceSchema.statics.checkExist = async function (deviceID = "") {
-     if (deviceID.length != 24) return false
+     if (deviceID.length !== 24) return false
 
      return await this.model('Device').exists({
           _id: mongoose.Types.ObjectId(deviceID),

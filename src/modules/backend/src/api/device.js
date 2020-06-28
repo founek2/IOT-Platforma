@@ -19,7 +19,7 @@ function checkRead(req, res, next) {
           return checkControlPerm()(req, res, next)
 
      if (req.query.type === "apiKey")
-          return checkWritePerm(req, res, next)
+          return checkWritePerm()(req, res, next)
      res.status(208).send({ error: 'InvalidParam' })
 }
 

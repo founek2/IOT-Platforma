@@ -170,8 +170,8 @@ describe("Validation factory", function () {
         const fn = validationFn.isEmail
         fn("skalic@seznam.cz").should.be.true()
         fn("s@s.cz").should.be.true()
-        fn("s233!2@gmail.com").should.be.true()
 
+        fn("s233!2@gmail.com").should.equal("isNotEmail")
         fn("s@s.c").should.equal("isNotEmail")
         fn("ssdads.com").should.equal("isNotEmail")
         fn("ssda@dscom").should.equal("isNotEmail")
