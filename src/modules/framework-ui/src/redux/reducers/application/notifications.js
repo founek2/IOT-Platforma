@@ -1,11 +1,11 @@
 import { handleActions } from 'redux-actions';
-import { adjust, set, lensProp, merge, dissoc} from 'ramda';
+import { adjust, set, lensProp, merge } from 'ramda';
 import { actionTypes } from '../../../constants/redux';
 
 const openLens = lensProp('open');
 
 function setOpen(bool) {
-	return function (obj){
+	return function (obj) {
 		return set(openLens, bool, obj)
 	}
 }
@@ -13,22 +13,22 @@ function setOpen(bool) {
 const addNot = {
 	next(state, action) {
 		const timeStamp = new Date().getTime();
-		const updatedState = merge(state, {[timeStamp]: {key: timeStamp, ...action.payload}})
+		const updatedState = merge(state, { [timeStamp]: { key: timeStamp, ...action.payload } })
 
-          return updatedState;
-     }
+		return updatedState;
+	}
 };
 
-const closeNot= {
+const closeNot = {
 	next(state, action) {
-          return adjust(setOpen(false), action.payload, state);
-     }
+		return adjust(setOpen(false), action.payload, state);
+	}
 }
 
 const setNot = {
 	next(state, action) {
-          return action.payload;
-     }
+		return action.payload;
+	}
 }
 
 const removeNot = {
@@ -36,7 +36,7 @@ const removeNot = {
 
 		//return dissoc(action.payload, state)
 		return state;
-     }
+	}
 }
 
 const userReducers = {

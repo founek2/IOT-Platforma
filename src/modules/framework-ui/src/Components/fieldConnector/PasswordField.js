@@ -1,18 +1,17 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import styles from './styles'
 
-function PasswordField({className, classes, ...props}) {
-	const [showPsswd, setShowPsswd] = useState(false);
+function PasswordField({ className, classes, ...props }) {
+     const [showPsswd, setShowPsswd] = useState(false);
      return (
           <TextField
-			className={`${classes.textField} ${className || ""}`}
+               className={`${classes.textField} ${className || ""}`}
                type={showPsswd ? 'text' : 'password'}
                label="Password"
                InputProps={{
@@ -23,8 +22,8 @@ function PasswordField({className, classes, ...props}) {
                               </IconButton>
                          </InputAdornment>
                     )
-			}}
-			{...props}
+               }}
+               {...props}
           />
      )
 }

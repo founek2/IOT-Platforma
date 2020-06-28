@@ -1,11 +1,10 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import Box from '@material-ui/core/Box';
-import getLastUpdateText from 'framework-ui/src/utils/getLastUpdateText'
 import { withStyles } from '@material-ui/core/styles'
 import OnlineCircle from '../../../components/OnlineCircle';
 import isAfk from '../../../utils/isAfk'
 import forceUpdateHoc from 'framework-ui/src/Components/forceUpdateHoc'
-import ControlDetail from './ControlDetail'
+import ControlDetail from './borderBox/ControlDetail'
 import Loader from 'framework-ui/src/Components/Loader'
 
 const styles = {
@@ -43,11 +42,10 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
 
     function handleContext(e) {
         e.preventDefault()
-        console.log("context")
         setOpen(true)
     }
 
-    const { state, inTransition, transitionStarted, updatedAt } = data;
+    const { inTransition, updatedAt } = data;
     const afk = isAfk(ackTime);
     const Component = component
     return (

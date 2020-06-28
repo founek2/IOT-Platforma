@@ -7,24 +7,19 @@ import { connect } from 'react-redux'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
-import FormLabel from '@material-ui/core/FormLabel'
 import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
-import Divider from '@material-ui/core/Divider'
 import { bindActionCreators } from 'redux'
-import { prop, filter, pick, clone } from 'ramda'
-import MenuItem from '@material-ui/core/MenuItem'
-import { Link } from 'react-router-dom'
+import { clone } from 'ramda'
 
-import FieldConnector from 'framework-ui/src/Components/FieldConnector'
-import * as deviceActions from '../../store/actions/application/devices'
-import { getDialogTmp, getFormData } from 'framework-ui/src/utils/getters'
+import { getFormData } from 'framework-ui/src/utils/getters'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
-import { SampleIntervals } from '../../constants'
 import EditNotify from './editNotifyForm/EditNotify'
 import Typography from '@material-ui/core/Typography';
-import { transformSensorsForForm } from '../../utils/transform'
+// import { transformSensorsForForm } from '../../utils/transform'
 import * as sensorsActions from '../../store/actions/application/devices/sensors'
+import * as userActions from '../../store/actions/application/user'
+import { getToken } from '../../firebase'
 
 const styles = theme => ({
      textField: {
@@ -104,7 +99,7 @@ const styles = theme => ({
 
 const FIELDS = ["JSONkey", "type", "value", "interval", "description"]
 
-function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, device, fillEditFormAction, editForm, sensorCount, classes, updateNotifySensorsAction }) {
+function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, device, fillEditFormAction, editForm, sensorCount, classes, updateNotifySensorsAction, registerTokenAction }) {
      const [pending, setPending] = useState(false)
      const [loaded, setLoaded] = useState(false)
 
@@ -115,8 +110,13 @@ function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, devic
                     setPending(false)
                     setLoaded(true)
                } else setPending(false)
+
+               const token = await getToken()
+               console.log("getting token: ", token)
+               registerTokenAction(token)
           }
           preFill()
+
      }, [])
 
      function removeSensorByIndex(idx) {
@@ -191,6 +191,7 @@ const _mapDispatchToProps = dispatch => (
                     fillEditFormAction: formsActions.fillForm('EDIT_NOTIFY_SENSORS'),
                     updateNotifySensorsAction: sensorsActions.updateNotifySensors,
                     prefillNotifySensorsAction: sensorsActions.prefillNotifySensors,
+                    registerTokenAction: userActions.registerToken,
                },
                dispatch,
           ),

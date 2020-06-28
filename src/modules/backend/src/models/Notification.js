@@ -10,12 +10,20 @@ const notifySchema = new Schema(
                 _id: false,
                 user: { $type: ObjectId, ref: 'User' },
                 items: [{
-                    _id: false,
                     JSONkey: String,
                     description: String,
                     type: String,   // type is reserver keyword
                     value: String,
-                    interval: Number,
+                    tmp: {
+                        lastSendAt: Date,
+                        lastSatisfied: Boolean
+                    },
+                    advanced: {
+                        interval: { $type: Number, default: -1 },
+                        from: String,
+                        to: String,
+                        daysOfWeek: [Number],
+                    }
                 }]
             }
         ],
@@ -86,17 +94,86 @@ notifySchema.statics.addOrUpdateControl = function (userId, deviceId, data) {
 }
 
 notifySchema.statics.getSensors = function (deviceId, userId) {
-    console.log({deviceId, userId})
+    console.log({ deviceId, userId })
     return this.model('Notify')
-        .findOne({ 
+        .findOne({
             device: ObjectId(deviceId),
         }).select({
-                "_id": 0,
-                "sensors": { 
-                    $elemMatch: { "user": ObjectId(userId) } 
-                } 
-            
+            "_id": 0,
+            "sensors": {
+                $elemMatch: { "user": ObjectId(userId) }
+            }
+
         }).then(doc => doc ? doc.sensors[0] : doc)
+}
+
+notifySchema.statics.getSensorItems = function (deviceId, JSONkeys) {
+    return this.model('Notify').aggregate([
+        {
+            $match: {
+                device: mongoose.Types.ObjectId(deviceId),
+                "sensors.items.JSONkey": { $in: JSONkeys }
+            }
+        },
+        { $unwind: "$sensors" },
+        {
+            $project: {
+                "user": "$sensors.user",
+                "sensors.items": {
+                    $filter: {
+                        input: "$sensors.items",
+                        cond: { $in: ["$$this.JSONkey", JSONkeys] }
+                    }
+                }
+            }
+        },
+    ])
+}
+
+notifySchema.statics.updateItems = function (deviceId, itemIDs, userIDs, updateObj) {
+    return this.model('Notify').updateMany({
+        device: ObjectId(deviceId),
+        "sensors.items._id": {
+            $in: itemIDs
+        }
+    }, updateObj,
+        {
+            arrayFilters: [{ "outer.user": { $in: userIDs } }, { "inner._id": { $in: itemIDs } }]
+        })
+}
+
+notifySchema.statics.refreshItems = function (deviceId, { items: itemsSended, users: usersSended }, { unSatisfiedItems, satisfiedItems, users: usersNotSneded }, userIDs) {
+    usersSended = Array.from(usersSended).map(id => ObjectId(id))
+    usersNotSneded = Array.from(usersNotSneded).map(id => ObjectId(id))
+    itemsSended = itemsSended.map(id => ObjectId(id))
+    satisfiedItems = satisfiedItems.map(id => ObjectId(id))
+    unSatisfiedItems = unSatisfiedItems.map(id => ObjectId(id))
+
+    // TODO use Bulk write - https://mongoosejs.com/docs/api.html#model_Model.bulkWrite
+    this.model("Notify").updateItems(deviceId, itemsSended, usersSended, {
+        $set: {
+            "sensors.$[outer].items.$[inner].tmp": {
+                lastSendAt: new Date(),
+                lastSatisfied: true,
+            }
+        }
+    }).exec()
+
+    this.model("Notify").updateItems(deviceId, unSatisfiedItems, usersNotSneded, {
+        $set: {
+            "sensors.$[outer].items.$[inner].tmp": {
+                lastSatisfied: false,
+            }
+        }
+    }).exec()
+
+    this.model("Notify").updateItems(deviceId, satisfiedItems, usersNotSneded, {
+        $set: {
+            "sensors.$[outer].items.$[inner].tmp": {
+                lastSatisfied: true,
+            }
+        }
+    }).exec()
 }
 
 export default mongoose.model('Notify', notifySchema)

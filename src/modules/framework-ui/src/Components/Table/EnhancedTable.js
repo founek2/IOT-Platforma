@@ -28,34 +28,48 @@ function getSorting(order, orderBy) {
      return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
+function mustContain(searchText, dataProps) {
+     return (obj) => {
+          for (const { path, convertor } of dataProps) {
+               const value = convertor ? convertor(getInPath(path, obj)) : getInPath(path, obj)
+               if (value && String(value).includes(searchText)) {
+                    return true
+               }
+          }
+
+          return false
+     }
+}
+
 const styles = theme => ({
      root: {
           width: '100%',
           marginTop: theme.spacing(3)
      },
      table: {
-          minWidth: 1020
+          // minWidth: 1020
      },
      tableWrapper: {
           overflowX: 'auto'
      },
      editCell: {
           width: 50
-	},
-	createdCell: {
-		width: 200
-	}
+     },
+     createdCell: {
+          width: 200
+     }
 });
 
 class EnhancedTable extends React.Component {
      constructor(props) {
-		super(props);
+          super(props);
           this.state = {
-               order: 'asc',
+               order: props.order,
                orderBy: props.orderBy,
                data: [...props.data],
                page: 0,
                rowsPerPage: props.rowsPerPage,
+               searchText: ""
           };
      }
 
@@ -124,10 +138,17 @@ class EnhancedTable extends React.Component {
           this.handleSelectAllClick();
      };
 
+     handleSearchChange = e => {
+          console.log(e.target.value)
+          this.setState({
+               searchText: e.target.value
+          })
+     }
+
      render() {
-          const { classes, dataProps, toolbarHead, onAdd, enableCreation, enableEdit, onEdit } = this.props;
+          const { classes, dataProps, toolbarHead, onAdd, enableCreation, enableEdit, onEdit, enableSearch } = this.props;
           const selected = this.props.value;
-          const { data, order, orderBy, rowsPerPage, page } = this.state;
+          const { data, order, orderBy, rowsPerPage, page, searchText } = this.state;
           const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
           return (
@@ -138,6 +159,8 @@ class EnhancedTable extends React.Component {
                          onDelete={this.handleDelete}
                          onAdd={onAdd}
                          enableCreation={enableCreation}
+                         enableSearch={enableSearch}
+                         onSearchChange={this.handleSearchChange}
                     />
                     <div className={classes.tableWrapper}>
                          <Table className={classes.table} aria-labelledby="tableTitle">
@@ -152,6 +175,7 @@ class EnhancedTable extends React.Component {
                               />
                               <TableBody>
                                    {data
+                                        .filter(mustContain(searchText, dataProps))
                                         .sort(getSorting(order, orderBy))
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map(n => {
@@ -166,7 +190,7 @@ class EnhancedTable extends React.Component {
                                                        selected={isSelected}
                                                   >
                                                        <TableCell padding="checkbox">
-                                                            <Checkbox checked={isSelected} onClick={event => this.handleClick(event, n.id)}/>
+                                                            <Checkbox checked={isSelected} onClick={event => this.handleClick(event, n.id)} />
                                                        </TableCell>
                                                        {dataProps.map(({ path, convertor }, i) => (
                                                             <TableCell key={path} className={path === "created" ? classes.createdCell : ""}>
@@ -219,7 +243,8 @@ class EnhancedTable extends React.Component {
 
 EnhancedTable.defaultProps = {
      rowsPerPage: 5,
-     value: []
+     value: [],
+     order: "asc"
 }
 
 EnhancedTable.propTypes = {

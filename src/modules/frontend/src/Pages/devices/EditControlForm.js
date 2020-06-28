@@ -1,4 +1,4 @@
-import React, { Fragment, useState, Component } from 'react'
+import React, { Fragment, Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import IconButton from '@material-ui/core/IconButton'
@@ -7,35 +7,17 @@ import { connect } from 'react-redux'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
-import FormLabel from '@material-ui/core/FormLabel'
 import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
-import Divider from '@material-ui/core/Divider'
 import { bindActionCreators } from 'redux'
-import { prop, filter, pick, clone } from 'ramda'
-import MenuItem from '@material-ui/core/MenuItem'
-import { Link } from 'react-router-dom'
+import { clone } from 'ramda'
 
-import FieldConnector from 'framework-ui/src/Components/FieldConnector'
+import { getFormData } from 'framework-ui/src/utils/getters'
 import * as deviceActions from '../../store/actions/application/devices'
-import { getDialogTmp, getFormData } from 'framework-ui/src/utils/getters'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
-import { SampleIntervals } from '../../constants'
-import EditSensor from './editSensorsForm/EditSensor'
 import EditControl from './editControlForm/EditControl'
 import Typography from '@material-ui/core/Typography';
-import {transformControlForForm} from '../../utils/transform'
-
-function OnlyWritable(device) {
-     return device.permissions
-}
-
-// const SampleIntervalWithText = SampleIntervals.map(val => {
-//      const min = val / 60;
-//      if (min > 0) return { value: val, text: min < 60 ? min + ' min' : min / 60 + ' h' }
-//      else if (val === 0)  return { value: "0", text: "Vždy" }
-//      return { value: val, text: "Nikdy" }
-// })
+import { transformControlForForm } from '../../utils/transform'
 
 const styles = theme => ({
      textField: {
@@ -137,7 +119,7 @@ class EditDeviceDialog extends Component {
 
      removeSensorByIndex = id => {
           const { dispatch, sensorCount, editForm } = this.props;
-          
+
           const newEditForm = clone(editForm);
           for (let i = id + 1; i < sensorCount; i++) {
                if (newEditForm.name) newEditForm.name[i - 1] = editForm.name[i];
@@ -147,7 +129,7 @@ class EditDeviceDialog extends Component {
           }
           if (newEditForm.name && id < newEditForm.name.length) newEditForm.name.pop();
           if (newEditForm.unit && id < newEditForm.unit.length) newEditForm.unit.pop();
-          if (newEditForm.description && id < newEditForm.description.length) newEditForm.description.pop();
+          if (newEditForm.description && id < newEditForm.description.length) newEditForm.description.pop();
           if (newEditForm.JSONkey && id < newEditForm.JSONkey.length) newEditForm.JSONkey.pop();
           newEditForm.count = sensorCount - 1;
           dispatch(formsActions.setFormData("EDIT_CONTROL", newEditForm))

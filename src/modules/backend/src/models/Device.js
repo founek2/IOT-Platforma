@@ -4,9 +4,12 @@ import sensorsScheme from './schema/sensors'
 import controlScheme from './schema/control'
 import hat from 'hat'
 import { devLog } from 'framework/src/Logger'
-import SensorData from './SensorData'
-import { keys } from 'ramda'
+import SensorHistory from './SensorHistory'
+import { keys, head } from 'ramda'
 import { IMAGES_DEVICES_FOLDER } from '../constants'
+import { isDay } from '../lib/util'
+import prepareControlHistoryData from '../lib/prepareControlHistoryData'
+import ControlHistory from './ControlHistory'
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -62,14 +65,28 @@ deviceSchema.statics.updateAck = async function (ownerId, topic) {
      return doc;
 }
 
-deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, state, updateTime) {
-     const updateStateQuery = prepareStateUpdate(state, updateTime)
+deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, data, updateTime) {
+     const updateStateQuery = prepareStateUpdate(data, updateTime)
      console.log("update query", updateStateQuery)
      const doc = await this.model('Device').findOneAndUpdate(
           { createdBy: mongoose.Types.ObjectId(createdBy), topic },
           { $set: { ...updateStateQuery, ack: updateTime } },
-          { fields: { "permissions.control": 1 } }).lean()
-     if (!doc) throw new Error("Invalid device")
+          {
+               fields: {
+                    "control.sampleInterval": 1,
+                    "control.recipe": 1,
+                    "control.historical.updatedAt": 1,
+                    "permissions.control": 1,
+               }
+          }).lean()
+     if (!doc) throw new Error("Invalid device") // TODO remove
+
+     const JSONkey = head(keys(data))
+     const state = data[JSONkey]
+     const query = prepareControlHistoryData(state, JSONkey, doc.control, updateTime)
+
+     ControlHistory.saveData(doc._id, JSONkey, query, updateTime)
+
      return doc
 }
 
@@ -331,38 +348,46 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
           .findOneAndUpdate(
                { createdBy: ownerId, topic: topic },   // should be ObjectId?
                { $set: { "sensors.current": { data, updatedAt: updateTime } } },
-               { fields: { "sensors.sampleInterval": 1, "sensors.recipe": 1, publicRead: 1, "sensors.historical.updatedAt": 1, "permissions.read": 1 } }
+               { fields: { "sensors.sampleInterval": 1, "sensors.recipe": 1, publicRead: 1, "sensors.historical.updatedAt": 1, "permissions.read": 1, "info.title": 1 } }
           ).then(doc => {
                if (doc) {
                     console.log("sensorsData updated")
                     const { sensors } = doc;
-                    const { historical : {updatedAt}  = {}} = sensors
+                    const { historical: { updatedAt } = {} } = sensors
 
-                    // -1 is never
+                    // sampleInterval === -1 means never save
                     if (sensors.sampleInterval !== -1 && (!updatedAt || (new Date() - updatedAt) / 1000 > sensors.sampleInterval)) {
                          const update = {}
                          const sum = {}
                          const min = {}
                          const max = {}
-                         const isDay = updateTime.getHours() >= 6 && updateTime.getHours() < 20
+                         const day = isDay(updateTime)
                          doc.sensors.recipe.forEach(({ JSONkey }) => {
                               const val = Number(data[JSONkey])
                               update["samples." + JSONkey] = val
                               update["timestamps"] = updateTime
                               min["min." + JSONkey] = val;
                               max["max." + JSONkey] = val
-                              if (isDay) {    // day
+                              if (day) {    // day
                                    sum["sum.day." + JSONkey] = val
                               } else {   // night
                                    sum["sum.night." + JSONkey] = val
                               }
                          })
 
-                         SensorData.saveData(doc._id, update, sum, min, max, updateTime, isDay)
+                         SensorHistory.saveData(doc._id, update, sum, min, max, updateTime, day)
                          doc.updateOne({ "sensors.historical.updatedAt": updateTime }).exec()
                     }
 
-                    return { deviceID: doc._id.toString(), publicRead: doc.publicRead, permissions: { read: doc.permissions.read } }
+                    return {
+                         _id: doc._id.toString(),
+                         info: doc.info,
+                         publicRead: doc.publicRead,
+                         permissions: { read: doc.permissions.read },
+                         sensors: doc.sensors
+
+
+                    }
 
                } else {
                     console.log("ERROR: saving sensors data to unexisting device")
@@ -379,7 +404,7 @@ deviceSchema.statics.delete = async function (deviceID, user) {
 
 deviceSchema.statics.checkWritePerm = async function (deviceID, userId) {
      if (deviceID.length != 24) return false
-     
+
      return await this.model('Device').exists({
           _id: mongoose.Types.ObjectId(deviceID),
           "permissions.write": mongoose.Types.ObjectId(userId)
@@ -412,7 +437,7 @@ deviceSchema.statics.checkReadPerm = async function (deviceID, userId) {
 }
 
 deviceSchema.statics.checkExist = async function (deviceID = "") {
-     if (deviceID.length != 24) return false
+     if (deviceID.length !== 24) return false
 
      return await this.model('Device').exists({
           _id: mongoose.Types.ObjectId(deviceID),
@@ -420,11 +445,15 @@ deviceSchema.statics.checkExist = async function (deviceID = "") {
 }
 
 deviceSchema.statics.getSensorsDataForAdmin = async function (deviceID, from, to) {
-     return SensorData.getData(deviceID, from, to)
+     return SensorHistory.getData(deviceID, from, to)
 }
 
 deviceSchema.statics.getSensorsData = async function (deviceID, from, to, user = {}) {
-     return SensorData.getData(deviceID, from, to)
+     return SensorHistory.getData(deviceID, from, to)
+}
+
+deviceSchema.statics.getControlData = async function (deviceID, JSONkey, from, to, user = {}) {
+     return ControlHistory.getData(deviceID, JSONkey, from, to)
 }
 
 deviceSchema.statics.getApiKey = async function (id, user = {}) {
@@ -477,6 +506,8 @@ deviceSchema.statics.initControl = async function (createdBy, topic, state, upda
           $set: updateStateQuery
      }, { fields: { "permissions.control": 1 }, new: true }).lean()
      if (!doc) throw new Error("invalidPermissions")
+
+
      return doc;
 }
 

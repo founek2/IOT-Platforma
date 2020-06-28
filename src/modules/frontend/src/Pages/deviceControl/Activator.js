@@ -1,10 +1,10 @@
-import React, { Fragment, useState } from 'react'
+import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import SendIcon from '@material-ui/icons/Send'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography';
-import Loader from 'framework-ui/src/Components/Loader'
 import boxHoc from './components/boxHoc'
+import ControlContextMenu from './components/ControlContextMenu'
 
 const styles = {
     button: {
@@ -19,6 +19,7 @@ const styles = {
     header: {
         height: "1.7em",
         overflow: 'hidden',
+        userSelect: 'none',
     },
     circle: {
         top: 3,
@@ -28,14 +29,19 @@ const styles = {
 }
 
 
-function Activator({ classes, name, onClick, data, ackTime, afk, pending }) {
+function Activator({ classes, name, onClick, data, ackTime, afk, pending, id, JSONkey }) {
     return (
-        <div onClick={() => !afk && !pending && onClick({ on: 1 })} className={classes.root}>
-            <Typography className={classes.header}>{name}</Typography>
-            <IconButton aria-label="delete" className={classes.button} disabled={afk || pending}>
-                <SendIcon fontSize="large" className={classes.icon} />
-            </IconButton>
-        </div>)
+
+        <ControlContextMenu name={name} id={id} JSONkey={JSONkey} render={({ handleOpen }) => {
+            return <div onClick={() => !afk && !pending && onClick({ on: 1 })} className={classes.root}>
+                <Typography className={classes.header} onContextMenu={handleOpen}>{name}</Typography>
+
+                <IconButton aria-label="delete" className={classes.button} disabled={afk || pending}>
+                    <SendIcon fontSize="large" className={classes.icon} />
+                </IconButton>
+            </div>
+        }} />
+    )
 }
 
 export default boxHoc(withStyles(styles)(Activator))

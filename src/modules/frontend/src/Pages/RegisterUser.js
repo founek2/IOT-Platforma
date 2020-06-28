@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { registerAngLogin, register } from 'framework-ui/src/redux/actions/application/user'
 import { bindActionCreators } from 'redux'
-import FieldConnector from 'framework-ui/src/Components/FieldConnector'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
@@ -87,7 +86,7 @@ function RegisterUser({ classes, registerAndLoginAction, authType, registerActio
      }
 
      const handleAuth = async (e) => {
-          if (e.target.value != "webAuth") return;
+          if (e.target.value !== "webAuth") return;
           setPending(true)
           try {
                const challenge = await getChallengeAction()
@@ -95,7 +94,7 @@ function RegisterUser({ classes, registerAndLoginAction, authType, registerActio
                console.log("credentials", credentials)
           } catch{
                // TODO change to empty auth
-           }
+          }
           setPending(false)
      }
      return (

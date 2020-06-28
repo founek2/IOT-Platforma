@@ -13,8 +13,6 @@ export default () => {
   return mongoose
     .connect(`mongodb://${config.dbUser}:${config.dbPwd}@localhost:27017/${config.dbName}`, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true })
     .then(async () => {
-      console.log('connected to mongoDB');
-
       await User.deleteMany({}).exec();
       await Device.deleteMany({}).exec();
 
@@ -23,5 +21,8 @@ export default () => {
       await User.create({ info: { firstName: "administrator", lastName: "admin", userName: config.mqttUser }, auth: { password: config.mqttPassword }, groups: ["admin"] })   // admin
 
       return mongoose.connection;
+    }).catch((err) => {
+      console.log('Failed to connect to mongoDB', err);
+
     })
 };

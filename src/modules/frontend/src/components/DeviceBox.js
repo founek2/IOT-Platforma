@@ -1,24 +1,18 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import { map, last } from 'ramda'
-import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
-import { Link } from 'react-router-dom'
-import Tooltip from '@material-ui/core/Tooltip';
-import {IMAGES_PREFIX_FOLDER} from '../constants'
+import { IMAGES_PREFIX_FOLDER } from '../constants'
 
 const styles = theme => ({
      card: {
           width: "25%",
           float: 'left',
           marginBottom: 1,
-            position: 'relative',
+          position: 'relative',
           [theme.breakpoints.down('sm')]: {
                width: "100%"
           },
@@ -57,7 +51,7 @@ const styles = theme => ({
                position: "absolute",
                right: 0,
                bottom: 0
-               
+
           },
      }
 

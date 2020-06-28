@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { filter } from 'ramda'
 
-import { getUserPresence, isUrlHash } from 'framework-ui/src/utils/getters'
+import { isUrlHash } from 'framework-ui/src/utils/getters'
 import CreateDeviceForm from './devices/CreateDeviceForm'
 import EditDeviceForm from './devices/EditDeviceForm'
 import EditSensorsForm from './devices/EditSensorsForm'
@@ -77,7 +77,7 @@ class Devices extends Component {
           return (
                <Fragment>
                     {devices.map(data => (
-                         <ControlBox device={data} key={data.id} onDelete={deleteDeviceAction}/>
+                         <ControlBox device={data} key={data.id} onDelete={deleteDeviceAction} />
                     ))}
 
                     <Fragment>
@@ -109,7 +109,7 @@ class Devices extends Component {
                          </FullScreenDialog>
                          <FullScreenDialog
                               open={openSensorsDialog && !!selectedDevice}
-                              onClose={() =>  history.push({ hash: '', search: '' })}
+                              onClose={() => history.push({ hash: '', search: '' })}
                               onExited={resetEditSensorsA}
                               heading="Editace senzorů"
                          >
@@ -117,7 +117,7 @@ class Devices extends Component {
                          </FullScreenDialog>
                          <FullScreenDialog
                               open={openControlDialog && !!selectedDevice}
-                              onClose={() =>  history.push({ hash: '', search: '' })}
+                              onClose={() => history.push({ hash: '', search: '' })}
                               onExited={resetEditControlA}
                               heading="Editace ovládání"
                          >

@@ -1,4 +1,4 @@
-import { values, forEach, keys, is, clone, forEachObjIndexed, uniq, F, isNil } from 'ramda';
+import { forEach, is, clone, forEachObjIndexed, uniq, F } from 'ramda';
 import { isNotEmpty } from 'ramda-extension';
 import getInPath from '../utils/getInPath';
 import {
@@ -6,7 +6,6 @@ import {
      getFormsData,
      getPristine,
      getFormDescriptors,
-     getRegisteredField,
      getFormData,
      getRegisteredFields
 } from '../utils/getters';
@@ -18,7 +17,7 @@ const notEmptyVal = (val) => requiredFn(val) === true
 
 const getWhenOpt = deepPath => {
      const idx = deepPath.split(".").pop()
-     return /[0-9]+/.test(idx) ?  {deepPath, i: Number.parseInt(idx)} : {deepPath}
+     return /[0-9]+/.test(idx) ? { deepPath, i: Number.parseInt(idx) } : { deepPath }
 }
 
 export const validateField = (deepPath, state, ignorePristine = false, ignoreRequired = false) => {
@@ -67,7 +66,7 @@ export const validateField = (deepPath, state, ignorePristine = false, ignoreReq
                     errorMessages: []
                };
           }
-     }else return {
+     } else return {
           valid: true,
           errorMessages: []
      };
@@ -125,7 +124,7 @@ export const validateForm = (formName, state, ignoreRequiredFields = false) => {
           const fields = regFields[formName];
           recursive((val, deepPath) => {
                arraOfPaths.push(deepPath)
-          }, val => isObject(val) && val.valid == undefined,
+          }, val => isObject(val) && val.valid === undefined,
                (val, deepPath) =>
                     is(Array, val) && arrayOfArrayFields.some(p => p === deepPath)
                , { [formName]: fields })
@@ -165,7 +164,7 @@ export const validateRegisteredFields = (formName, state, ignoreRequiredFields =
           recursive((val, deepPath) => {
                // if (deepPath === formName) debugger
                arraOfPaths.push(deepPath)
-          }, val => isObject(val) && val.valid == undefined,
+          }, val => isObject(val) && val.valid === undefined,
                (val, deepPath) =>
                     is(Array, val) && arrayOfArrayFields.some(p => p === deepPath)
                , { [formName]: regFields[formName] })

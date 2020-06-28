@@ -2,15 +2,16 @@ import Device from '../../models/Device'
 
 export default function (options) {
     return async ({ params: { id }, user = {} }, res, next) => {
-        if (user.admin) {
-            if (await Device.checkExist(id))
-                return next()
-        } else {
-            if (await Device.checkWritePerm(id, user.id))
-                return next()
-            else if (await Device.checkExist(id)) return res.status(208).send({ error: 'invalidPermissions' })
+        const exist = await Device.checkExist(id)
+        if (!exist) return res.status(208).send({ error: 'InvalidDeviceId' })
+
+        if (user.admin)
+            return next()
+
+        if (await Device.checkWritePerm(id, user.id)) {
+            return next()
         }
 
-        res.status(208).send({ error: 'InvalidDeviceId' })
+        return res.status(208).send({ error: 'invalidPermissions' })
     }
 }

@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { getGroups, getUsers, isUrlHash } from 'framework-ui/src/utils/getters';
 import EnchancedTable from 'framework-ui/src/Components/Table';
 import FullScreenDialog from 'framework-ui/src/Components/FullScreenDialog';
-import { merge, equals, pick, isEmpty } from 'ramda';
+import { merge, pick, isEmpty } from 'ramda';
 import arrToString from 'framework-ui/src/utils/arrToString';
 import { getAllowedGroups } from 'framework-ui/src/privileges';
 import { isGroupAllowed } from 'framework-ui/src/privileges'
@@ -92,7 +92,7 @@ class UserManagement extends Component {
                               <FieldConnector
                                    deepPath="USER_MANAGEMENT.selected"
                                    component={
-                                        ({onChange, value}) =>
+                                        ({ onChange, value }) =>
                                              <EnchancedTable
                                                   dataProps={userProps(getAllowedGroups(groups))}
                                                   data={users}

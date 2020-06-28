@@ -1,6 +1,6 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory'
-import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE } from '../constants'
-import { evolve, replace, mapObjIndexed, assocPath, is, forEachObjIndexed } from 'ramda'
+import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE, NotifyTypes, NOTIFY_TYPES, NotifyIntervals } from '../constants'
+import { assocPath, is, forEachObjIndexed } from 'ramda'
 import setInPath from 'framework-ui/src/utils/setInPath'
 
 function recursive(transform, predicate, object) {
@@ -18,7 +18,7 @@ function recursive(transform, predicate, object) {
 function transformToForm(formName, fields) {           // TODO doesnt work for nested fields
      let result = {};
      recursive((val, deepPath) => {
-          const newVal = {...val, deepPath: val.deepPath.replace(/[^.]*/, formName)}
+          const newVal = { ...val, deepPath: val.deepPath.replace(/[^.]*/, formName) }
           result = setInPath(deepPath, newVal, result)
      }, (val) => is(Object, val) && !val.deepPath, fields)
 
@@ -218,7 +218,7 @@ const EDIT_SENSORS = {
           required: true,
           label: 'Interval samplování',
           name: "sampleinterval",
-          validations: [validationFactory('isOneOf', {values: SampleIntervals})]
+          validations: [validationFactory('isOneOf', { values: SampleIntervals })]
      },
 
      'name[]': {
@@ -237,7 +237,7 @@ const EDIT_SENSORS = {
           deepPath: 'EDIT_SENSORS.JSONkey[]',
           label: 'Označení',
           required: true,
-          validations: [validationFactory('isString', { min: 1, max: 20})]
+          validations: [validationFactory('isString', { min: 1, max: 20 })]
      },
      "description[]": {
           deepPath: 'EDIT_SENSORS.description[]',
@@ -248,7 +248,7 @@ const EDIT_SENSORS = {
      "count": {
           deepPath: 'EDIT_SENSORS.count',
           label: 'Popis',
-          name:"count",
+          name: "count",
           validations: [validationFactory('isNumber')]
      }
 }
@@ -297,32 +297,51 @@ const EDIT_NOTIFY_SENSORS = {
           deepPath: 'EDIT_NOTIFY_SENSORS.type[]',
           label: 'Akce',
           required: true,
-          validations: [validationFactory('isString', { min: 1, max: 6 })]
+          validations: [validationFactory('isOneOf', { values: NotifyTypes })]
      },
      "value[]": {
           deepPath: 'EDIT_NOTIFY_SENSORS.value[]',
           label: 'Mezní hodnota',
           required: true,
-          when: ({type}, {i}) =>  !type || type[i] !== "change",  // needs constant
-          validations: [validationFactory('isNumber')]
-     },
-     "interval[]": {
-          deepPath: 'EDIT_NOTIFY_SENSORS.interval[]',
-          label: 'Interval',
-          required: true,
+          when: ({ type }, { i }) => !type || type[i] !== NOTIFY_TYPES.ALWAYS,  // needs constant
           validations: [validationFactory('isNumber')]
      },
      "description[]": {
           deepPath: 'EDIT_NOTIFY_SENSORS.description[]',
-          defaultValue: "",
           label: 'Popis',
           validations: [validationFactory('isString', { min: 1, max: 200 })]
      },
      "count": {
           deepPath: 'EDIT_NOTIFY_SENSORS.count',
-          name:"count",
+          name: "count",
           required: true,
           validations: [validationFactory('isNumber')]
+     },
+     'advanced': {
+          "daysOfWeek[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.daysOfWeek[]',
+               label: 'Dny v týdnu',
+               // required: true,
+               validations: [validationFactory('isArray', { min: 1, max: 200 })]
+          },
+          "interval[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.interval[]',
+               label: 'Interval',
+               // required: true,
+               validations: [validationFactory('isOneOf', { values: NotifyIntervals })]
+          },
+          "from[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.from[]',
+               label: 'Od',
+               // required: true,
+               validations: [validationFactory('isTime')]
+          },
+          "to[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.to[]',
+               label: 'Do',
+               // required: true,
+               validations: [validationFactory('isTime')]
+          },
      }
 }
 
@@ -425,6 +444,17 @@ const EDIT_PERMISSIONS = {
      }
 }
 
+const FIREBASE_ADD = {
+     token: {
+          deepPath: 'FIREBASE_ADD.token',
+          label: "Token",
+          required: true,
+          validations: [validationFactory('isString', {
+               min: 100
+          })]
+     }
+}
+
 export default {
      LOGIN,
      REGISTRATION,
@@ -439,4 +469,5 @@ export default {
      CHANGE_DEVICE_STATE_RGB,
      CHANGE_DEVICE_STATE_SWITCH,
      EDIT_NOTIFY_SENSORS,
+     FIREBASE_ADD,
 }

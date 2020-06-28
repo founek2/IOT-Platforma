@@ -12,7 +12,8 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import Dialog from '../Dialog';
-import {compose} from 'ramda';
+import { compose } from 'ramda';
+import SearchField from './SearchField'
 
 const toolbarStyles = theme => ({
      root: {
@@ -21,13 +22,13 @@ const toolbarStyles = theme => ({
      highlight:
           theme.palette.type === 'light'
                ? {
-                      color: theme.palette.secondary.main,
-                      backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-                 }
+                    color: theme.palette.secondary.main,
+                    backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+               }
                : {
-                      color: theme.palette.text.primary,
-                      backgroundColor: theme.palette.secondary.dark
-                 },
+                    color: theme.palette.text.primary,
+                    backgroundColor: theme.palette.secondary.dark
+               },
      spacer: {
           flex: '1 1 80%'
      },
@@ -53,8 +54,9 @@ class EnhancedTableToolbar extends React.Component {
                alert: { open: false }
           });
      };
+
      render() {
-          const { numSelected, classes, headLabel, onDelete, onAdd, enableCreation } = this.props;
+          const { numSelected, classes, headLabel, onDelete, onAdd, enableCreation, onSearchChange, enableSearch } = this.props;
 
           return (
                <Fragment>
@@ -69,10 +71,16 @@ class EnhancedTableToolbar extends React.Component {
                                         {numSelected} selected
                                    </Typography>
                               ) : (
-                                   <Typography variant="h5" id="tableTitle">
-                                        {headLabel}
-                                   </Typography>
-                              )}
+                                        <Fragment>
+                                             <Typography variant="h5" id="tableTitle">
+                                                  {headLabel}
+                                             </Typography>
+                                             {enableSearch ? <SearchField
+                                                  onChange={onSearchChange}
+                                                  placeholder="Vyhledávání"
+                                             /> : null}
+                                        </Fragment>
+                                   )}
                          </div>
                          <div className={classes.spacer} />
                          <div className={classes.actions}>
@@ -83,29 +91,29 @@ class EnhancedTableToolbar extends React.Component {
                                         </IconButton>
                                    </Tooltip>
                               ) : (
-                                   <Fragment>
-                                        {enableCreation && (
-                                             <Fab color="primary" aria-label="Add" size="small" onClick={onAdd}>
-                                                  <AddIcon />
-                                             </Fab>
-                                        )}
-                                        {/* <Tooltip title="Filter list">
+                                        <Fragment>
+                                             {enableCreation && (
+                                                  <Fab color="primary" aria-label="Add" size="small" onClick={onAdd}>
+                                                       <AddIcon />
+                                                  </Fab>
+                                             )}
+                                             {/* <Tooltip title="Filter list">
                                    <IconButton aria-label="Filter list">
                                         <FilterListIcon />
                                    </IconButton>
                               </Tooltip> */}
-                                   </Fragment>
-                              )}
+                                        </Fragment>
+                                   )}
                          </div>
                     </Toolbar>
-				<Dialog 
-					open={this.state.alert.open}
-					onClose={this.closeAlert}
-                         onAgree={compose(this.closeAlert,onDelete)}
+                    <Dialog
+                         open={this.state.alert.open}
+                         onClose={this.closeAlert}
+                         onAgree={compose(this.closeAlert, onDelete)}
                          cancelText="Zrušit"
-					content="Opravdu chcete odstranit vybrané položky? Tato akce je nevratná."
-					title="Odstranění vybraných položek"
-				/>
+                         content="Opravdu chcete odstranit vybrané položky? Tato akce je nevratná."
+                         title="Odstranění vybraných položek"
+                    />
                </Fragment>
           );
      }

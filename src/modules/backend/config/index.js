@@ -13,6 +13,8 @@ export default process.env.IOT_CONFIG
     mqttUser: process.env.IOT_MQTT_USER,
     mqttPassword: process.env.IOT_MQTT_PASSWD,
     imagesPath: process.env.IOT_IMAGES_PATH,
+    firebaseAdminPath: process.env.IOT_FIREBASE_ADMIN_PATH,
     testUser: "test1",
-    testPassword: "123456"
+    testPassword: "123456",
+    homepage: process.env.IOT_HOME_PAGE,
   })

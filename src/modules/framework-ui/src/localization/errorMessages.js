@@ -1,4 +1,4 @@
-import {messageFactory} from './index';
+import { messageFactory } from './index';
 
 export const messages = {
 	userAlreadyExist: 'Uživatel již existuje',
@@ -6,7 +6,7 @@ export const messages = {
 	unknownUser: 'Neznámý uživatel',
 	userDoesNotExist: "Uživatel již neexistuje",
 	invalidToken: "Neplatný token",
-	tokenNotProvided: "Token nebyl v hlavičce", 
+	tokenNotProvided: "Token nebyl v hlavičce",
 	lowPermissionsForThatGroups: "Nízké oprávnění pro nastavení těchto skupin",
 	unexpectedError: "Nastala neočekávaná chyba",
 	unavailableBackend: "Nedostupný server",
@@ -17,7 +17,8 @@ export const messages = {
 	notAllowedExtension: "Nepodporovaný formát souboru",
 	missingFormData: "V dotazu chybí formulářová data",
 	invalidPermissions: "Nedostatečná oprávnění",
-	validationFailed: "Nevalidní formulář"
+	validationFailed: "Nevalidní formulář",
+	InvalidParam: "Špatný request"
 };
 
 export default messageFactory(messages)

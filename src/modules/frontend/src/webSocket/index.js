@@ -1,11 +1,11 @@
 import io from 'socket.io-client'
 import { devLog } from 'framework-ui/src/Logger'
-import {T} from "ramda"
+import { T } from "ramda"
 
 class MySocket {
     constructor() {
         this._on = [];
-        this.socket = {on: T, off: T, close: T}
+        this.socket = { on: T, off: T, close: T }
     }
 
     init = (token) => {
@@ -33,7 +33,7 @@ class MySocket {
 
     off = (action, fn) => {
         this.socket.off(action, fn)
-        this._on.filter(([a, f]) => action != a && f != fn)
+        this._on.filter(([a, f]) => action !== a && f !== fn)
     }
     applyListeners = (socket) => {
         this._on.forEach(([action, fn]) => {
@@ -43,12 +43,12 @@ class MySocket {
 
     close = () => {
         // if (this.socket.connected)
-            this.socket.close()
+        this.socket.close()
     }
 
-    emit = (...other) => 
+    emit = (...other) =>
         this.socket.emit(...other)
-    
+
 }
 
 const mySocket = new MySocket();
@@ -57,7 +57,7 @@ function init(token = "") {
     devLog("connecting to socket")
     mySocket.close();
     mySocket.init(token)
-    
+
 }
 
 function getSocket() {

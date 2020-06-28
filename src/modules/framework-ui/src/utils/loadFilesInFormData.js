@@ -1,14 +1,12 @@
-import { clone, forEachObjIndexed } from 'ramda'
-import blobToBase64 from './blobToBase64'
+import { forEachObjIndexed } from 'ramda'
 import setInPath from './setInPath'
-import MyFile from '../dto/MyFile'
 
 const isObject = (val) => Object.prototype.toString.call(val) === "[object Object]"
 
 export default async function loadFilesInFormData(formData) {
      let newData = formData
      const arr = []
-    
+
      recursive((val, deepPath) => {
           arr.push(val.getDataFile().then((obj) => {
                newData = setInPath(deepPath, obj, newData)
@@ -19,7 +17,7 @@ export default async function loadFilesInFormData(formData) {
      return newData
 }
 
-function recursive(transform, predicate,predicateProcess, object) {
+function recursive(transform, predicate, predicateProcess, object) {
      const func = (accum = '') => (value, key) => {
           if (predicateProcess(value)) transform(value, accum + key)
           if (predicate(value)) return recObj(value, accum + key + ".")

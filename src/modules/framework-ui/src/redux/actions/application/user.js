@@ -1,9 +1,8 @@
-import { actionTypes, POSITION_UPDATE_INTERVAL } from '../../../constants/redux'
-import { getFormData, getToken } from '../../../utils/getters'
+import { actionTypes } from '../../../constants/redux'
+import { getFormData } from '../../../utils/getters'
 import {
      create as createUserApi,
      login as loginApi,
-     sendActive as apiActive,
      getUserAuthType as getUserAuthTypeApi,
 } from '../../../api/userApi'
 import { resetForm, updateFormField, validateRegisteredFields, validateField } from '../formsData'

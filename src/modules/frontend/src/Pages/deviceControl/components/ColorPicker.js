@@ -1,7 +1,6 @@
-import React, { Fragment, useState } from 'react'
+import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { CirclePicker } from 'react-color'
-import textFieldStyles from 'framework-ui/src/Components/fieldConnector/styles'
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 const styles = theme => ({
@@ -14,11 +13,11 @@ const styles = theme => ({
         borderRadius: 4
     },
     textField: {
-          marginTop: theme.spacing(1),
-          width: 200,
-          [theme.breakpoints.down('sm')]: {
-               width: "100%"
-          }
+        marginTop: theme.spacing(1),
+        width: 200,
+        [theme.breakpoints.down('sm')]: {
+            width: "100%"
+        }
     }
 })
 
@@ -26,15 +25,15 @@ function ColorPicker({ value, onChange, classes, error, FormHelperTextProps, hel
     return (
         <div>
             <div className={classes.textField}>
-            <div style={{ backgroundColor: value }} className={classes.colored} />
-            {error && <FormHelperText {...FormHelperTextProps}>{helperText}</FormHelperText>}
+                <div style={{ backgroundColor: value }} className={classes.colored} />
+                {error && <FormHelperText {...FormHelperTextProps}>{helperText}</FormHelperText>}
             </div>
             <div className={classes.colorWrap}>
                 <CirclePicker
                     color={value}
                     onChange={(color) => onChange({ target: { value: color.hex } })}
                     width="200"
-                    style={{marginBottom: 0}}
+                    style={{ marginBottom: 0 }}
                     {...other}
                 />
             </div>

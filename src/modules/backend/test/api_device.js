@@ -7,12 +7,12 @@ import authChecker from "./lib/authChecker"
 import formDataChecker from "./lib/formDataChecker"
 import dbConnect from './lib/db'
 import mongoose from 'mongoose'
-const ObjectId = mongoose.Types.ObjectId;
 
 import Device from '../src/models/Device'
 import getAdminToken from "./lib/getAdminToken.js";
 import permMiddlewareChecker from './lib/permMiddlewareChecker'
 
+const ObjectId = mongoose.Types.ObjectId;
 const server = supertest.agent(config.url);
 
 function createDevice(form, token) {
@@ -181,7 +181,6 @@ describe("Device API test", async function () {
                                     name: 'Vlhkost',
                                     JSONkey: 'hum',
                                     unit: '%',
-                                    description: "",
                                 }],
                             sampleInterval: 120,
                         }
@@ -257,7 +256,11 @@ describe("Device API test", async function () {
         should.equal(await permMiddlewareChecker("/api/device/dsadasd", "put"), "InvalidDeviceId")
         should.equal(await permMiddlewareChecker("/api/device/dsadasd", "patch"), "InvalidDeviceId")
         should.equal(await permMiddlewareChecker("/api/device/dsadasd", "delete"), "InvalidDeviceId")
-        should.equal(await permMiddlewareChecker("/api/device/dsadasd", "get"), "InvalidDeviceId")
+        should.equal(await permMiddlewareChecker("/api/device/dsadasd?type=sensors", "get"), "InvalidDeviceId")
+        should.equal(await permMiddlewareChecker("/api/device/dsadasd?type=apiKey", "get"), "InvalidDeviceId")
+        should.equal(await permMiddlewareChecker("/api/device/dsadasd?type=control", "get"), "InvalidDeviceId")
+
+        should.equal(await permMiddlewareChecker("/api/device/dsadasd", "get"), "InvalidParam")
 
         const token = await getAdminToken()
         const res = await createDevice(forms.create_device, token)  // created by admin
@@ -266,9 +269,12 @@ describe("Device API test", async function () {
         should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}`, "put"), "invalidPermissions")
         should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}`, "patch"), "invalidPermissions")
         should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}`, "delete"), "invalidPermissions")
-        should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}`, "get"), "invalidPermissions")
+        should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}?type=control`, "get"), "invalidPermissions")
+        should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}?type=apiKey`, "get"), "invalidPermissions")
+        should.equal(await permMiddlewareChecker(`/api/device/${res.body.doc.id}?type=sensors`, "get"), "invalidPermissions")
 
         await Device.deleteOne({ _id: new ObjectId(res.body.doc.id) }).exec() // clean
+        return null
     })
 
     after(function (done) {

@@ -10,10 +10,11 @@ import * as serviceWorker from '../serviceWorker'
 import Snackbar from '@material-ui/core/Snackbar'
 import Button from '@material-ui/core/Button'
 
+import { init as initFirebase } from '../firebase'
 import '../privileges' // init
 registerFunctions(fns);  // register custom validation functions
 
-let place_holder = () => console.log("nothing to install");
+let place_holder = () => console.log("nothing to install");
 function Root({ component }) {
      const [newVersion, setNewVersion] = useState(false)
      const [forceInstall, setForceInstall] = useState(() => place_holder)
@@ -26,9 +27,10 @@ function Root({ component }) {
                          installingWorker.postMessage({ action: 'skipWaiting' })
                          setNewVersion(false)
                     })
-               }
+               },
           }
           serviceWorker.register(config)
+          initFirebase()
      }, [])
 
      const Component = component

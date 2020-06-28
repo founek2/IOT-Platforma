@@ -1,4 +1,4 @@
-import { prop, o, curry, compose, has, filter, equals, is } from 'ramda'
+import { prop, o, curry, compose, has, filter, equals } from 'ramda'
 import getInPath from './getInPath'
 
 export const getFormsData = prop('formsData')

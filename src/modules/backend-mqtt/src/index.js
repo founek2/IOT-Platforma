@@ -9,6 +9,7 @@ import config from "backend/config/index.js"
 import Jwt from 'framework/src/services/jwt'
 import api from './api'
 import bodyParser from 'body-parser'
+import * as FireBase from './service/FireBase'
 
 const app = express()
 app.server = http.createServer(app)
@@ -19,13 +20,14 @@ app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
 
 app.use("/api", (req, res, next) =>
-     bodyParser.json({
-          limit: "100kb"
-     })(req, res, next)
+    bodyParser.json({
+        limit: "100kb"
+    })(req, res, next)
 )
 
 initializeDb(config, db => {
     Jwt.init(config)
+    FireBase.init(config)
 
     app.use("/websocket/io", webSockets(app.io))
 

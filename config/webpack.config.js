@@ -41,7 +41,7 @@ const sassModuleRegex = /\.module\.(scss|sass)$/
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
-module.exports = function(webpackEnv) {
+module.exports = function (webpackEnv) {
      const isEnvDevelopment = webpackEnv === 'development'
      const isEnvProduction = webpackEnv === 'production'
 
@@ -202,13 +202,13 @@ module.exports = function(webpackEnv) {
                               parser: safePostCssParser,
                               map: shouldUseSourceMap
                                    ? {
-                                          // `inline: false` forces the sourcemap to be output into a
-                                          // separate file
-                                          inline: false,
-                                          // `annotation: true` appends the sourceMappingURL to the end of
-                                          // the css file, helping the browser find the sourcemap
-                                          annotation: true
-                                     }
+                                        // `inline: false` forces the sourcemap to be output into a
+                                        // separate file
+                                        inline: false,
+                                        // `annotation: true` appends the sourceMappingURL to the end of
+                                        // the css file, helping the browser find the sourcemap
+                                        annotation: true
+                                   }
                                    : false
                          }
                     })
@@ -308,12 +308,12 @@ module.exports = function(webpackEnv) {
                               {
                                    test: /\.(js|mjs|jsx|ts|tsx)$/,
                                    include: paths.appSrc,
-							loader: require.resolve('babel-loader'),
+                                   loader: require.resolve('babel-loader'),
                                    options: {
                                         // customize: require.resolve('babel-preset-react-app/webpack-overrides'),
-								presets: [
-									"react-app"
-							    ],
+                                        presets: [
+                                             "react-app"
+                                        ],
                                         plugins: [
                                              [require.resolve('@babel/plugin-proposal-class-properties')],
                                              // [
@@ -446,7 +446,7 @@ module.exports = function(webpackEnv) {
           plugins: [
                new webpack.ProvidePlugin({
                     'logger': 'framework-ui/src/Logger'
-                  }),
+               }),
                // Generates an `index.html` file with the <script> injected.
                new HtmlWebpackPlugin(
                     Object.assign(
@@ -457,19 +457,19 @@ module.exports = function(webpackEnv) {
                          },
                          isEnvProduction
                               ? {
-                                     minify: {
-                                          removeComments: true,
-                                          collapseWhitespace: true,
-                                          removeRedundantAttributes: true,
-                                          useShortDoctype: true,
-                                          removeEmptyAttributes: true,
-                                          removeStyleLinkTypeAttributes: true,
-                                          keepClosingSlash: true,
-                                          minifyJS: true,
-                                          minifyCSS: true,
-                                          minifyURLs: true
-                                     }
-                                }
+                                   minify: {
+                                        removeComments: true,
+                                        collapseWhitespace: true,
+                                        removeRedundantAttributes: true,
+                                        useShortDoctype: true,
+                                        removeEmptyAttributes: true,
+                                        removeStyleLinkTypeAttributes: true,
+                                        keepClosingSlash: true,
+                                        minifyJS: true,
+                                        minifyCSS: true,
+                                        minifyURLs: true
+                                   }
+                              }
                               : undefined
                     )
                ),
@@ -504,12 +504,12 @@ module.exports = function(webpackEnv) {
                // See https://github.com/facebook/create-react-app/issues/186
                isEnvDevelopment && new WatchMissingNodeModulesPlugin(paths.appNodeModules),
                isEnvProduction &&
-                    new MiniCssExtractPlugin({
-                         // Options similar to the same options in webpackOptions.output
-                         // both options are optional
-                         filename: 'static/css/[name].[contenthash:8].css',
-                         chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
-                    }),
+               new MiniCssExtractPlugin({
+                    // Options similar to the same options in webpackOptions.output
+                    // both options are optional
+                    filename: 'static/css/[name].[contenthash:8].css',
+                    chunkFilename: 'static/css/[name].[contenthash:8].chunk.css'
+               }),
                // Generate a manifest file which contains a mapping of all asset filenames
                // to their corresponding output file so that tools can pick it up without
                // having to parse `index.html`.
@@ -526,55 +526,55 @@ module.exports = function(webpackEnv) {
                // Generate a service worker script that will precache, and keep up to date,
                // the HTML & assets that are part of the Webpack build.
                // isEnvProduction &&
-                    // new WorkboxWebpackPlugin.GenerateSW({
-                    //      clientsClaim: true,
-                    //      exclude: [/\.map$/, /asset-manifest\.json$/],
-                    //      importWorkboxFrom: 'cdn',
-                    //      navigateFallback: publicUrl + '/index.html',
-                    //      navigateFallbackBlacklist: [
-                    //           // Exclude URLs starting with /_, as they're likely an API call
-                    //           new RegExp('^/_'),
-                    //           // Exclude URLs containing a dot, as they're likely a resource in
-                    //           // public/ and not a SPA route
-                    //           new RegExp('/[^/]+\\.[^/]+$')
-                    //      ]
-                    // }),
-                    new WorkboxWebpackPlugin.InjectManifest({
-                         swSrc: "./src/modules/frontend/src/sw.js", // custom sw rule
-                         // swDest: "build/sw.js", // sw output file (auto-generated
-                         // globDirectory: "build",
-                         globPatterns: ["**/*.{js,css,html,svg}"],
-                         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
-                     }),
+               // new WorkboxWebpackPlugin.GenerateSW({
+               //      clientsClaim: true,
+               //      exclude: [/\.map$/, /asset-manifest\.json$/],
+               //      importWorkboxFrom: 'cdn',
+               //      navigateFallback: publicUrl + '/index.html',
+               //      navigateFallbackBlacklist: [
+               //           // Exclude URLs starting with /_, as they're likely an API call
+               //           new RegExp('^/_'),
+               //           // Exclude URLs containing a dot, as they're likely a resource in
+               //           // public/ and not a SPA route
+               //           new RegExp('/[^/]+\\.[^/]+$')
+               //      ]
+               // }),
+               new WorkboxWebpackPlugin.InjectManifest({
+                    swSrc: "./src/modules/frontend/src/sw.js", // custom sw rule
+                    // swDest: "sw.js", // sw output file (auto-generated
+                    // globDirectory: "build",
+                    globPatterns: ["**/*.{js,css,html,svg}"],
+                    maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+               }),
                // TypeScript type checking
                useTypeScript &&
-                    new ForkTsCheckerWebpackPlugin({
-                         typescript: resolve.sync('typescript', {
-                              basedir: paths.appNodeModules
-                         }),
-                         async: false,
-                         checkSyntacticErrors: true,
-                         tsconfig: paths.appTsConfig,
-                         compilerOptions: {
-                              module: 'esnext',
-                              moduleResolution: 'node',
-                              resolveJsonModule: true,
-                              isolatedModules: true,
-                              noEmit: true,
-                              jsx: 'preserve'
-                         },
-                         reportFiles: [
-                              '**',
-                              '!**/*.json',
-                              '!**/__tests__/**',
-                              '!**/?(*.)(spec|test).*',
-                              '!**/src/setupProxy.*',
-                              '!**/src/setupTests.*'
-                         ],
-                         watch: paths.appSrc,
-                         silent: true,
-                         formatter: typescriptFormatter
-                    })
+               new ForkTsCheckerWebpackPlugin({
+                    typescript: resolve.sync('typescript', {
+                         basedir: paths.appNodeModules
+                    }),
+                    async: false,
+                    checkSyntacticErrors: true,
+                    tsconfig: paths.appTsConfig,
+                    compilerOptions: {
+                         module: 'esnext',
+                         moduleResolution: 'node',
+                         resolveJsonModule: true,
+                         isolatedModules: true,
+                         noEmit: true,
+                         jsx: 'preserve'
+                    },
+                    reportFiles: [
+                         '**',
+                         '!**/*.json',
+                         '!**/__tests__/**',
+                         '!**/?(*.)(spec|test).*',
+                         '!**/src/setupProxy.*',
+                         '!**/src/setupTests.*'
+                    ],
+                    watch: paths.appSrc,
+                    silent: true,
+                    formatter: typescriptFormatter
+               })
           ].filter(Boolean),
           // Some libraries import Node modules but don't use them in the browser.
           // Tell Webpack to provide empty mocks for them so importing them works.

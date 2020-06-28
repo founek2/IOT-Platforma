@@ -1,22 +1,24 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import Switch from './deviceControl/Swich'
-import Activator from './deviceControl/Activator'
 import { connect } from 'react-redux'
-import { getDevices } from '../utils/getters'
-import { filter, isEmpty, keys } from 'ramda'
+import { filter, isEmpty } from 'ramda'
 import { bindActionCreators } from 'redux'
-import * as deviceActions from '../store/actions/application/devices'
 import { Typography } from '@material-ui/core'
+
 import io from '../webSocket'
 import RgbSwitch from './deviceControl/RgbSwitch'
-import {ControlTypesFormNames} from '../constants'
+import { ControlTypesFormNames, CONTROL_TYPES } from '../constants'
+import { isUrlHash } from 'framework-ui/src/utils/getters'
+import { getQueryID } from '../utils/getters'
+import * as deviceActions from '../store/actions/application/devices'
+import Switch from './deviceControl/Swich'
+import Activator from './deviceControl/Activator'
+import { getDevices } from '../utils/getters'
 
 const compMapper = {
-     activator: Activator,
-     switch: Switch,
-     rgbSwitch: RgbSwitch,
+     [CONTROL_TYPES.ACTIVATOR]: Activator,
+     [CONTROL_TYPES.SWITCH]: Switch,
+     [CONTROL_TYPES.RGB_SWITCH]: RgbSwitch,
 }
 
 function isControllable(device) {
@@ -75,17 +77,21 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
           device.control.recipe.forEach(({ name, type, JSONkey, description }) => {
 
                const Comp = compMapper[type]
-               const data = (device.control.current && device.control.current.data[JSONkey] && device.control.current.data[JSONkey]) || {}
-               arr.push(<Comp
-                    key={`${device.id}/${JSONkey}`}
-                    name={name}
-                    description={description}
-                    onClick={(val) => updateDeviceStateA(device.id, JSONkey, val, ControlTypesFormNames[type])}
-                    data={data}
-                    className={classes.item}
-                    ackTime={device.ack}
-                    updateTime={device.ack}     // to force updating
-               />)
+               if (Comp) {
+                    const data = (device.control.current && device.control.current.data[JSONkey] && device.control.current.data[JSONkey]) || {}
+                    arr.push(<Comp
+                         key={`${device.id}/${JSONkey}`}
+                         name={name}
+                         description={description}
+                         onClick={(val) => updateDeviceStateA(device.id, JSONkey, val, ControlTypesFormNames[type])}
+                         data={data}
+                         className={classes.item}
+                         ackTime={device.ack}
+                         updateTime={device.ack}     // to force updating
+                         id={device.id}
+                         JSONkey={JSONkey}
+                    />)
+               } else { throw new Error("Invalid component type") }
           })
      })
 
@@ -95,9 +101,15 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
      </div>
 }
 
-const _mapStateToProps = state => ({
-     devices: filter(isControllable, getDevices(state))
-})
+const _mapStateToProps = state => {
+     const id = getQueryID(state)
+     const devices = filter(isControllable, getDevices(state))
+     return {
+          devices,
+          openNotifyDialog: isUrlHash('#editNotify')(state),
+          selectedDevice: devices.find(dev => dev.id === id),
+     }
+}
 
 const _mapDispatchToProps = dispatch =>
      bindActionCreators(

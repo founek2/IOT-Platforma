@@ -1,11 +1,10 @@
 import { ActionTypes } from '../../../constants/redux'
 import { handleActions } from 'redux-actions'
-import {merge} from 'ramda'
 
 const set = {
     next(state, action) {
         console.log("setting")
-         return { data: action.payload, lastFetch: new Date() }
+        return { data: action.payload, lastFetch: new Date() }
     }
 }
 

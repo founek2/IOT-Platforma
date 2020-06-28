@@ -4,6 +4,25 @@
 # -e when any command fails, the script emmediately exit
 set -u
 
+# parse_params() {
+# A POSIX variable
+OPTIND=1 # Reset in case getopts has been used previously in the shell.
+
+# Initialize our own variables:
+GREP_PARAM=""
+while getopts "g:" opt; do
+    case "$opt" in
+    g)
+        GREP_PARAM=$OPTARG
+        ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+[ "${1:-}" = "--" ] && shift
+# echo "ignoring params: $@"
+
 SCRIPTPATH="$(
     cd "$(dirname "$0")" >/dev/null 2>&1
     pwd -P
@@ -25,8 +44,8 @@ rm -rf /tmp/images
 mkdir -p /tmp/images/devices
 
 TMUX_SESSION="Testing BE server"
-run_server(){
-    tmux kill-session -t "$TMUX_SESSION" > /dev/null 2>&1
+run_server() {
+    tmux kill-session -t "$TMUX_SESSION" >/dev/null 2>&1
     tmux new -s "$TMUX_SESSION" -d 'yarn babel-node ./src/modules/backend/src/index.js'
 }
 
@@ -35,11 +54,11 @@ stop_server() {
 }
 
 check_running() {
-    yarn wait-port -t 10000 localhost:4545  # should load port number from IOT_CONFIG
-    if [ $? != 0 ];then
+    yarn wait-port -t 10000 localhost:4545 # should load port number from IOT_CONFIG
+    if [ $? != 0 ]; then
         echo "Cant start server"
         exit 1
-    fi;
+    fi
 }
 
 case "$1" in
@@ -48,14 +67,14 @@ all-results)
 
     check_running
     yarn mochaReport \
-    "$BE_TEST_PATH" \
-    "$BE_MQTT_TEST_PATH" \
-    "$FRAMEWORK_UI_TEST_PATH"
+        "$BE_TEST_PATH" \
+        "$BE_MQTT_TEST_PATH" \
+        "$FRAMEWORK_UI_TEST_PATH"
 
     stop_server
     ;;
 runBE)
-    run_server
+    yarn babel-node ./src/modules/backend/src/index.js
     ;;
 stopBE)
     stop_server
@@ -64,37 +83,37 @@ all)
     run_server
 
     check_running
-    yarn mocha \
-    "$BE_TEST_PATH" \
-    "$BE_MQTT_TEST_PATH" \
-    "$FRAMEWORK_UI_TEST_PATH"
+    yarn mocha -g "$GREP_PARAM" \
+        "$BE_TEST_PATH" \
+        "$BE_MQTT_TEST_PATH" \
+        "$FRAMEWORK_UI_TEST_PATH"
 
     stop_server
     ;;
 FE)
-    yarn mocha "$FE_TEST_PATH"
+    yarn mocha -g "$GREP_PARAM" "$FE_TEST_PATH"
     ;;
 BE)
-    run_server
+    # run_server
 
     check_running
-    yarn mocha "$BE_TEST_PATH"
+    yarn mocha -g "$GREP_PARAM" "$BE_TEST_PATH"
 
-    stop_server
+    # stop_server
     ;;
 BE-mqtt)
     run_server
 
     check_running
-    yarn mocha "$BE_MQTT_TEST_PATH"
+    yarn mocha -g "$GREP_PARAM" "$BE_MQTT_TEST_PATH"
 
     stop_server
     ;;
 f)
-    yarn mocha "$FRAMEWORK_TEST_PATH"
+    yarn mocha -g "$GREP_PARAM" "$FRAMEWORK_TEST_PATH"
     ;;
 f-ui)
-    yarn mocha "$FRAMEWORK_UI_TEST_PATH"
+    yarn mocha -g "$GREP_PARAM" "$FRAMEWORK_UI_TEST_PATH"
     ;;
 *)
     echo "Usage: {all|all-results|BE|BE-mqtt|FE|f|f-ui|runBE|stopBE}" >&2

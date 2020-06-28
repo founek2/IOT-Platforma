@@ -1,4 +1,4 @@
-import React, { useState, Component } from 'react';
+import React, { Component } from 'react';
 import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import UserForm from '../../components/UserForm'
 import { withStyles } from '@material-ui/core/styles'
@@ -12,8 +12,7 @@ import Button from '@material-ui/core/Button'
 import Loader from 'framework-ui/src/Components/Loader'
 import { map, pick } from 'ramda'
 
-import { getGroups, getUsers } from 'framework-ui/src/utils/getters'
-import { getQueryID } from '../../utils/getters'
+import { getGroups } from 'framework-ui/src/utils/getters'
 import { getAllowedGroups } from 'framework-ui/src/privileges'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 
@@ -84,7 +83,7 @@ class EditUser extends Component {
      }
 
      setPending = b => this.setState({ pending: b })
-     
+
      render() {
           const { classes, groups, onButtonClick } = this.props;
           const { pending } = this.state;
