@@ -25,8 +25,8 @@ rm -rf /tmp/images
 mkdir -p /tmp/images/devices
 
 TMUX_SESSION="Testing BE server"
-run_server(){
-    tmux kill-session -t "$TMUX_SESSION" > /dev/null 2>&1
+run_server() {
+    tmux kill-session -t "$TMUX_SESSION" >/dev/null 2>&1
     tmux new -s "$TMUX_SESSION" -d 'yarn babel-node ./src/modules/backend/src/index.js'
 }
 
@@ -35,11 +35,11 @@ stop_server() {
 }
 
 check_running() {
-    yarn wait-port -t 10000 localhost:4545  # should load port number from IOT_CONFIG
-    if [ $? != 0 ];then
+    yarn wait-port -t 10000 localhost:4545 # should load port number from IOT_CONFIG
+    if [ $? != 0 ]; then
         echo "Cant start server"
         exit 1
-    fi;
+    fi
 }
 
 case "$1" in
@@ -48,14 +48,14 @@ all-results)
 
     check_running
     yarn mochaReport \
-    "$BE_TEST_PATH" \
-    "$BE_MQTT_TEST_PATH" \
-    "$FRAMEWORK_UI_TEST_PATH"
+        "$BE_TEST_PATH" \
+        "$BE_MQTT_TEST_PATH" \
+        "$FRAMEWORK_UI_TEST_PATH"
 
     stop_server
     ;;
 runBE)
-    run_server
+    yarn babel-node ./src/modules/backend/src/index.js
     ;;
 stopBE)
     stop_server
@@ -65,9 +65,9 @@ all)
 
     check_running
     yarn mocha \
-    "$BE_TEST_PATH" \
-    "$BE_MQTT_TEST_PATH" \
-    "$FRAMEWORK_UI_TEST_PATH"
+        "$BE_TEST_PATH" \
+        "$BE_MQTT_TEST_PATH" \
+        "$FRAMEWORK_UI_TEST_PATH"
 
     stop_server
     ;;
