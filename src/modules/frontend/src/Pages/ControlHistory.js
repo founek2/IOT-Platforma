@@ -87,16 +87,19 @@ function ControlHistory({ fetchDevicesAction, fetchControlDataAction, device, ma
         <Fragment>
             {device && controlRecipe
                 ? <Card className={classes.root}>
-                    <Typography className={classes.title} variant="h3" align="center">{device.title}</Typography>
+                    <Typography className={classes.title} variant="h3" align="center">{device.info.title}</Typography>
                     {hasData ? // Chart needs two points to draw a line
-                        <Chart
-                            data={dataArray}
-                            vAxisTitle={"Stav"}
-                            hAxisTitle="Čas"
-                            chartType="ScatterChart"
-                            minValue={0}
-                        /> : <Typography className={classes.noDevices}>Nebyla nalezena žádná historická data</Typography>}
-                    <DetailTable data={dataTable || []} controlRecipe={controlRecipe} />
+                        <Fragment>
+                            <Chart
+                                data={dataArray}
+                                vAxisTitle={"Stav"}
+                                hAxisTitle="Čas"
+                                chartType="ScatterChart"
+                                minValue={0}
+                            />
+                            <DetailTable data={dataTable || []} controlRecipe={controlRecipe} />
+                        </Fragment> : <Typography className={classes.noDevices}>Nebyla nalezena žádná historická data</Typography>}
+
 
 
                 </Card>

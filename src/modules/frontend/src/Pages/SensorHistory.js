@@ -114,7 +114,7 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
         <Fragment>
             {device
                 ? <Card className={classes.root}>
-                    <Typography className={classes.title} variant="h3" align="center">{device.title}</Typography>
+                    <Typography className={classes.title} variant="h3" align="center">{device.info.title}</Typography>
                     {hasData ? // Chart needs two points to draw a line
                         <Chart
                             data={dataArray}
