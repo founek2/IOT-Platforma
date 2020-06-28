@@ -23,7 +23,7 @@ const styles = theme => ({
 
 // TODO when multiple legends disabling is not working properly -> maybe onClick event and manual remove from dataset
 
-const options = (hAxisTitle, vAxisTitle) => ({
+const options = (hAxisTitle, vAxisTitle, minValue) => ({
     // chart: {
     //     title: 'Graf průběhu v čase',
     //     // subtitle: 'in millions of dollars (USD)'
@@ -55,7 +55,10 @@ const options = (hAxisTitle, vAxisTitle) => ({
         title: vAxisTitle,
         gridlines: { color: '#37474f', count: 4 },
         baselineColor: 'transparent',
-        minValue: 0,
+        // minValue: 0,
+        viewWindow: {
+            min: minValue,
+        },
         minorGridlines: {
             count: 0,
             // units: {
@@ -95,7 +98,7 @@ function getConvertOptionsFunc(chartType) {
 }
 
 
-function MyChart({ classes, fetchData, data, vAxisTitle, hAxisTitle, chartType }) {
+function MyChart({ classes, fetchData, data, vAxisTitle, hAxisTitle, chartType, minValue }) {
     const [convertFunc, setConvertFunc] = useState(null)
 
     const chartEvents = [
@@ -122,7 +125,7 @@ function MyChart({ classes, fetchData, data, vAxisTitle, hAxisTitle, chartType }
                 loader={<span className={classes.loading}>Načítám graf<Loader open className={classes.loader} /></span>}
                 data={data}
                 // options={finalOptions}
-                options={options(hAxisTitle, vAxisTitle)}
+                options={options(hAxisTitle, vAxisTitle, minValue)}
                 rootProps={{ 'data-testid': '2' }}
                 chartEvents={convertFunc ? null : chartEvents}
                 chartLanguage="cs"
