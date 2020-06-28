@@ -22,7 +22,7 @@ export default function (state, JSONkey, { recipe }, updateTime) {
 const transformFn = {
     [CONTROL_TYPES.SWITCH]: transformGeneral,
     [CONTROL_TYPES.ACTIVATOR]: transformGeneral,
-    [CONTROL_TYPES.RGBSWITCH]: transformGeneral,
+    [CONTROL_TYPES.RGB_SWITCH]: transformGeneral,
 }
 
 function transformGeneral(state, updateTime, query, isDay) {

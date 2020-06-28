@@ -36,19 +36,25 @@ export const NotifyTypes = [
 export const CONTROL_TYPES = keymirror({
 	SWITCH: null,	/* state: {color: [hashColor], type: "linear", bright: [0-255], on: [0,1]} */
 	ACTIVATOR: null,	/* state: {on: 1} */
-	RGBSWITCH: null		/* state: {on: [0,1]} */
+	RGB_SWITCH: null		/* state: {on: [0,1]} */
 })
+
+export const CONTROL_STATE_KEYS = {
+	[CONTROL_TYPES.SWITCH]: ["on"],
+	[CONTROL_TYPES.ACTIVATOR]: ["on"],
+	[CONTROL_TYPES.RGB_SWITCH]: ["on", "color", "type", "bright"],
+}
 
 export const ControlTypes = [
 	{ value: CONTROL_TYPES.SWITCH, label: "vypínač", formName: "CHANGE_DEVICE_STATE_SWITCH" },
 	{ value: CONTROL_TYPES.ACTIVATOR, label: "Aktivátor", formName: "CHANGE_DEVICE_STATE_SWITCH" },
-	{ value: CONTROL_TYPES.RGBSWITCH, label: "RGB led", formName: "CHANGE_DEVICE_STATE_RGB" },
+	{ value: CONTROL_TYPES.RGB_SWITCH, label: "RGB led", formName: "CHANGE_DEVICE_STATE_RGB" },
 ]
 
 export const ControlTypesFormNames = {
 	[CONTROL_TYPES.SWITCH]: "CHANGE_DEVICE_STATE_SWITCH",
 	[CONTROL_TYPES.ACTIVATOR]: "CHANGE_DEVICE_STATE_SWITCH",
-	[CONTROL_TYPES.RGBSWITCH]: "CHANGE_DEVICE_STATE_RGB",
+	[CONTROL_TYPES.RGB_SWITCH]: "CHANGE_DEVICE_STATE_RGB",
 }
 
 export const LINEAR_TYPE = "linear";
