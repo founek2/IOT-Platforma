@@ -11,12 +11,12 @@ function onToText(val) {
 }
 
 function showColorBall(hash) {
-    return <div style={{
+    return hash ? <div style={{
         width: "20px",
         height: "20px",
         backgroundColor: hash,
         borderRadius: "40px"
-    }} />
+    }} /> : null
 }
 
 const controlProps = {
@@ -32,7 +32,7 @@ const controlProps = {
         { path: 'timestamp', label: 'Datum', convertor: toDateTime },
         { path: 'on', label: 'Stav', convertor: onToText },
         { path: 'color', label: 'Barva', convertor: showColorBall },
-        { path: 'bright', label: 'Jas', convertor: (val) => val + " %" },
+        { path: 'bright', label: 'Jas', convertor: (val) => val ? val + " %" : "" },
         // { path: 'type', label: 'Typ' },
     ],
 };
