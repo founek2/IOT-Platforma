@@ -14,6 +14,7 @@ import * as deviceActions from '../store/actions/application/devices'
 import Switch from './deviceControl/Swich'
 import Activator from './deviceControl/Activator'
 import { getDevices } from '../utils/getters'
+import { errorLog } from 'framework/src/Logger'
 
 const compMapper = {
      [CONTROL_TYPES.ACTIVATOR]: Activator,
@@ -91,7 +92,7 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
                          id={device.id}
                          JSONkey={JSONkey}
                     />)
-               } else { throw new Error("Invalid component type") }
+               } else errorLog("Invalid component type:", type, "of device:", device.info.title)
           })
      })
 
