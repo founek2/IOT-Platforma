@@ -1,5 +1,5 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory'
-import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE, NotifyTypes, NOTIFY_TYPES, NotifyIntervals } from '../constants'
+import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE, NotifyTypes, NOTIFY_TYPES, NotifyIntervals, CONTROL_STATE_KEYS } from '../constants'
 import { assocPath, is, forEachObjIndexed } from 'ramda'
 import setInPath from 'framework-ui/src/utils/setInPath'
 
@@ -284,6 +284,35 @@ const EDIT_CONTROL = {
      }
 }
 
+const advanced = {
+     'advanced': {
+          "daysOfWeek[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.daysOfWeek[]',
+               label: 'Dny v týdnu',
+               // required: true,
+               validations: [validationFactory('isArray', { min: 1, max: 200 })]
+          },
+          "interval[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.interval[]',
+               label: 'Interval',
+               // required: true,
+               validations: [validationFactory('isOneOf', { values: NotifyIntervals })]
+          },
+          "from[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.from[]',
+               label: 'Od',
+               // required: true,
+               validations: [validationFactory('isTime')]
+          },
+          "to[]": {
+               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.to[]',
+               label: 'Do',
+               // required: true,
+               validations: [validationFactory('isTime')]
+          },
+     }
+}
+
 const EDIT_NOTIFY_SENSORS = {
      'JSONkey[]': {
           deepPath: 'EDIT_NOTIFY_SENSORS.JSONkey[]',
@@ -314,32 +343,46 @@ const EDIT_NOTIFY_SENSORS = {
           required: true,
           validations: [validationFactory('isNumber')]
      },
-     'advanced': {
-          "daysOfWeek[]": {
-               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.daysOfWeek[]',
-               label: 'Dny v týdnu',
-               // required: true,
-               validations: [validationFactory('isArray', { min: 1, max: 200 })]
-          },
-          "interval[]": {
-               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.interval[]',
-               label: 'Interval',
-               // required: true,
-               validations: [validationFactory('isOneOf', { values: NotifyIntervals })]
-          },
-          "from[]": {
-               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.from[]',
-               label: 'Od',
-               // required: true,
-               validations: [validationFactory('isTime')]
-          },
-          "to[]": {
-               deepPath: 'EDIT_NOTIFY_SENSORS.advanced.to[]',
-               label: 'Do',
-               // required: true,
-               validations: [validationFactory('isTime')]
-          },
-     }
+     ...transformToForm("EDIT_NOTIFY_SENSORS", advanced)
+}
+
+const EDIT_NOTIFY_CONTROL = {
+     'JSONkey[]': {
+          deepPath: 'EDIT_NOTIFY_CONTROL.JSONkey[]',
+          label: 'Veličina',
+          required: true,
+          validations: [validationFactory('isOneOf', { values: CONTROL_STATE_KEYS.map(v => ({ value: v, label: v })) })
+          ]
+     },
+     'type[]': {
+          deepPath: 'EDIT_NOTIFY_CONTROL.type[]',
+          label: 'Akce',
+          required: true,
+          validations: [validationFactory('isString', { min: 1 })]     // TODO one of constants - depends on JSONkey, currently not possible
+     },
+     "value[]": {
+          deepPath: 'EDIT_NOTIFY_SENSORS.value[]',
+          label: 'Mezní hodnota',
+          // required: true,
+          // when: ({ type }, { i }) => !type || type[i] !== NOTIFY_TYPES.ALWAYS,  // needs constant
+          validations: [validationFactory('isNumber')]
+     },
+     "description[]": {
+          deepPath: 'EDIT_NOTIFY_CONTROL.description[]',
+          label: 'Popis',
+          validations: [validationFactory('isString', { min: 1, max: 200 })]
+     },
+     "key": {
+          deepPath: 'EDIT_NOTIFY_CONTROL.key',
+          required: true,
+          validations: [validationFactory('isString', { min: 1, max: 20 })]
+     },
+     "count": {
+          deepPath: 'EDIT_NOTIFY_CONTROL.count',
+          required: true,
+          validations: [validationFactory('isNumber')]
+     },
+     ...transformToForm("EDIT_NOTIFY_CONTROL", advanced)
 }
 
 
@@ -472,5 +515,6 @@ export default {
      CHANGE_DEVICE_STATE_RGB,
      CHANGE_DEVICE_STATE_SWITCH,
      EDIT_NOTIFY_SENSORS,
+     EDIT_NOTIFY_CONTROL,
      FIREBASE_ADD,
 }
