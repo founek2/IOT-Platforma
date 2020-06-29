@@ -125,7 +125,6 @@ function EditDeviceDialog({ updateSensorCount, onPrefill, device, fillEditFormAc
           const newEditForm = clone(editForm);
           for (let i = idx + 1; i < sensorCount; i++) {
                FIELDS.forEach(key => {
-                    console.log(key, newEditForm[key], newEditForm)
                     if (newEditForm[key]) newEditForm[key][i - 1] = editForm[key][i];
                })
           }

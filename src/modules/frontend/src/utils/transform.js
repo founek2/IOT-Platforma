@@ -76,7 +76,6 @@ export function transformControlForForm(arrayOfSensors) {
 
 // JSONkey = [], type = [], value = [], interval= [],  description = [], count = []
 export function transformNotifyForFE(arrayOfNotify) {
-    console.log("LALA", arrayOfNotify)
     const len = arrayOfNotify.length;
     const resultObj = {
         value: [], JSONkey: [], type: [], description: [], count: len, advanced: {

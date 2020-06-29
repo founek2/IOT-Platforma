@@ -125,7 +125,7 @@ const _mapStateToProps = (state, { id, formName }) => {
     const editedAdvanced = getFieldVal(`${formName}.advanced.to.${id}`, state) ||
         getFieldVal(`${formName}.advanced.from.${id}`, state) ||
         (days && days.length < 7)
-    console.log("len", days.length)
+
     return {
         editedAdvanced: !!editedAdvanced,
     }

@@ -73,7 +73,6 @@ export function updateUser(id) {
 
           const result = dispatch(validateForm(EDIT_USER)())
           const formData = getFormData(EDIT_USER)(getState())
-          console.log("validRes>", result)
           if (result.valid) {
                return updateUserApi({
                     token: getToken(getState()),

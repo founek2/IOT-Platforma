@@ -42,11 +42,6 @@ export function updateNotifySensors(id) {
                     token: getToken(getState()),
                     body: { formData: { [EDIT_NOTIFY_SENSORS]: formData } },
                     id,
-                    onSuccess: () => {
-                         console.log("SUCESS notify sensors")
-                         // const { sampleInterval, sensors } = transformSensorsForBE(formData);
-                         // dispatch(update({ id, sensors, sampleInterval }))
-                    }
                }, dispatch)
           }
      }

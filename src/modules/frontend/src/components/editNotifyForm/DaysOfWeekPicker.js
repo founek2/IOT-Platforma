@@ -55,7 +55,6 @@ function DaysOfWeekPicker({ value = [0, 1, 2, 3, 4, 5, 6], onChange, classes, er
             append(__, array),
         )(el)
 
-        console.log("tady", removeOrAdd(num, value))
         onChange(assocPath(["target", "value"], removeOrAdd(num, value), value))
     }
 

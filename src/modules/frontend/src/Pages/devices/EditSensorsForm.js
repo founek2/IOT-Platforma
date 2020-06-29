@@ -117,7 +117,6 @@ class EditDeviceDialog extends Component {
           if (device.sensors && device.sensors.recipe) {
                const { fillEditFormAction } = this.props;
                fillEditFormAction(transformSensorsForForm(device.sensors.recipe, device.sensors.sampleInterval))
-               console.log("prefill> ", transformSensorsForForm(device.sensors.recipe, device.sensors.sampleInterval))
           }
      }
 
