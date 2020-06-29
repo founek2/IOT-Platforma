@@ -37,7 +37,7 @@ if ("function" === typeof importScripts) {
 
     // Manual injection point for manifest files.
     // All assets under build/ and 5MB sizes are precached.
-    workbox.precaching.precacheAndRoute([]);
+    workbox.precaching.precacheAndRoute(self.__precacheManifest || []);
 
     // Font caching
     workbox.routing.registerRoute(
