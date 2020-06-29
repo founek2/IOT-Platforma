@@ -44,7 +44,7 @@ export const POWER = { ON: "ON", "OFF": "OFF" }
 
 export const NotifyControlTypes = {
 	[CONTROL_STATE.ON]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }, { value: POWER.ON, label: "Zapnuto" }, { value: POWER.OFF, label: "Vypnuto" }],
-	[CONTROL_STATE.COLOR]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }, { value: POWER.ON, label: "Zapnuto" }, { value: POWER.OFF, label: "Vypnuto" }],
+	[CONTROL_STATE.COLOR]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }],
 	[CONTROL_STATE.TYPE]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }],
 	[CONTROL_STATE.BRIGHT]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }],
 }
