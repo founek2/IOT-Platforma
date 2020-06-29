@@ -56,7 +56,7 @@ export function transformSensorsForForm(arrayOfSensors, sampleInterval) {
         resultObj["name"].push(arrayOfSensors[i].name)
         resultObj["JSONkey"].push(arrayOfSensors[i].JSONkey)
         resultObj["unit"].push(arrayOfSensors[i].unit)
-        resultObj["description"].push(arrayOfSensors[i].description)
+        resultObj["description"].push(arrayOfSensors[i].description || '')
     }
     return resultObj;
 }
@@ -68,7 +68,7 @@ export function transformControlForForm(arrayOfSensors) {
         resultObj["name"].push(arrayOfSensors[i].name)
         resultObj["JSONkey"].push(arrayOfSensors[i].JSONkey)
         resultObj["type"].push(arrayOfSensors[i].type)
-        resultObj["description"].push(arrayOfSensors[i].description)
+        resultObj["description"].push(arrayOfSensors[i].description || '')
     }
     return resultObj;
 }
@@ -76,6 +76,7 @@ export function transformControlForForm(arrayOfSensors) {
 
 // JSONkey = [], type = [], value = [], interval= [],  description = [], count = []
 export function transformNotifyForFE(arrayOfNotify) {
+    console.log("LALA", arrayOfNotify)
     const len = arrayOfNotify.length;
     const resultObj = {
         value: [], JSONkey: [], type: [], description: [], count: len, advanced: {
@@ -89,7 +90,7 @@ export function transformNotifyForFE(arrayOfNotify) {
         resultObj["value"].push(arrayOfNotify[i].value)
         resultObj["JSONkey"].push(arrayOfNotify[i].JSONkey)
         resultObj["type"].push(arrayOfNotify[i].type)
-        resultObj["description"].push(arrayOfNotify[i].description)
+        resultObj["description"].push(arrayOfNotify[i].description || '')
         resultObj["advanced"]["interval"].push(arrayOfNotify[i]?.advanced?.interval)
         resultObj["advanced"]["from"].push(arrayOfNotify[i]?.advanced?.from)
         resultObj["advanced"]["to"].push(arrayOfNotify[i]?.advanced?.to)
