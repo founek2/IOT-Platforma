@@ -10,6 +10,7 @@ import fieldDescriptors from 'fieldDescriptors'
 import checkReadPerm from '../middleware/device/checkReadPerm'
 import checkWritePerm from '../middleware/device/checkWritePerm'
 import checkControlPerm from '../middleware/device/checkControlPerm'
+import Notify from '../models/Notification'
 
 function checkRead(req, res, next) {
      if (req.query.type === "sensors")
@@ -97,10 +98,16 @@ export default ({ config, db }) =>
                          })
                          .catch(processError(res))
                } else if (formData.EDIT_SENSORS) {     // tested
+                    const newJSONkeys = formData.EDIT_SENSORS.JSONkey
                     const { sensors, sampleInterval } = transformSensorsForBE(formData.EDIT_SENSORS);
                     Device.updateSensorsRecipe(id, sampleInterval, sensors, user)
-                         .then(() => res.sendStatus(204))
+                         .then(() => {
+                              Notify.removeSpareSensors(id, newJSONkeys).exec()
+                              res.sendStatus(204)
+                         })
                          .catch(processError(res))
+
+
                } else if (formData.EDIT_PERMISSIONS) {      // tested
                     Device.updatePermissions(id, formData.EDIT_PERMISSIONS, user)
                          .then(() => res.sendStatus(204))

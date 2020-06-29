@@ -326,12 +326,11 @@ deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtensi
           }).catch(catcher('device'))
 }
 
-deviceSchema.statics.updateSensorsRecipe = async function (deviceId, sampleInterval, recipe, user) {
+deviceSchema.statics.updateSensorsRecipe = async function (deviceId, sampleInterval, recipe) {
      return await this.model('Device')
           .updateOne(
                {
-                    _id: deviceId,
-                    // ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
+                    _id: deviceId
                },
                { $set: { "sensors.recipe": recipe, "sensors.sampleInterval": sampleInterval } }
           )

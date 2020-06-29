@@ -32,4 +32,21 @@ HistoricalSchema.statics.getData = function (deviceID, from, to) {
     })
 }
 
+// TODO remove all historical data for which JSONkeys is not in param JSONkeys - needs calculate num of records at night/day
+// HistoricalSchema.statics.removeSpare = function (deviceID, JSONkeys) {
+//     return this.model("SensorHistory").aggregate([{
+//         $addFields: { result: { $objectToArray: "$samples" } }
+//     },{
+//         $addFields: { result2: { $in : ["$result.k", JSONkeys]} }
+//     }, {
+//         $project: {
+//             countDay: {
+//                 $size: {
+
+//                 }
+//             }
+//         }
+//     }])
+// }
+
 export default mongoose.model('SensorHistory', HistoricalSchema)

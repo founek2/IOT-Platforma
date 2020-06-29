@@ -11,7 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import DetailTable from './controlHistory/DetailTable'
 import resetTime from 'framework/src/utils/resetTime'
 
-import { CONTROL_STATE_KEYS } from '../constants'
 import Chart from '../components/Chart'
 
 function writableWithControl(device) {
