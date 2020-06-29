@@ -4,17 +4,21 @@ import { connect } from 'react-redux'
 import { filter, isEmpty } from 'ramda'
 import { bindActionCreators } from 'redux'
 import { Typography } from '@material-ui/core'
+import FullScreenDialog from 'framework-ui/src/Components/FullScreenDialog'
 
 import io from '../webSocket'
 import RgbSwitch from './deviceControl/RgbSwitch'
 import { ControlTypesFormNames, CONTROL_TYPES } from '../constants'
-import { isUrlHash } from 'framework-ui/src/utils/getters'
-import { getQueryID } from '../utils/getters'
+import { isUrlHash, getUserPresence } from 'framework-ui/src/utils/getters'
+import { getQueryID, getQueryField } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import Switch from './deviceControl/Swich'
 import Activator from './deviceControl/Activator'
 import { getDevices } from '../utils/getters'
 import { errorLog } from 'framework/src/Logger'
+import EditNotifyForm from '../components/EditNotifyForm'
+import * as formsActions from 'framework-ui/src/redux/actions/formsData'
+import * as controlActions from '../store/actions/application/devices/control'
 
 const compMapper = {
      [CONTROL_TYPES.ACTIVATOR]: Activator,
@@ -54,7 +58,7 @@ function updateDevice(updateDeviceAction) {
 }
 
 
-function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceStateA, updateDeviceAction, fetchControlAction }) {
+function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceStateA, updateDeviceAction, fetchControlAction, openNotifyDialog, selectedDevice, history, resetEditNotifyControlA, updateNotifyControlA, prefillNotifyControlA, JSONkey }) {
      useEffect(() => {
           fetchDevicesAction()
           // fetchControlAction()
@@ -99,16 +103,33 @@ function deviceControl({ classes, devices, fetchDevicesAction, updateDeviceState
 
      return <div className={classes.root}>
           {isEmpty(arr) ? <Typography>Nebyla nalezena žádná zařízení</Typography> : arr}
+          <FullScreenDialog
+               open={openNotifyDialog && !!selectedDevice}
+               onClose={() => history.push({ hash: '', search: '' })}
+               onExited={resetEditNotifyControlA}
+               heading="Editace notifikací"
+          >
+               <EditNotifyForm
+                    device={selectedDevice}
+                    formName="EDIT_NOTIFY_CONTROL"
+                    onUpdate={updateNotifyControlA}
+                    onPrefill={(id) => prefillNotifyControlA(id, JSONkey)}
+                    JSONkey={JSONkey}
+               />
+          </FullScreenDialog>
      </div>
 }
 
 const _mapStateToProps = state => {
      const id = getQueryID(state)
+     const JSONkey = getQueryField("JSONkey", state)
      const devices = filter(isControllable, getDevices(state))
      return {
           devices,
           openNotifyDialog: isUrlHash('#editNotify')(state),
           selectedDevice: devices.find(dev => dev.id === id),
+          isUserPresent: getUserPresence(state),
+          JSONkey,
      }
 }
 
@@ -119,6 +140,9 @@ const _mapDispatchToProps = dispatch =>
                updateDeviceStateA: deviceActions.updateState,
                updateDeviceAction: deviceActions.update,
                fetchControlAction: deviceActions.fetchControl,
+               resetEditNotifyControlA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),
+               updateNotifyControlA: controlActions.updateNotify,
+               prefillNotifyControlA: controlActions.prefillNotify,
           },
           dispatch
      )

@@ -29,7 +29,7 @@ export function transformControlForBE({ name = [], type = [], JSONkey = [], coun
  * @param {Object} sensorsFromFE 
  */
 
-export function transformNotifyForBE({ JSONkey = [], type = [], value = [], description = [], count, advanced = {} }) {
+export function transformNotifyForBE({ JSONkey = [], type = [], value = [], description = [], count, advanced = {}, key }) {
     const resultArr = [];
     for (let i = 0; i < count; i++) {
         resultArr.push({
@@ -42,7 +42,7 @@ export function transformNotifyForBE({ JSONkey = [], type = [], value = [], desc
         })
     }
 
-    return { sensors: resultArr };
+    return { sensors: resultArr, key };
 }
 
 /**

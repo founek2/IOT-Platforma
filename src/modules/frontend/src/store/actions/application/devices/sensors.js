@@ -52,7 +52,7 @@ export function updateNotifySensors(id) {
      }
 }
 
-export function prefillNotifySensors(id) {
+export function prefillNotify(id) {
      return async function (dispatch, getState) {
           return getNotifyApi({
                token: getToken(getState()),

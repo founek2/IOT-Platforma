@@ -13,8 +13,9 @@ import { getDevices } from '../utils/getters'
 import * as deviceActions from '../store/actions/application/devices'
 import io from '../webSocket'
 import { Typography } from '@material-ui/core';
-import EditNotifyForm from './sensors/EditNotifyForm'
+import EditNotifyForm from '../components/EditNotifyForm'
 import * as formsActions from 'framework-ui/src/redux/actions/formsData'
+import * as sensorsActions from '../store/actions/application/devices/sensors'
 
 function readableWithSensors(device) {
      return (device.publicRead || (device.permissions && device.permissions.read)) && (device.sensors && device.sensors.recipe)
@@ -40,7 +41,7 @@ function updateDevice(updateDeviceAction) {
      }
 }
 
-function Sensors({ fetchDevicesAction, updateDeviceAction, devices, classes, updateSensorsAction, openNotifyDialog, selectedDevice, resetEditNotifySensorsA, history, isUserPresent }) {
+function Sensors({ fetchDevicesAction, updateDeviceAction, devices, classes, updateSensorsAction, openNotifyDialog, selectedDevice, resetEditNotifySensorsA, history, isUserPresent, updateNotifySensorsAction, prefillNotifySensorsAction }) {
      useEffect(() => {
           fetchDevicesAction()
           const listener = updateDevice(updateDeviceAction)
@@ -66,9 +67,14 @@ function Sensors({ fetchDevicesAction, updateDeviceAction, devices, classes, upd
                     open={openNotifyDialog && !!selectedDevice}
                     onClose={() => history.push({ hash: '', search: '' })}
                     onExited={resetEditNotifySensorsA}
-                    heading="Editace senzorů"
+                    heading="Editace notifikací"
                >
-                    <EditNotifyForm device={selectedDevice} />
+                    <EditNotifyForm
+                         device={selectedDevice}
+                         formName="EDIT_NOTIFY_SENSORS"
+                         onUpdate={updateNotifySensorsAction}
+                         onPrefill={prefillNotifySensorsAction}
+                    />
                </FullScreenDialog>
           </Fragment>
      )
@@ -93,6 +99,8 @@ const _mapDispatchToProps = dispatch =>
                updateDeviceAction: deviceActions.update,
                updateSensorsAction: deviceActions.fetchSensors,
                resetEditNotifySensorsA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),
+               updateNotifySensorsAction: sensorsActions.updateNotifySensors,
+               prefillNotifySensorsAction: sensorsActions.prefillNotify,
           },
           dispatch
      )

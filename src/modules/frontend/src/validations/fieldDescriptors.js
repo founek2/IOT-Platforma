@@ -351,8 +351,7 @@ const EDIT_NOTIFY_CONTROL = {
           deepPath: 'EDIT_NOTIFY_CONTROL.JSONkey[]',
           label: 'Veličina',
           required: true,
-          validations: [validationFactory('isOneOf', { values: CONTROL_STATE_KEYS.map(v => ({ value: v, label: v })) })
-          ]
+          validations: [validationFactory('isOneOf', { values: CONTROL_STATE_KEYS.map(v => ({ value: v, label: v })) })]
      },
      'type[]': {
           deepPath: 'EDIT_NOTIFY_CONTROL.type[]',

@@ -32,39 +32,41 @@ export function fetchData(id, JSONkey) {
         }
 }
 
-// export function updateNotifySensors(id) {
-//      return async function (dispatch, getState) {
-//           const EDIT_NOTIFY_SENSORS = 'EDIT_NOTIFY_SENSORS'
-//           baseLogger(EDIT_NOTIFY_SENSORS)
-//           const result = dispatch(validateRegisteredFields(EDIT_NOTIFY_SENSORS)())
-//           const formData = getFormData(EDIT_NOTIFY_SENSORS)(getState())
-//           if (result.valid) {
-//                return updateNotifyApi({
-//                     token: getToken(getState()),
-//                     body: { formData: { [EDIT_NOTIFY_SENSORS]: formData } },
-//                     id,
-//                     onSuccess: () => {
-//                          console.log("SUCESS notify sensors")
-//                          // const { sampleInterval, sensors } = transformSensorsForBE(formData);
-//                          // dispatch(update({ id, sensors, sampleInterval }))
-//                     }
-//                }, dispatch)
-//           }
-//      }
-// }
+export function prefillNotify(id, JSONkey) {
+    return async function (dispatch, getState) {
+        return getNotifyApi({
+            token: getToken(getState()),
+            params: {
+                type: "control",
+                JSONkey
+            },
+            id,
+            onSuccess: (json) => {
+                const formData = transformNotifyForFE(json.doc.items);
+                formData.key = JSONkey
+                dispatch(fillForm("EDIT_NOTIFY_CONTROL")(formData))
+            }
+        }, dispatch)
+    }
+}
 
-// export function prefillNotifySensors(id) {
-//      return async function (dispatch, getState) {
-//           return getNotifyApi({
-//                token: getToken(getState()),
-//                params: {
-//                     type: "sensors"
-//                },
-//                id,
-//                onSuccess: (json) => {
-//                     const formData = transformNotifyForFE(json.doc.items);
-//                     dispatch(fillForm("EDIT_NOTIFY_SENSORS")(formData))
-//                }
-//           }, dispatch)
-//      }
-// }
+export function updateNotify(id) {
+    return async function (dispatch, getState) {
+        const EDIT_NOTIFY_CONTROL = 'EDIT_NOTIFY_CONTROL'
+        baseLogger(EDIT_NOTIFY_CONTROL)
+        const result = dispatch(validateRegisteredFields(EDIT_NOTIFY_CONTROL)())
+        const formData = getFormData(EDIT_NOTIFY_CONTROL)(getState())
+        if (result.valid) {
+            return updateNotifyApi({
+                token: getToken(getState()),
+                body: { formData: { [EDIT_NOTIFY_CONTROL]: formData } },
+                id,
+                onSuccess: () => {
+                    console.log("SUCESS notify sensors")
+                    // const { sampleInterval, sensors } = transformSensorsForBE(formData);
+                    // dispatch(update({ id, sensors, sampleInterval }))
+                }
+            }, dispatch)
+        }
+    }
+}

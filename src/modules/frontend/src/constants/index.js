@@ -33,17 +33,44 @@ export const NotifyTypes = [
 	{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" },
 ]
 
+export const CONTROL_STATE = {
+	ON: "on",
+	COLOR: "color",
+	TYPE: "type",
+	BRIGHT: "bright",
+}
+
+export const POWER = { ON: "ON", "OFF": "OFF" }
+
+export const NotifyControlTypes = {
+	[CONTROL_STATE.ON]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }, { value: POWER.ON, label: "Zapnuto" }, { value: POWER.OFF, label: "Vypnuto" }],
+	[CONTROL_STATE.COLOR]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }, { value: POWER.ON, label: "Zapnuto" }, { value: POWER.OFF, label: "Vypnuto" }],
+	[CONTROL_STATE.TYPE]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }],
+	[CONTROL_STATE.BRIGHT]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }],
+}
+
 export const CONTROL_TYPES = keymirror({
 	SWITCH: null,	/* state: {color: [hashColor], type: "linear", bright: [0-255], on: [0,1]} */
 	ACTIVATOR: null,	/* state: {on: 1} */
 	RGB_SWITCH: null		/* state: {on: [0,1]} */
 })
 
-export const CONTROL_STATE_KEYS = {
-	[CONTROL_TYPES.SWITCH]: ["on"],
-	[CONTROL_TYPES.ACTIVATOR]: ["on"],
-	[CONTROL_TYPES.RGB_SWITCH]: ["on", "color", "type", "bright"],
+
+const on = { value: CONTROL_STATE.ON, label: "Zapnutí" }
+
+export const ControlStateTypes = {
+	[CONTROL_TYPES.SWITCH]: [on],
+	[CONTROL_TYPES.ACTIVATOR]: [on],
+	[CONTROL_TYPES.RGB_SWITCH]: [
+		on,
+		{ value: CONTROL_STATE.COLOR, label: "Barva" },
+		{ value: CONTROL_STATE.TYPE, label: "Typ" },
+		{ value: CONTROL_STATE.BRIGHT, label: "Jas" },
+	]
 }
+
+export const CONTROL_STATE_KEYS = [CONTROL_STATE.ON, CONTROL_STATE.COLOR, CONTROL_STATE.TYPE, CONTROL_STATE.BRIGHT]
+
 
 export const ControlTypes = [
 	{ value: CONTROL_TYPES.SWITCH, label: "vypínač", formName: "CHANGE_DEVICE_STATE_SWITCH" },
@@ -61,8 +88,6 @@ export const LINEAR_TYPE = "linear";
 
 export const RgbTypes = [
 	{ value: LINEAR_TYPE, label: "Stálá barva" },
-	// {value: "switch", label: "vypínač"},
-	// {value: "switch", label: "vypínač"},
 ]
 
 export const AFK_INTERVAL = 10 * 60 * 1000 // 10 min
