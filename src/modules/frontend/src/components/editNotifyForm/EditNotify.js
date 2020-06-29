@@ -10,7 +10,9 @@ import { connect } from 'react-redux'
 
 import { getFieldVal } from 'framework-ui/src/utils/getters'
 import DaysOfWeekPicker from './DaysOfWeekPicker'
-import { NotifyTypes, NotifyIntervals } from '../../../constants'
+import { NotifyIntervals } from '../../constants'
+import ControlPart from './editNotify/ControlPart'
+import SensorsPart from './editNotify/SensorsPart'
 
 const styles = theme => ({
     contentInner: {
@@ -43,55 +45,32 @@ const styles = theme => ({
         userSelect: "none",
     },
     daysPicker: {
-        maxWidth: 350
+        width: 350
+    },
+    containerPicker: {
+        display: "flex",
+        justifyContent: "center"
     }
 })
 
-const FORM_NAME = "EDIT_NOTIFY_SENSORS"
-
-function EditSensor({ id, classes, onDelete, recipe = [], onTypeChange, editedAdvanced }) {
+function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formName, JSONkey }) {
     const [openAdvanced, setOpen] = useState(false)
-    console.log("advancedValue", editedAdvanced)
+    const sensorMode = formName === "EDIT_NOTIFY_SENSORS"
+    const props = { JSONkey, id, recipe }
+
     return (<div className={classes.quantity} key={id}>
         <FormLabel component="legend">Notifikace {id}:</FormLabel>
         <IconButton className={classes.clearButton} aria-label="Delete a sensor" onClick={e => onDelete(id, e)}>
             <ClearIcon />
         </IconButton>
-        <div className={classes.contentInner}>
-            <FieldConnector
-                component="Select"
-                deepPath={`${FORM_NAME}.JSONkey.${id}`}
-                selectOptions={
-                    recipe.map(
-                        ({ name, JSONkey }) =>
-                            <MenuItem value={JSONkey} key={JSONkey}>
-                                {name}
-                            </MenuItem>
-                    )}
-            />
-            <FieldConnector
-                component="Select"
-                deepPath={`${FORM_NAME}.type.${id}`}
-                selectOptions={
-                    NotifyTypes.map(
-                        ({ value, label }) =>
-                            <MenuItem value={value} key={value}>
-                                {label}
-                            </MenuItem>
-                    )}
-                onChange={onTypeChange}
-            />
-            <FieldConnector
-                deepPath={`${FORM_NAME}.value.${id}`}
-            />
-        </div>
+        {sensorMode ? <SensorsPart {...props} /> : <ControlPart {...props} />}
         <FieldConnector
             fieldProps={{
                 type: 'text',
                 className: classes.textArea,
                 multiline: true
             }}
-            deepPath={`${FORM_NAME}.description.${id}`}
+            deepPath={`${formName}.description.${id}`}
         />
         <Typography
             className={classes.advanced}
@@ -103,7 +82,7 @@ function EditSensor({ id, classes, onDelete, recipe = [], onTypeChange, editedAd
             <div className={classes.contentInner}>
                 <FieldConnector
                     component="Select"
-                    deepPath={`${FORM_NAME}.advanced.interval.${id}`}
+                    deepPath={`${formName}.advanced.interval.${id}`}
                     selectOptions={
                         NotifyIntervals.map(
                             ({ value, label }) =>
@@ -113,25 +92,27 @@ function EditSensor({ id, classes, onDelete, recipe = [], onTypeChange, editedAd
                         )}
                 />
                 <FieldConnector
-                    deepPath={`${FORM_NAME}.advanced.from.${id}`}
+                    deepPath={`${formName}.advanced.from.${id}`}
                     component="TimePicker"
                     fieldProps={{
                         defaultValue: "00:00"
                     }}
                 />
                 <FieldConnector
-                    deepPath={`${FORM_NAME}.advanced.to.${id}`}
+                    deepPath={`${formName}.advanced.to.${id}`}
                     component="TimePicker"
                     fieldProps={{
                         defaultValue: "23:59"
                     }}
                 />
             </div>
-            <div className={classes.daysPicker}>
-                <FieldConnector
-                    deepPath={`${FORM_NAME}.advanced.daysOfWeek.${id}`}
-                    component={DaysOfWeekPicker}
-                />
+            <div className={classes.containerPicker}>
+                <div className={classes.daysPicker}>
+                    <FieldConnector
+                        deepPath={`${formName}.advanced.daysOfWeek.${id}`}
+                        component={DaysOfWeekPicker}
+                    />
+                </div>
             </div>
         </div>
 
@@ -139,11 +120,15 @@ function EditSensor({ id, classes, onDelete, recipe = [], onTypeChange, editedAd
     </div>)
 }
 
-const _mapStateToProps = (state, { id }) => {
-    const editedAdvanced = getFieldVal(`EDIT_NOTIFY_SENSORS.advanced.to.${id}`, state) ||
-        getFieldVal(`EDIT_NOTIFY_SENSORS.advanced.from.${id}`, state) ||
-        getFieldVal(`EDIT_NOTIFY_SENSORS.advanced.daysOfWeek.${id}`, state)
-    return { editedAdvanced: !!editedAdvanced }
+const _mapStateToProps = (state, { id, formName }) => {
+    const days = getFieldVal(`${formName}.advanced.daysOfWeek.${id}`, state)
+    const editedAdvanced = getFieldVal(`${formName}.advanced.to.${id}`, state) ||
+        getFieldVal(`${formName}.advanced.from.${id}`, state) ||
+        (days && days.length < 7)
+    console.log("len", days.length)
+    return {
+        editedAdvanced: !!editedAdvanced,
+    }
 }
 
 export default connect(_mapStateToProps)(withStyles(styles)(EditSensor));

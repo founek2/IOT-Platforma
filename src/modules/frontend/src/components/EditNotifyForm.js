@@ -17,9 +17,9 @@ import * as formsActions from 'framework-ui/src/redux/actions/formsData'
 import EditNotify from './editNotifyForm/EditNotify'
 import Typography from '@material-ui/core/Typography';
 // import { transformSensorsForForm } from '../../utils/transform'
-import * as sensorsActions from '../../store/actions/application/devices/sensors'
-import * as userActions from '../../store/actions/application/user'
-import { getToken } from '../../firebase'
+import * as sensorsActions from '../store/actions/application/devices/sensors'
+import * as userActions from '../store/actions/application/user'
+import { getToken } from '../firebase'
 
 const styles = theme => ({
      textField: {
@@ -99,14 +99,15 @@ const styles = theme => ({
 
 const FIELDS = ["JSONkey", "type", "value", "interval", "description"]
 
-function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, device, fillEditFormAction, editForm, sensorCount, classes, updateNotifySensorsAction, registerTokenAction }) {
+function EditDeviceDialog({ updateSensorCount, onPrefill, device, fillEditFormAction, editForm, sensorCount, classes, onUpdate, registerTokenAction, JSONkey, formName }) {
+     const mode = formName === "EDIT_NOTIFY_CONTROL" ? "control" : "sensors"
      const [pending, setPending] = useState(false)
      const [loaded, setLoaded] = useState(false)
 
      useEffect(() => {
           async function preFill() {
                setPending(true)
-               if (await prefillNotifySensorsAction(device.id)) {
+               if (await onPrefill(device.id)) {
                     setPending(false)
                     setLoaded(true)
                } else setPending(false)
@@ -138,7 +139,7 @@ function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, devic
 
      const handleSave = async () => {
           setPending(true)
-          await updateNotifySensorsAction(device.id)
+          await onUpdate(device.id)
           setPending(false)
      }
 
@@ -149,7 +150,7 @@ function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, devic
                     <CardContent className={classes.content}>
                          <div>
                               {/* <Typography variant="subtitle1" align="center" >Notifikace:</Typography> */}
-                              {sensorCount > 0 && [...Array(sensorCount).keys()].map(i => <EditNotify id={i} key={i} onDelete={removeSensorByIndex} recipe={device.sensors.recipe} />)}
+                              {sensorCount > 0 && [...Array(sensorCount).keys()].map(i => <EditNotify id={i} key={i} onDelete={removeSensorByIndex} recipe={device[mode].recipe} formName={formName} JSONkey={JSONkey} />)}
 
                          </div>
                          <IconButton className={classes.addButton} aria-label="Add a sensor" onClick={() => updateSensorCount(sensorCount + 1)}>
@@ -174,8 +175,8 @@ function EditDeviceDialog({ updateSensorCount, prefillNotifySensorsAction, devic
 
 }
 
-const _mapStateToProps = state => {
-     const editForm = getFormData("EDIT_NOTIFY_SENSORS")(state);
+const _mapStateToProps = (state, { formName }) => {
+     const editForm = getFormData(formName)(state);
      const sensorCount = editForm ? editForm.count : 0;
      return {
           sensorCount,
@@ -183,14 +184,12 @@ const _mapStateToProps = state => {
      }
 }
 
-const _mapDispatchToProps = dispatch => (
+const _mapDispatchToProps = (dispatch, { formName }) => (
      {
           ...bindActionCreators(
                {
-                    updateSensorCount: formsActions.updateFormField("EDIT_NOTIFY_SENSORS.count"),
-                    fillEditFormAction: formsActions.fillForm('EDIT_NOTIFY_SENSORS'),
-                    updateNotifySensorsAction: sensorsActions.updateNotifySensors,
-                    prefillNotifySensorsAction: sensorsActions.prefillNotifySensors,
+                    updateSensorCount: formsActions.updateFormField(`${formName}.count`),
+                    fillEditFormAction: formsActions.fillForm(`${formName}`),
                     registerTokenAction: userActions.registerToken,
                },
                dispatch,

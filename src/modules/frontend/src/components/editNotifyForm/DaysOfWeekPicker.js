@@ -1,7 +1,7 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { daysInWeek } from '../../../constants'
+import { daysInWeek } from '../../constants'
 import clsx from 'clsx'
 import FormLabel from '@material-ui/core/FormLabel';
 import { assocPath, append, includes, o, __, ifElse, filter } from 'ramda'
@@ -15,9 +15,9 @@ const styles = theme => ({
         marginLeft: theme.spacing(1),
         marginTop: theme.spacing(1),
         marginRight: theme.spacing(1),
-        [theme.breakpoints.down('sm')]: {
-            width: `calc(90% - ${theme.spacing(2)}px)`
-        }
+        // [theme.breakpoints.down('sm')]: {
+        //     width: `calc(90% - ${theme.spacing(2)}px)`
+        // }
     },
     wrapper: {
         display: "flex",
