@@ -495,17 +495,22 @@ function prepareStateUpdate(data, updatedAt) {
 }
 
 
-deviceSchema.statics.initControl = async function (createdBy, topic, state, updateTime) {
-     const updateStateQuery = prepareStateUpdate(state, updateTime)
+deviceSchema.statics.initControl = async function (createdBy, topic, data, updateTime) {
+     const updateStateQuery = prepareStateUpdate(data, updateTime)
 
      const doc = await this.model('Device').findOneAndUpdate({
           topic,
           createdBy
      }, {
           $set: updateStateQuery
-     }, { fields: { "permissions.control": 1 }, new: true }).lean()
+     }, { fields: { "permissions.control": 1, "control.recipe": 1 }, new: true }).lean()
      if (!doc) throw new Error("invalidPermissions")
 
+     const JSONkey = head(keys(data))
+     const state = data[JSONkey]
+     const query = prepareControlHistoryData(state, JSONkey, doc.control, updateTime)
+
+     ControlHistory.saveData(doc._id, JSONkey, query, updateTime)
 
      return doc;
 }
