@@ -4,8 +4,9 @@ const ObjectId = mongoose.Types.ObjectId
 
 const item = {
     JSONkey: String,
+    STATEkey: String,
     description: String,
-    type: String,   // type is reserver keyword
+    type: String,
     value: String,
     tmp: {
         lastSendAt: Date,
@@ -13,8 +14,8 @@ const item = {
     },
     advanced: {
         interval: { $type: Number, default: -1 },
-        from: String,
-        to: String,
+        from: { $type: String, default: '00:00' },
+        to: { $type: String, default: '23:59' },
         daysOfWeek: { $type: Array, default: [0, 1, 2, 3, 4, 5, 6] },
     }
 }
@@ -22,123 +23,50 @@ const item = {
 const notifySchema = new Schema(
     {
         device: { $type: ObjectId, ref: 'Device', index: { unique: true } },
-        sensors: [
-            {
-                _id: false,
-                user: { $type: ObjectId, ref: 'User' },
-                items: [item]
-            }
-        ],
+        user: { $type: ObjectId, ref: 'User' },
+        sensors: {
+            items: [item]
+        },
+
         control: [
             {
                 _id: false,
-                user: { $type: ObjectId, ref: 'User' },
-                container: [{
-                    _id: false,
-                    JSONkey: String,
-                    items: [item]
-                }]
+                JSONkey: String,
+                items: [item]
             }
         ]
     }, { typeKey: '$type' })
 
 
-notifySchema.statics.addOrUpdateSensors = async function (userId, deviceId, array) {
+notifySchema.statics.addOrUpdateSensors = async function (userId, deviceId, items) {
     const Notify = this.model('Notify')
 
-    const existForDevice = await Notify.exists({ device: ObjectId(deviceId), })
-
-    if (existForDevice) {
-        const existForUser = await Notify.exists({ device: ObjectId(deviceId), "sensors.user": ObjectId(userId) })
-        if (existForUser) {
-            return Notify.updateOne({
-                device: ObjectId(deviceId),
-                "sensors.user": ObjectId(userId)
-            }, {
-                $set: { "sensors.$.items": array },
-            }).exec()
+    return Notify.updateOne({ device: ObjectId(deviceId), "user": ObjectId(userId) }, {
+        $set: {
+            "sensors.items": items,
+            "control": []   // for properly working arrayFilters in controlNotify
         }
-        else
-            return Notify.updateOne({
-                device: ObjectId(deviceId),
-            }, {
-                $push: {
-                    sesnsors: {
-                        user: ObjectId(userId),
-                        items: array,
-                    }
-                },
-            }).exec()
-
-    } else {
-        return new Notify({
-            device: ObjectId(deviceId),
-            sensors: [{
-                user: ObjectId(userId),
-                items: array,
-            }]
-        }).save()
-    }
+    }, { upsert: true, setDefaultsOnInsert: true }).exec()
 }
 
-notifySchema.statics.addOrUpdateControl = async function (userId, deviceId, JSONkey, data) {
-    console.log("BLABLA", userId, deviceId, JSONkey, JSON.stringify(data))
+notifySchema.statics.addOrUpdateControl = async function (userId, deviceId, JSONkey, items) {
+    console.log("BLABLA", userId, deviceId, JSONkey, JSON.stringify(items))
 
     const Notify = this.model('Notify')
-    const userID = ObjectId(userId)
 
-    const existForDevice = await Notify.findOne({ device: ObjectId(deviceId) }).select("_id").lean()
-    console.log("existForDevice", existForDevice)
+    let doc = await Notify.findOne({ device: ObjectId(deviceId), "user": ObjectId(userId) }).select("control").lean()
 
-    if (existForDevice) {
-        const existForUser = await Notify.exists({ _id: existForDevice._id, "control.user": userID })
-        if (existForUser) {
-            const existForJSONkey = await Notify.exists({ _id: existForDevice._id, "control.container.JSONkey": JSONkey })
-            if (existForJSONkey) {
-                return await Notify.updateOne({ _id: existForDevice._id }, {
-                    $set: { "control.$[outer].container.$[inner].items": data }
-                }, {
-                    arrayFilters: [{ "outer.user": userID }, { "inner.JSONkey": { $in: JSONkey } }]
-                })
-            } else {
-                return await Notify.updateOne({ _id: existForDevice._id }, {
-                    $push: {
-                        "control.$[outer].container": {
-                            items: data,
-                            JSONkey,
-                        }
-                    }
-                }, {
-                    arrayFilters: [{ "outer.user": userID }]
-                })
-            }
-        } else
-            return Notify.updateOne({
-                device: ObjectId(deviceId),
-            }, {
-                $push: {
-                    control: {
-                        user: ObjectId(userId),
-                        container: {
-                            JSONkey,
-                            items: data,
-                        }
-                    }
-                },
-            }).exec()
+    if (!doc) doc = await new Notify({ device: ObjectId(deviceId), "user": ObjectId(userId), control: [] }).save()
 
-    } else {
-        return new Notify({
-            device: ObjectId(deviceId),
-            control: [{
-                user: ObjectId(userId),
-                container: {
-                    JSONkey,
-                    items: data
-                },
-            }]
-        }).save()
-    }
+    const id = doc.control.findIndex(({ JSONkey: key }) => key === JSONkey)
+    const finID = id === -1 ? doc.control.length : id;
+
+    return Notify.updateOne({ _id: doc._id }, {
+        $set: {
+            [`control.${finID}.JSONkey`]: JSONkey,
+            [`control.${finID}.items`]: items,
+        }
+    }).exec()
 }
 
 notifySchema.statics.getSensors = function (deviceId, userId) {
@@ -146,12 +74,11 @@ notifySchema.statics.getSensors = function (deviceId, userId) {
     return this.model('Notify')
         .findOne({
             device: ObjectId(deviceId),
+            user: ObjectId(userId)
         }).select({
             "_id": 0,
-            "sensors": {
-                $elemMatch: { "user": ObjectId(userId) }
-            }
-        }).then(doc => doc ? doc.sensors[0] : doc)
+            "sensors": 1
+        }).then(doc => doc ? doc.sensors : doc)
 }
 
 notifySchema.statics.getControl = function (deviceId, userId, JSONkey) {
@@ -159,17 +86,15 @@ notifySchema.statics.getControl = function (deviceId, userId, JSONkey) {
     return this.model('Notify')
         .findOne({
             device: ObjectId(deviceId),
+            user: ObjectId(userId)
         }).select({
             "_id": 0,
             "control": {
                 $elemMatch: {
-                    "user": ObjectId(userId),
-                    "container": {
-                        $elemMatch: { JSONkey }
-                    }
+                    "JSONkey": JSONkey,
                 }
             }
-        }).then(doc => doc ? doc.control[0].container[0] : doc)
+        }).then(doc => doc ? doc.control[0] : doc)
 }
 
 notifySchema.statics.getSensorItems = function (deviceId, JSONkeys) {
@@ -180,10 +105,10 @@ notifySchema.statics.getSensorItems = function (deviceId, JSONkeys) {
                 "sensors.items.JSONkey": { $in: JSONkeys }
             }
         },
-        { $unwind: "$sensors" },
+        // { $unwind: "$sensors" },
         {
             $project: {
-                "user": "$sensors.user",
+                "user": "$user",
                 "sensors.items": {
                     $filter: {
                         input: "$sensors.items",
@@ -198,12 +123,13 @@ notifySchema.statics.getSensorItems = function (deviceId, JSONkeys) {
 notifySchema.statics.updateItems = function (deviceId, itemIDs, userIDs, updateObj) {
     return this.model('Notify').updateMany({
         device: ObjectId(deviceId),
+        user: { $in: userIDs },
         "sensors.items._id": {
             $in: itemIDs
         }
     }, updateObj,
         {
-            arrayFilters: [{ "outer.user": { $in: userIDs } }, { "inner._id": { $in: itemIDs } }]
+            arrayFilters: [{ "inner._id": { $in: itemIDs } }]
         })
 }
 
@@ -217,7 +143,7 @@ notifySchema.statics.refreshItems = function (deviceId, { items: itemsSended, us
     // TODO use Bulk write - https://mongoosejs.com/docs/api.html#model_Model.bulkWrite
     this.model("Notify").updateItems(deviceId, itemsSended, usersSended, {
         $set: {
-            "sensors.$[outer].items.$[inner].tmp": {
+            "sensors.items.$[inner].tmp": {
                 lastSendAt: new Date(),
                 lastSatisfied: true,
             }
@@ -226,7 +152,7 @@ notifySchema.statics.refreshItems = function (deviceId, { items: itemsSended, us
 
     this.model("Notify").updateItems(deviceId, unSatisfiedItems, usersNotSneded, {
         $set: {
-            "sensors.$[outer].items.$[inner].tmp": {
+            "sensors.items.$[inner].tmp": {
                 lastSatisfied: false,
             }
         }
@@ -234,7 +160,7 @@ notifySchema.statics.refreshItems = function (deviceId, { items: itemsSended, us
 
     this.model("Notify").updateItems(deviceId, satisfiedItems, usersNotSneded, {
         $set: {
-            "sensors.$[outer].items.$[inner].tmp": {
+            "sensors.items.$[inner].tmp": {
                 lastSatisfied: true,
             }
         }
@@ -246,9 +172,8 @@ notifySchema.statics.removeSpareSensors = function (deviceId, JSONkeys) {
     return this.model("Notify").updateOne({
         device: ObjectId(deviceId),
     }, {
-
         $pull: {
-            "sensors.$[].items": { JSONkey: { $nin: JSONkeys } }
+            "sensors.items": { JSONkey: { $nin: JSONkeys } }
         }
 
     })

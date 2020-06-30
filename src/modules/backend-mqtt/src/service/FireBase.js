@@ -5,6 +5,12 @@ import Device from 'backend/src/models/Device'
 import mongoose from 'mongoose'
 import functions from '../lib/notifications/functions'
 
+const defaultAdvanced = {
+    interval: -1,
+    from: '00:00',
+    to: '23:59',
+    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+}
 
 let messaging
 let homepageUrl;
@@ -28,12 +34,12 @@ export function init(config) {
  */
 export async function processSensorsData({ _id: deviceId, sensors: { recipe }, info: { title } }, data) {
     const docs = await Notify.getSensorItems(deviceId, Object.keys(data))
-
+    console.log("docs", docs)
     const output = {}
     const sended = { items: [], users: new Set() }
     const notSended = { unSatisfiedItems: [], satisfiedItems: [], users: new Set() }
     docs.forEach(({ user: userID, sensors }) => {   // per USER
-        sensors.items.forEach(({ JSONkey, type, value: limit, advanced, _id, tmp }) => {      // per notification rule
+        sensors.items.forEach(({ JSONkey, type, value: limit, advanced = defaultAdvanced, _id, tmp }) => {      // per notification rule
             const value = data[JSONkey]
 
             /* Check validity */
@@ -45,12 +51,10 @@ export async function processSensorsData({ _id: deviceId, sensors: { recipe }, i
                     const { name, unit } = recipe.find(({ JSONkey: key }) => key === JSONkey)
 
                     output[userID].push({
-                        // title: JSONkey, body: String(value) + " bla",
                         title,
                         body: `${name} je ${value} ${unit}`,
                         icon: '/favicon.png',
                         click_action: homepageUrl,
-                        // image: obj.imgPath
                     })
                     sended.items.push(_id)
                     sended.users.add(userID)
