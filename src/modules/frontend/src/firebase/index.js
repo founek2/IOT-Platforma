@@ -17,8 +17,16 @@ export function init() {
     // - the user clicks on an app notification created by a service worker
     //   `messaging.setBackgroundMessageHandler` handler.
     messaging.onMessage((payload) => {
-        console.log('Message received. ', payload);
+        // console.log('Message received. ', payload);
         // TODO - show notification
+        if (!("Notification" in window))
+            console.log("Notification not supported")
+        else if (Notification.permission === "granted") {
+            // If it's okay let's create a notification
+            const { notification: { title, body, icon } } = payload
+            new Notification(title, { body, icon });
+        }
+
     });
 }
 
