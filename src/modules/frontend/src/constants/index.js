@@ -69,6 +69,14 @@ export const ControlStateTypes = {
 	]
 }
 
+export const ControlStateValuesToText = {
+	[CONTROL_STATE.ON]: () => "Zapnuto",
+	[CONTROL_STATE.OFF]: () => "Vypnuto",
+	[CONTROL_STATE.COLOR]: (val) => val,
+	[CONTROL_STATE.TYPE]: (type) => type,
+	[CONTROL_STATE.BRIGHT]: (val) => val + "%",
+}
+
 export const CONTROL_STATE_KEYS = [CONTROL_STATE.ON, CONTROL_STATE.COLOR, CONTROL_STATE.TYPE, CONTROL_STATE.BRIGHT]
 
 

@@ -3,7 +3,7 @@ import mqtt from 'mqtt'
 import config from "backend/config/index.js"
 import Device from 'backend/src/models/Device'
 import { map, flip, keys, all, equals, contains, toPairs, _ } from 'ramda';
-import { processSensorsData } from './FireBase'
+import { processSensorsData, processControlData } from './FireBase'
 
 let mqttClient = null
 
@@ -58,7 +58,7 @@ export default (io) => {
 
                 if (all(equals(true), result)) {
                     const updateTime = new Date()
-                    const { permissions: { control = [] }, _id } = await Device.initControl(ownerId, deviceTopic, data, updateTime)
+                    const { permissions: { control = [] }, control: controlObj, info, _id } = await Device.initControl(ownerId, deviceTopic, data, updateTime)
                     console.log("init control", data)
 
                     let newData = {};
@@ -69,6 +69,8 @@ export default (io) => {
                     control.forEach((id) => {
                         io.to(id.toString()).emit("control", emitData)
                     })
+
+                    processControlData({ _id, control: controlObj, info }, data)
                 } else console.log("invalid key")
 
 
@@ -89,7 +91,7 @@ export default (io) => {
                 } else if (all(equals(true), result)) { // ack some update
                     console.log("saving to db updateState ack")
                     // TODO missing validation of state -> need to look into db for type -> validate -> update document
-                    const { permissions: { control = [] }, _id } = await Device.updateStateByDevice(ownerId, deviceTopic, data, updateTime)
+                    const { permissions: { control = [] }, _id, control: controlObj, info } = await Device.updateStateByDevice(ownerId, deviceTopic, data, updateTime)
 
                     let newData = {};
                     toPairs(data).forEach(([key, val]) => {
@@ -99,6 +101,8 @@ export default (io) => {
                     control.forEach((id) => {
                         io.to(id.toString()).emit("control", emitData)
                     })
+
+                    processControlData({ _id, control: controlObj, info }, data)
                 } else console.log("error missing JSONkey")
 
 

@@ -120,11 +120,47 @@ notifySchema.statics.getSensorItems = function (deviceId, JSONkeys) {
     ])
 }
 
-notifySchema.statics.updateItems = function (deviceId, itemIDs, userIDs, updateObj) {
+notifySchema.statics.getControlItems = function (deviceId, STATEkeys, JSONkey) {
+    console.log(deviceId, STATEkeys, JSONkey)
+    return this.model('Notify').aggregate([
+        {
+            $match: {
+                device: mongoose.Types.ObjectId(deviceId),
+                "control.JSONkey": JSONkey,
+                "control.items.JSONkey": { $in: STATEkeys }
+            }
+        },
+        {
+            $project: {
+                "user": "$user",
+                "control": {
+                    $filter: {
+                        input: "$control",
+                        cond: { $in: ["$$this.JSONkey", [JSONkey]] }
+                    }
+                }
+            }
+        },
+        { $unwind: "$control" },
+        {
+            $project: {
+                "user": "$user",
+                "control.items": {
+                    $filter: {
+                        input: "$control.items",
+                        cond: { $in: ["$$this.JSONkey", STATEkeys] }
+                    }
+                }
+            }
+        },
+    ])
+}
+
+notifySchema.statics.updateItems = function (deviceId, mode, itemIDs, userIDs, updateObj) {
     return this.model('Notify').updateMany({
         device: ObjectId(deviceId),
         user: { $in: userIDs },
-        "sensors.items._id": {
+        [`${mode}.items._id`]: {
             $in: itemIDs
         }
     }, updateObj,
@@ -133,15 +169,16 @@ notifySchema.statics.updateItems = function (deviceId, itemIDs, userIDs, updateO
         })
 }
 
-notifySchema.statics.refreshItems = function (deviceId, { items: itemsSended, users: usersSended }, { unSatisfiedItems, satisfiedItems, users: usersNotSneded }, userIDs) {
+notifySchema.statics.refreshSensorsItems = function (deviceId, { items: itemsSended, users: usersSended }, { unSatisfiedItems, satisfiedItems, users: usersNotSneded }) {
     usersSended = Array.from(usersSended).map(id => ObjectId(id))
     usersNotSneded = Array.from(usersNotSneded).map(id => ObjectId(id))
     itemsSended = itemsSended.map(id => ObjectId(id))
     satisfiedItems = satisfiedItems.map(id => ObjectId(id))
     unSatisfiedItems = unSatisfiedItems.map(id => ObjectId(id))
 
+    const mode = "sensors"
     // TODO use Bulk write - https://mongoosejs.com/docs/api.html#model_Model.bulkWrite
-    this.model("Notify").updateItems(deviceId, itemsSended, usersSended, {
+    this.model("Notify").updateItems(deviceId, mode, itemsSended, usersSended, {
         $set: {
             "sensors.items.$[inner].tmp": {
                 lastSendAt: new Date(),
@@ -150,7 +187,7 @@ notifySchema.statics.refreshItems = function (deviceId, { items: itemsSended, us
         }
     }).exec()
 
-    this.model("Notify").updateItems(deviceId, unSatisfiedItems, usersNotSneded, {
+    this.model("Notify").updateItems(deviceId, mode, unSatisfiedItems, usersNotSneded, {
         $set: {
             "sensors.items.$[inner].tmp": {
                 lastSatisfied: false,
@@ -158,9 +195,44 @@ notifySchema.statics.refreshItems = function (deviceId, { items: itemsSended, us
         }
     }).exec()
 
-    this.model("Notify").updateItems(deviceId, satisfiedItems, usersNotSneded, {
+    this.model("Notify").updateItems(deviceId, mode, satisfiedItems, usersNotSneded, {
         $set: {
             "sensors.items.$[inner].tmp": {
+                lastSatisfied: true,
+            }
+        }
+    }).exec()
+}
+
+notifySchema.statics.refreshControlItems = function (deviceId, { items: itemsSended, users: usersSended }, { unSatisfiedItems, satisfiedItems, users: usersNotSneded }) {
+    usersSended = Array.from(usersSended).map(id => ObjectId(id))
+    usersNotSneded = Array.from(usersNotSneded).map(id => ObjectId(id))
+    itemsSended = itemsSended.map(id => ObjectId(id))
+    satisfiedItems = satisfiedItems.map(id => ObjectId(id))
+    unSatisfiedItems = unSatisfiedItems.map(id => ObjectId(id))
+
+    const mode = "control"
+    // TODO use Bulk write - https://mongoosejs.com/docs/api.html#model_Model.bulkWrite
+    this.model("Notify").updateItems(deviceId, mode, itemsSended, usersSended, {
+        $set: {
+            "control.$[].items.$[inner].tmp": {
+                lastSendAt: new Date(),
+                lastSatisfied: true,
+            }
+        }
+    }).exec()
+
+    this.model("Notify").updateItems(deviceId, mode, unSatisfiedItems, usersNotSneded, {
+        $set: {
+            "control.$[].items.$[inner].tmp": {
+                lastSatisfied: false,
+            }
+        }
+    }).exec()
+
+    this.model("Notify").updateItems(deviceId, mode, satisfiedItems, usersNotSneded, {
+        $set: {
+            "control.$[].items.$[inner].tmp": {
                 lastSatisfied: true,
             }
         }

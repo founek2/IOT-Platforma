@@ -77,6 +77,7 @@ deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, dat
                     "control.recipe": 1,
                     "control.historical.updatedAt": 1,
                     "permissions.control": 1,
+                    "info": 1,
                }
           }).lean()
      if (!doc) throw new Error("Invalid device") // TODO remove
@@ -503,7 +504,7 @@ deviceSchema.statics.initControl = async function (createdBy, topic, data, updat
           createdBy
      }, {
           $set: updateStateQuery
-     }, { fields: { "permissions.control": 1, "control.recipe": 1 }, new: true }).lean()
+     }, { fields: { "permissions.control": 1, "control.recipe": 1, "info": 1 }, new: true }).lean()
      if (!doc) throw new Error("invalidPermissions")
 
      const JSONkey = head(keys(data))
