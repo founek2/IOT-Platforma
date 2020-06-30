@@ -26,6 +26,11 @@ export const NOTIFY_TYPES = keymirror({
 	ALWAYS: null,
 })
 
+export const NOTIFY_TYPES_CONTROL = keymirror({
+	ON: null,
+	OFF: null,
+})
+
 export const NotifyTypes = [
 	{ value: NOTIFY_TYPES.OVER, label: "Nad" },
 	{ value: NOTIFY_TYPES.BELOW, label: "Pod" },
@@ -40,10 +45,8 @@ export const CONTROL_STATE = {
 	BRIGHT: "bright",
 }
 
-export const POWER = { ON: "ON", "OFF": "OFF" }
-
 export const NotifyControlTypes = {
-	[CONTROL_STATE.ON]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }, { value: POWER.ON, label: "Zapnuto" }, { value: POWER.OFF, label: "Vypnuto" }],
+	[CONTROL_STATE.ON]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }, { value: NOTIFY_TYPES_CONTROL.ON, label: "Zapnuto" }, { value: NOTIFY_TYPES_CONTROL.OFF, label: "Vypnuto" }],
 	[CONTROL_STATE.COLOR]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }],
 	[CONTROL_STATE.TYPE]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }],
 	[CONTROL_STATE.BRIGHT]: [{ value: NOTIFY_TYPES.ALWAYS, label: "Vždy" }],
@@ -70,8 +73,7 @@ export const ControlStateTypes = {
 }
 
 export const ControlStateValuesToText = {
-	[CONTROL_STATE.ON]: () => "Zapnuto",
-	[CONTROL_STATE.OFF]: () => "Vypnuto",
+	[CONTROL_STATE.ON]: (val) => val === 1 ? "Zapnuto" : "Vypnuto",
 	[CONTROL_STATE.COLOR]: (val) => val,
 	[CONTROL_STATE.TYPE]: (type) => type,
 	[CONTROL_STATE.BRIGHT]: (val) => val + "%",

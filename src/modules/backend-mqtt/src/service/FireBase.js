@@ -88,6 +88,7 @@ export async function processSensorsData(doc, data) {
     const output = {}
     const sended = { items: [], users: new Set() }
     const notSended = { unSatisfiedItems: [], satisfiedItems: [], users: new Set() }
+
     docs.forEach(({ user: userID, sensors }) => {   // per USER
         sensors.items.forEach(processNotifications(userID, data, "sensors", output, sended, notSended))
     })
@@ -112,7 +113,15 @@ function getTokensPerUser(IDs) {
 function processNotifications(userID, data, mode, output, sended, notSended, doc) {
     const { info, control: { recipe } } = doc
     return ({ JSONkey, type, value: limit, advanced = defaultAdvanced, _id, tmp }) => {      // per notification rule
-        const value = data[JSONkey]
+        let recipeKey;
+        let value;
+        if (mode === "control") {
+            recipeKey = head(keys(data))
+            value = data[recipeKey][JSONkey]
+        } else {
+            recipeKey = JSONkey
+            value = data[JSONkey]
+        }
 
         /* Check validity */
         const result = functions[type](value, limit, advanced, tmp)
@@ -120,7 +129,6 @@ function processNotifications(userID, data, mode, output, sended, notSended, doc
             if (result.valid) {
                 if (!output[userID]) output[userID] = []
 
-                const recipeKey = mode === "control" ? head(keys(data)) : JSONkey
                 const rec = recipe.find(({ JSONkey: key }) => key === recipeKey)
 
                 output[userID].push(createNotification({ info, recipe: rec, value, homepageUrl, STATEkey: JSONkey }, mode))
