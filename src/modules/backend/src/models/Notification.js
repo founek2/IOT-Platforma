@@ -251,4 +251,16 @@ notifySchema.statics.removeSpareSensors = function (deviceId, JSONkeys) {
     })
 }
 
+notifySchema.statics.removeSpareControl = function (deviceId, JSONkeys) {
+    console.log(deviceId, JSONkeys)
+    return this.model("Notify").updateOne({
+        device: ObjectId(deviceId),
+    }, {
+        $pull: {
+            "control": { JSONkey: { $nin: JSONkeys } }
+        }
+
+    })
+}
+
 export default mongoose.model('Notify', notifySchema)

@@ -116,8 +116,12 @@ userSchema.statics.findAllNotRoot = function () {
 }
 
 userSchema.statics.removeUsers = function (arrayOfIDs) {
+     const ids = arrayOfIDs.map(id => mongoose.Types.ObjectId(id))
+     this.model('Notify').deleteMany({
+          user: { $in: ids }
+     }).exec()
      return this.model('User')
-          .deleteMany({ _id: { $in: arrayOfIDs.map(id => mongoose.Types.ObjectId(id)) } })
+          .deleteMany({ _id: { $in: ids } })
           .catch(catcher('user'))
 }
 

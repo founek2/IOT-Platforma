@@ -13,6 +13,7 @@ import ControlHistory from './ControlHistory'
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const ObjectId = mongoose.Types.ObjectId
 
 const deviceSchema = new Schema(
      {
@@ -152,7 +153,7 @@ const sensorsFields = {
 
 deviceSchema.statics.findForUser = function (userID, options = {}) {
      const { controlOnly, sensorsOnly } = options;
-     const userObjID = mongoose.Types.ObjectId(userID)
+     const userObjID = ObjectId(userID)
 
      console.log("loking for devices, userID=", userID)
 
@@ -308,13 +309,13 @@ deviceSchema.statics.findPublic = function ({ sensorsOnly } = {}) {
 
 deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtension, { id, admin }) {
      return this.model('Device')
-          .findOne({ _id: mongoose.Types.ObjectId(deviceID) })
+          .findOne({ _id: ObjectId(deviceID) })
           .select('permissions createdBy imgPath info')
           .lean()
           .then(async doc => {
                const { topic } = formData
                if (topic) {
-                    const result = await this.model('Device').exists({ topic, createdBy: doc.createdBy, _id: { $ne: mongoose.Types.ObjectId(deviceID) } })
+                    const result = await this.model('Device').exists({ topic, createdBy: doc.createdBy, _id: { $ne: ObjectId(deviceID) } })
                     if (result) throw Error('topicAlreadyUsed')
                }
                const origImgPath = doc.info.imgPath
@@ -323,7 +324,7 @@ deviceSchema.statics.updateByFormData = function (deviceID, formData, imgExtensi
                const formDataNested = { ...formData, info: { ...doc.info, ...(formData.info) } }    // merge original nested object "info" to preserve imagePath
 
                console.log("updating Device> ", formDataNested)
-               return this.model('Device').updateOne({ _id: mongoose.Types.ObjectId(deviceID) }, formDataNested).then(() => origImgPath)
+               return this.model('Device').updateOne({ _id: ObjectId(deviceID) }, formDataNested).then(() => origImgPath)
           }).catch(catcher('device'))
 }
 
@@ -396,9 +397,13 @@ deviceSchema.statics.updateSensorsData = async function (ownerId, topic, data, u
 }
 
 deviceSchema.statics.delete = async function (deviceID, user) {
+     this.model('Notify').deleteMany({
+          device: ObjectId(deviceID)
+     }).exec()
+
      return this.model('Device')
           .findOneAndDelete({
-               _id: mongoose.Types.ObjectId(deviceID)
+               _id: ObjectId(deviceID)
           }).lean()
 }
 
@@ -406,8 +411,8 @@ deviceSchema.statics.checkWritePerm = async function (deviceID, userId) {
      if (deviceID.length != 24) return false
 
      return await this.model('Device').exists({
-          _id: mongoose.Types.ObjectId(deviceID),
-          "permissions.write": mongoose.Types.ObjectId(userId)
+          _id: ObjectId(deviceID),
+          "permissions.write": ObjectId(userId)
      })
 }
 
@@ -415,8 +420,8 @@ deviceSchema.statics.checkControlPerm = async function (deviceID, userId) {
      if (deviceID.length != 24) return false
 
      return await this.model('Device').exists({
-          _id: mongoose.Types.ObjectId(deviceID),
-          "permissions.control": mongoose.Types.ObjectId(userId)
+          _id: ObjectId(deviceID),
+          "permissions.control": ObjectId(userId)
      })
 }
 
@@ -425,12 +430,12 @@ deviceSchema.statics.checkReadPerm = async function (deviceID, userId) {
 
      if (userId)         // public devices do exists -> no user
           return await this.model('Device').exists({
-               _id: mongoose.Types.ObjectId(deviceID),
-               $or: [{ "permissions.read": mongoose.Types.ObjectId(userId) }, { publicRead: true }]
+               _id: ObjectId(deviceID),
+               $or: [{ "permissions.read": ObjectId(userId) }, { publicRead: true }]
           })
      else
           return await this.model('Device').exists({
-               _id: mongoose.Types.ObjectId(deviceID),
+               _id: ObjectId(deviceID),
                publicRead: true,
           })
 
@@ -440,7 +445,7 @@ deviceSchema.statics.checkExist = async function (deviceID = "") {
      if (deviceID.length !== 24) return false
 
      return await this.model('Device').exists({
-          _id: mongoose.Types.ObjectId(deviceID),
+          _id: ObjectId(deviceID),
      })
 }
 
@@ -458,8 +463,8 @@ deviceSchema.statics.getControlData = async function (deviceID, JSONkey, from, t
 
 deviceSchema.statics.getApiKey = async function (id, user = {}) {
      const doc = await this.model('Device').findOne({
-          "_id": mongoose.Types.ObjectId(id),
-          ...(!user.admin && { "permissions.write": mongoose.Types.ObjectId(user.id) })
+          "_id": ObjectId(id),
+          ...(!user.admin && { "permissions.write": ObjectId(user.id) })
      }, "-_id apiKey").lean()
      if (!doc) throw new Error("invalidPermissions")
      return doc.apiKey
@@ -467,7 +472,7 @@ deviceSchema.statics.getApiKey = async function (id, user = {}) {
 
 deviceSchema.statics.updatePermissions = async function (id, permissions, user) {
      return await this.model('Device').updateOne({
-          "_id": mongoose.Types.ObjectId(id),
+          "_id": ObjectId(id),
      }, { permissions })
 }
 

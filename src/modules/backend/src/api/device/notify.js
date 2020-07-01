@@ -1,13 +1,10 @@
 import resource from 'framework/src/middlewares/resource-router-middleware'
-import Device from '../../models/Device'
-import processError from 'framework/src/utils/processError'
-import { assocPath, o, omit } from 'ramda'
 import tokenAuthMIddleware from 'framework/src/middlewares/tokenAuth'
 import formDataChecker from 'framework/src/middlewares/formDataChecker'
 
 import fieldDescriptors from 'fieldDescriptors'
 import checkReadPerm from '../../middleware/device/checkReadPerm'
-import checkWritePerm from '../../middleware/device/checkWritePerm'
+import checkControlPerm from '../../middleware/device/checkControlPerm'
 import Notify from '../../models/Notification'
 import { transformNotifyForBE } from 'frontend/src/utils/transform'
 
@@ -16,10 +13,20 @@ function checkIndex() {
         if (req.query.type === "sensors")
             return checkReadPerm()(req, res, next)
         if (req.query.type === "control" && req.query.JSONkey)
-            return checkWritePerm()(req, res, next)
+            return checkControlPerm()(req, res, next)
 
         res.status(208).send({ error: 'InvalidParam' })
     }
+}
+
+function checkUpdate(req, res, next) {
+    console.log(req.body)
+    if (req.body.formData.EDIT_NOTIFY_SENSORS)
+        return checkReadPerm()(req, res, next)
+    else if (req.body.formData.EDIT_NOTIFY_CONTROL)
+        return checkControlPerm()(req, res, next)
+
+    res.status(208).send({ error: 'InvalidParam' })
 }
 
 export default ({ config, db }) =>
@@ -27,7 +34,7 @@ export default ({ config, db }) =>
         mergeParams: true,
 
         middlewares: {
-            update: [tokenAuthMIddleware(), checkReadPerm(), formDataChecker(fieldDescriptors)],
+            update: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors), checkUpdate],
             index: [tokenAuthMIddleware(), checkIndex()],
         },
 

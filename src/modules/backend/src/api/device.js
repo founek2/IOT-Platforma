@@ -113,9 +113,13 @@ export default ({ config, db }) =>
                          .then(() => res.sendStatus(204))
                          .catch(processError(res))
                } else if (formData.EDIT_CONTROL) {
+                    const newJSONkeys = formData.EDIT_CONTROL.JSONkey
                     const { control } = transformControlForBE(formData.EDIT_CONTROL);
                     Device.updateControlRecipe(id, control, user)
-                         .then(() => res.sendStatus(204))
+                         .then(() => {
+                              Notify.removeSpareControl(id, newJSONkeys).exec()
+                              res.sendStatus(204)
+                         })
                          .catch(processError(res))
                } else res.sendStatus(500)
           },
