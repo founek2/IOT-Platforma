@@ -120,6 +120,13 @@ userSchema.statics.removeUsers = function (arrayOfIDs) {
      this.model('Notify').deleteMany({
           user: { $in: ids }
      }).exec()
+     this.model("Device").updateMany({}, {
+          $pull: {
+               "permissions.read": { $in: ids },
+               "permissions.write": { $in: ids },
+               "permissions.control": { $in: ids },
+          }
+     }).exec()
      return this.model('User')
           .deleteMany({ _id: { $in: ids } })
           .catch(catcher('user'))
