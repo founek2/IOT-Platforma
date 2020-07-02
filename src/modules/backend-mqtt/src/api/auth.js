@@ -17,7 +17,7 @@ router.post('/user', function (req, res) {
                b ? res.send("allow") : res.send("deny"))
      } else
           User.checkCreditals({ userName: username, password, authType: "passwd" }).then(({ doc }) => {
-               if (doc.groups.some(group => group === "root" || group === "admin")) return res.send("allow")
+               if (doc.groups.some(group => group === "root" || group === "admin")) return res.send("allow administrator")
                throw new Error()
           }).catch(() => res.send("deny"))
 
