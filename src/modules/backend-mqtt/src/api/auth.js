@@ -30,7 +30,7 @@ router.post('/vhost', function (req, res) {
 });
 
 router.post('/resource', function (req, res) {
-     const { resource } = req.body
+     const { resource, username } = req.body
      // console.log("/resource", req.body, resource === 'queue' || resource === 'exchange' || /^user=.+/.test(username))
      if (resource === 'queue' || resource === 'exchange' || /^user=.+/.test(username)) return res.send("allow")
      console.log("/resource deny")
