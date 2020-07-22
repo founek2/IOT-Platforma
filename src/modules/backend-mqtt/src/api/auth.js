@@ -13,8 +13,8 @@ router.post('/user', function (req, res) {
      const { username, password } = req.body
 
      if (username.length === 32) {
-          Device.login(username).then(b =>
-               b ? res.send("allow") : res.send("deny"))
+          Device.login(username).then(success =>
+               success ? res.send("allow") : res.send("deny"))
      } else
           User.checkCreditals({ userName: username, password, authType: "passwd" }).then(({ doc }) => {
                if (doc.groups.some(group => group === "root" || group === "admin")) return res.send("allow administrator")
@@ -40,7 +40,7 @@ router.post('/resource', function (req, res) {
 router.post('/topic', async function (req, res) {
      console.log("/topic", req.body)
      const { vhost, username, name, permission, routing_key } = req.body
-     if (username.length != 32) return res.send("allow")
+     if (username.length !== 32) return res.send("allow")
      if (name === "amq.topic" && vhost === '/') {
           const { ownerId, topic } = await Device.getOwnerAndTopic(username)
 
