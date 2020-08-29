@@ -136,9 +136,9 @@ export function add(data) {
 }
 
 function sortDevices(a, b) {
-    if (a.public && b.public) return 0
-    if (a.public) return -1
-    return 1
+    if (a.publicRead && b.publicRead) return 0
+    if (a.publicRead) return 1
+    return -1
 }
 
 export function fetch() {
