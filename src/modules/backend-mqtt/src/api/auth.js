@@ -13,8 +13,8 @@ router.post('/user', function (req, res) {
      const { username, password } = req.body
 
      if (username.length === 32) {
-          Device.login(username).then(b =>
-               b ? res.send("allow") : res.send("deny"))
+          Device.login(username).then(success =>
+               success ? res.send("allow") : res.send("deny"))
      } else
           User.checkCreditals({ userName: username, password, authType: "passwd" }).then(({ doc }) => {
                if (doc.groups.some(group => group === "root" || group === "admin")) return res.send("allow administrator")
@@ -30,7 +30,7 @@ router.post('/vhost', function (req, res) {
 });
 
 router.post('/resource', function (req, res) {
-     const { resource } = req.body
+     const { resource, username } = req.body
      // console.log("/resource", req.body, resource === 'queue' || resource === 'exchange' || /^user=.+/.test(username))
      if (resource === 'queue' || resource === 'exchange' || /^user=.+/.test(username)) return res.send("allow")
      console.log("/resource deny")
@@ -40,7 +40,7 @@ router.post('/resource', function (req, res) {
 router.post('/topic', async function (req, res) {
      console.log("/topic", req.body)
      const { vhost, username, name, permission, routing_key } = req.body
-     if (username.length != 32) return res.send("allow")
+     if (username.length !== 32) return res.send("allow")
      if (name === "amq.topic" && vhost === '/') {
           const { ownerId, topic } = await Device.getOwnerAndTopic(username)
 

@@ -12,7 +12,7 @@ export function publish(topic, message, opt = { qos: 2 }) {
     return mqttClient.publish(topic, JSON.stringify(message), opt)
 }
 
-const magicRegex = /^(?:\/([\w]*)([\/]\w+[\/]\w+[\/]\w+)(.*))/;
+const magicRegex = /^(?:\/([\w]*)([/]\w+[/]\w+[/]\w+)(.*))/;
 export default (io) => {
     console.log("connecting to mqtt")
     const client = mqtt.connect('mqtts://localhost', { username: `${config.mqttUser}`, password: `${config.mqttPassword}`, port: config.portMqtt, connectTimeout: 20 * 1000, rejectUnauthorized: false })
@@ -27,11 +27,12 @@ export default (io) => {
     })
 
     client.on('message', async function (topic, message) {
-        // const idObj = topic.match(/^(?:[^\/]*\/){1}([^\/]*)/)
-        // const topicObj = topic.match(/^(?:[^\/]*\/){2}(.*)\//)
+        const [, ownerId, deviceTopic, restTopic] = topic.match(magicRegex);
+        if (!ownerId || !deviceTopic) return;
+        console.log("restTopic", restTopic)
         try {
-            const [_, ownerId, deviceTopic, restTopic] = topic.match(magicRegex);
-            if (!ownerId || !deviceTopic) return;
+
+
             if (restTopic === "" || restTopic === "/") {
 
                 const data = JSON.parse(message.toString())
