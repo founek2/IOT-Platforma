@@ -33,7 +33,7 @@ initializeDb(config, db => {
 
     app.use("/api", api({ config }))
 
-    app.server.listen(config.portAuth, "localhost", () => {
+    app.server.listen(config.portAuth, () => {
         console.log(`Started on port ${app.server.address().port}`)
 
         setTimeout(() => mqttService(app.io), 1000); //init
