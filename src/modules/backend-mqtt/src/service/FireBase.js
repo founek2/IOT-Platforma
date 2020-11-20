@@ -90,7 +90,7 @@ export async function processSensorsData(doc, data) {
     const notSended = { unSatisfiedItems: [], satisfiedItems: [], users: new Set() }
 
     docs.forEach(({ user: userID, sensors }) => {   // per USER
-        sensors.items.forEach(processNotifications(userID, data, "sensors", output, sended, notSended))
+        sensors.items.forEach(processNotifications(userID, data, "sensors", output, sended, notSended, doc))
     })
 
     // console.log(notSended)
@@ -111,7 +111,7 @@ function getTokensPerUser(IDs) {
 }
 
 function processNotifications(userID, data, mode, output, sended, notSended, doc) {
-    const { info, control: { recipe } } = doc
+    const { info, [mode]: { recipe } } = doc
     return ({ JSONkey, type, value: limit, advanced = defaultAdvanced, _id, tmp }) => {      // per notification rule
         let recipeKey;
         let value;
