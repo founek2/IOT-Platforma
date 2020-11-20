@@ -39,14 +39,31 @@ const notifySchema = new Schema(
 
 
 notifySchema.statics.addOrUpdateSensors = async function (userId, deviceId, items) {
+    console.log("BLEBLE", userId, deviceId, JSON.stringify(items))
+
     const Notify = this.model('Notify')
 
-    return Notify.updateOne({ device: ObjectId(deviceId), "user": ObjectId(userId) }, {
+    // return Notify.updateOne({ device: ObjectId(deviceId), "user": ObjectId(userId) }, {
+    //     $set: {
+    //         "sensors.items": items,
+    //         "control": []   // for properly working arrayFilters in controlNotify
+    //     }
+    // }, { upsert: true, setDefaultsOnInsert: true }).exec()
+
+    let doc = await Notify.findOne({ device: ObjectId(deviceId), "user": ObjectId(userId) }).select("sensors").lean()
+
+    if (!doc) doc = await new Notify({
+        device: ObjectId(deviceId),
+        "user": ObjectId(userId),
+        sensors: { items: [] },
+        "control": []   // for properly working arrayFilters in controlNotify 
+    }).save()
+
+    return Notify.updateOne({ _id: doc._id }, {
         $set: {
-            "sensors.items": items,
-            "control": []   // for properly working arrayFilters in controlNotify
+            [`sensors.items`]: items,
         }
-    }, { upsert: true, setDefaultsOnInsert: true }).exec()
+    }).exec()
 }
 
 notifySchema.statics.addOrUpdateControl = async function (userId, deviceId, JSONkey, items) {
@@ -68,6 +85,7 @@ notifySchema.statics.addOrUpdateControl = async function (userId, deviceId, JSON
         }
     }).exec()
 }
+
 
 notifySchema.statics.getSensors = function (deviceId, userId) {
     console.log({ deviceId, userId })
