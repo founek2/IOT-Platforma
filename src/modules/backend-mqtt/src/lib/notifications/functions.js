@@ -20,7 +20,7 @@ function over(value, limit, advanced, tmp) {
 function always(value, limit, advanced, tmp) {
     return {
         ruleSatisfied: true,
-        valid: true
+        valid: true && shouldSend(advanced, tmp)
     }
 }
 
