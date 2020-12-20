@@ -6,6 +6,8 @@ export const getDevices = o(path(["devices", "data"]), getApplication)
 
 export const getQueryID = o(path(["query", "id"]), getHistory)
 
+export const getQuerySimple = o(path(["query", "simpleView"]), getHistory)
+
 export const getQueryName = o(path(["query", "name"]), getHistory)
 
 export const getQueryField = curry((name, state) => o(path(["query", name]), getHistory)(state))

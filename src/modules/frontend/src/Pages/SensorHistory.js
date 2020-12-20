@@ -1,6 +1,10 @@
 import React, { Fragment, useEffect, useMemo } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { connect } from 'react-redux'
 import { filter, fromPairs } from 'ramda'
 import { bindActionCreators } from 'redux'
@@ -11,6 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import Chart from '../components/Chart'
 import DetailTable from './sensorHistory/DetailTable'
 import resetTime from 'framework/src/utils/resetTime'
+import { Link } from "react-router-dom"
 
 function readableWithSensors(device) {
     return (device.publicRead || (device.permissions && device.permissions.read)) && (device.sensors && device.sensors.recipe)
@@ -26,6 +31,14 @@ const styles = theme => ({
     },
     root: {
         paddingBottom: 20
+    },
+    menu: {
+        position: "absolute",
+        right: 10,
+        top: 10
+    },
+    wrapper: {
+        position: "relative"
     }
 })
 
@@ -84,6 +97,7 @@ function transformData(sensorsData, sensorRecipe, sensorName) {
 }
 
 function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { params }, classes, sensors, sensorName }) {
+    const [anchorEl, setAnchorEl] = React.useState(null);
     useEffect(() => {
         const from = new Date()
         from.setDate(from.getDate() - 7);   // Go 7 days back
@@ -93,6 +107,14 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
             fetchSensorsDataAction(params.deviceId)(resetTime(from))
         } else fetchSensorsDataAction(params.deviceId)(resetTime(from))
     }, [])
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     const hasData =
         device && sensors && sensors.id === device.id && sensors.data &&
@@ -111,9 +133,9 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
         [hasData && sensors.data[0].first, hasData && sensors.data[sensors.data.length - 1].last]) // check from -> to
 
     return (
-        <Fragment>
+        <div className={classes.wrapper}>
             {device
-                ? <Card className={classes.root}>
+                ? <Fragment><Card className={classes.root}>
                     <Typography className={classes.title} variant="h3" align="center">{device.info.title}</Typography>
                     {hasData ? // Chart needs two points to draw a line
                         <Chart
@@ -130,8 +152,25 @@ function Sensors({ fetchDevicesAction, fetchSensorsDataAction, device, match: { 
                     }
 
                 </Card>
+                    <div className={classes.menu}>
+                        <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <Link to={`/?simpleView=${device.id}`}>
+                                <MenuItem onClick={handleClose}>Zjednodušený pohled</MenuItem>
+                            </Link>
+                        </Menu>
+                    </div>
+                </Fragment>
                 : <Typography className={classes.noDevices}>Nebylo nalezeno vámi zvolené zařízení</Typography>}
-        </Fragment>
+        </div>
     )
 }
 
