@@ -1,4 +1,4 @@
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import 'firebase/messaging';
 import 'firebase/analytics';
 import initConfig from './config'
