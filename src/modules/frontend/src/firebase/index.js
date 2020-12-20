@@ -1,11 +1,13 @@
 import * as firebase from 'firebase/app';
 import 'firebase/messaging';
+import 'firebase/analytics ';
 import initConfig from './config'
 
 let messaging;
 
 export function init() {
     const app = firebase.initializeApp(initConfig);
+    app.analytics();
     messaging = app.messaging();
 
     messaging.onTokenRefresh(token => {
