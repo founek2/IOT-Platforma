@@ -8,6 +8,8 @@ let messaging;
 export function init() {
     const app = firebase.initializeApp(initConfig);
     app.analytics();
+    if (!firebase.messaging.isSupported()) return
+
     messaging = app.messaging();
 
     messaging.onTokenRefresh(token => {
@@ -21,6 +23,7 @@ export function init() {
     messaging.onMessage((payload) => {
         // console.log('Message received. ', payload);
         // TODO - show notification
+        console.log("onMessage")
         if (!("Notification" in window))
             console.log("Notification not supported")
         else if (Notification.permission === "granted") {
@@ -28,13 +31,14 @@ export function init() {
             const { notification: { title, body, icon } } = payload
             new Notification(title, { body, icon });
         }
-
     });
 }
 
 // Get Instance ID token. Initially this makes a network call, once retrieved
 // subsequent calls to getToken will return from cache.
 export function getToken() {
+    if (!messaging) return null
+
     return messaging.getToken().then((currentToken) => {
         if (currentToken) {
             return currentToken

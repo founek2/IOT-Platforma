@@ -10,17 +10,13 @@ import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore'
 import clsx from "clsx"
 import grey from '@material-ui/core/colors/grey';
 
-function readableWithSensors(device) {
-    return (device.publicRead || (device.permissions && device.permissions.read)) && (device.sensors && device.sensors.recipe)
-}
-
 // TODO duplicit
 function convertDataView(classes, currentData, id) {
     return ({ name, unit, JSONkey, description }) => {
 
 
         return (
-            <Fragment>
+            <Fragment key={JSONkey}>
                 <Typography className={classes.variable}>
                     {name}
                 </Typography>
@@ -63,7 +59,7 @@ function SimpleView({ device, classes }) {
     const { sensors } = device;
     const time = sensors.current ? new Date(sensors.current.updatedAt) : null;
 
-    return <div class={classes.container}>
+    return <div className={classes.container}>
 
         <div className={classes.dataContainer}>
             {map(convertDataView(classes, sensors.current.data, device.id), sensors.recipe)}
