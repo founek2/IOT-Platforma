@@ -1,13 +1,13 @@
 import firebase from 'firebase/app';
 import 'firebase/messaging';
-import 'firebase/analytics';
+// import 'firebase/analytics';
 import initConfig from './config'
 
 let messaging;
 
 export function init() {
     const app = firebase.initializeApp(initConfig);
-    app.analytics();
+    // app.analytics();
     if (!firebase.messaging.isSupported()) return
 
     messaging = app.messaging();
