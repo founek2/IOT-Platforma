@@ -3,8 +3,8 @@ if ("function" === typeof importScripts) {
 
     importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
-    importScripts('https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js');
-    importScripts('https://www.gstatic.com/firebasejs/7.14.6/firebase-messaging.js');
+    importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js');
+    importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js');
 
     firebase.initializeApp({
         apiKey: "AIzaSyD15CUfT9PGQNok0qcs4qu2ectuauAYwWw",
