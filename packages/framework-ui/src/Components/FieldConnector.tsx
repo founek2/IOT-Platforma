@@ -12,6 +12,7 @@ import PasswordField from './fieldConnector/PasswordField'
 import InputField from './fieldConnector/InputField'
 import FileLoader from './fieldConnector/FileLoader'
 import Select from './fieldConnector/Select'
+import CheckBox from './fieldConnector/CheckBox'
 import {
     getFormsData,
     getFieldDescriptor,
@@ -19,6 +20,7 @@ import {
     getFieldDescriptors,
     getRegisteredField
 } from '../utils/getters'
+import ChipArray from './ChipArray'
 
 const errorLog = console.error
 
@@ -29,6 +31,8 @@ const Components = {
     "DateTimePicker": DateTimePicker,
     "InputField": InputField,
     "FileLoader": FileLoader,
+    "ChipArray": ChipArray,
+    "CheckBox": CheckBox,
 }
 type componentKeys = keyof typeof Components
 
@@ -53,12 +57,12 @@ interface FieldConnectorProps {
     optionsData?: any
     className?: string
     label?: string
-    registerField: any,
-    unregisterField: any,
-    updateRegisteredField: any
-    updateFormField: any
-    validateField: any
-    formsData: any
+    registerField?: any,
+    unregisterField?: any,
+    updateRegisteredField?: any
+    updateFormField?: any
+    validateField?: any
+    formsData?: any
 }
 
 function FieldConnector({
@@ -125,7 +129,7 @@ function FieldConnector({
         if (component === 'Select') {
             options = { selectOptions }
         }
-        // if (component === 'ChipArray') options = { optionsData }
+        if (component === 'ChipArray') options = { optionsData }
         return (
             <Component
                 id={deepPath}

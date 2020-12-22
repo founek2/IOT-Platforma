@@ -220,7 +220,7 @@ const EDIT_SENSORS = {
         required: true,
         label: 'Interval samplování',
         name: "sampleinterval",
-        validations: [validationFactory('isOneOf', { values: SampleIntervals })]
+        validations: [validationFactory('isOneOf', { values: SampleIntervals.map(obj => obj.value) })]
     },
 
     'name[]': {
@@ -264,7 +264,7 @@ const EDIT_CONTROL = {
         deepPath: 'EDIT_SENSORS.type[]',
         label: 'Typ',
         required: true,
-        validations: [validationFactory('isOneOf', { values: ControlTypes })]
+        validations: [validationFactory('isOneOf', { values: ControlTypes.map(obj => obj.value) })]
     },
     'JSONkey[]': {
         deepPath: 'EDIT_SENSORS.JSONkey[]',
@@ -296,7 +296,7 @@ const advanced = {
             deepPath: 'EDIT_NOTIFY_SENSORS.advanced.interval[]',
             label: 'Interval',
             // required: true,
-            validations: [validationFactory('isOneOf', { values: NotifyIntervals })]
+            validations: [validationFactory('isOneOf', { values: NotifyIntervals.map(obj => obj.value) })]
         },
         "from[]": {
             deepPath: 'EDIT_NOTIFY_SENSORS.advanced.from[]',
@@ -324,7 +324,7 @@ const EDIT_NOTIFY_SENSORS = {
         deepPath: 'EDIT_NOTIFY_SENSORS.type[]',
         label: 'Akce',
         required: true,
-        validations: [validationFactory('isOneOf', { values: NotifyTypes })]
+        validations: [validationFactory('isOneOf', { values: NotifyTypes.map(obj => obj.value) })]
     },
     "value[]": {
         deepPath: 'EDIT_NOTIFY_SENSORS.value[]',
@@ -351,7 +351,7 @@ const EDIT_NOTIFY_CONTROL = {
         deepPath: 'EDIT_NOTIFY_CONTROL.JSONkey[]',
         label: 'Veličina',
         required: true,
-        validations: [validationFactory('isOneOf', { values: CONTROL_STATE_KEYS.map(v => ({ value: v, label: v })) })]
+        validations: [validationFactory('isOneOf', { values: CONTROL_STATE_KEYS })]
     },
     'type[]': {
         deepPath: 'EDIT_NOTIFY_CONTROL.type[]',
@@ -391,7 +391,7 @@ const EDIT_RGB = {
         label: 'Typ',
         // required: true,
         name: 'type',
-        validations: [validationFactory('isOneOf', { values: RgbTypes })]
+        validations: [validationFactory('isOneOf', { values: RgbTypes.map(obj => obj.value) })]
     },
     "color": {
         deepPath: 'EDIT_RGB.color',
@@ -426,7 +426,7 @@ const CHANGE_DEVICE_STATE_RGB = {
             deepPath: 'CHANGE_DEVICE_STATE_RGB.state.type',
             label: 'Typ',
             name: 'type',
-            validations: [validationFactory('isOneOf', { values: RgbTypes })]
+            validations: [validationFactory('isOneOf', { values: RgbTypes.map(obj => obj.value) })]
         },
         "color": {
             deepPath: 'CHANGE_DEVICE_STATE_RGB.state.color',

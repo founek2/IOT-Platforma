@@ -24,6 +24,7 @@ import * as formsActions from 'framework-ui/lib/redux/actions/formsData'
 import Dialog from 'framework-ui/lib/Components/Dialog'
 import TextField from 'framework-ui/lib/Components/fieldConnector/TextField.js'
 import CopyToClipboard from 'framework-ui/lib/Components/CopyToClipboard'
+import ImageUploader from '../../components/ImageUploader'
 
 const styles = theme => ({
     textArea: {
@@ -135,7 +136,7 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                 <CardHeader className={classes.header} title={device.title} />
                 <CardContent className={classes.content}>
                     <div className={classes.contentInner}>
-                        <div>
+                        {/* <div>
                             <div className={classes.mediaWrapper}>
                                 <CardMedia className={classes.media} image={(newImg && newImg.url) || IMAGES_PREFIX_FOLDER + device.info.imgPath} />
                             </div>
@@ -146,10 +147,12 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                                 }}
                                 deepPath="EDIT_DEVICE.info.image"
                             />
-                        </div>
+                        </div> */}
+                        <ImageUploader
+                            deepPath="EDIT_DEVICE.info.image"
+                        />
                         <div>
                             <FieldConnector
-                                component="TextField"
                                 deepPath="EDIT_DEVICE.info.title"
                             />
                             <FieldConnector
@@ -163,7 +166,6 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                         </div>
                     </div>
                     <FieldConnector
-                        component="TextField"
                         fieldProps={{
                             type: 'text',
                             className: classes.textArea,
@@ -192,10 +194,10 @@ function EditDeviceDialog({ classes, updateDeviceAction, updateTmpDataAction, ap
                             )}
                         </CopyToClipboard>
                     </div>
-                    <FieldConnector
+                    {/* <FieldConnector
                         component="Checkbox"
                         deepPath="EDIT_DEVICE.publicRead"
-                    />
+                    /> */}
                 </CardContent>
                 <CardActions className={classes.actions}>
                     <Button
