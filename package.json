@@ -1,0 +1,22 @@
+{
+    "private": true,
+    "scripts": {
+        "bootstrap": "lerna bootstrap",
+        "build": "yarn pre && lerna run --scope backend --scope frontend --scope backend-mqtt build",
+        "clean": "rimraf packages/**/lib",
+        "test": "lerna run test",
+        "watch": "lerna run --parallel --scope common --scope framework --scope framework-ui dev",
+        "pre": "lerna run --scope common --scope framework --scope framework-ui build"
+    },
+    "devDependencies": {
+        "@types/node": "^14.0.20",
+        "ava": "^3.10.1",
+        "lerna": "^3.22.1",
+        "rimraf": "^3.0.2",
+        "typescript": "~3.9.6"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "name": "monorepo"
+}

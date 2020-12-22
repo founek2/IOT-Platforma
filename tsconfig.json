@@ -1,0 +1,15 @@
+{
+    "extends": "./tsconfig.build.json",
+    "compilerOptions": {
+        "baseUrl": "./packages",
+        "downlevelIteration": true,
+        "allowJs": true,
+    },
+    "exclude": [
+        "**/dist/*",
+        "**/node_modules/*"
+    ],
+    "files": [
+        "types/global.d.ts"
+    ]
+}

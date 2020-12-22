@@ -1,0 +1,26 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "rootDir": "src",
+        "outDir": "dist",
+        "target": "ES2018",
+        "composite": true,
+        "moduleResolution": "node",
+        "lib": [
+            "esnext.asynciterable",
+            "DOM" // were problems with @testing-library
+        ]
+    },
+    "exclude": [
+        "src/**/*.spec.ts"
+    ],
+    "include": [
+        "src/**/*"
+    ],
+    "references": [
+        {
+            "path": "../common"
+        }
+    ],
+}

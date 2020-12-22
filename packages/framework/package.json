@@ -1,0 +1,20 @@
+{
+    "name": "framework",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "jsonwebtoken": "^8.5.1",
+        "@types/jsonwebtoken": "^8.5.0"
+    },
+    "main": "lib/index.js",
+    "typings": "index.d.ts",
+    "scripts": {
+        "build": "rimraf tsconfig.tsbuildinfo && tsc -p .",
+        "dev": "tsc -w",
+        "test": "jest",
+        "coverage": "yarn test --collectCoverage"
+    },
+    "devDependencies": {
+        "typescript": "~3.9.6"
+    }
+}

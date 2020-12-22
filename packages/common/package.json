@@ -1,0 +1,20 @@
+{
+    "name": "common",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "date-fns": "^2.15.0",
+        "ramda": "^0.27.1",
+        "winston": "^3.3.3"
+    },
+    "main": "dist/index.js",
+    "typings": "index.d.ts",
+    "scripts": {
+        "build": "rimraf tsconfig.tsbuildinfo && tsc -p .",
+        "dev": "tsc -w",
+        "test": "jest"
+    },
+    "devDependencies": {
+        "typescript": "^3.9.6"
+    }
+}

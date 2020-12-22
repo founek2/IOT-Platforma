@@ -1,0 +1,43 @@
+{
+    "name": "backend-mqtt",
+    "version": "0.0.1",
+    "description": "",
+    "main": "lib/main.js",
+    "scripts": {
+        "dev": "ts-node-dev src/index.js",
+        "build": "tsc -p .",
+        "test": "jest"
+    },
+    "keywords": [],
+    "author": "Delegi",
+    "dependencies": {
+        "@types/cls-hooked": "^4.3.0",
+        "base64url": "^3.0.1",
+        "body-parser": "^1.18.3",
+        "cors": "^2.8.5",
+        "date-fns": "^2.15.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "hat": "^0.0.3",
+        "helmet": "^3.16.0",
+        "key-mirror": "^1.0.1",
+        "morgan": "^1.9.1",
+        "mqtt": "^4.2.6",
+        "node-fetch": "^2.6.0",
+        "node-pre-gyp": "^0.14.0",
+        "ramda": "^0.26.1",
+        "ramda-extension": "^0.7.2",
+        "rimraf": "^3.0.2",
+        "socket.io": "^2.2.0"
+    },
+    "devDependencies": {
+        "@types/node": "^14.0.20",
+        "@types/testing-library__dom": "^7.5.0",
+        "@types/validator": "^13.1.0",
+        "nodemon": "^2.0.4",
+        "ts-jest": "24.3.0",
+        "ts-node": "^8.10.2",
+        "ts-node-dev": "^1.0.0-pre.51",
+        "typescript": "~3.9.6"
+    }
+}
