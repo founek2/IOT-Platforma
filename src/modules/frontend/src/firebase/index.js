@@ -1,14 +1,17 @@
 import firebase from 'firebase/app';
 import 'firebase/messaging';
-// import 'firebase/analytics';
+import 'firebase/analytics';
 import initConfig from './config'
 
 let messaging;
 
 export function init() {
     const app = firebase.initializeApp(initConfig);
-    // app.analytics();
-    if (!firebase.messaging.isSupported()) return
+    app.analytics();
+    if (!firebase.messaging.isSupported()) {
+        console.log("Firebase messaging is not supported")
+        return;
+    }
 
     messaging = app.messaging();
 
@@ -39,11 +42,11 @@ export function init() {
 export function getToken() {
     if (!messaging) return null
 
-    return messaging.getToken().then((currentToken) => {
-        if (currentToken) {
-            return currentToken
-        } return null
-    }).catch((err) => {
+    return messaging.getToken({
+        vapidKey: "BBS4vYFJBlWV7LbC_8jcitDdIEqtNDOZKPu3RaWIZlLBepbWRpYp1PX7tUO2Kouo5QMwmcUsPCyG6eKDp-R-pI0"
+    }).then((currentToken) =>
+        currentToken ? currentToken : null
+    ).catch((err) => {
         console.log('An error occurred while retrieving token. ', err);
         return null
     });
