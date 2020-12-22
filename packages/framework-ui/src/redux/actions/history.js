@@ -1,5 +1,5 @@
 import { actionTypes } from '../../constants/redux';
-import { baseLogger } from 'framework-ui/lib/Logger'
+import { baseLogger } from '../../logger'
 
 export function setHistory(data) {
     baseLogger(actionTypes.SET_HISTORY)

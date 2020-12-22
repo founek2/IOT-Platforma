@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { IMAGES_DEVICES_FOLDER } from '../constants'
-import { devLog, infoLog } from 'framework/lib/Logger'
+import { devLog, infoLog } from 'framework/lib/logger'
 
 const imgExtensions = ['png', 'jpg', 'jpeg']
 let imagesPath;

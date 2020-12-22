@@ -2,7 +2,7 @@ import { ActionTypes } from '../../../constants/redux'
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters'
 import { resetForm, validateRegisteredFields } from 'framework-ui/lib/redux/actions/formsData'
 import { updateTmpData } from 'framework-ui/lib/redux/actions/tmpData'
-import { baseLogger } from 'framework-ui/lib/Logger'
+import { baseLogger } from 'framework-ui/lib/logger'
 import loadFilesInFormData from 'framework-ui/lib/utils/loadFilesInFormData'
 import { dehydrateState } from 'framework-ui/lib/redux/actions'
 import {

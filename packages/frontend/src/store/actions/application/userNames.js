@@ -1,5 +1,5 @@
 import { ActionTypes } from '../../../constants/redux'
-import { baseLogger } from 'framework-ui/lib/Logger'
+import { baseLogger } from 'framework-ui/lib/logger'
 import { getUsers } from 'framework-ui/lib/api/userApi'
 import { getToken } from 'framework-ui/lib/utils/getters'
 

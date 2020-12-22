@@ -1,6 +1,6 @@
 import fieldDescriptors from 'common/lib/fieldDescriptors'
 
-const state = () => ({
+export const createState = () => ({
     application: {
         user: {},
         notifications: {},
@@ -13,5 +13,3 @@ const state = () => ({
     },
     history: {}
 })
-
-export default state

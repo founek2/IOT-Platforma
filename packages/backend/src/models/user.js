@@ -3,7 +3,7 @@ import Jwt from 'framework/lib/services/jwt'
 import { createHash, compare } from '../lib/password'
 import catcher from 'framework/lib/mongoose/catcher'
 import { keys } from 'ramda'
-import { devLog } from 'framework/lib/Logger'
+import { devLog } from 'framework/lib/logger'
 
 const ObjectId = mongoose.Types.ObjectId
 const userSchema = new Schema(

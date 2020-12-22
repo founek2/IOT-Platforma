@@ -1,7 +1,7 @@
 import Jwt from '../services/jwt'
 import mongoose from 'mongoose'
 import { equals, T } from 'ramda';
-import { infoLog, warningLog } from '../Logger'
+import { infoLog, warningLog } from '../logger'
 
 import groupsHeritage from 'common/lib/privileges/groupsHeritage'
 import privilegesFactory, { enrichGroups } from 'framework-ui/lib/privileges'

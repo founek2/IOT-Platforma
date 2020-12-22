@@ -1,4 +1,4 @@
-import { baseLogger } from 'framework-ui/lib/Logger'
+import { baseLogger } from 'framework-ui/lib/logger'
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters'
 import {
     fetchDeviceData as fetchDeviceDataApi,

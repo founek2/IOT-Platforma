@@ -1,4 +1,4 @@
-import { infoLog, errorLog, warningLog } from '../Logger'
+import { infoLog, errorLog, warningLog } from '../logger'
 import { checkValidFormData } from '../validations'
 import { trimFields } from 'framework-ui/lib/validations';
 

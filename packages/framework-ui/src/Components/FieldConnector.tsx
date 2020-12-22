@@ -1,5 +1,5 @@
-import chainHandler from 'framework-ui/lib/utils/chainHandler'
-import { isRequired } from 'framework-ui/lib/validations'
+import chainHandler from '../utils/chainHandler'
+import { isRequired } from '../validations'
 import { is } from 'ramda'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
@@ -53,11 +53,11 @@ interface FieldConnectorProps {
     optionsData?: any
     className?: string
     label?: string
-    registerField: typeof formsDataActions.registerField,
-    unregisterField: typeof formsDataActions.unregisterField,
-    updateRegisteredField: typeof formsDataActions.updateRegisteredField,
-    updateFormField: typeof formsDataActions.updateFormField,
-    validateField: typeof formsDataActions.validateField
+    registerField: any,
+    unregisterField: any,
+    updateRegisteredField: any
+    updateFormField: any
+    validateField: any
     formsData: any
 }
 
@@ -101,11 +101,11 @@ function FieldConnector({
     //const { descriptor, registeredField, fieldValue: value } = data
 
     function _handleChange({ target: { value } }: any, pristine: boolean) {
-        updateFormField(value, deepPath)
+        updateFormField(deepPath, value)
         !pristine && validateField(deepPath)
     }
     function _changePristine() {
-        updateRegisteredField({ pristine: false }, deepPath)
+        updateRegisteredField(deepPath, { pristine: false })
     }
 
     const { valid, errorMessages, pristine } = registeredField || { valid: true }

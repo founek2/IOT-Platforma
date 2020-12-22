@@ -2,8 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "outDir": "lib",
-        "module": "esnext",
-        "target": "es5",
+        "rootDir": "src",
         "jsx": "react",
         "lib": [
             "es6",
@@ -12,20 +11,16 @@
             "es2017"
         ],
         "sourceMap": true,
-        "allowJs": false,
+        "composite": true,
         "declaration": true,
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
         "strictNullChecks": true,
         // "noUnusedLocals": true,
         // "noUnusedParameters": true,
-        "esModuleInterop": true
+        // "esModuleInterop": true,
     },
     "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules",
-        "lib"
+        "src/**/*"
     ]
 }

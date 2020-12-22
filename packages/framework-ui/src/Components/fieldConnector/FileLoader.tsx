@@ -5,7 +5,7 @@ import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import AddIcon from '@material-ui/icons/CloudUpload'
 import { makeStyles } from '@material-ui/core/styles'
-import { errorLog } from '../../Logger'
+import { errorLog } from '../../logger'
 import clsx from 'clsx'
 
 const useStyles = makeStyles(theme => ({

@@ -10,7 +10,7 @@ import config from "./config"
 import checkAndCreateRoot from 'framework/lib/services/checkAndCreateRoot'
 import * as Files from './service/files'
 import Jwt from 'framework/lib/services/jwt'
-import { devLog } from 'framework/lib/Logger'
+import { devLog } from 'framework/lib/logger'
 
 const app = express()
 

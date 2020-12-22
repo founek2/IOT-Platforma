@@ -5,9 +5,9 @@ import * as types from '../types'
 let validationFns = validationFunctions
 
 /** Not supported for now - need to improve TS validation */
-// export function registerFunctions(functions: Array<types.validationFn>) {
-//     validationFns = { ...validationFns, ...functions }
-// }
+export function registerFunctions(functions: Array<types.validationFn>) {
+    validationFns = { ...validationFns, ...functions }
+}
 
 type ModuleType = typeof validationFunctions
 
