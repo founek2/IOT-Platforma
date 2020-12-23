@@ -69,8 +69,8 @@ class Router extends Component {
 
         return (
             <RouterReact history={history}>
+                <Layout history={history} />
                 <Suspense fallback={<Loader open={true} />}>
-                    <Layout history={history} />
                     <Switch>
                         <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} />
 

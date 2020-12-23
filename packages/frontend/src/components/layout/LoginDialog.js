@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
+import Grid from '@material-ui/core/Grid'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
 import { bindActionCreators } from 'redux'
@@ -50,10 +51,6 @@ const styles = theme => ({
     registerButton: {
         cursor: 'pointer'
     },
-    textField: {
-        marginTop: theme.spacing(1),
-        width: "calc(100% - 20px)"
-    },
 })
 
 let timer = null
@@ -86,31 +83,38 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
     const actionHandler = (!authType && fetchAuthType) || loginMyAction
 
     return (
-        <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" >
+        <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" maxWidth="xs" fullWidth>
             <DialogTitle id="form-dialog-title" className={classes.loginTitle}>
                 Přihlášení
                </DialogTitle>
             <DialogContent className={classes.content}>
-                <FieldConnector
-                    deepPath="LOGIN.userName"
-                    autoFocus
-                    className={classes.textField}
-                    onEnter={actionHandler}
-                    onChange={onStopTyping(fetchAuthType)}
-                    fieldProps={{
-                        autoComplete: 'off',
-                    }}
-                />
-
-                {authType === AuthTypes.PASSWD && (
-                    <FieldConnector
-                        deepPath="LOGIN.password"
-                        component="PasswordField"
-                        autoFocus
-                        className={classes.textField}
-                        onEnter={actionHandler}
-                    />
-                )}
+                <Grid container justify="center" spacing={2}>
+                    <Grid item md={10} xs={12}>
+                        <FieldConnector
+                            deepPath="LOGIN.userName"
+                            autoFocus
+                            onEnter={actionHandler}
+                            onChange={onStopTyping(fetchAuthType)}
+                            fieldProps={{
+                                autoComplete: 'off',
+                                fullWidth: true
+                            }}
+                        />
+                    </Grid>
+                    {authType === AuthTypes.PASSWD && (
+                        <Grid item md={10} xs={12}>
+                            <FieldConnector
+                                deepPath="LOGIN.password"
+                                component="PasswordField"
+                                autoFocus
+                                fieldProps={{
+                                    fullWidth: true
+                                }}
+                                onEnter={actionHandler}
+                            />
+                        </Grid>
+                    )}
+                </Grid>
             </DialogContent>
             <DialogActions className={classes.loginActions}>
                 <Button color="primary" onClick={actionHandler} disabled={pending}>
