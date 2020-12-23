@@ -63,11 +63,8 @@ const styles = theme => ({
         textAlign: 'center'
     },
     content: {
-        [theme.breakpoints.down('sm')]: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }
+        paddingLeft: 30,
+        paddingRight: 30,
     }
 })
 

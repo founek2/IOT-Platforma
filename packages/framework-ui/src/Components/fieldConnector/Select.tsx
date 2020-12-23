@@ -10,14 +10,17 @@ import clsx from 'clsx';
 const styles = makeStyles({
     root: {
         width: 200
+    },
+    fullWidth: {
+        width: "100%"
     }
 })
 
 function OwnSelect(props: any) {
     const classes = styles()
-    const { label, value, onChange, onBlur, onFocus, name, autoFocus, selectOptions, FormHelperTextProps, helperText, required, error, className, ...other } = props;
+    const { label, value, onChange, onBlur, onFocus, name, autoFocus, selectOptions, FormHelperTextProps, helperText, required, error, className, fullWidth, ...other } = props;
     return (
-        <FormControl className={clsx(classes.root, className)}>
+        <FormControl className={clsx(fullWidth ? classes.fullWidth : classes.root, className)}>
             {label && <InputLabel htmlFor={`select-label-placeholder-${name}`} error={error}>{label}</InputLabel>}
             <Select
                 onChange={onChange}
@@ -28,7 +31,6 @@ function OwnSelect(props: any) {
                 onBlur={onBlur}
                 name={name}
                 autoFocus={autoFocus}
-                input={<Input name={name} id={`select-label-placeholder-${name}`} />}
                 {...other}
             >
                 {selectOptions}
