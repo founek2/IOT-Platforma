@@ -32,7 +32,7 @@
         "history": "^4.7.2",
         "http-proxy-middleware": "^0.19.1",
         "key-mirror": "^1.0.1",
-        "notistack": "^0.9.17",
+        "notistack": "^1.0.3",
         "ramda": "^0.27.1",
         "ramda-extension": "^0.7.2",
         "react": "^17.0.1",

@@ -5,7 +5,10 @@
         "composite": true,
         "outDir": "lib",
         "declaration": true,
-        // "jsx": "preserve"
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "forceConsistentCasingInFileNames": true,
+        "strictNullChecks": true,
     },
     "include": [
         "src/**/*"

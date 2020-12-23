@@ -3,7 +3,7 @@ import fieldDescriptors from 'common/lib/fieldDescriptors'
 export const createState = () => ({
     application: {
         user: {},
-        notifications: {},
+        notifications: [],
         users: [],
         devices: { data: [] }
     },
