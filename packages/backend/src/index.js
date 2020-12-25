@@ -66,6 +66,7 @@ initializeDb(config, db => {
     // app.use("/websocket", webSockets(app.io))
 
     if (process.env.NODE_ENV === "development") {
+        console.log("Socket redirect enabled")
         const proxy = require("http-proxy-middleware");
         var wsProxy = proxy('/socket.io', {
             target: 'ws://localhost:8084',

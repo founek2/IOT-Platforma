@@ -5,6 +5,7 @@
     "main": "lib/main.js",
     "scripts": {
         "dev": "ts-node-dev src/index.js",
+        "devWin": "yarn nodemon --watch 'src/**/*.ts' --verbose --exec node -r ts-node/register src/index.js",
         "build": "tsc -p .",
         "test": "jest",
         "coverage": "yarn test --collectCoverage",
