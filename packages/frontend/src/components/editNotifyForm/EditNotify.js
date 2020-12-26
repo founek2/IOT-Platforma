@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector'
 import FormLabel from '@material-ui/core/FormLabel'
 import { withStyles } from '@material-ui/core/styles'
@@ -6,6 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
 import { connect } from 'react-redux'
 
 import { getFieldVal } from 'framework-ui/lib/utils/getters'
@@ -15,13 +16,6 @@ import ControlPart from './editNotify/ControlPart'
 import SensorsPart from './editNotify/SensorsPart'
 
 const styles = theme => ({
-    contentInner: {
-        display: 'flex',
-        [theme.breakpoints.down('sm')]: {
-            flexDirection: 'column',
-            alignItems: 'center',
-        }
-    },
     quantity: {
         marginTop: 30,
         position: "relative"
@@ -31,12 +25,6 @@ const styles = theme => ({
         right: 10,
         top: -15,
     },
-    textArea: {
-        // width: 'calc(100% - 16px)',
-        [theme.breakpoints.up('md')]: {
-            width: `calc(100% - ${theme.spacing(2)}px)`
-        }
-    },
     advanced: {
         textAlign: "center",
         fontSize: 12,
@@ -45,12 +33,10 @@ const styles = theme => ({
         userSelect: "none",
     },
     daysPicker: {
-        width: 350
+        maxWidth: 350,
+        // display: "flex",
+        margin: "0 auto"
     },
-    containerPicker: {
-        display: "flex",
-        justifyContent: "center"
-    }
 })
 
 function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formName, JSONkey }) {
@@ -58,28 +44,36 @@ function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formNa
     const sensorMode = formName === "EDIT_NOTIFY_SENSORS"
     const props = { JSONkey, id, recipe }
 
-    return (<div className={classes.quantity} key={id}>
-        <FormLabel component="legend">Notifikace {id}:</FormLabel>
-        <IconButton className={classes.clearButton} aria-label="Delete a sensor" onClick={e => onDelete(id, e)}>
-            <ClearIcon />
-        </IconButton>
+    return (<Grid container key={id} spacing={2} className={classes.quantity}>
+        <Grid item md={12}>
+            <FormLabel component="legend">Notifikace {id}:</FormLabel>
+            <IconButton className={classes.clearButton} aria-label="Delete a sensor" onClick={e => onDelete(id, e)}>
+                <ClearIcon />
+            </IconButton>
+        </Grid>
+
         {sensorMode ? <SensorsPart {...props} /> : <ControlPart {...props} />}
-        <FieldConnector
-            fieldProps={{
-                type: 'text',
-                className: classes.textArea,
-                multiline: true
-            }}
-            deepPath={`${formName}.description.${id}`}
-        />
-        <Typography
-            className={classes.advanced}
-            color="primary"
-            onClick={() => setOpen(!openAdvanced)}
-        >Rozšířené {editedAdvanced && "⭣"}
-        </Typography>
-        {openAdvanced && <div>
-            <div className={classes.contentInner}>
+        <Grid item md={12} xs={12}>
+            <FieldConnector
+                fieldProps={{
+                    type: 'text',
+                    multiline: true,
+                    fullWidth: true
+                }}
+                deepPath={`${formName}.description.${id}`}
+            />
+        </Grid>
+        <Grid item md={12} xs={12}>
+            <Typography
+                className={classes.advanced}
+                color="primary"
+                onClick={() => setOpen(!openAdvanced)}
+            >Rozšířené {editedAdvanced && "⭣"}
+            </Typography>
+        </Grid>
+        {openAdvanced && <Fragment>
+            {/* <div className={classes.contentInner}> */}
+            <Grid item md={4} xs={12}>
                 <FieldConnector
                     component="Select"
                     deepPath={`${formName}.advanced.interval.${id}`}
@@ -90,34 +84,44 @@ function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formNa
                                     {label}
                                 </MenuItem>
                         )}
+                    fieldProps={{
+                        fullWidth: true
+                    }}
                 />
+            </Grid>
+            <Grid item md={2} xs={6}>
                 <FieldConnector
                     deepPath={`${formName}.advanced.from.${id}`}
-                    component="TimePicker"
                     fieldProps={{
-                        defaultValue: "00:00"
+                        // defaultValue: "00:00",
+                        fullWidth: true,
+                        type: "time"
                     }}
                 />
+            </Grid>
+            <Grid item md={2} xs={6}>
                 <FieldConnector
                     deepPath={`${formName}.advanced.to.${id}`}
-                    component="TimePicker"
                     fieldProps={{
-                        defaultValue: "23:59"
+                        // defaultValue: "23:59",
+                        fullWidth: true,
+                        type: "time"
                     }}
                 />
-            </div>
-            <div className={classes.containerPicker}>
+            </Grid>
+            {/* </div> */}
+            <Grid item md={12} xs={12}>
                 <div className={classes.daysPicker}>
                     <FieldConnector
                         deepPath={`${formName}.advanced.daysOfWeek.${id}`}
                         component={DaysOfWeekPicker}
                     />
                 </div>
-            </div>
-        </div>
+            </Grid>
+        </Fragment>
 
         }
-    </div>)
+    </Grid>)
 }
 
 const _mapStateToProps = (state, { id, formName }) => {

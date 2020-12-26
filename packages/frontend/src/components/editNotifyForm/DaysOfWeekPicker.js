@@ -12,9 +12,6 @@ const styles = theme => ({
         display: "flex",
         width: "100%",
         flexDirection: 'column',
-        marginLeft: theme.spacing(1),
-        marginTop: theme.spacing(1),
-        marginRight: theme.spacing(1),
         // [theme.breakpoints.down('sm')]: {
         //     width: `calc(90% - ${theme.spacing(2)}px)`
         // }
@@ -23,7 +20,7 @@ const styles = theme => ({
         display: "flex",
         justifyContent: 'space-between',
         width: "100%",
-        marginTop: 5,
+        marginTop: 10,
     },
     dayChip: {
         width: 40,

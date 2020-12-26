@@ -328,7 +328,7 @@ const EDIT_NOTIFY_SENSORS = {
     },
     'type[]': {
         deepPath: 'EDIT_NOTIFY_SENSORS.type[]',
-        label: 'Akce',
+        label: 'Podmínka',
         required: true,
         validations: [validationFactory('isOneOf', { values: NotifyTypes.map(obj => obj.value) })]
     },
@@ -361,7 +361,7 @@ const EDIT_NOTIFY_CONTROL = {
     },
     'type[]': {
         deepPath: 'EDIT_NOTIFY_CONTROL.type[]',
-        label: 'Akce',
+        label: 'Podmínoa',
         required: true,
         validations: [validationFactory('isString', { min: 1 })]     // TODO one of constants - depends on JSONkey, currently not possible
     },
