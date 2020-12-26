@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('clear and checkout') {
             steps {
-                deleteDir()
+                // deleteDir()
                 checkout scm
             }
         }
@@ -83,9 +83,9 @@ pipeline {
         // }
 
       	stage ("Deploy") {
-            when {
-                branch 'rebuild'
-            }
+            // when {
+            //     branch 'rebuild'
+            // }
 
             environment {
                 DEPLOY_PATH = '/var/www/delegi/deploy'
@@ -100,7 +100,7 @@ pipeline {
                 set -u -e 
                 source /home/martas/load_test_env.sh
                 cp -r packages/* "$IOT_DEPLOY_PATH"/backend
-                
+
                 EOF
                 exit $?
                 '''    
