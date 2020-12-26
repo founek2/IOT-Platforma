@@ -1,3 +1,5 @@
+importScripts('workbox-sw.js');
+
 /* eslint-disable */
 if (workbox) {
 
