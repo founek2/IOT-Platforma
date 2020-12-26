@@ -88,7 +88,7 @@ pipeline {
             // }
 
             environment {
-                DEPLOY_PATH = '/var/www/delegi/deploy'
+                IOT_DEPLOY_PATH = '/var/www/iot-test/deploy'
             }
 
             steps {
