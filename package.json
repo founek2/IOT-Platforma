@@ -6,7 +6,7 @@
         "clean": "rimraf packages/**/lib",
         "test": "lerna run test",
         "watch": "lerna run --parallel --scope common --scope framework --scope framework-ui dev",
-        "pre": "lerna run --scope common --scope framework --scope framework-ui build"
+        "pre": "lerna run --scope framework --scope framework-ui --scope common build"
     },
     "devDependencies": {
         "@types/node": "^14.0.20",
