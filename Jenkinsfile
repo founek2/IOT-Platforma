@@ -99,8 +99,12 @@ pipeline {
                 sudo -u deployer-test bash << EOF
                 set -u -e 
                 source /home/martas/load_test_env.sh
-                cp -r packages/* "$IOT_DEPLOY_PATH"/backend
+                rsync -a --exclude src/ --exclude node_modules packages "$IOT_DEPLOY_PATH"/backend
+                cp package.json "$IOT_DEPLOY_PATH"/backend
 
+                cd "$IOT_DEPLOY_PATH"/backend
+                yarn
+                
                 EOF
                 exit $?
                 '''    
