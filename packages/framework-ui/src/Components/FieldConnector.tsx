@@ -18,7 +18,8 @@ import {
     getFieldDescriptor,
     getFieldVal,
     getFieldDescriptors,
-    getRegisteredField
+    getRegisteredField,
+    getFormData
 } from '../utils/getters'
 import ChipArray from './ChipArray'
 
@@ -48,7 +49,7 @@ interface FieldConnectorProps {
     onBlur?: React.ChangeEventHandler;
     onFocus?: React.ChangeEventHandler;
     onEnter?: (e: React.KeyboardEvent) => void,
-    onChange?: React.ChangeEventHandler;
+    onChange?: React.ChangeEventHandler<{ value: any }>;
     component?: componentKeys | ((props: any) => JSX.Element);
     fieldProps?: any
     name?: string
@@ -62,7 +63,7 @@ interface FieldConnectorProps {
     updateRegisteredField?: any
     updateFormField?: any
     validateField?: any
-    formsData?: any
+    formData?: any
 }
 
 function FieldConnector({
@@ -87,7 +88,7 @@ function FieldConnector({
     value,
     registeredField,
     descriptor,
-    formsData
+    formData
 }: FieldConnectorProps) {
     const [dirty, setDirty] = useState(false);
 
@@ -120,7 +121,7 @@ function FieldConnector({
     }
 
     if (descriptor) {
-        const required = isRequired(descriptor, formsData, deepPath)     // check when condition 
+        const required = isRequired(descriptor, formData, deepPath)     // check when condition 
         const finalLabel = label ? label : descriptor.label;
 
         // @ts-expect-error
@@ -164,12 +165,11 @@ function FieldConnector({
 }
 
 const _mapStateToProps = (state: any, { deepPath }: FieldConnectorProps) => ({
-    formsData: getFormsData(state),
+    formData: getFormData(deepPath.split(".")[0])(state),
     registeredField: getRegisteredField(deepPath, state),
     fieldDescriptors: getFieldDescriptors(state),
     descriptor: getFieldDescriptor(deepPath, state),
     value: getFieldVal(deepPath, state),
-    state,
 })
 
 const _mapDispatchToProps = (dispatch: any) =>

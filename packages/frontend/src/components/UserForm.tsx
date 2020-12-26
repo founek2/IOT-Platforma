@@ -8,7 +8,7 @@ export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }
 
 interface UserFormProps {
     formName: string
-    onAuthChange: (event: React.ChangeEvent<Element>) => void
+    onAuthChange: (event: React.ChangeEvent<{ value: any }>) => void
 }
 function UserForm({ formName, onAuthChange }: UserFormProps) {
     return (

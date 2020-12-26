@@ -6,9 +6,10 @@ const controlSchema = new Schema({
         {
             _id: false,
             name: String,
-            type: {type: String},   // mongoos would type interpret as internal type keyword
+            type: { type: String },   // mongoos would type interpret as internal type keyword
             JSONkey: String,
             description: String,
+            ipAddress: String,
         }
     ],
     current: {

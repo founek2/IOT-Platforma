@@ -13,6 +13,7 @@ export const NotifyControlTypes = {
 
 const on = { value: CONTROL_STATE.ON, label: "Zapnutí" }
 
+// For NOTIFICATION use
 export const ControlStateTypes = {
     [CONTROL_TYPES.SWITCH]: [on],
     [CONTROL_TYPES.ACTIVATOR]: [on],
@@ -28,6 +29,7 @@ export const ControlTypesFormNames = {
     [CONTROL_TYPES.SWITCH]: "CHANGE_DEVICE_STATE_SWITCH",
     [CONTROL_TYPES.ACTIVATOR]: "CHANGE_DEVICE_STATE_SWITCH",
     [CONTROL_TYPES.RGB_SWITCH]: "CHANGE_DEVICE_STATE_RGB",
+    [CONTROL_TYPES.MUSIC_CAST]: "CHANGE_DEVICE_STATE_SWITCH",
 }
 
 export const AFK_INTERVAL = 10 * 60 * 1000 // 10 min

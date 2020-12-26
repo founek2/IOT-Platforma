@@ -6,18 +6,19 @@ export default function (state, JSONkey, { recipe }, updateTime) {
         update: {},
     }
     const isDay = isDayFn(updateTime)
-    const { type } = recipe.find(({ JSONkey: key }) => JSONkey === key)
+    const { type } = recipe.find(({ JSONkey: key }) => JSONkey === key);
 
-    transformFn[type](state, updateTime, query, isDay)
+    const formatter = transformFn[type] || transformGeneral
 
+    formatter(state, updateTime, query, isDay)
 
     return query
 }
 
 const transformFn = {
-    [CONTROL_TYPES.SWITCH]: transformGeneral,
-    [CONTROL_TYPES.ACTIVATOR]: transformGeneral,
-    [CONTROL_TYPES.RGB_SWITCH]: transformGeneral,
+    // [CONTROL_TYPES.SWITCH]: transformGeneral,
+    // [CONTROL_TYPES.ACTIVATOR]: transformGeneral,
+    // [CONTROL_TYPES.RGB_SWITCH]: transformGeneral,
 }
 
 function transformGeneral(state, updateTime, query, isDay) {

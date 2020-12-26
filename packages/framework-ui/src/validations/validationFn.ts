@@ -55,3 +55,5 @@ export const isFile: validationFn = value => and(or(has('data', value), has('url
 export const isOneOf: validationFn = (value, { values }: { values: Array<any> }) => values.some(val => value === val) || "isNotOneOf"
 
 export const isTime: validationFn = (value) => /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value) || "isNotTime"
+
+export const isIpAddress: validationFn = (value) => /^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/.test(value) || "isNotIpAddress"

@@ -20,11 +20,13 @@ import { errorLog } from 'framework-ui/lib/logger'
 import EditNotifyForm from '../components/EditNotifyForm'
 import * as formsActions from 'framework-ui/lib/redux/actions/formsData'
 import * as controlActions from '../store/actions/application/devices/control'
+import MusicCast from './deviceControl/MusicCast'
 
 const compMapper = {
     [CONTROL_TYPES.ACTIVATOR]: Activator,
     [CONTROL_TYPES.SWITCH]: Switch,
     [CONTROL_TYPES.RGB_SWITCH]: RgbSwitch,
+    [CONTROL_TYPES.MUSIC_CAST]: MusicCast,
 }
 
 function isControllable(device) {

@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
+import Grid from '@material-ui/core/Grid'
 import { connect } from 'react-redux'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
@@ -15,30 +16,19 @@ import * as sensorsActions from '../../store/actions/application/devices'
 import { updateTmpData } from 'framework-ui/lib/redux/actions/tmpData'
 import { getDialogTmp } from 'framework-ui/lib/utils/getters'
 import InfoAlert from 'framework-ui/lib/Components/InfoAlert'
+import ImageUploader from 'frontend/src/components/ImageUploader'
 
 
 const styles = theme => ({
     card: {
-        overflow: 'auto',
-        margin: '0px auto',
         position: 'relative',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        width: 470,
+        width: 600,
         marginTop: 0,
-
+        margin: "0 auto",
+        overflow: 'auto',
         [theme.breakpoints.down('sm')]: {
             width: '100%'
-            //height: '100%'
         },
-        [theme.breakpoints.down('xs')]: {
-            width: '100%'
-        },
-        [theme.breakpoints.up('lg')]: {
-            //height: 410
-        }
     },
     actions: {
         marginBottom: theme.spacing(2),
@@ -60,13 +50,13 @@ const styles = theme => ({
         paddingTop: theme.spacing(4),
         textAlign: 'center'
     },
-    content: {
-        [theme.breakpoints.down('sm')]: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }
-    },
+    // content: {
+    //     [theme.breakpoints.down('sm')]: {
+    //         display: 'flex',
+    //         flexDirection: 'column',
+    //         alignItems: 'center'
+    //     }
+    // },
     textArea: {
         width: "100%"
     }
@@ -85,47 +75,70 @@ function CreateDeviceDialog({ classes, createSensorAction, updateTmpDataAction, 
             <Card className={classes.card}>
                 <CardHeader className={classes.header} title="Vytvoření zařízení" />
                 <CardContent className={classes.content}>
-                    <FieldConnector
-                        component="TextField"
-                        fieldProps={{
-                            type: 'text',
-                        }}
-                        deepPath="CREATE_DEVICE.info.title"
-                    />
-                    <FieldConnector
-                        component="FileLoader"
-                        deepPath="CREATE_DEVICE.info.image"
-                    />
-                    <FieldConnector
-                        component="TextField"
-                        label="Zeměpisná šířka"
-                        deepPath="CREATE_DEVICE.gps.coordinates.1"
-                    />
-                    <FieldConnector
-                        component="TextField"
-                        label="Zeměpisná délka"
-                        deepPath="CREATE_DEVICE.gps.coordinates.0"
-                    />
-                    <FieldConnector
-                        component="TextField"
-                        fieldProps={{
-                            placeholder: "/house/bedroom/lamp"
-                        }}
-                        className={classes.textArea}
-                        deepPath="CREATE_DEVICE.topic"
-                    />
-                    <FieldConnector
-                        component="TextField"
-                        fieldProps={{
-                            multiline: true
-                        }}
-                        className={classes.textArea}
-                        deepPath="CREATE_DEVICE.info.description"
-                    />
-                    <FieldConnector
-                        component="Checkbox"
-                        deepPath="CREATE_DEVICE.publicRead"
-                    />
+                    <Grid container spacing={2}>
+                        <Grid item md={12}>
+                            <FieldConnector
+                                deepPath="CREATE_DEVICE.info.title"
+                                fieldProps={{
+                                    fullWidth: true
+                                }}
+                            />
+                        </Grid>
+                        <Grid item md={6}>
+                            {/* <FieldConnector
+                                component="FileLoader"
+                                deepPath="CREATE_DEVICE.info.image"
+                            /> */}
+                            <ImageUploader
+                                deepPath="CREATE_DEVICE.info.image"
+                            />
+                        </Grid>
+                        <Grid item md={6}>
+                            <FieldConnector
+                                label="Zeměpisná šířka"
+                                deepPath="CREATE_DEVICE.gps.coordinates.1"
+                                fieldProps={{
+                                    fullWidth: true
+                                }}
+                            />
+                        </Grid>
+                        <Grid item md={6}>
+                            <FieldConnector
+                                component="TextField"
+                                label="Zeměpisná délka"
+                                deepPath="CREATE_DEVICE.gps.coordinates.0"
+                                fieldProps={{
+                                    fullWidth: true
+                                }}
+                            />
+                        </Grid>
+                        <Grid item md={12}>
+                            <FieldConnector
+                                fieldProps={{
+                                    placeholder: "/house/bedroom/lamp",
+                                    fullWidth: true
+                                }}
+                                className={classes.textArea}
+                                deepPath="CREATE_DEVICE.topic"
+                            />
+                        </Grid>
+                        <Grid item md={12}>
+                            <FieldConnector
+                                component="TextField"
+                                fieldProps={{
+                                    multiline: true
+                                }}
+                                className={classes.textArea}
+                                deepPath="CREATE_DEVICE.info.description"
+                            />
+                        </Grid>
+                        <Grid item md={12}>
+                            <FieldConnector
+                                component="CheckBox"
+                                deepPath="CREATE_DEVICE.publicRead"
+                            />
+                        </Grid>
+                    </Grid>
                 </CardContent>
                 <CardActions className={classes.actions}>
                     <Button

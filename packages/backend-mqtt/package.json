@@ -32,6 +32,7 @@
     },
     "devDependencies": {
         "@types/node": "^14.0.20",
+        "@types/node-fetch": "^2.5.7",
         "@types/testing-library__dom": "^7.5.0",
         "@types/validator": "^13.1.0",
         "nodemon": "^2.0.4",

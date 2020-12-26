@@ -1,5 +1,5 @@
 import validationFactory from 'framework-ui/lib/validations/validationFactory'
-import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE, NotifyTypes, NOTIFY_TYPES, NotifyIntervals, CONTROL_STATE_KEYS } from './constants'
+import { AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE, NotifyTypes, NOTIFY_TYPES, NotifyIntervals, CONTROL_STATE_KEYS, CONTROL_TYPES } from './constants'
 import { assocPath, is, forEachObjIndexed } from 'ramda'
 import setInPath from 'framework-ui/lib/utils/setInPath'
 
@@ -264,7 +264,7 @@ const EDIT_CONTROL = {
         deepPath: 'EDIT_SENSORS.type[]',
         label: 'Typ',
         required: true,
-        validations: [validationFactory('isOneOf', { values: ControlTypes.map(obj => obj.value) })]
+        validations: [validationFactory('isOneOf', { values: Object.values(CONTROL_TYPES) })]
     },
     'JSONkey[]': {
         deepPath: 'EDIT_SENSORS.JSONkey[]',
@@ -274,14 +274,20 @@ const EDIT_CONTROL = {
     },
     "description[]": {
         deepPath: 'EDIT_SENSORS.description[]',
-        defaultValue: "",
         label: 'Popis',
         validations: [validationFactory('isString', { min: 1, max: 200 })]
+    },
+    "ipAddress[]": {
+        deepPath: 'EDIT_SENSORS.ipAddress[]',
+        label: 'Ip adresa',
+        required: true,
+        when: ({ type }, { i }) => type && type[i] === CONTROL_TYPES.MUSIC_CAST,
+        validations: [validationFactory('isIpAddress', { min: 1, max: 200 })]
     },
     "count": {
         deepPath: 'EDIT_SENSORS.count',
         validations: [validationFactory('isNumber')]
-    }
+    },
 }
 
 const advanced = {
@@ -465,6 +471,25 @@ const CHANGE_DEVICE_STATE_SWITCH = {
     }
 }
 
+
+const CHANGE_DEVICE_MUSIC_CAST = {
+    JSONkey: {
+        deepPath: 'CHANGE_DEVICE_MUSIC_CAST.JSONkey',
+        required: true
+    },
+    state: {
+        "on": {
+            deepPath: 'CHANGE_DEVICE_MUSIC_CAST.state.on',
+            label: 'Zapnuto',
+            validations: [validationFactory('isNumber', { min: 0, max: 1 })]
+        },
+        input: {
+            deepPath: 'CHANGE_DEVICE_MUSIC_CAST.state.input',
+            label: 'Vstup',
+        }
+    }
+}
+
 const USER_MANAGEMENT = {
     selected: {
         deepPath: 'USER_MANAGEMENT.selected',
@@ -513,6 +538,7 @@ export default {
     EDIT_RGB,
     CHANGE_DEVICE_STATE_RGB,
     CHANGE_DEVICE_STATE_SWITCH,
+    CHANGE_DEVICE_MUSIC_CAST,
     EDIT_NOTIFY_SENSORS,
     EDIT_NOTIFY_CONTROL,
     FIREBASE_ADD,

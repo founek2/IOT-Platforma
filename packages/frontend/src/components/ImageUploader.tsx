@@ -12,19 +12,19 @@ const useStyles = makeStyles(theme => ({
     },
     mediaWrapper: {
         display: "inline-block",
-        width: 300,
-        paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1),
-        paddingTop: theme.spacing(3),
-        paddingBottom: theme.spacing(2),
-        [theme.breakpoints.down('sm')]: {
-            width: '90%',
-        }
+        // width: 300,
+        // paddingLeft: theme.spacing(1),
+        // paddingRight: theme.spacing(1),
+        // paddingTop: theme.spacing(3),
+        // paddingBottom: theme.spacing(2),
+        // [theme.breakpoints.down('sm')]: {
+        //     width: '90%',
+        // }
     },
     fileRoot: {
         display: "flex",
         flexDirection: "column",
-        width: 320,
+        width: "100%",
     }
 }))
 
@@ -35,11 +35,11 @@ interface ImageUploaderProps {
 // default image must BE there -> otherwise buggy
 function ImageUploader({ deepPath, defaultImage = "/images/avatarMen.jpg", onChange }: ImageUploaderProps) {
     const classes = useStyles()
-    const result: string | undefined = useSelector(getFieldVal(deepPath))
+    const fileObj: { name: string, url: string } | undefined = useSelector(getFieldVal(deepPath))
 
     return (<div className={classes.fileRoot}>
         <div className={classes.mediaWrapper}>
-            <CardMedia className={classes.media} image={result || defaultImage} />
+            <CardMedia className={classes.media} image={fileObj?.url || defaultImage} />
         </div>
         <FieldConnector deepPath={deepPath} component="FileLoader" onChange={onChange} />
     </div>)

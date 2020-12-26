@@ -2,6 +2,9 @@ import { Router } from 'express'
 import Jwt from 'framework/lib/services/jwt'
 import Device from 'backend/dist/models/Device'
 import { publish } from '../service/mqtt'
+import { includes } from 'ramda'
+import { CONTROL_TYPES } from 'common/src/constants'
+import { handleMusicCast } from "../lib/handler/MusicCast"
 
 export default (io) => {
     io.use((socket, next) => {
@@ -25,35 +28,44 @@ export default (io) => {
             console.log("Client disconnected");
         });
 
-        socket.on("updateState", (body, id, fn) => {
+        socket.on("updateState", async (body, id, fn) => {
             const formData = body.formData
-            Device.findById(id, "topic control.recipe createdBy ").lean().then(doc => {
+            try {
+
+                const doc = await Device.findById(id, "topic control createdBy ").lean()
                 console.log("doc", doc, id)
-                if (doc) {
-                    const jsonKeys = doc.control.recipe.map(obj => obj.JSONkey)
+                if (!doc) throw new Error("error")
 
+                const form = formData.CHANGE_DEVICE_STATE_SWITCH || formData.CHANGE_DEVICE_STATE_RGB || formData.CHANGE_DEVICE_MUSIC_CAST
+                const recipe = doc.control.recipe.find(obj => form.JSONkey === obj.JSONkey)
+                if (!recipe) return fn({ error: "invalidKey" })
 
-                    const form = formData.CHANGE_DEVICE_STATE_SWITCH || formData.CHANGE_DEVICE_STATE_RGB
-                    if (jsonKeys.some(key => form.JSONkey === key)) {
-                        fn({
-                            data: {
-                                current: {
-                                    data: {
-                                        [form.JSONkey]: { state: form.state, inTransition: true, transitionStarted: new Date() }
-                                    }
+                if (includes(recipe.type, [CONTROL_TYPES.SWITCH, CONTROL_TYPES.ACTIVATOR, CONTROL_TYPES.RGB_SWITCH])) {
+                    fn({
+                        data: {
+                            current: {
+                                data: {
+                                    [form.JSONkey]: { state: form.state, inTransition: true, transitionStarted: new Date() }
                                 }
                             }
-                        })
+                        }
+                    })
 
-                        console.log("publish to", `/${doc.createdBy}${doc.topic}/update`, form.state)
-                        publish(`/${doc.createdBy}${doc.topic}/update`, { [form.JSONkey]: form.state })
-                    } else fn({ error: "invalidKey" })
+                    console.log("publish to", `/${doc.createdBy}${doc.topic}/update`, form.state)
+                    publish(`/${doc.createdBy}${doc.topic}/update`, { [form.JSONkey]: form.state })
+                } else if (recipe.type === CONTROL_TYPES.MUSIC_CAST) {
+                    const updateState = await handleMusicCast(form, doc.control.current.data[form.JSONkey], recipe)
+                    if (updateState) publish(`/${doc.createdBy}${doc.topic}/ack`, { [form.JSONkey]: updateState })
+                } else {
+                    return fn({ error: "invalidType" })
+                }
 
-                } else throw new Error("error")
-            }).catch((err) => {
+            }
+
+            catch (err) {
                 console.log("cant publish:", err)
                 fn({ error: "error" })
-            })
+            }
         });
     });
 

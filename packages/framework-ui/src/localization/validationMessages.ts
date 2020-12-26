@@ -17,6 +17,7 @@ export const messages: types.messages = {
     cannotContainNumbers: "Hodnota nesmí obsahovat čísla",
     isNotFile: "Nahrajte soubor",
     notBool: "Hodnota musí být true/false",
+    isNotIpAddress: "Hodnota není IP adresa",
     isNotOneOf: ({ values }) => "Hodnota musí být jedna z " + values.map((obj: any) => obj.label).join(", "),
     notMatchPattern: ({ pattern }) => `Text musí být ve tvaru '${pattern}'`,
 };

@@ -37,8 +37,8 @@ export const validateField = (deepPath: string, state: object, ignorePristine = 
         const formName = deepPath.split('.')[0];
 
         const value = getInPath(deepPath, formsData);
-
-        if (!when || (typeof when === 'function' && when(formsData[formName] || {}, getWhenOpt(deepPath)))) {
+        console.log("validace", formsData, formName, deepPath)
+        if (isRequired(descriptor, formsData[formName], deepPath)) {
             if (required) {
                 if (notEmptyVal(value)) {
                     const result = createValidationsResult(value, validations);
@@ -175,9 +175,8 @@ export const validateRegisteredFields = (formName: string, state: object, ignore
 
 export const isRequired = (descriptor: types.fieldDescriptor, formData: { [key: string]: any }, origDeepPath: string) => {
     const { required, when, deepPath } = descriptor;
-    const formName = deepPath.split('.')[0];
     if (typeof when === 'function') {
-        return when(formData[formName] || {}, getWhenOpt(origDeepPath)) && required;
+        return when(formData || {}, getWhenOpt(origDeepPath)) && required;
     } else {
         return required;
     }

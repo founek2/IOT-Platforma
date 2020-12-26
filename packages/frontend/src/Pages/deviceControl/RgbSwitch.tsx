@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { Content as Switch } from './Swich'
 import MenuItem from '@material-ui/core/MenuItem'
 import boxHoc from './components/boxHoc'
@@ -17,7 +17,7 @@ import { getFormData, getFieldVal } from 'framework-ui/lib/utils/getters'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-const styles = theme => ({
+const styles = (theme: Theme) => createStyles({
     button: {
         position: 'absolute',
         left: 5,
@@ -51,38 +51,25 @@ const styles = theme => ({
     }
 })
 
-function RgbSwitch({
-    classes,
-    name,
-    colorType,
-    description,
-    onClick,
-    data,
-    ackTime,
-    afk,
-    pending,
-    forceUpdate,
-    validateForm,
-    formData,
-    fillForm,
-    ...props }) {
+function RgbSwitch({ classes, name, description, onClick, data, ackTime, afk, pending, forceUpdate, JSONkey, id, ...props }: any) {
     const [open, setOpen] = useState(false)
+    const [colorType, setColorType] = useState<string>(LINEAR_TYPE)
     const { state = { on: 0 } } = data;
 
     const onClose = () => setOpen(false);
 
-    const changeColor = async (e) => {
-        if (validateForm().valid) {
-            const newData = { color: e.target.value, on: 1, type: formData.type } // formData are old -> add actual color + add on:1 to turnOn led
-            await onClick(newData)
-        }
+    const changeColor = async (e: React.ChangeEvent<any>) => {
+
+        const newData = { color: e.target.value, on: 1, type: data.type } // formData are old -> add actual color + add on:1 to turnOn led
+        await onClick(newData)
+
     }
 
-    const changeBright = async (e) => {
-        if (validateForm().valid) {
-            const newData = { bright: e.target.value, on: 1 } // formData are old -> add actual color + add on:1 to turnOn led
-            await onClick(newData)
-        }
+    const changeBright = async (e: React.ChangeEvent<any>) => {
+
+        const newData = { bright: e.target.value, on: 1 } // formData are old -> add actual color + add on:1 to turnOn led
+        await onClick(newData)
+
     }
 
     const handleOpen = () => {
@@ -111,7 +98,7 @@ function RgbSwitch({
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">Změna barvy</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Změna nastavení</DialogTitle>
                 <DialogContent className={classes.content}>
                     <FieldConnector
                         deepPath='EDIT_RGB.bright'
@@ -123,17 +110,18 @@ function RgbSwitch({
                         component="Select"
                         deepPath='EDIT_RGB.type'
                         className={classes.textField}
+                        onChange={e => setColorType(e.target.value)}
                         selectOptions={RgbTypes
                             .map(
                                 ({ value, label }) =>
-                                    (<MenuItem value={value} key={value}>
-                                        {label}
-                                    </MenuItem>)
+                                (<MenuItem value={value} key={value}>
+                                    {label}
+                                </MenuItem>)
                             )}
                     />
                     {LINEAR_TYPE === colorType ? <FieldConnector
                         deepPath="EDIT_RGB.color"
-                        component={ColorPicker}
+                        component={ColorPicker as any}
                         onChange={changeColor}
                     /> : null}
                 </DialogContent>
@@ -142,20 +130,20 @@ function RgbSwitch({
     )
 }
 
-const component = withStyles(styles)(RgbSwitch)
+export default boxHoc(withStyles(styles)(RgbSwitch))
 
-const _mapStateToProps = state => ({
-    formData: getFormData("EDIT_RGB")(state),
-    colorType: getFieldVal("EDIT_RGB.type")(state)
-})
+// const _mapStateToProps = (state: any) => ({
+//     formData: getFormData("EDIT_RGB")(state),
+//     colorType: getFieldVal("EDIT_RGB.type")(state)
+// })
 
-const _mapDispatchToProps = dispatch =>
-    bindActionCreators(
-        {
-            validateForm: validateRegisteredFields("EDIT_RGB"),
-            fillForm: fillForm("EDIT_RGB")
-        },
-        dispatch
-    )
+// const _mapDispatchToProps = (dispatch: any) =>
+//     bindActionCreators(
+//         {
+//             validateForm: validateRegisteredFields("EDIT_RGB"),
+//             fillForm: fillForm("EDIT_RGB")
+//         },
+//         dispatch
+//     )
 
-export default boxHoc(connect(_mapStateToProps, _mapDispatchToProps)(component))
+// export default boxHoc(connect(_mapStateToProps, _mapDispatchToProps)(component))

@@ -15,10 +15,10 @@ export function transformSensorsForBE({ name = [], unit = [], JSONkey = [], coun
  * Transform control recipe from FE to BE representation
  */
 
-export function transformControlForBE({ name = [], type = [], JSONkey = [], count, description = [] }) {
+export function transformControlForBE({ name = [], type = [], JSONkey = [], count, description = [], ipAddress = [] }) {
     const resultArr = [];
     for (let i = 0; i < count; i++) {
-        resultArr.push({ name: name[i], JSONkey: JSONkey[i], type: type[i], description: description[i] })
+        resultArr.push({ name: name[i], JSONkey: JSONkey[i], type: type[i], description: description[i], ipAddress: ipAddress[i] })
     }
     return { control: resultArr };
 }
@@ -61,11 +61,12 @@ export function transformSensorsForForm(arrayOfSensors, sampleInterval) {
 
 export function transformControlForForm(arrayOfSensors) {
     const len = arrayOfSensors.length;
-    const resultObj = { JSONkey: [], type: [], name: [], description: [], count: len };
+    const resultObj = { JSONkey: [], type: [], name: [], description: [], ipAddress: [], count: len };
     for (let i = 0; i < len; i++) {
         resultObj["name"].push(arrayOfSensors[i].name)
         resultObj["JSONkey"].push(arrayOfSensors[i].JSONkey)
         resultObj["type"].push(arrayOfSensors[i].type)
+        resultObj["ipAddress"].push(arrayOfSensors[i].ipAddress)
         resultObj["description"].push(arrayOfSensors[i].description || '')
     }
     return resultObj;

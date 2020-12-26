@@ -1,13 +1,15 @@
 import FormLabel from '@material-ui/core/FormLabel'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
-import { withStyles } from '@material-ui/core/styles'
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles'
 import ClearIcon from '@material-ui/icons/Clear'
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector'
 import React from 'react'
-import { ControlTypes } from "common/lib/constants"
+import { ControlTypes, CONTROL_TYPES } from "common/lib/constants"
+import { getFieldVal, getFormData } from 'framework-ui/lib/utils/getters'
+import { useSelector } from 'react-redux'
 
-const styles = theme => ({
+const styles = (theme: Theme) => createStyles({
     contentInner: {
         display: 'flex',
         [theme.breakpoints.down('sm')]: {
@@ -32,7 +34,17 @@ const styles = theme => ({
     },
 })
 
-function EditSensor({ id, classes, onDelete }) {
+interface EditSensorProps {
+    id: number
+    classes: any
+    onDelete: (id: number, e: any) => void
+}
+function EditSensor({ id, classes, onDelete }: EditSensorProps) {
+    const selectedType: undefined | string = useSelector((state) => {
+        const arr: string[] | undefined = getFieldVal("EDIT_CONTROL.type")(state) as any
+        // console.log("arr", arr)
+        return arr && arr[id]
+    })
 
     return (<div className={classes.quantity} key={id}>
         <FormLabel component="legend">Prvek {id + 1}:</FormLabel>
@@ -54,9 +66,9 @@ function EditSensor({ id, classes, onDelete }) {
                 selectOptions={ControlTypes
                     .map(
                         ({ value, label }) =>
-                            (<MenuItem value={value} key={value}>
-                                {label}
-                            </MenuItem>)
+                        (<MenuItem value={value} key={value}>
+                            {label}
+                        </MenuItem>)
                     )}
             />
             <FieldConnector
@@ -77,6 +89,13 @@ function EditSensor({ id, classes, onDelete }) {
             }}
             deepPath={`EDIT_CONTROL.description.${id}`}
         />
+        {selectedType === CONTROL_TYPES.MUSIC_CAST && <FieldConnector
+            fieldProps={{
+                className: classes.textArea,
+            }}
+            deepPath={`EDIT_CONTROL.ipAddress.${id}`}
+        />}
+
     </div>)
 }
 

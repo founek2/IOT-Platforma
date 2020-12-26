@@ -1,24 +1,23 @@
-import keymirror from "key-mirror"
-
 export const DAY_START_HOURS = 6
 
 export const DAY_END_HOURS = 20
 
-export const CONTROL_TYPES = keymirror({
-    SWITCH: null,	/* state: {color: [hashColor], type: "linear", bright: [0-255], on: [0,1]} */
-    ACTIVATOR: null,	/* state: {on: 1} */
-    RGB_SWITCH: null		/* state: {on: [0,1]} */
-})
+export const CONTROL_TYPES = {
+    SWITCH: "SWITCH",	/* state: {color: [hashColor], type: "linear", bright: [0-255], on: [0,1]} */
+    ACTIVATOR: "ACTIVATOR",	/* state: {on: 1} */
+    RGB_SWITCH: "RGB_SWITCH",
+    MUSIC_CAST: "MUSIC_CAST",		/* state: {on: [0,1]} */
+}
 
 export const NOTIFY_INTERVALS = {
     JUST_ONCE: -1,
     ALWAYS: -2,
 }
 
-export const NOTIFY_TYPES_CONTROL = keymirror({
-    ON: null,
-    OFF: null,
-})
+export const NOTIFY_TYPES_CONTROL = {
+    ON: "ON",
+    OFF: "OFF",
+}
 
 export const CONTROL_STATE = {
     ON: "on",
@@ -46,6 +45,7 @@ export const ControlTypes = [
     { value: CONTROL_TYPES.SWITCH, label: "vypínač", formName: "CHANGE_DEVICE_STATE_SWITCH" },
     { value: CONTROL_TYPES.ACTIVATOR, label: "Aktivátor", formName: "CHANGE_DEVICE_STATE_SWITCH" },
     { value: CONTROL_TYPES.RGB_SWITCH, label: "RGB led", formName: "CHANGE_DEVICE_STATE_RGB" },
+    { value: CONTROL_TYPES.MUSIC_CAST, label: "MusicCast", formName: "CHANGE_DEVICE_MUSIC_CAST" },
 ]
 
 export const SampleIntervals = [
@@ -68,12 +68,12 @@ export const RgbTypes = [
     { value: LINEAR_TYPE, label: "Stálá barva" },
 ]
 
-export const NOTIFY_TYPES = keymirror({
-    OVER: null,
-    BELOW: null,
+export const NOTIFY_TYPES = {
+    OVER: "OVER",
+    BELOW: "BELOW",
     // CHANGE: null,
-    ALWAYS: null,
-})
+    ALWAYS: "ALWAYS",
+}
 
 export const NotifyTypes = [
     { value: NOTIFY_TYPES.OVER, label: "Nad" },
