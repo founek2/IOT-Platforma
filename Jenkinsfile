@@ -104,9 +104,6 @@ pipeline {
 
                 cd "$IOT_DEPLOY_PATH"/backend
                 yarn install --production
-
-                EOF
-                exit $?
                 '''    
                 
             }
