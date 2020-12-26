@@ -3,7 +3,7 @@ import Jwt from 'framework/lib/services/jwt'
 import Device from 'backend/dist/models/Device'
 import { publish } from '../service/mqtt'
 import { includes } from 'ramda'
-import { CONTROL_TYPES } from 'common/src/constants'
+import { CONTROL_TYPES } from 'common/lib/constants'
 import { handleMusicCast } from "../lib/handler/MusicCast"
 
 export default (io) => {

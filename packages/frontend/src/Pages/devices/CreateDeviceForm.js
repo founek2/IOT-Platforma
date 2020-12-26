@@ -16,7 +16,7 @@ import * as sensorsActions from '../../store/actions/application/devices'
 import { updateTmpData } from 'framework-ui/lib/redux/actions/tmpData'
 import { getDialogTmp } from 'framework-ui/lib/utils/getters'
 import InfoAlert from 'framework-ui/lib/Components/InfoAlert'
-import ImageUploader from 'frontend/src/components/ImageUploader'
+import ImageUploader from '../../components/ImageUploader'
 
 
 const styles = theme => ({
