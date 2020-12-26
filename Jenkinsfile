@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('clear and checkout') {
             steps {
-                // deleteDir()
+                deleteDir()
                 checkout scm
             }
         }
