@@ -2,7 +2,7 @@ var path = require('path');
 
 const pathRef = path.join(__dirname, "../../.env")
 require('dotenv').config({
-    path: path.resolve(pathRef)
+    path: process.env.ENV_CONFIG_PATH ? process.env.ENV_CONFIG_PATH : path.resolve(pathRef)
 })
 console.log("loading .env from", path.resolve(pathRef))
 
