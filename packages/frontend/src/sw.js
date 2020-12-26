@@ -1,6 +1,6 @@
+/* eslint-disable */
 importScripts('workbox-sw.js');
 
-/* eslint-disable */
 if (workbox) {
 
     console.log("Workbox is loaded");
@@ -9,7 +9,7 @@ if (workbox) {
     workbox.setConfig({ debug: false });
 
 
-    //`generateSW` and `generateSWString` provide the option
+    //`generateSW` and `generateSWString` provide the option 
     // to force update an exiting service worker.
     // Since we're using `injectManifest` to build SW,
     // manually overriding the skipWaiting();
