@@ -4,11 +4,11 @@ import fs from 'fs';
 let privKey: jwt.Secret | null = null;
 let pubKey: jwt.Secret | null = null;
 let expiresIn: string | undefined = undefined;
-const init = function (config: Config) {
+const init = function ({ privateKey, publicKey, expiresIn }: { privateKey: string, publicKey: string, expiresIn: string }) {
 
-    privKey = fs.readFileSync(config.jwt.privateKey);
-    pubKey = fs.readFileSync(config.jwt.publicKey);
-    expiresIn = config.jwt.expiresIn;
+    privKey = fs.readFileSync(privateKey);
+    pubKey = fs.readFileSync(publicKey);
+    expiresIn = expiresIn;
 }
 
 

@@ -1,4 +1,4 @@
-declare interface Config {
+export interface Config {
     port: number,
     bodyLimit: string,
     homepage: string,
@@ -8,7 +8,7 @@ declare interface Config {
     db: {
         userName: string,
         password: string,
-        name: string,
+        dbName: string,
         url: string,
         port: number,
     },
@@ -24,4 +24,24 @@ declare interface Config {
     },
     testUser: string,
     testPassword: string,
+    email: {
+        host: string,
+        port: number,
+        secure: boolean,
+        userName: string
+        password: string
+    },
+    agenda: {
+        url: string
+        port: number
+        dbName: string
+        userName: string
+        password: string
+        jobs?: string
+    }
+}
+
+export interface EmitterEvents {
+    "user_login": any,
+    "user_signup": any,
 }

@@ -14,3 +14,11 @@ export const info = consoleLog('green', 'INFO');
 export const warning = consoleLog('orange', 'WARNING');
 export const error = consoleLog('red', 'ERROR');
 export const dev = consoleLog('blue', 'DEV', true);
+export const debug = consoleLog('blue', 'debug', true);
+
+export default {
+    info,
+    warning,
+    error,
+    debug,
+}

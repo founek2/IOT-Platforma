@@ -1,0 +1,11 @@
+type arg = {
+    url: string,
+    userName: string,
+    password: string
+    dbName: string,
+    port: number
+}
+
+export default function (conf: arg) {
+    return `mongodb://${conf.userName}:${conf.password}@${conf.url}:${conf.port}/${conf.dbName}`
+}

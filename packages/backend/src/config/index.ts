@@ -1,3 +1,5 @@
+import { Config } from "../types";
+
 var path = require('path');
 
 const pathRef = path.join(__dirname, "../../.env")
@@ -16,7 +18,7 @@ const config: Config = {
     db: {
         userName: process.env.DATABASE_USERNAME as string,
         password: process.env.DATABASE_PASSWORD as string,
-        name: process.env.DATABASE_NAME || "IOTPlatform",
+        dbName: process.env.DATABASE_NAME || "IOTPlatform",
         url: process.env.DATABASE_URL || "localhost",
         port: Number(process.env.DATABASE_PORT) || 27017,
     },
@@ -32,6 +34,21 @@ const config: Config = {
     },
     testUser: "test1",
     testPassword: "123456",
+    email: {
+        host: process.env.EMAIL_HOST as string,
+        port: Number(process.env.EMAIL_PORT) || 465,
+        secure: true,
+        userName: process.env.EMAIL_USERNAME as string,
+        password: process.env.EMAIL_PASSWORD as string,
+    },
+    agenda: {
+        url: process.env.AGENDA_DB_URI || "localhost",
+        port: Number(process.env.AGENDA_DB_PORT) || 27017,
+        dbName: process.env.AGENDA_DB_NAME || "agenda-db",
+        userName: process.env.AGENDA_DB_USERNAME || "test",
+        password: process.env.AGENDA_DB_PASSWORD || "test",
+        jobs: process.env.AGENDA_JOB_TYPES
+    }
 }
 
 export default config
