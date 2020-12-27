@@ -7,12 +7,10 @@ import Jwt from 'framework/lib/services/jwt'
 import { devLog } from 'framework/lib/logger'
 import { Config } from "./types"
 import loadersInit from "./loaders"
-import { Server as serverIO } from "socket.io"
 import mongoose from "mongoose"
 
 interface customApp extends Application {
     server?: http.Server
-    io?: serverIO
 }
 
 async function startServer(config: Config) {
@@ -23,8 +21,6 @@ async function startServer(config: Config) {
 
     app.server = http.createServer(app)
     if (!app.server) throw Error("Unable to create server")
-
-    app.io = require("socket.io")(app.server, { path: "/websocket/io" })
 
     await loadersInit({ app, config })
 

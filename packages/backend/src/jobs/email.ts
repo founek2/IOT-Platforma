@@ -7,6 +7,7 @@ const mailer = new Mailer()
 
 export default function (agenda: Agenda) {
     agenda.define('registration email', async job => {
+        console.log("data", job.attrs.data)
         await mailer.sendSignUp(job.attrs.data.user);
     });
 

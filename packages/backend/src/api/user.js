@@ -7,6 +7,7 @@ import groupRestriction from 'framework/lib/middlewares/groupRestriction'
 
 import fieldDescriptors from 'common/lib/fieldDescriptors'
 import checkWritePerm from '../middleware/user/checkWritePerm'
+import eventEmitter from '../service/eventEmitter'
 
 function removeUser(id) {
     return function (doc) {
@@ -65,6 +66,7 @@ export default ({ config, db }) =>
                         },
                         token,
                     })
+                    eventEmitter.emit("user_login")
                 }).catch(processError(res))
             } else if (formData.REGISTRATION) {     // tested
                 UserModel.create(formData.REGISTRATION)
@@ -80,6 +82,7 @@ export default ({ config, db }) =>
                             },
                             token,
                         })
+                        eventEmitter.emit("user_signup", { id, info, groups })
                     })
                     .catch(processError(res))
             } else {

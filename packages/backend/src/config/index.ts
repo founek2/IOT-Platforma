@@ -3,10 +3,11 @@ import { Config } from "../types";
 var path = require('path');
 
 const pathRef = path.join(__dirname, "../../.env")
+const finalPath = process.env.ENV_CONFIG_PATH ? process.env.ENV_CONFIG_PATH : path.resolve(pathRef)
 require('dotenv').config({
-    path: process.env.ENV_CONFIG_PATH ? process.env.ENV_CONFIG_PATH : path.resolve(pathRef)
+    path: finalPath
 })
-console.log("loading .env from", path.resolve(pathRef))
+console.log("loading .env from", finalPath)
 
 const config: Config = {
     port: Number(process.env.PORT) || 8085,

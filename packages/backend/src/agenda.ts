@@ -1,5 +1,4 @@
 import Agenda from 'agenda';
-import * as types from './types'
 import config from './config'
 import createMongoUri from './lib/createMongoUri'
 import logger from 'framework-ui/lib/logger'
@@ -17,7 +16,7 @@ const connectionOpts = {
 const agenda = new Agenda(connectionOpts);
 
 const jobTypes = agendaConfig.jobs ? agendaConfig.jobs.split(',') : [];
-logger.debug("loading jobs: %s", jobTypes)
+logger.debug("loading jobs:", jobTypes)
 
 jobTypes.forEach(async type => {
     const job = require('./jobs/' + type) as { default: (agenda: Agenda) => void }

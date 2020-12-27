@@ -3,6 +3,7 @@ import Email from 'email-templates'
 import { createTransport } from 'nodemailer'
 import path from 'path'
 import config from '../config'
+import { UserBasic } from '../types'
 // import { UserAttributes } from '../models/user'
 
 const emailConf = config.email
@@ -16,30 +17,33 @@ const transporter = createTransport({
     },
 })
 
-/* transporter.verify((err, status) => {
-    console.log("email verify:", err, status)
-}) */
-
+// transporter.verify((err, status) => {
+//     console.log("email verify:", err, status)
+// })
 const defaultEmail = new Email({
     message: {
         from: emailConf.userName,
     },
     transport: transporter,
-    send: true,
+    // send: true,
     preview: false
 });
 
 class Mailer {
-    sendSignUp = async ({ email }: { email: string }) => {
+    sendSignUp = async (user: UserBasic) => {
         await defaultEmail.send({
             template: path.join(__dirname, "../templates/emails/registration"),
             message: {
-                to: email
+                to: user.info.email
             },
             locals: {
-                data: "test",
+                url: config.homepage,
+                // token: token,
+                email: user.info.email,
+                firstName: user.info.firstName,
+                lastName: user.info.lastName
             }
-        }).catch(logger.error)
+        })
         logger.debug("sending signUp email")
     }
 
@@ -52,7 +56,7 @@ class Mailer {
             locals: {
                 data: "test",
             }
-        }).catch(logger.error)
+        })
         logger.debug("sending login email")
     }
 

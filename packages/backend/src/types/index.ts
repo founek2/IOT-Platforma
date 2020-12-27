@@ -43,5 +43,15 @@ export interface Config {
 
 export interface EmitterEvents {
     "user_login": any,
-    "user_signup": any,
+    "user_signup": UserBasic,
+}
+
+export interface UserBasic {
+    id: string
+    info: {
+        firstName: string
+        email: string
+        lastName: string
+        userName: string
+    }
 }
