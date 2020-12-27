@@ -4,7 +4,7 @@ import Device from 'backend/dist/models/Device'
 import { publish } from '../service/mqtt'
 import { includes } from 'ramda'
 import { CONTROL_TYPES } from 'common/lib/constants'
-import { handleMusicCast } from "../lib/handler/MusicCast"
+import DeviceHandler from '../service/DeviceHandler'
 
 export default (io) => {
     io.use((socket, next) => {
@@ -53,8 +53,8 @@ export default (io) => {
 
                     console.log("publish to", `/${doc.createdBy}${doc.topic}/update`, form.state)
                     publish(`/${doc.createdBy}${doc.topic}/update`, { [form.JSONkey]: form.state })
-                } else if (recipe.type === CONTROL_TYPES.MUSIC_CAST) {
-                    const updateState = await handleMusicCast(form, doc.control.current.data[form.JSONkey], recipe)
+                } else if (includes(recipe.type, [CONTROL_TYPES.MUSIC_CAST])) {
+                    const updateState = await DeviceHandler.handleChange(form, doc.control.current.data[form.JSONkey], recipe)
                     if (updateState) publish(`/${doc.createdBy}${doc.topic}/ack`, { [form.JSONkey]: updateState })
                 } else {
                     return fn({ error: "invalidType" })

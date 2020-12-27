@@ -9,7 +9,7 @@ const init = function ({ privateKey, publicKey, expiresIn: exIn }: { privateKey:
 
     if (!privateKey) logger.error("JWT invalid privateKey path:", privateKey)
     if (!publicKey) logger.error("JWT invalid publicKey path:", publicKey)
-    if (!expiresIn) logger.error("JWT invalid expiresIn:", expiresIn)
+    if (!exIn) logger.error("JWT invalid expiresIn:", exIn)
 
     privKey = fs.readFileSync(privateKey);
     pubKey = fs.readFileSync(publicKey);

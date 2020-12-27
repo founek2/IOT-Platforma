@@ -2,7 +2,7 @@
 import { Router } from 'express'
 import auth from './auth'
 
-export default ({ config, db }) => {
+export default ({ config }) => {
     let api = Router()
     // mount the user resource
     api.use('/auth', auth)

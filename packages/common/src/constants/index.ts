@@ -2,11 +2,11 @@ export const DAY_START_HOURS = 6
 
 export const DAY_END_HOURS = 20
 
-export const CONTROL_TYPES = {
-    SWITCH: "SWITCH",	/* state: {color: [hashColor], type: "linear", bright: [0-255], on: [0,1]} */
-    ACTIVATOR: "ACTIVATOR",	/* state: {on: 1} */
-    RGB_SWITCH: "RGB_SWITCH",
-    MUSIC_CAST: "MUSIC_CAST",		/* state: {on: [0,1]} */
+export enum CONTROL_TYPES {
+    SWITCH = "SWITCH",	/* state: {color: [hashColor], type: "linear", bright: [0-255], on: [0,1]} */
+    ACTIVATOR = "ACTIVATOR",	/* state: {on: 1} */
+    RGB_SWITCH = "RGB_SWITCH",
+    MUSIC_CAST = "MUSIC_CAST",		/* state: {on: [0,1]} */
 }
 
 export const NOTIFY_INTERVALS = {
@@ -14,9 +14,9 @@ export const NOTIFY_INTERVALS = {
     ALWAYS: -2,
 }
 
-export const NOTIFY_TYPES_CONTROL = {
-    ON: "ON",
-    OFF: "OFF",
+export enum NOTIFY_TYPES_CONTROL {
+    ON = "ON",
+    OFF = "OFF",
 }
 
 export const CONTROL_STATE = {
@@ -27,18 +27,18 @@ export const CONTROL_STATE = {
 }
 
 export const ControlStateValuesToText = {
-    [CONTROL_STATE.ON]: (val) => val === 1 ? "Zapnuto" : "Vypnuto",
-    [CONTROL_STATE.COLOR]: (val) => val,
-    [CONTROL_STATE.TYPE]: (type) => type,
-    [CONTROL_STATE.BRIGHT]: (val) => val + "%",
+    [CONTROL_STATE.ON]: (val: number) => val === 1 ? "Zapnuto" : "Vypnuto",
+    [CONTROL_STATE.COLOR]: (val: string) => val,
+    [CONTROL_STATE.TYPE]: (type: any) => type,
+    [CONTROL_STATE.BRIGHT]: (val: number) => val + "%",
 }
 
 
 //AuthTypes, ControlTypes, SampleIntervals, RgbTypes, LINEAR_TYPE, NotifyTypes, NOTIFY_TYPES, NotifyIntervals, CONTROL_STATE_KEYS 
 
-export const AuthTypes = {
-    PASSWD: "passwd",
-    WEB_AUTH: "webAuth"
+export enum AuthTypes {
+    PASSWD = "passwd",
+    WEB_AUTH = "webAuth"
 }
 
 export const ControlTypes = [
@@ -68,11 +68,11 @@ export const RgbTypes = [
     { value: LINEAR_TYPE, label: "Stálá barva" },
 ]
 
-export const NOTIFY_TYPES = {
-    OVER: "OVER",
-    BELOW: "BELOW",
+export enum NOTIFY_TYPES {
+    OVER = "OVER",
+    BELOW = "BELOW",
     // CHANGE: null,
-    ALWAYS: "ALWAYS",
+    ALWAYS = "ALWAYS",
 }
 
 export const NotifyTypes = [

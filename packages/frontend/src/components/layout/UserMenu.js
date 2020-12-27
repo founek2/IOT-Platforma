@@ -7,9 +7,10 @@ import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { getUserInfo } from 'framework-ui/lib/utils/getters'
+import { getUserInfo, getUser } from 'framework-ui/lib/utils/getters'
 import { userLogOut } from 'framework-ui/lib/redux/actions/application/user'
 import * as deviceActions from '../../store/actions/application/devices'
+import { Link } from 'react-router-dom'
 
 const styles = theme => ({
     rightIcon: {
@@ -26,7 +27,7 @@ const styles = theme => ({
 })
 // const isNotMobile = document.body.clientWidth > 600;
 
-function UserMenu({ classes, logOutAction, userInfo, fetchDevicesAction }) {
+function UserMenu({ classes, logOutAction, user, fetchDevicesAction }) {
     const [ancholEl, setAnchorEl] = useState(null)
     // const curriedSetOpen = bool => () => setOpen(bool)
 
@@ -37,7 +38,7 @@ function UserMenu({ classes, logOutAction, userInfo, fetchDevicesAction }) {
                 //color="inherit"
                 variant="contained"
             >
-                <span className={classes.hideOnMobile}>{userInfo.userName}</span>
+                <span className={classes.hideOnMobile}>{user.info.userName}</span>
                 <AccountCircle className={classes.rightIcon} />
             </Button>
             <Menu
@@ -46,7 +47,12 @@ function UserMenu({ classes, logOutAction, userInfo, fetchDevicesAction }) {
                 open={Boolean(ancholEl)}
                 onClose={() => setAnchorEl(null)}
             >
-                <MenuItem>Můj účet</MenuItem>
+                <Link to={{
+                    hash: "#editUser",
+                    search: `?id=${user.id}`
+                }}> <MenuItem>Můj účet</MenuItem>
+                </Link>
+
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null)
@@ -63,7 +69,7 @@ function UserMenu({ classes, logOutAction, userInfo, fetchDevicesAction }) {
 }
 
 const _mapStateToProps = state => ({
-    userInfo: getUserInfo(state)
+    user: getUser(state)
 })
 
 const _mapDispatchToProps = dispatch =>

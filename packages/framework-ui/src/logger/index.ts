@@ -17,6 +17,7 @@ export const dev = consoleLog('blue', 'DEV', true);
 export const debug = consoleLog('blue', 'debug', true);
 
 export default {
+    log: baseLogger,
     info,
     warning,
     error,

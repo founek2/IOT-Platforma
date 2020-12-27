@@ -79,7 +79,7 @@ export function updateUser(id) {
                 body: { formData: { [EDIT_USER]: formData } },
                 id,
                 onSuccess: () => {
-                    // dispatch(update({ id, sensors, sampleInterval }))
+                    dispatch(updateUsers([formData]))
                 }
             }, dispatch)
         }

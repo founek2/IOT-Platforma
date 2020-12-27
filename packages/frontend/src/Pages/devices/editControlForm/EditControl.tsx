@@ -40,8 +40,8 @@ interface EditSensorProps {
     onDelete: (id: number, e: any) => void
 }
 function EditSensor({ id, classes, onDelete }: EditSensorProps) {
-    const selectedType: undefined | string = useSelector((state) => {
-        const arr: string[] | undefined = getFieldVal("EDIT_CONTROL.type")(state) as any
+    const selectedType: undefined | CONTROL_TYPES = useSelector((state) => {
+        const arr: CONTROL_TYPES[] | undefined = getFieldVal("EDIT_CONTROL.type")(state) as any
         // console.log("arr", arr)
         return arr && arr[id]
     })
@@ -66,9 +66,9 @@ function EditSensor({ id, classes, onDelete }: EditSensorProps) {
                 selectOptions={ControlTypes
                     .map(
                         ({ value, label }) =>
-                        (<MenuItem value={value} key={value}>
-                            {label}
-                        </MenuItem>)
+                            (<MenuItem value={value} key={value}>
+                                {label}
+                            </MenuItem>)
                     )}
             />
             <FieldConnector
