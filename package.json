@@ -3,14 +3,19 @@
     "scripts": {
         "bootstrap": "lerna bootstrap",
         "build": "yarn pre && lerna run --scope backend --scope frontend --scope backend-mqtt build",
-        "clean": "rimraf packages/**/lib",
+        "clean": "rimraf packages/frontend/build packages/common/lib packages/framework/lib packages/framework-ui/lib",
         "test": "lerna run test",
         "watch": "lerna run --parallel --scope common --scope framework --scope framework-ui dev",
-        "pre": "lerna run --scope framework --scope framework-ui --scope common build"
+        "pre": "lerna run --scope framework-ui build && lerna run --scope framework build && lerna run  --scope common  build"
     },
     "devDependencies": {
         "@types/node": "^14.0.20",
+        "@typescript-eslint/eslint-plugin": "^4.4.1",
         "ava": "^3.10.1",
+        "eslint-plugin-import": "^2.22.0",
+        "eslint-plugin-jsx-a11y": "^6.3.1",
+        "eslint-plugin-react": "^7.20.3",
+        "eslint-plugin-react-hooks": "^4.0.8",
         "lerna": "^3.22.1",
         "rimraf": "^3.0.2",
         "typescript": "^3.9.6"
@@ -18,5 +23,8 @@
     "workspaces": [
         "packages/*"
     ],
-    "name": "monorepo"
+    "name": "monorepo",
+    "dependencies": {
+        "eslint-config-airbnb-typescript": "^12.0.0"
+    }
 }
