@@ -32,7 +32,6 @@ pipeline {
         // }  
         stage ('Install dependencies') {
             steps {
-                // clear previously generated types
                 sh "yarn"
                 sh "yarn lerna init"
             }
@@ -105,7 +104,7 @@ pipeline {
                         sh'''
                         scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatforma/www
 
-                        sudo -u deployer-test bash << EOF
+                        sudo -u deployer bash << EOF
                         set -u -e 
                         echo "Stoping service iot-backend"
                         sudo systemctl stop iot-backend
