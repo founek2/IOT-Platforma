@@ -7,7 +7,7 @@ import mongoLoader from './mongodb';
 import subscribers from './subscribers';
 
 export default async ({ app, config }: { app: Application, config: types.Config }) => {
-    const mongoConnection = await mongoLoader(config);
+    const mongoConnection = await mongoLoader(config.db);
     if (!mongoConnection) throw Error("Unable to connect to DB")
 
     subscribers()

@@ -1,6 +1,6 @@
 import { CONTROL_TYPES } from "../constants"
 
-export type FormType = { JSONkey: string } & { [k: string]: any }
+export type FormType<T> = { JSONkey: string } & T
 export type ControlState = { state: any, updatedAt: string }
 export type ControlRecipe = {
     name: string,
@@ -12,6 +12,6 @@ export type ControlRecipe = {
 }
 export type StateUpdate = any
 
-export type ChangeHandler = (form: FormType, currentState: ControlState, recipe: ControlRecipe) => Promise<StateUpdate>
+export type ChangeHandler<T = any> = (form: FormType<T>, currentState: ControlState, recipe: ControlRecipe) => Promise<StateUpdate>
 
 export type AckHandler = (recipe: ControlRecipe) => Promise<boolean>

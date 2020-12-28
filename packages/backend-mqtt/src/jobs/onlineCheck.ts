@@ -7,16 +7,21 @@ import Device from "backend/dist/models/Device"
 import { publish } from "../service/mqtt";
 
 export default function (agenda: Agenda) {
-    agenda.define(AGENDA_JOB_TYPE.CHECK_ONLINE_DEVICE, { concurrency: 10 }, async job => {
-        console.log("data", job.attrs.data)
-        job.attrs.data.recipes.forEach(async (recipe: ControlRecipe) => {
+    agenda.define(AGENDA_JOB_TYPE.CHECK_ONLINE_DEVICE, { concurrency: 10 }, job => {
+        const promises: Promise<any>[] = []
+
+        const processRecipe = async (recipe: ControlRecipe) => {
             const isOnline = await DeviceHandler.handleIsOnline(recipe);
             if (!isOnline) return;
 
             const doc = await (Device as any).getTopicByID(job.attrs.data.deviceId)
             publish(`/${doc.createdBy}${doc.topic}/ack`, { ack: 1 })
+        }
+        job.attrs.data.recipes.forEach((recipe: ControlRecipe) => {
+            promises.push(processRecipe(recipe))
         })
 
+        return Promise.all(promises)
     });
 
     // agenda.on(`fail:${AGENDA_JOB_TYPE.CHECK_ONLINE_DEVICE}`, (err, job) => {
@@ -25,4 +30,4 @@ export default function (agenda: Agenda) {
     //     job.attrs.nextRunAt = new Date(Date.now() + 10 * 60 * 1000)
     //     job.save()
     // });
-};
+}; 

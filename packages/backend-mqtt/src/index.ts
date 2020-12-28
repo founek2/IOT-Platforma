@@ -2,7 +2,7 @@ import http from 'http'
 import express, { Application } from 'express'
 import morgan from 'morgan'
 import initializeDb from 'backend/dist/loaders/mongodb'
-import { Config } from "backend/dist/types"
+import { Config } from "./types"
 import mqttService from './service/mqtt';
 import webSockets from './webSockets'
 import config from "./config"
@@ -11,8 +11,6 @@ import api from './api'
 import bodyParser from 'body-parser'
 import * as FireBase from './service/FireBase'
 import { Server as serverIO } from "socket.io"
-
-import "./agenda" // init
 
 interface customApp extends Application {
     server?: http.Server
@@ -23,9 +21,9 @@ async function startServer(config: Config) {
     Jwt.init(config.jwt)
     FireBase.init(config)
 
-    await initializeDb(config)
+    await initializeDb(config.db)
 
-    const app: customApp = express() 
+    const app: customApp = express()
     app.server = http.createServer(app)
 
     app.io = require("socket.io")(app.server)
@@ -48,6 +46,8 @@ async function startServer(config: Config) {
 
         setTimeout(() => mqttService(app.io), 1000); //init
     })
+
+    require("./agenda")   // init
 }
 
 startServer(config)

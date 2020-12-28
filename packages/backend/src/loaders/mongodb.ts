@@ -4,10 +4,10 @@ import mongoose from 'mongoose';
 import createMongoUri from 'common/lib/utils/createMongoUri';
 import "../models/user" //init
 
-export default async (config: types.Config): Promise<mongoose.Connection | null> => {
+export default async (config: types.Config["db"]): Promise<mongoose.Connection | null> => {
     try {
         const mong = await mongoose
-            .connect(createMongoUri(config.db), {
+            .connect(createMongoUri(config), {
                 useNewUrlParser: true,
                 useCreateIndex: true,
                 useFindAndModify: false,

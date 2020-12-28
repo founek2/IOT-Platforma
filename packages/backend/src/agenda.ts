@@ -2,6 +2,7 @@ import Agenda from 'agenda';
 import config from './config'
 import createMongoUri from 'common/lib/utils/createMongoUri'
 import logger from 'framework-ui/lib/logger'
+import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda';
 
 const agendaConfig = config.agenda
 
@@ -26,12 +27,14 @@ jobTypes.forEach(async type => {
 agenda.processEvery("one minute")
 
 agenda.on('start', job => {
-    logger.debug('Job', job.attrs.name, 'starting', );
+    logger.debug('Job', job.attrs.name, 'starting',);
 });
 if (jobTypes.length) {
 
     (async () => {
         await agenda.start();
+
+        agenda.every("24 hours", AGENDA_JOB_TYPE.REMOVE_OLD_JOBS)
     })()
 }
 

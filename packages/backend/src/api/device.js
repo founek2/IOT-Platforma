@@ -129,13 +129,10 @@ export default ({ config, db }) =>
 							o(contains(__, Object.keys(handleMapping)), prop('type')),
 							control
 						);
-						console.log('lala', arrayOfRecipes, JSON.stringify(control));
-						if (arrayOfRecipes.length) {
-							eventEmitter.emit('device_control_recipe_change', {
-								recipes: arrayOfRecipes,
-								deviceId: id
-							});
-						}
+						eventEmitter.emit('device_control_recipe_change', {
+							recipes: arrayOfRecipes,
+							deviceId: id
+						});
 						res.sendStatus(204);
 					})
 					.catch(processError(res));

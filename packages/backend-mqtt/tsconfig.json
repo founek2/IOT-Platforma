@@ -16,7 +16,7 @@
         "src/**/*.spec.ts"
     ],
     "include": [
-        "src/**/*"
+        "src/**/*", "../common/src/service/DeviceHandler.ts", "../common/src/service/handler"
     ],
     "references": [
         {

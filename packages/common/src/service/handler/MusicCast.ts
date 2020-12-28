@@ -1,5 +1,6 @@
 import fetch from "node-fetch"
 import * as types from "../../types"
+import { MUSIC_CAST_INPUT } from "common/src/constants"
 
 class MusicCastService {
     url: string = ""
@@ -17,6 +18,11 @@ class MusicCastService {
     //     return res.status === 200
     // }
 
+    async setInput(input: MUSIC_CAST_INPUT) {
+        const res = await fetch(this.url + "/YamahaExtendedControl/v1/main/setInput?input=" + input)
+        return res.status === 200
+    }
+
     async powerToggle() {
         const res = await fetch(this.url + "/YamahaExtendedControl/v1/main/setPower?power=toggle")
         return res.status === 200
@@ -28,15 +34,18 @@ class MusicCastService {
     }
 }
 
-export const changeMusicCast: types.ChangeHandler = async ({ JSONkey, state: { on } }, current, recipe: types.ControlRecipe) => {
-    const service = new MusicCastService(recipe.ipAddress as string)
-    if (on === 1) {
-        if (await service.powerToggle()) {
-            return {
-                on: 1
-            }
-        }
+interface FormChange {
+    state: {
+        on: number,
+        input: MUSIC_CAST_INPUT
     }
+}
+export const changeMusicCast: types.ChangeHandler<FormChange> = async ({ JSONkey, state: { on, input } }, current, recipe: types.ControlRecipe) => {
+    const service = new MusicCastService(recipe.ipAddress as string)
+    if (on === 1 && await service.powerToggle())
+        return { on }
+    else if (input && await service.setInput(input))
+        return { input }
 
     return false;
 }

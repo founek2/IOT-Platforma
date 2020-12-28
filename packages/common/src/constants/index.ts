@@ -48,6 +48,21 @@ export const ControlTypes = [
     { value: CONTROL_TYPES.MUSIC_CAST, label: "MusicCast", formName: "CHANGE_DEVICE_MUSIC_CAST" },
 ]
 
+export enum MUSIC_CAST_INPUT {
+    NET_RADIO = "net_radio",
+    BLUETOOTH = "bluetooth",
+    AIRPLAY = "airplay",
+    SPOTIFY = "spotify",
+    TUNER = "tuner",
+}
+export const MusicCastInputs = [
+    { value: MUSIC_CAST_INPUT.NET_RADIO, label: "Net radio" },
+    { value: MUSIC_CAST_INPUT.BLUETOOTH, label: "Bluetooth" },
+    { value: MUSIC_CAST_INPUT.AIRPLAY, label: "Airplay" },
+    { value: MUSIC_CAST_INPUT.SPOTIFY, label: "Spotify" },
+    { value: MUSIC_CAST_INPUT.TUNER, label: "Tuner" },
+]
+
 export const SampleIntervals = [
     { value: -1, label: "Nikdy" },
     { value: 0.1, label: "Vždy" },

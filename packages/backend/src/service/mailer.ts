@@ -44,7 +44,6 @@ class Mailer {
                 lastName: user.info.lastName
             }
         })
-        logger.debug("sending signUp email")
     }
 
     sendLogin = async ({ email }: { email: string }) => {
@@ -57,7 +56,6 @@ class Mailer {
                 data: "test",
             }
         })
-        logger.debug("sending login email")
     }
 
     sendForgotPassword = async (token: string, user: any) => {

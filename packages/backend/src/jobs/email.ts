@@ -1,13 +1,14 @@
 import Agenda from "agenda";
 import logger from 'framework-ui/lib/logger';
 import Mailer from '../service/mailer';
-import {AGENDA_JOB_TYPE} from "common/lib/constants/agenda"
+import { AGENDA_JOB_TYPE } from "common/lib/constants/agenda"
 
 const mailer = new Mailer()
 
 export default function (agenda: Agenda) {
     agenda.define(AGENDA_JOB_TYPE.SIGN_UP_EMAIL, async job => {
-        await mailer.sendSignUp(job.attrs.data.user);
+        logger.info("Runnning sign up email JOB")
+        return mailer.sendSignUp(job.attrs.data.user);
     });
 
     agenda.on(`fail:${AGENDA_JOB_TYPE.SIGN_UP_EMAIL}`, (err, job) => {
