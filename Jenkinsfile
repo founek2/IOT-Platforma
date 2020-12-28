@@ -7,7 +7,8 @@ pipeline {
         skipDefaultCheckout true
     }
     environment {
-        ENV_CONFIG_PATH = "/home/martas/iot_test_env"
+        // ENV_CONFIG_PATH = "/home/martas/iot_test_env"
+        ENV_CONFIG_PATH = "${env.BRANCH_NAME == 'master' ? '/home/martas/iot_env' : '/home/martas/iot_test_env'}"
     }
 
     stages {
@@ -93,34 +94,41 @@ pipeline {
             // }
 
             environment {
-                IOT_DEPLOY_PATH = '/var/www/iot-test/deploy'
+                // IOT_DEPLOY_PATH = '/var/www/iot-test/deploy'
+                IOT_DEPLOY_PATH = "${env.BRANCH_NAME == 'master' ? '/var/www/iot-platforma/deploy' : '/var/www/iot-test/deploy'}"
             }
 
             steps {
-                sh "echo 'shell scripts to deploy to server...'"
-                sh'''
-                scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatformaDev/www
+                script {
+                    if (env.BRANCH_NAME == 'master') {
 
-                sudo -u deployer-test bash << EOF
-                set -u -e 
-                echo "Stoping service iot-backend-test"
-                sudo systemctl stop iot-backend-test
-                echo "Stoping service iot-backend-mqtt-test"
-                sudo systemctl stop iot-backend-mqtt-test
+                    } else {
+                        sh "echo 'shell scripts to deploy to server...'"
+                        sh'''
+                        scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatformaDev/www
 
-                rm -rf "$IOT_DEPLOY_PATH"/backend/*
-                rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
-                cp package.json "$IOT_DEPLOY_PATH"/backend
+                        sudo -u deployer-test bash << EOF
+                        set -u -e 
+                        echo "Stoping service iot-backend-test"
+                        sudo systemctl stop iot-backend-test
+                        echo "Stoping service iot-backend-mqtt-test"
+                        sudo systemctl stop iot-backend-mqtt-test
 
-                cd "$IOT_DEPLOY_PATH"/backend
-                yarn install --production
+                        rm -rf "$IOT_DEPLOY_PATH"/backend/*
+                        rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
+                        cp package.json "$IOT_DEPLOY_PATH"/backend
 
-                echo "Starting service iot-backend-test"
-                sudo systemctl start iot-backend-test
-                echo "Starting service iot-backend-mqtt-test"
-                sudo systemctl start iot-backend-mqtt-test
-                '''    
-                
+                        cd "$IOT_DEPLOY_PATH"/backend
+                        yarn install --production
+
+                        echo "Starting service iot-backend-test"
+                        sudo systemctl start iot-backend-test
+                        echo "Starting service iot-backend-mqtt-test"
+                        sudo systemctl start iot-backend-mqtt-test
+                        '''    
+                    }
+                }
+
             }
       	}
     }
