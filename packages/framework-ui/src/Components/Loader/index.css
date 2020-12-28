@@ -208,3 +208,8 @@
      position: relative;
      width: 32px;
 }
+
+.loader--center {
+    margin: 0 auto;
+    margin-top: 30vh
+}
