@@ -5,12 +5,14 @@ import initializeDb from 'backend/dist/loaders/mongodb'
 import { Config } from "backend/dist/types"
 import mqttService from './service/mqtt';
 import webSockets from './webSockets'
-import config from "backend/dist/config/index.js"
+import config from "./config"
 import Jwt from 'framework/lib/services/jwt'
 import api from './api'
 import bodyParser from 'body-parser'
 import * as FireBase from './service/FireBase'
 import { Server as serverIO } from "socket.io"
+
+import "./agenda" // init
 
 interface customApp extends Application {
     server?: http.Server
@@ -20,10 +22,10 @@ interface customApp extends Application {
 async function startServer(config: Config) {
     Jwt.init(config.jwt)
     FireBase.init(config)
-    console.log("config", config)
+
     await initializeDb(config)
 
-    const app: customApp = express()
+    const app: customApp = express() 
     app.server = http.createServer(app)
 
     app.io = require("socket.io")(app.server)

@@ -7,34 +7,33 @@ class MusicCastService {
         this.url = "http://" + ipAddress
     }
 
-    async powerOff() {
-        const res = await fetch(this.url + "/YamahaExtendedControl/v1/main/setPower?power=standby")
-        return res.status === 200
-    }
+    // async powerOff() {
+    //     const res = await fetch(this.url + "/YamahaExtendedControl/v1/main/setPower?power=standby")
+    //     return res.status === 200
+    // }
 
-    async powerOn() {
-        const res = await fetch(this.url + "/YamahaExtendedControl/v1/main/setPower?power=on")
+    // async powerOn() {
+    //     const res = await fetch(this.url + "/YamahaExtendedControl/v1/main/setPower?power=on")
+    //     return res.status === 200
+    // }
+
+    async powerToggle() {
+        const res = await fetch(this.url + "/YamahaExtendedControl/v1/main/setPower?power=toggle")
         return res.status === 200
     }
 
     async isOnline(): Promise<boolean> {
         const res = await fetch(this.url + "/YamahaExtendedControl/v1/system/getDeviceInfo")
-        return res.status !== 200
+        return res.status === 200
     }
 }
 
 export const changeMusicCast: types.ChangeHandler = async ({ JSONkey, state: { on } }, current, recipe: types.ControlRecipe) => {
     const service = new MusicCastService(recipe.ipAddress as string)
     if (on === 1) {
-        if (await service.powerOn()) {
+        if (await service.powerToggle()) {
             return {
                 on: 1
-            }
-        }
-    } else if (on === 0) {
-        if (await service.powerOff()) {
-            return {
-                on: 0
             }
         }
     }

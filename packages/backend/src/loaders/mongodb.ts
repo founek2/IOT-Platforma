@@ -1,7 +1,7 @@
 import logger from 'framework-ui/lib/logger';
 import * as types from '../types';
 import mongoose from 'mongoose';
-import createMongoUri from '../lib/createMongoUri';
+import createMongoUri from 'common/lib/utils/createMongoUri';
 import "../models/user" //init
 
 export default async (config: types.Config): Promise<mongoose.Connection | null> => {

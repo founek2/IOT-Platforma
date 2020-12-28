@@ -1,6 +1,6 @@
 import config from './config'
 import { spawn } from "child_process";
-import createMongoUri from './lib/createMongoUri';
+import createMongoUri from 'common/lib/utils/createMongoUri';
 import path from 'path'
 
 const pathToBin = path.resolve(__dirname, "../node_modules/.bin/agendash")

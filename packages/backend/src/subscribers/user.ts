@@ -1,6 +1,7 @@
 import agenda from '../agenda';
 import { Emitter } from '../service/eventEmitter';
 import * as types from '../types';
+import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda';
 
 export default function (eventEmitter: Emitter<types.EmitterEvents>) {
     eventEmitter.on("user_login", async user => {
@@ -8,6 +9,6 @@ export default function (eventEmitter: Emitter<types.EmitterEvents>) {
     })
 
     eventEmitter.on("user_signup", async (user: types.UserBasic) => {
-        agenda.now("registration email", { user })
+        agenda.now(AGENDA_JOB_TYPE.SIGN_UP_EMAIL, { user })
     })
 }

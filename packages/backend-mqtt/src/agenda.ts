@@ -23,13 +23,13 @@ jobTypes.forEach(async type => {
     job.default(agenda)
 });
 
-agenda.processEvery("one minute")
+agenda.processEvery("20 seconds")
 
 agenda.on('start', job => {
-    logger.debug('Job', job.attrs.name, 'starting', );
+    logger.debug('Job', job.attrs.name, 'starting',);
 });
-if (jobTypes.length) {
 
+if (jobTypes.length) {
     (async () => {
         await agenda.start();
     })()

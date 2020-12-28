@@ -1,17 +1,32 @@
-import { CONTROL_TYPES } from "common/lib/constants"
-
-export type FormType = { JSONkey: string } & { [k: string]: any }
-export type ControlState = { state: any, updatedAt: string }
-export type ControlRecipe = {
-    name: string,
-    type: CONTROL_TYPES,
-    JSONkey: string,
-    description?: string | null,
-    ipAddress?: string,
-    metadata?: { [key: string]: any }
+export interface Config {
+    homepage: string,
+    portAuth: number,    
+    firebaseAdminPath: string,
+    db: {
+        userName: string,
+        password: string,
+        dbName: string,
+        url: string,
+        port: number,
+    },
+    jwt: {
+        privateKey: string,
+        publicKey: string,
+        expiresIn: string
+    },
+    mqtt: {
+        port: number,
+        userName: string,
+        password: string,
+    },
+    testUser: string,
+    testPassword: string,
+    agenda: {
+        url: string
+        port: number
+        dbName: string
+        userName: string
+        password: string
+        jobs?: string
+    }
 }
-export type StateUpdate = any
-
-export type ChangeHandler = (form: FormType, currentState: ControlState, recipe: ControlRecipe) => Promise<StateUpdate>
-
-export type AckHandler = (recipe: ControlRecipe) => Promise<boolean>

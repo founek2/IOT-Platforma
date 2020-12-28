@@ -1,9 +1,10 @@
+import { ControlRecipe } from "common/lib/types";
+
 export interface Config {
     port: number,
     bodyLimit: string,
     homepage: string,
     imagesPath: string,
-    firebaseAdminPath: string,
     portAuth: number,
     db: {
         userName: string,
@@ -16,11 +17,6 @@ export interface Config {
         privateKey: string,
         publicKey: string,
         expiresIn: string
-    },
-    mqtt: {
-        port: number,
-        userName: string,
-        password: string,
     },
     testUser: string,
     testPassword: string,
@@ -44,6 +40,8 @@ export interface Config {
 export interface EmitterEvents {
     "user_login": any,
     "user_signup": UserBasic,
+    "device_control_recipe_change": { recipes: ControlRecipe[], deviceId: string },
+    "device_delete": string
 }
 
 export interface UserBasic {
