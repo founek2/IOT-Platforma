@@ -1,133 +1,115 @@
-import React, { Fragment, useState } from 'react'
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { Content as Switch } from './Swich'
-import MenuItem from '@material-ui/core/MenuItem'
-import boxHoc from './components/boxHoc'
-import TuneIcon from '@material-ui/icons/Tune';
+import { Typography, Select } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector'
-import { RgbTypes, LINEAR_TYPE } from "common/lib/constants"
-import Slider from './components/Slider'
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import ColorPicker from './components/ColorPicker'
-import { validateRegisteredFields, fillForm } from 'framework-ui/lib/redux/actions/formsData'
-import { getFormData, getFieldVal } from 'framework-ui/lib/utils/getters'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { makeStyles, Theme } from '@material-ui/core/styles'
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew'
+import React, { Fragment, useRef } from 'react'
+import boxHoc from './components/boxHoc'
+import ControlContextMenu from './components/ControlContextMenu'
+import InputIcon from '@material-ui/icons/Input';
+import { MusicCastInputs } from "common/lib/constants"
 
-const styles = (theme: Theme) => createStyles({
+const useStyles = makeStyles((theme: Theme) => ({
     button: {
-        position: 'absolute',
-        left: 5,
-        top: 3
+        paddingBottom: 5,
+        width: 60
     },
-    content: {
+    root: {
         display: 'flex',
         flexDirection: 'column',
-        paddingBottom: 16   // same padding as dialogTitle
+        textAlign: 'center'
     },
-    colorWrap: {
-        width: 196,
-        margin: `${theme.spacing(2)}px auto 0`
+    header: {
+        height: '1.7em',
+        overflow: 'hidden',
+        userSelect: 'none'
     },
-    actions: {
-        paddingRight: theme.spacing(2),
-        paddingLeft: theme.spacing(2),
+    circle: {
+        top: 3,
+        right: 3,
+        position: 'absolute'
     },
-    loader: {
-        position: "absolute",
-        margin: "0 auto"
+    select: {
+        width: "100%",
+        paddingBottom: 0,
+        paddingTop: 0,
+
+        height: 52
+        // paddingTop: 12
     },
-    textField: {
-        marginTop: theme.spacing(1),
-        marginLeft: 0,
-        marginRight: 0,
-        width: 200,
-        [theme.breakpoints.down('sm')]: {
-            width: "100%"
-        }
+    selectRoot: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+    },
+    wrapper: {
+        display: "flex",
+        marginTop: 3,
+    },
+    wrapperOver: {
+        position: "relative"
+    },
+    inputIcon: {
+        marginTop: 12,
+        width: "100%",
+        color: "rgba(0, 0, 0, 0.54)"
     }
-})
+}))
 
-function RgbSwitch({ classes, name, description, onClick, data, ackTime, afk, pending, forceUpdate, JSONkey, id, ...props }: any) {
-    const [open, setOpen] = useState(false)
-    const { state = { on: 0 } } = data;
+function RgbSwitch({ name, description, onClick, data, ackTime, afk, pending, forceUpdate, JSONkey, id, ...props }: any) {
+    const classes = useStyles()
+    const selectEl = useRef<null | HTMLSelectElement>(null);
+    const isDisabled = afk || pending
 
-    const onClose = () => setOpen(false);
-
-    const changeColor = async (e: React.ChangeEvent<any>) => {
-
-        //const newData = { color: e.target.value, on: 1, type: formData.type } // formData are old -> add actual color + add on:1 to turnOn led
-        //await onClick(newData)
-
-    }
-
-    const changeBright = async (e: React.ChangeEvent<any>) => {
-
-        // const newData = { bright: e.target.value, on: 1 } // formData are old -> add actual color + add on:1 to turnOn led
-        // await onClick(newData)
-
-    }
-
-    const handleOpen = () => {
-        fillForm({ type: state.type, color: state.color, bright: state.bright })
-        setOpen(true)
+    function handleSelectChange(e: React.ChangeEvent<{ value: any }>) {
+        onClick({
+            input: e.target.value
+        })
     }
 
     return (
-        <Fragment>
-            <Switch
-                name={name}
-                data={{ state: { on: state.on } }}
-                ackTime={ackTime}
-                pending={pending}
-                afk={afk}
-                onClick={() => !afk && !pending && onClick({ on: state.on ? 0 : 1 })}
-                {...props}
-            />
-            <IconButton size="small" className={classes.button} onClick={handleOpen} disabled={afk}>
-                <TuneIcon className={classes.icon} />
-            </IconButton>
+        <ControlContextMenu
+            name={name}
+            id={id}
+            JSONkey={JSONkey}
+            render={({ handleOpen }: any) => {
+                return (
+                    <div className={classes.root}>
+                        <Typography className={classes.header} onContextMenu={handleOpen}>
+                            {name}
+                        </Typography>
+                        <div className={classes.wrapper}>
+                            <IconButton aria-label="delete" className={classes.button} disabled={isDisabled} onClick={() => onClick({ on: 1 })}>
+                                <PowerSettingsNewIcon fontSize="large" />
+                            </IconButton>
 
-            <Dialog
-                open={open}
-                onClose={onClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">Změna nastavení</DialogTitle>
-                <DialogContent className={classes.content}>
-                    <FieldConnector
-                        deepPath='EDIT_RGB.bright'
-                        className={classes.textField}
-                        component={Slider}
-                        onChange={changeBright}
-                    />
-                    <FieldConnector
-                        component="Select"
-                        deepPath='EDIT_RGB.type'
-                        className={classes.textField}
-                        selectOptions={RgbTypes
-                            .map(
-                                ({ value, label }) =>
-                                (<MenuItem value={value} key={value}>
-                                    {label}
-                                </MenuItem>)
-                            )}
-                    />
-                    {/* {LINEAR_TYPE === colorType ? <FieldConnector
-                        deepPath="EDIT_RGB.color"
-                        component={ColorPicker as any}
-                        onChange={changeColor}
-                    /> : null} */}
-                </DialogContent>
-            </Dialog>
-        </Fragment>
+                            <div className={classes.wrapperOver}>
+                                <InputIcon fontSize="large" className={classes.inputIcon} />
+                                <Select
+                                    native
+                                    value=""
+                                    disabled={isDisabled}
+                                    onChange={handleSelectChange}
+                                    className={classes.selectRoot}
+                                    IconComponent={() => null}
+                                    ref={selectEl}
+                                    disableUnderline={true}
+                                    classes={{
+                                        select: classes.select
+                                    }}
+                                >
+                                    <option value="" />
+                                    {MusicCastInputs.map(({ label, value }) => <option value={value} key={value}>{label}</option>)}
+                                </Select>
+
+                            </div>
+                        </div>
+                    </div>
+                );
+            }}
+        />
     )
 }
 
-const component = withStyles(styles)(RgbSwitch)
+const component = RgbSwitch
 
 export default boxHoc(component)
