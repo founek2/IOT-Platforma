@@ -8,6 +8,22 @@ import { devLog } from 'framework/lib/logger'
 import { Config } from "./types"
 import loadersInit from "./loaders"
 import mongoose from "mongoose"
+import initPrivileges from 'framework-ui/lib/privileges'
+import { groupsHeritage, allowedGroups } from 'common/lib/constants/privileges'
+
+export const routes = {
+    user: {
+        allowedGroups: allowedGroups.user
+    },
+    admin: {
+        allowedGroups: allowedGroups.admin
+    },
+    root: {
+        allowedGroups: allowedGroups.root
+    }
+};
+
+initPrivileges(routes, groupsHeritage)
 
 interface customApp extends Application {
     server?: http.Server

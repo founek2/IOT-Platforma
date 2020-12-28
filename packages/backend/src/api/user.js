@@ -4,6 +4,7 @@ import processError from 'framework/lib/utils/processError';
 import tokenAuthMIddleware from 'framework/lib/middlewares/tokenAuth';
 import formDataChecker from 'framework/lib/middlewares/formDataChecker';
 import groupRestriction from 'framework/lib/middlewares/groupRestriction';
+import { getAllowedGroups } from 'framework-ui/lib/privileges';
 
 import fieldDescriptors from 'common/lib/fieldDescriptors';
 import checkWritePerm from '../middleware/user/checkWritePerm';
@@ -128,10 +129,16 @@ export default ({ config, db }) =>
 				.catch(processError(res));
 		},
 
-		async updateId({ body, params }, res) {
+		async updateId({ body, params, user }, res) {
 			// tested
 			const { id } = params;
 			if (body.formData.EDIT_USER) {
+				const allowedGroups = getAllowedGroups(user.groups).map((obj) => obj.name);
+
+				// TODO this is not Tested!!!!
+				if (!body.formData.EDIT_USER.groups.every((group) => allowedGroups.includes(group)))
+					return res.status(208).send({ error: 'invalidPermissions' });
+
 				await UserModel.updateUser(id, body.formData.EDIT_USER);
 				res.sendStatus(204);
 			} else if (body.formData.FIREBASE_ADD) {
