@@ -8,7 +8,7 @@ pipeline {
     }
     environment {
         // ENV_CONFIG_PATH = "/home/martas/iot_test_env"
-        ENV_CONFIG_PATH = "${env.BRANCH_NAME == 'master' ? '/home/martas/iot_env' : '/home/martas/iot_test_env'}"
+        ENV_CONFIG_PATH = "${env.BRANCH_NAME == 'master' ? '/home/martas/iot_prod_env' : '/home/martas/iot_test_env'}"
     }
 
     stages {
@@ -101,7 +101,29 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'master') {
+                        sh "echo 'shell scripts to deploy to server...'"
+                        sh'''
+                        scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatforma/www
 
+                        sudo -u deployer-test bash << EOF
+                        set -u -e 
+                        echo "Stoping service iot-backend"
+                        sudo systemctl stop iot-backend
+                        echo "Stoping service iot-backend-mqtt"
+                        sudo systemctl stop iot-backend-mqtt
+
+                        rm -rf "$IOT_DEPLOY_PATH"/backend/*
+                        rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
+                        cp package.json "$IOT_DEPLOY_PATH"/backend
+
+                        cd "$IOT_DEPLOY_PATH"/backend
+                        yarn install --production
+
+                        echo "Starting service iot-backend"
+                        sudo systemctl start iot-backend
+                        echo "Starting service iot-backend-mqtt"
+                        sudo systemctl start iot-backend-mqtt
+                        '''   
                     } else {
                         sh "echo 'shell scripts to deploy to server...'"
                         sh'''
