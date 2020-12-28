@@ -1,6 +1,6 @@
 import Agenda from "agenda";
 import logger from 'framework-ui/lib/logger';
-import DeviceHandler from '../../../common/src/service/DeviceHandler';
+import DeviceHandler from 'common/lib/service/DeviceHandler';
 import { AGENDA_JOB_TYPE } from "common/lib/constants/agenda"
 import { ControlRecipe } from "common/lib/types";
 import Device from "backend/dist/models/Device"

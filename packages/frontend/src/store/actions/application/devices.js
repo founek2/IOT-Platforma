@@ -153,7 +153,6 @@ export function fetch() {
 			{
 				token: getToken(getState()),
 				onSuccess: (json) => {
-					console.log('devices', json);
 					dispatch(set(json.docs.sort(sortDevices)));
 					dispatch(dehydrateState());
 				}
@@ -261,7 +260,6 @@ export function updateState(id, JSONkey, data, formName) {
 				dispatch(addNotification({ message: 'Nastala chyba', variant: 'error' }));
 				errorLog('UpdateState error>', json.error);
 			} else {
-				console.log('respone', json);
 				dispatch(update({ id, control: json.data }));
 			}
 		});
