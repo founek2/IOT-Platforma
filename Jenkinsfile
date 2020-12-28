@@ -104,6 +104,11 @@ pipeline {
 
                 cd "$IOT_DEPLOY_PATH"/backend
                 yarn install --production
+
+                echo "Restarting service iot-backend-test"
+                sudo systemctl restart iot-backend-test
+                echo "Restarting service iot-backend-mqtt-test"
+                sudo systemctl restart iot-backend-mqtt-test
                 '''    
                 
             }
