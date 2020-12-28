@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "bootstrap": "lerna bootstrap",
-        "build": "yarn pre && lerna run --parallel --scope backend --scope frontend build && lerna run --scope backend-mqtt build",
+        "build": "lerna run --parallel --scope backend --scope frontend build && lerna run --scope backend-mqtt build",
         "clean": "rimraf packages/frontend/build packages/common/lib packages/framework/lib packages/framework-ui/lib",
         "test": "lerna run test",
         "watch": "lerna run --parallel --scope common --scope framework --scope framework-ui dev",

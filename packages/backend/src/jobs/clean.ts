@@ -8,7 +8,7 @@ export default function (agenda: Agenda) {
         logger.info("Runnning clean JOB")
         await agenda.cancel({
             name: AGENDA_JOB_TYPE.CHECK_ONLINE_DEVICE,
-            "lastRunAt": { $lt: subDays(new Date(), 5) }
+            "lastRunAt": { $lt: subDays(new Date(), 2) }
         })
 
         await agenda.cancel({

@@ -36,6 +36,11 @@ pipeline {
                 sh "yarn lerna init"
             }
         }
+          stage ('Pre build') {
+            steps {
+                sh "yarn pre"
+            }
+        }
         stage ('Build') {
             steps {
                 sh "yarn build"
@@ -98,6 +103,11 @@ pipeline {
 
                 sudo -u deployer-test bash << EOF
                 set -u -e 
+                echo "Stoping service iot-backend-test"
+                sudo systemctl stop iot-backend-test
+                echo "Stoping service iot-backend-mqtt-test"
+                sudo systemctl stop iot-backend-mqtt-test
+
                 rm -rf "$IOT_DEPLOY_PATH"/backend/*
                 rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
                 cp package.json "$IOT_DEPLOY_PATH"/backend
@@ -105,10 +115,10 @@ pipeline {
                 cd "$IOT_DEPLOY_PATH"/backend
                 yarn install --production
 
-                echo "Restarting service iot-backend-test"
-                sudo systemctl restart iot-backend-test
-                echo "Restarting service iot-backend-mqtt-test"
-                sudo systemctl restart iot-backend-mqtt-test
+                echo "Starting service iot-backend-test"
+                sudo systemctl start iot-backend-test
+                echo "Starting service iot-backend-mqtt-test"
+                sudo systemctl start iot-backend-mqtt-test
                 '''    
                 
             }
