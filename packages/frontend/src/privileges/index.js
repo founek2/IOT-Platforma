@@ -3,7 +3,7 @@ import DevicesIcon from '@material-ui/icons/DevicesOther';
 import initPrivileges from 'framework-ui/lib/privileges';
 import { lazy } from 'react';
 
-import { groupsHeritage, allowedGroups } from 'common/lib/privileges';
+import { groupsHeritage, allowedGroups } from 'common/lib/constants/privileges';
 
 // TODO lazyload is not working - no idea why :/
 const DeviceControl = lazy(() => import('../Pages/DeviceControl'));
