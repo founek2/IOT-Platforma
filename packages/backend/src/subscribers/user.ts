@@ -9,6 +9,7 @@ export default function (eventEmitter: Emitter<types.EmitterEvents>) {
     })
 
     eventEmitter.on("user_signup", async (user: types.UserBasic) => {
-        agenda.now(AGENDA_JOB_TYPE.SIGN_UP_EMAIL, { user })
+        if (user.info.email)
+            agenda.now(AGENDA_JOB_TYPE.SIGN_UP_EMAIL, { user })
     })
 }

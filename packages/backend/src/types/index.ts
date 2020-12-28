@@ -48,7 +48,7 @@ export interface UserBasic {
     id: string
     info: {
         firstName: string
-        email: string
+        email?: string
         lastName: string
         userName: string
     }
