@@ -69,7 +69,7 @@ export default (io) => {
 				} else if (includes(recipe.type, Object.keys(handleMapping))) {
 					const updateState = await DeviceHandler.handleChange(
 						form,
-						doc.control.current.data[form.JSONkey],
+						doc.control?.current?.data[form.JSONkey] || {}, 
 						recipe
 					);
 					if (!updateState) return fn({ error: 'invalidChange' });
