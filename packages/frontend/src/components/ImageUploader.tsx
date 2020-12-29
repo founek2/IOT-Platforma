@@ -4,6 +4,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector'
 import { getFormData, getFieldVal } from 'framework-ui/lib/utils/getters';
 import { useSelector } from 'react-redux';
+import { IMAGES_PREFIX_FOLDER } from '../constants';
 
 const useStyles = makeStyles(theme => ({
     media: {
@@ -33,13 +34,13 @@ interface ImageUploaderProps {
 }
 // material-ui-avatar-picker could be rewritten for use in this App - current version is just old and too big (size)
 // default image must BE there -> otherwise buggy
-function ImageUploader({ deepPath, defaultImage = "/images/avatarMen.jpg", onChange }: ImageUploaderProps) {
+function ImageUploader({ deepPath, defaultImage = "/defaultDevice.png", onChange }: ImageUploaderProps) {
     const classes = useStyles()
     const fileObj: { name: string, url: string } | undefined = useSelector(getFieldVal(deepPath))
 
     return (<div className={classes.fileRoot}>
         <div className={classes.mediaWrapper}>
-            <CardMedia className={classes.media} image={fileObj?.url || defaultImage} />
+            <CardMedia className={classes.media} image={(fileObj?.url || IMAGES_PREFIX_FOLDER + defaultImage)} />
         </div>
         <FieldConnector deepPath={deepPath} component="FileLoader" onChange={onChange} />
     </div>)

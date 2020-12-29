@@ -7,6 +7,7 @@ import AddIcon from '@material-ui/icons/CloudUpload'
 import { makeStyles } from '@material-ui/core/styles'
 import { errorLog } from '../../logger'
 import clsx from 'clsx'
+import MyFile from 'framework-ui/lib/dto/MyFile'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -34,15 +35,7 @@ function FileLoader({ onChange, label, value, className, FormHelperTextProps, he
             // const res = await fetch(localImageUrl)
             // const blob = await res.blob()
 
-            onChange({
-                target: {
-                    value: {
-                        name: files[0].name,
-                        // data: await blobToBase64(blob),
-                        url: localImageUrl,
-                    }
-                }
-            })
+            onChange({ target: { value: new MyFile(files[0].name, localImageUrl) } })
         } else {
             errorLog("Multiple files are not currently supported");
         }
