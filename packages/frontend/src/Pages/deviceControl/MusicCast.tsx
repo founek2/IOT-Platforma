@@ -7,55 +7,62 @@ import boxHoc from './components/boxHoc'
 import ControlContextMenu from './components/ControlContextMenu'
 import InputIcon from '@material-ui/icons/Input';
 import { MusicCastInputs } from "common/lib/constants"
+import clsx from "clsx"
 
-const useStyles = makeStyles((theme: Theme) => ({
-    button: {
-        paddingBottom: 5,
-        width: 60
-    },
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        textAlign: 'center'
-    },
-    header: {
-        height: '1.7em',
-        overflow: 'hidden',
-        userSelect: 'none'
-    },
-    circle: {
-        top: 3,
-        right: 3,
-        position: 'absolute'
-    },
-    select: {
-        width: "100%",
-        paddingBottom: 0,
-        paddingTop: 0,
+const useStyles = makeStyles((theme: Theme) => {
+    console.log("theme", theme)
+    return ({
+        button: {
+            paddingBottom: 5,
+            width: 60
+        },
+        root: {
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'center'
+        },
+        header: {
+            height: '1.7em',
+            overflow: 'hidden',
+            userSelect: 'none'
+        },
+        circle: {
+            top: 3,
+            right: 3,
+            position: 'absolute'
+        },
+        select: {
+            width: "100%",
+            paddingBottom: 0,
+            paddingTop: 0,
 
-        height: 52
-        // paddingTop: 12
-    },
-    selectRoot: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-    },
-    wrapper: {
-        display: "flex",
-        justifyContent: "space-evenly",
-        marginTop: 3,
-    },
-    wrapperOver: {
-        position: "relative",
-        width: 60,
-    },
-    inputIcon: {
-        marginTop: 12,
-        width: "100%",
-        color: "rgba(0, 0, 0, 0.54)"
-    }
-}))
+            height: 52
+            // paddingTop: 12
+        },
+        selectRoot: {
+            position: 'absolute',
+            left: 0,
+            top: 0,
+        },
+        wrapper: {
+            display: "flex",
+            justifyContent: "space-evenly",
+            marginTop: 3,
+        },
+        wrapperOver: {
+            position: "relative",
+            width: 60,
+        },
+        inputIcon: {
+            marginTop: 12,
+            width: "100%",
+            color: theme.palette.action.active
+        },
+        disabledColor: {
+            color: theme.palette.action.disabled
+        }
+    })
+})
 
 function RgbSwitch({ name, description, onClick, data, ackTime, afk, pending, forceUpdate, JSONkey, id, ...props }: any) {
     const classes = useStyles()
@@ -85,7 +92,9 @@ function RgbSwitch({ name, description, onClick, data, ackTime, afk, pending, fo
                             </IconButton>
 
                             <div className={classes.wrapperOver}>
-                                <InputIcon fontSize="large" className={classes.inputIcon} />
+                                <InputIcon
+                                    fontSize="large"
+                                    className={clsx(classes.inputIcon, isDisabled && classes.disabledColor)} />
                                 <Select
                                     native
                                     value=""
