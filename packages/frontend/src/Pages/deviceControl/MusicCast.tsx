@@ -43,10 +43,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     wrapper: {
         display: "flex",
+        justifyContent: "space-evenly",
         marginTop: 3,
     },
     wrapperOver: {
-        position: "relative"
+        position: "relative",
+        width: 60,
     },
     inputIcon: {
         marginTop: 12,
