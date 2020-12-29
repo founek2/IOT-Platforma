@@ -7,7 +7,7 @@ import AddIcon from '@material-ui/icons/CloudUpload'
 import { makeStyles } from '@material-ui/core/styles'
 import { errorLog } from '../../logger'
 import clsx from 'clsx'
-import MyFile from 'framework-ui/lib/dto/MyFile'
+import MyFile from '../../dto/MyFile'
 
 const useStyles = makeStyles(theme => ({
     root: {

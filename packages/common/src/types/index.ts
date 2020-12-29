@@ -1,7 +1,7 @@
 import { CONTROL_TYPES } from "../constants"
 
 export type FormType<T> = { JSONkey: string } & T
-export type ControlState = { state: any, updatedAt: string }
+export type ControlState = { state: any, updatedAt: string } | null
 export type ControlRecipe = {
     name: string,
     type: CONTROL_TYPES,
