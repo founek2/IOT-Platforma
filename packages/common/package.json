@@ -3,7 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@types/hat": "^0.0.1",
         "date-fns": "^2.15.0",
+        "hat": "^0.0.3",
         "ramda": "^0.27.1",
         "winston": "^3.3.3"
     },
@@ -15,6 +17,7 @@
         "test": "jest"
     },
     "devDependencies": {
-        "typescript": "^3.9.6"
+        "typescript": "^3.9.6",
+        "@types/ramda": "0.27.34"
     }
 }

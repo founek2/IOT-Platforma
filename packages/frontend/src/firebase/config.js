@@ -1,13 +1,11 @@
 /*
-    * Copy is in sw.js
-*/
+ * Copy is in sw.js
+ */
 export default {
-    apiKey: "AIzaSyD15CUfT9PGQNok0qcs4qu2ectuauAYwWw",
-    authDomain: "iot-platforma-v2.firebaseapp.com",
-    databaseURL: "https://iot-platforma-v2.firebaseio.com",
-    projectId: "iot-platforma-v2",
-    storageBucket: "iot-platforma-v2.appspot.com",
-    messagingSenderId: "2726593509",
-    appId: "1:2726593509:web:67c7b307fdf98f6973a50c",
-    measurementId: "G-WEYQG0L8R3"
+	apiKey: "AIzaSyAfTP6OW7kywc0uKCN0FWj6abMTpuEEGlo",
+	authDomain: "iot-platforma-v3.firebaseapp.com",
+	projectId: "iot-platforma-v3",
+	storageBucket: "iot-platforma-v3.appspot.com",
+	messagingSenderId: "749063380950",
+	appId: "1:749063380950:web:7b44e715ee4bb0338b4e77",
 };

@@ -1,27 +1,27 @@
-import { Router } from 'express';
-import Jwt from 'framework/lib/services/jwt';
-import Device from 'backend/dist/models/Device';
-import { publish } from '../service/mqtt';
-import { includes } from 'ramda';
-import { CONTROL_TYPES } from 'common/lib/constants';
-import DeviceHandler, { handleMapping } from 'common/lib/service/DeviceHandler';
+import { Router } from "express";
+import Jwt from "framework/lib/services/jwt";
+import Device from "backend/dist/models/Device";
+import { publish } from "../service/mqtt";
+import { includes } from "ramda";
+import { CONTROL_TYPES } from "common/lib/constants";
+import DeviceHandler, { handleMapping } from "common/lib/service/DeviceHandler";
 
 function toCurrent(JSONkey, state) {
 	return {
 		data: {
 			current: {
 				data: {
-					[JSONkey]: state
-				}
-			}
-		}
+					[JSONkey]: state,
+				},
+			},
+		},
 	};
 }
 
 export default (io) => {
 	io.use((socket, next) => {
 		let token = socket.handshake.query.token;
-		console.log('middleware loging io');
+		console.log("middleware loging io");
 		Jwt.verify(token)
 			.then((payload) => {
 				socket.request.user = payload;
@@ -30,63 +30,61 @@ export default (io) => {
 			.catch(() => next());
 	});
 
-	io.on('connection', (socket) => {
-		console.log('New client connected', socket.request.user ? socket.request.user.id : 'unknown');
+	io.on("connection", (socket) => {
+		console.log("New client connected", socket.request.user ? socket.request.user.id : "unknown");
 		if (socket.request.user) socket.join(socket.request.user.id);
 
-		socket.join('public');
+		socket.join("public");
 
-		socket.on('disconnect', () => {
-			console.log('Client disconnected');
+		socket.on("disconnect", () => {
+			console.log("Client disconnected");
 		});
 
-		socket.on('updateState', async (body, id, fn) => {
+		socket.on("updateState", async (body, id, fn) => {
 			const formData = body.formData;
 			try {
-				const doc = await Device.findById(id, 'topic control createdBy ').lean();
-				console.log('doc', doc, id);
-				if (!doc) throw new Error('error');
+				const doc = await Device.findById(id, "topic control createdBy ").lean();
+				console.log("doc", doc, id);
+				if (!doc) throw new Error("error");
 
 				const form =
 					formData.CHANGE_DEVICE_STATE_SWITCH ||
 					formData.CHANGE_DEVICE_STATE_RGB ||
 					formData.CHANGE_DEVICE_MUSIC_CAST;
 				const recipe = doc.control.recipe.find((obj) => form.JSONkey === obj.JSONkey);
-				if (!recipe) return fn({ error: 'invalidKey' });
+				if (!recipe) return fn({ error: "invalidKey" });
 
-				if (
-					includes(recipe.type, [ CONTROL_TYPES.SWITCH, CONTROL_TYPES.ACTIVATOR, CONTROL_TYPES.RGB_SWITCH ])
-				) {
-					console.log('publish to', `/${doc.createdBy}${doc.topic}/update`, form.state);
+				if (includes(recipe.type, [CONTROL_TYPES.SWITCH, CONTROL_TYPES.ACTIVATOR, CONTROL_TYPES.RGB_SWITCH])) {
+					console.log("publish to", `/${doc.createdBy}${doc.topic}/update`, form.state);
 					publish(`/${doc.createdBy}${doc.topic}/update`, { [form.JSONkey]: form.state });
 					return fn(
 						toCurrent(form.JSONkey, {
 							state: form.state,
 							inTransition: true,
-							transitionStarted: new Date()
+							transitionStarted: new Date(),
 						})
 					);
 				} else if (includes(recipe.type, Object.keys(handleMapping))) {
 					const updateState = await DeviceHandler.handleChange(
 						form,
-						doc.control?.current?.data[form.JSONkey] || null, 
+						doc.control?.current?.data[form.JSONkey] || null,
 						recipe
 					);
-					if (!updateState) return fn({ error: 'invalidChange' });
+					if (!updateState) return fn({ error: "invalidChange" });
 
 					publish(`/${doc.createdBy}${doc.topic}/ack`, { [form.JSONkey]: updateState });
 					return fn(
 						toCurrent(form.JSONkey, {
 							state: form.state,
 							inTransition: true,
-							transitionStarted: new Date()
+							transitionStarted: new Date(),
 						})
 					);
 				}
-				return fn({ error: 'invalidType' });
+				return fn({ error: "invalidType" });
 			} catch (err) {
-				console.log('cant publish:', err);
-				fn({ error: 'error' });
+				console.log("cant publish:", err);
+				fn({ error: "error" });
 			}
 		});
 	});

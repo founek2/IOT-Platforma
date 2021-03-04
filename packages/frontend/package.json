@@ -17,11 +17,13 @@
         "@material-ui/pickers": "^3.2.10",
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/user-event": "^7.1.2",
+        "@types/redux-actions": "^2.6.1",
         "clipboard-copy": "^3.1.0",
         "clsx": "^1.1.1",
         "date-fns": "^2.15.0",
         "email-templates": "^8.0.2",
         "eslint": "^7.5.0",
+        "eslint-config-react-app": "^6.0.0",
         "firebase": "^8.2.1",
         "fontsource-roboto": "^2.1.4",
         "history": "^4.7.2",
@@ -30,7 +32,6 @@
         "nodemailer": "^6.4.17",
         "notistack": "^1.0.3",
         "ramda": "^0.27.1",
-        "ramda-extension": "^0.7.2",
         "react": "^17.0.1",
         "react-app-polyfill": "^2.0.0",
         "react-app-rewire-workbox": "^2.0.1",
@@ -50,9 +51,6 @@
         "workbox-webpack-plugin": "^6.0.2",
         "yarn": "^1.22.4"
     },
-    "eslintConfig": {
-        "extends": "react-app"
-    },
     "browserslist": {
         "production": [
             ">0.2%",
@@ -69,7 +67,7 @@
         "@babel/plugin-transform-react-jsx": "^7.12.11",
         "@types/jest": "^26.0.4",
         "@types/node": "^14.0.23",
-        "@types/ramda": "^0.27.11",
+        "@types/ramda": "0.27.34",
         "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
         "@types/react-router-dom": "^5.1.5",

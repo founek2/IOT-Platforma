@@ -1,0 +1,38 @@
+import { EventEmitter } from "events";
+import * as types from "../types";
+import type { IDevice } from "common/lib/models/device";
+
+type EventMap = Record<string, any>;
+
+type EventKey<T extends EventMap> = string & keyof T;
+type EventReceiver<T> = (params: T) => void;
+
+export interface Emitter<T extends EventMap> {
+	on<K extends EventKey<T>>(eventName: K, fn: EventReceiver<T[K]>): void;
+	off<K extends EventKey<T>>(eventName: K, fn: EventReceiver<T[K]>): void;
+	emit<K extends EventKey<T>>(eventName: K, params: T[K]): void;
+}
+
+class MyEmitter<T extends EventMap> implements Emitter<T> {
+	private emitter = new EventEmitter();
+	on<K extends EventKey<T>>(eventName: K, fn: EventReceiver<T[K]>) {
+		this.emitter.on(eventName, fn);
+	}
+
+	off<K extends EventKey<T>>(eventName: K, fn: EventReceiver<T[K]>) {
+		this.emitter.off(eventName, fn);
+	}
+
+	emit<K extends EventKey<T>>(eventName: K, params: T[K]) {
+		this.emitter.emit(eventName, params);
+	}
+}
+
+export interface EmitterEvents {
+	device_pairing_init: { deviceId: string; apiKey: string };
+	device_pairing_done: IDevice;
+}
+
+class MyClass extends MyEmitter<EmitterEvents> {}
+
+export default new MyClass();

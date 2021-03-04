@@ -1,67 +1,93 @@
-import express from 'express';
-import Device from 'backend/dist/models/Device';
-import User from 'backend/dist/models/user';
+import express from "express";
+import Device from "backend/dist/models/Device";
+import User from "backend/dist/models/user";
+import { DeviceModel } from "common/src/models/device";
+import device from "../subscribers/device";
 
 const router = express.Router();
 
 function sendDeny(path, res) {
-	console.log(path, deny);
-	res.send('deny');
+	console.log(path, "deny");
+	res.send("deny");
+}
+
+function isGuest(userName) {
+	return userName.startsWith("guest=");
+}
+
+function isUser(userName) {
+	return !isGuest(userName) && !isDevice(userName);
+}
+function isDevice(userName) {
+	return userName.startsWith("device=");
+}
+
+function splitUserName(userName) {
+	return removeUserNamePrefix(userName).split("/");
+}
+
+function removeUserNamePrefix(userName) {
+	return userName.replace(/^[^=]+=/, "");
 }
 
 /**
  * password is apiKey
  */
-router.post('/user', function(req, res) {
+router.post("/user", async function (req, res) {
 	// console.log('/user', req.body);
 	const { username, password } = req.body;
-
-	if (username.length === 32) {
-		Device.login(username).then((success) => (success ? res.send('allow') : sendDeny('/user', res)));
-	} else
-		User.checkCreditals({ userName: username, password, authType: 'passwd' })
+	console.info("username=" + username, "password=" + password);
+	if (isDevice(username)) {
+		const [topicPrefix, deviceId] = splitUserName(username);
+		console.log("loging", topicPrefix, deviceId, password);
+		const success = await DeviceModel.login(topicPrefix, deviceId, password);
+		return success ? res.send("allow") : sendDeny("/user", res);
+	} else if (isUser(username)) {
+		User.checkCreditals({ userName: username, password, authType: "passwd" })
 			.then(({ doc }) => {
-				if (doc.groups.some((group) => group === 'root' || group === 'admin'))
-					return res.send('allow administrator');
+				if (doc.groups.some((group) => group === "root" || group === "admin"))
+					return res.send("allow administrator");
 				throw new Error();
 			})
-			.catch(() => sendDeny('/user', res));
+			.catch(() => sendDeny("/user", res));
+	} else {
+		res.send("allow");
+	}
 });
 
-router.post('/vhost', function(req, res) {
+router.post("/vhost", function (req, res) {
 	// console.log("/vhost", req.body)
-	if (req.body.vhost === '/') return res.send('allow');
-	sendDeny('/vhost', res);
+	if (req.body.vhost === "/") return res.send("allow");
+	sendDeny("/vhost", res);
 });
 
-router.post('/resource', function(req, res) {
+router.post("/resource", function (req, res) {
 	const { resource, username } = req.body;
 	// console.log("/resource", req.body, resource === 'queue' || resource === 'exchange' || /^user=.+/.test(username))
-	if (resource === 'queue' || resource === 'exchange' || /^user=.+/.test(username)) return res.send('allow');
+	if (resource === "queue" || resource === "exchange" || isUser(username)) return res.send("allow");
 
-	sendDeny('/resource', res);
+	sendDeny("/resource", res);
 });
 
-router.post('/topic', async function(req, res) {
+router.post("/topic", async function (req, res) {
 	// console.log("/topic", req.body)
 	const { vhost, username, name, permission, routing_key } = req.body;
-	if (username.length !== 32) return res.send('allow');
-	if (name === 'amq.topic' && vhost === '/') {
-		const { ownerId, topic } = await Device.getOwnerAndTopic(username);
+	if (isUser(username)) return res.send("allow");
 
-		if (ownerId) {
-			if (new RegExp(`\.${ownerId}\..+`).test(routing_key)) {
-				const deviceTopic = `.${ownerId}${topic.replace(/\//g, '.')}`;
-				// console.log("moje", new RegExp("^" + deviceTopic + "(\..*)?$").test(routing_key),"^" + deviceTopic + "(/.*)?$" )
-				if (
-					(permission === 'write' || permission === 'read') &&
-					new RegExp('^' + deviceTopic + '(..*)?$').test(routing_key)
-				)
-					return res.send('allow');
-			}
-		}
+	if (isDevice(username) && name === "amq.topic" && vhost === "/") {
+		// const { ownerId, topic } = await Device.getOwnerAndTopic(username);
+
+		console.log("should check access to topic");
+		return res.send("allow");
 	}
-	sendDeny('/topic', res);
+
+	const matchedConf = routing_key.match(/^prefix\.([^\.]+)\.([^\.]+)\..+/);
+	//console.log("matched", matchedConf);
+
+	/* Allow only write */
+	//console.log("cmp", matchedConf[2], username.replace("guest=", ""));
+	if (matchedConf && matchedConf[1] === username.replace("guest=", "")) res.send("allow");
+	else sendDeny("/topic " + routing_key + ", user=" + username, res);
 });
 
 export default router;
