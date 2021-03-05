@@ -20,8 +20,20 @@ const styles = (theme) => ({
 	},
 });
 
-function MySwitch({ classes, description, onClick, data, ackTime, afk, pending, forceUpdate, config, id, ...props }) {
-	const { state = { on: 0 } } = data;
+function MySwitch({
+	classes,
+	description,
+	onClick,
+	data = { state: { on: 0 } },
+	ackTime,
+	afk,
+	pending,
+	forceUpdate,
+	config,
+	id,
+	...props
+}) {
+	const { state = { on: 0 } } = data || {};
 
 	return (
 		<ControlContextMenu

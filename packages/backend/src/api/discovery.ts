@@ -20,6 +20,8 @@ import { DeviceModel } from "common/lib/models/device";
 import mongoose from "mongoose";
 import { Actions } from "../service/actions";
 
+const ObjectId = mongoose.Types.ObjectId;
+
 function checkRead(req: any, res: any, next: any) {
 	if (req.query.type === "sensors") return checkReadPerm()(req, res, next);
 
@@ -51,7 +53,7 @@ export default () =>
 			// TODO check permission
 			const selected = body.formData.DISCOVERY_DEVICES.selected;
 			const result = await DeviceDiscovery.deleteMany({
-				"info.deviceId": { $in: selected },
+				_id: { $in: selected.map(ObjectId) },
 			});
 			console.log("deleted", result);
 			eventEmitter.emit("devices_delete", selected);
@@ -66,13 +68,13 @@ export default () =>
 			if (formData.CREATE_DEVICE) {
 				const form = formData.CREATE_DEVICE;
 
-				const doc = await DeviceDiscovery.findOne({ deviceId: form.info.deviceId });
-				if (!doc) return res.status(204).send({ error: "deviceNotFound" });
+				const doc = await DeviceDiscovery.findOne({ _id: ObjectId(form._id) });
+				if (!doc) return res.status(208).send({ error: "deviceNotFound" });
 
 				console.log("user is", user);
 				const newDevice = await DeviceModel.createNew(
 					{
-						info: form.info,
+						info: { ...form.info, deviceId: doc.deviceId },
 						things: doc.things,
 						metadata: {
 							topicPrefix: doc.userName,
@@ -81,9 +83,15 @@ export default () =>
 					user.id
 				);
 
-				await Actions.deviceInitPairing(newDevice.info.deviceId, newDevice.apiKey);
-				await doc.delete();
-				res.send({ doc: newDevice });
+				const suuccess = await Actions.deviceInitPairing(doc.deviceId, newDevice.apiKey);
+				if (suuccess) {
+					doc.pairing = true;
+					doc.save();
+					res.send({ doc: newDevice });
+				} else {
+					newDevice.remove();
+					res.setStatus(500);
+				}
 			} else res.sendStatus(500);
 		},
 	});

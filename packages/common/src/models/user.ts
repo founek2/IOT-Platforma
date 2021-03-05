@@ -4,7 +4,7 @@ import Jwt from "framework/lib/services/jwt";
 import catcher from "framework/lib/mongoose/catcher";
 import { keys } from "ramda";
 import { devLog } from "framework/lib/logger";
-import { AuthTypes } from "common/lib/constants";
+import { AuthTypes } from "../constants";
 
 const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;

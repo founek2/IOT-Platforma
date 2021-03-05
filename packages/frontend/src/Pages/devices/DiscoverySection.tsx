@@ -12,6 +12,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as discoveredActions from "../../store/actions/application/discovery";
 import { getDiscovery } from "../../utils/getters";
+import OnlineCircle from "../../components/OnlineCircle";
+import type { DeviceStatus } from "common/lib/models/interface/device";
 
 interface DiscoverySectionProps {
 	discoveredDevices: DeviceDiscovery[];
@@ -55,8 +57,15 @@ function DiscoverySection(props: DiscoverySectionProps) {
 								label: "Vytvořeno",
 								convertor: (date: string) => new Date(date).toLocaleDateString(),
 							},
+							{
+								path: "state.status",
+								label: "Status",
+								convertor: (status: { value: DeviceStatus; timestamp: Date }) => (
+									<OnlineCircle status={status} inTransition={false} />
+								),
+							},
 						]}
-						data={discoveredDevices.map((device: any) => assoc("id", prop("deviceId", device), device))}
+						data={discoveredDevices.map((device: any) => assoc("id", prop("_id", device), device))}
 						toolbarHead="Přidání zařízení"
 						onDelete={deleteDiscoveryAction}
 						orderBy="Název"
@@ -69,7 +78,12 @@ function DiscoverySection(props: DiscoverySectionProps) {
 								aria-label="add"
 								size="small"
 								onClick={() => {
-									updateFormField("CREATE_DEVICE.info.deviceId", id);
+									updateFormField("CREATE_DEVICE._id", id);
+									console.log("looking", discoveredDevices, id);
+									updateFormField(
+										"CREATE_DEVICE.info.title",
+										discoveredDevices.find((dev) => dev._id === id)?.name || ""
+									);
 									setOpenAddDialog(true);
 								}}
 							>

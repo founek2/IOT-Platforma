@@ -81,7 +81,7 @@ router.post("/topic", async function (req, res) {
 		return res.send("allow");
 	}
 
-	const matchedConf = routing_key.match(/^prefix\.([^\.]+)\.([^\.]+)\..+/);
+	const matchedConf = routing_key.match(/^prefix\.([^\.]+)\.([^\.]+)(.*)/);
 	//console.log("matched", matchedConf);
 
 	/* Allow only write */

@@ -6,7 +6,7 @@ import { publish } from "../service/mqtt";
 
 export default function (eventEmitter: Emitter<EmitterEvents>) {
 	eventEmitter.on("device_pairing_init", async ({ apiKey, deviceId }) => {
-		publish(`prefix/${deviceId}/$apiKey/set`, apiKey);
+		publish(`prefix/${deviceId}/$config/apiKey/set`, apiKey);
 	});
 
 	eventEmitter.on("device_pairing_done", async (deviceId) => {});

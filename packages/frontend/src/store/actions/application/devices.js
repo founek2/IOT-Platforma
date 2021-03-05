@@ -164,10 +164,16 @@ export function add(data) {
 	};
 }
 
+function getBuilding(device) {
+	return device.info.location.building;
+}
+function getRoom(device) {
+	return device.info.location.room;
+}
 function sortDevices(a, b) {
-	if (a.publicRead && b.publicRead) return 0;
-	if (a.publicRead) return 1;
-	return -1;
+	const comp1 = getBuilding(a).localeCompare(getBuilding(b));
+	if (comp1 !== 0) return 0;
+	return getRoom(a).localeCompare(getRoom(b));
 }
 
 export function fetch() {

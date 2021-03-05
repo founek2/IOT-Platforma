@@ -30,6 +30,7 @@ import EnchancedTable from "framework-ui/lib/Components/Table";
 import { Fab, Grid } from "@material-ui/core";
 import Dialog from "framework-ui/lib/Components/Dialog";
 import DiscoverySection from "./devices/DiscoverySection";
+import OnlineCircle from "../components/OnlineCircle";
 
 function isWritable(device) {
 	return device.permissions && device.permissions.write;
@@ -111,6 +112,11 @@ function Devices(props) {
 										path: "createdAt",
 										label: "Vytvořeno",
 										convertor: (date) => new Date(date).toLocaleDateString(),
+									},
+									{
+										path: "state.status",
+										label: "Status",
+										convertor: (status) => <OnlineCircle status={status} inTransition={false} />,
 									},
 								]}
 								data={devices.map((device) => assoc("id", prop("_id", device), device))}

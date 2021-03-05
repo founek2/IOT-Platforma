@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import Box from "@material-ui/core/Box";
-import { withStyles } from "@material-ui/core/styles";
-import OnlineCircle from "../../../components/OnlineCircle";
-import isAfk from "../../../utils/isAfk";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+import OnlineCircle from "../../../../components/OnlineCircle";
+import isAfk from "../../../../utils/isAfk";
 import forceUpdateHoc from "framework-ui/lib/Components/forceUpdateHoc";
 import ControlDetail from "./borderBox/ControlDetail";
 import Loader from "framework-ui/lib/Components/Loader";
+import { IThing } from "common/lib/models/interface/thing";
+import { Device, IDeviceStatus } from "common/lib/models/interface/device";
 
-const styles = {
+const useStyles = makeStyles({
 	circle: {
 		top: 3,
 		right: 3,
@@ -20,7 +22,7 @@ const styles = {
 		right: 0,
 		bottom: 0,
 	},
-};
+});
 
 const defaultProps = {
 	bgcolor: "background.paper",
@@ -30,23 +32,32 @@ const defaultProps = {
 	position: "relative",
 };
 
-function BorderBox({ children, className, data, ackTime, onClick, component, name, classes, forwardRef, ...other }) {
+interface BorderBoxProps {
+	component: any;
+	className?: string;
+	config: IThing["config"];
+	data: any;
+	onClick: any;
+	deviceStatus: IDeviceStatus;
+}
+function BorderBox({ className, data, onClick, component, deviceStatus, ...other }: BorderBoxProps) {
+	const classes = useStyles();
 	const [detailOpen, setOpen] = useState(false);
 	const [pending, setPending] = useState(false);
 
-	async function handleClick(newState) {
+	async function handleClick(newState: any) {
 		setPending(true);
 		await onClick(newState);
 		setPending(false);
 	}
 
-	function handleContext(e) {
+	function handleContext(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
 		e.preventDefault();
 		setOpen(true);
 	}
 
 	const { inTransition, updatedAt } = data || {};
-	const afk = isAfk(ackTime);
+	const afk = deviceStatus && isAfk(deviceStatus.value);
 	const Component = component;
 	return (
 		<Box
@@ -56,33 +67,17 @@ function BorderBox({ children, className, data, ackTime, onClick, component, nam
 			className={className ? className : ""}
 			{...defaultProps}
 		>
-			<OnlineCircle
-				inTransition={inTransition}
-				ackTime={ackTime}
-				changeTime={updatedAt}
-				afk={afk}
-				className={classes.circle}
-			/>
-			<Component
-				data={data}
-				afk={afk}
-				ackTime={ackTime}
-				name={name}
-				onClick={handleClick}
-				pending={pending}
-				{...other}
-			/>
+			<OnlineCircle inTransition={inTransition} className={classes.circle} status={deviceStatus} />
+			<Component data={data} onClick={handleClick} pending={pending} afk={Boolean(afk)} {...other} />
 			<Loader open={pending} className="marginAuto" />
 			<div onContextMenu={handleContext} className={classes.contextMenu}></div>
-			<ControlDetail
+			{/* <ControlDetail
 				open={detailOpen}
 				data={data}
-				name={name}
-				ackTime={ackTime}
 				handleClose={() => setOpen(false)}
-			/>
+			/> */}
 		</Box>
 	);
 }
 
-export default forceUpdateHoc(withStyles(styles)(BorderBox));
+export default forceUpdateHoc(BorderBox);

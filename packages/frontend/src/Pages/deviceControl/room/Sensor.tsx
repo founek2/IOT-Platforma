@@ -9,7 +9,7 @@ import { ReactComponent as ThermometrIcon } from "./sensor/thermometr.svg";
 import { ReactComponent as HumidityIcon } from "./sensor/humidity.svg";
 import { ReactComponent as VoltageIcon } from "./sensor/voltage.svg";
 import { ReactComponent as BarometrIcon } from "./sensor/barometer.svg";
-import { DeviceClass, IThing } from "common/lib/models/schema/thing";
+import { DeviceClass, IThing } from "common/lib/models/interface/thing";
 
 const icons = {
 	[DeviceClass.Humidity]: HumidityIcon,
@@ -55,7 +55,7 @@ interface ActivatorProps {
 function Activator({ onClick, data, ackTime, afk, pending, id, config }: ActivatorProps) {
 	const classes = useStyles();
 	const Icon = icons[config.deviceClass as DeviceClass];
-	console.log("Data", data);
+
 	return (
 		<ControlContextMenu
 			name={config.name}

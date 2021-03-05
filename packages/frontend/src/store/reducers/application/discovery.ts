@@ -21,7 +21,7 @@ const set = {
 const remove = {
 	next(state: state, action: any) {
 		console.log("removing", action);
-		const newData = filter(compose(not, equals(action.payload), prop("deviceId")), state.data);
+		const newData = filter(compose(not, equals(action.payload), prop("_id")), state.data);
 		return { data: newData, lastFetch: state.lastFetch, lastUpdate: new Date() };
 	},
 };

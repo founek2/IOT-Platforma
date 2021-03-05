@@ -1,42 +1,12 @@
 import mongoose, { Document, Model } from "mongoose";
 import hat from "hat";
-import { IThing, thingSchema } from "./schema/thing";
+import { thingSchema } from "./schema/thing";
 import { IUser } from "./user";
 import { devLog } from "framework/lib/logger";
+import { Device } from "./interface/device";
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
-
-export interface Device {
-	_id?: any;
-	info: {
-		title: string;
-		description?: string;
-		imgPath?: string;
-		deviceId: string;
-		location: {
-			building: string;
-			room: string;
-		};
-	};
-	permissions: {
-		read: string[];
-		write: string[];
-		control: string[];
-	};
-	things: IThing[];
-	state: {
-		status: { value: string; timestamp: Date };
-		lastAck: Date;
-	};
-	apiKey: string;
-	metadata: {
-		topicPrefix: string;
-		publicRead?: boolean;
-	};
-	createdAt: Date;
-	updatedAt: Date;
-}
 
 export interface IDevice extends Device, Document {
 	createdBy: IUser["_id"];
@@ -95,12 +65,10 @@ export interface IDeviceModel extends Model<IDevice> {
 deviceSchema.statics.createNew = async function ({ info, things, metadata }, userID) {
 	const objID = ObjectId(userID);
 
-	const result = await this.findOne({
+	const result = await this.exists({
 		"info.deviceId": info.deviceId,
 		"metadata.topicPrefix": metadata.topicPrefix,
-	})
-		.select("_id")
-		.lean();
+	});
 	if (result) throw Error("deviceIdTaken");
 
 	const newDevice = await this.create({
@@ -123,6 +91,7 @@ const aggregationFields = {
 	createdAt: 1,
 	createdBy: 1,
 	publicRead: 1,
+	state: 1,
 };
 
 deviceSchema.statics.findForUser = async function (userID) {

@@ -205,10 +205,11 @@ class EnhancedTable extends React.Component {
 													onClick={(event) => this.handleClick(event, n.id)}
 												/>
 											</TableCell>
-											{dataProps.map(({ path, convertor }, i) => (
+											{dataProps.map(({ path, convertor, align }, i) => (
 												<TableCell
 													key={path}
 													className={path === "created" ? classes.createdCell : ""}
+													align={align}
 												>
 													{convertor ? convertor(getInPath(path, n)) : getInPath(path, n)}
 												</TableCell>

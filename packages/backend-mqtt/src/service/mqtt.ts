@@ -7,6 +7,7 @@ import { DeviceDiscovery } from "common/lib/models/deviceDiscovery";
 import { Server as serverIO } from "socket.io";
 import EventEmitter from "events";
 import { DeviceModel } from "common/src/models/device";
+import eventEmitter from "./eventEmitter";
 const emitter = new EventEmitter();
 
 let mqttClient: mqtt.MqttClient | undefined;
@@ -65,7 +66,7 @@ export default (io: serverIO): MqttClient => {
 				console.log("creating");
 				await DeviceDiscovery.updateOne(
 					{ deviceId },
-					{ userName: message.userName },
+					{ userName: message.userName, name: message.name || deviceId },
 					{ upsert: true, setDefaultsOnInsert: true }
 				);
 			} else {
@@ -85,6 +86,29 @@ export default (io: serverIO): MqttClient => {
 					{ upsert: true, setDefaultsOnInsert: true }
 				);
 			}
+		});
+
+		handle("prefix/+/$state", async function (topic, message, [deviceId]) {
+			if (message.toString() === "paired") {
+				return DeviceDiscovery.deleteOne({ deviceId, pairing: true }).exec();
+			}
+
+			if (message.toString() === "ready") {
+				const doc = await DeviceDiscovery.findOne({ deviceId, pairing: true }).exec();
+				if (doc) {
+					const device = await DeviceModel.findOne({
+						"info.deviceId": deviceId,
+						"metadata.topicPrefix": doc?.userName,
+					});
+					if (device) return eventEmitter.emit("device_pairing_init", { deviceId, apiKey: device.apiKey });
+				}
+			}
+
+			DeviceDiscovery.updateOne(
+				{ deviceId },
+				{ "state.status.value": message.toString(), "state.status.timestamp": new Date() },
+				{ upsert: true, setDefaultsOnInsert: true }
+			).exec();
 		});
 
 		handle("v2/+/+/$state", async function (topic, message, [topicPrefix, deviceId]) {

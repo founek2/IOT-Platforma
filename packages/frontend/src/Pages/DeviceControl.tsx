@@ -9,32 +9,18 @@ import isBefore from "date-fns/isBefore";
 import subSeconds from "date-fns/subSeconds";
 
 import io from "../webSocket";
-import RgbSwitch from "./deviceControl/RgbSwitch";
-import { ControlTypesFormNames } from "../constants";
 import { isUrlHash, getUserPresence } from "framework-ui/lib/utils/getters";
 import { getQueryID, getQueryField, getDevicesLastUpdate } from "../utils/getters";
 import * as deviceActions from "../store/actions/application/devices";
-import Switch from "./deviceControl/Swich";
-import Activator from "./deviceControl/Activator";
+
 import { getDevices } from "../utils/getters";
 import { errorLog } from "framework-ui/lib/logger";
 import EditNotifyForm from "../components/EditNotifyForm";
 import * as formsActions from "framework-ui/lib/redux/actions/formsData";
 import * as controlActions from "../store/actions/application/devices/control";
-import MusicCast from "./deviceControl/MusicCast";
-import Sensor from "./deviceControl/Sensor";
-import { ComponentType } from "common/lib/models/schema/thing";
-import { Device } from "common/lib/models/device";
-
-const compMapper = {
-	// [CONTROL_TYPES.ACTIVATOR]: Activator,
-	[ComponentType.Switch]: Switch,
-	[ComponentType.BinarySensor]: null,
-	[ComponentType.Sensor]: Sensor,
-
-	// [CONTROL_TYPES.RGB_SWITCH]: RgbSwitch,
-	// [CONTROL_TYPES.MUSIC_CAST]: MusicCast
-};
+import { ComponentType, IThing } from "common/lib/models/interface/thing";
+import { Device } from "common/lib/models/interface/device";
+import RoomWidget from "./deviceControl/RoomWidget";
 
 function isControllable(device: Device) {
 	return Boolean(device.permissions && device.permissions.control);
@@ -67,21 +53,31 @@ function updateDevice(updateDeviceAction: any) {
 	};
 }
 
+interface DeviceControlProps {
+	devices: Device[];
+	fetchDevicesAction: any;
+	// updateDeviceStateA,
+	updateDeviceAction: any;
+	fetchControlAction: any;
+	devicesLastUpdate: any;
+	rooms: Map<string, Device[]>;
+}
 function DeviceControl({
 	devices,
 	fetchDevicesAction,
-	updateDeviceStateA,
+	// updateDeviceStateA,
 	updateDeviceAction,
 	fetchControlAction,
-	openNotifyDialog,
-	selectedDevice,
-	history,
-	resetEditNotifyControlA,
-	updateNotifyControlA,
-	prefillNotifyControlA,
-	JSONkey,
+	// openNotifyDialog,
+	// selectedDevice,
+	// history,
+	// resetEditNotifyControlA,
+	// updateNotifyControlA,
+	// prefillNotifyControlA,
+	// JSONkey,
 	devicesLastUpdate,
-}: any) {
+	rooms,
+}: DeviceControlProps) {
 	const classes = useStyles();
 	useEffect(() => {
 		fetchDevicesAction();
@@ -120,33 +116,16 @@ function DeviceControl({
 		};
 	}, [fetchControlAction, devicesLastUpdate]);
 
-	const arr: any = [];
-	devices.forEach((device: Device) => {
-		device.things.forEach(({ config, state }) => {
-			const Comp = compMapper[config.componentType];
-			if (Comp) {
-				const data = state?.value;
-				arr.push(
-					<Comp
-						key={`${device._id}/${config.name}`}
-						config={config}
-						// description={description}
-						// onClick={(val) => updateDeviceStateA(device.id, JSONkey, val, ControlTypesFormNames[type])}
-						data={data}
-						className={classes.item}
-						ackTime={new Date()}
-						updateTime={new Date()} // to force updating
-						id={device._id}
-					/>
-				);
-			} else errorLog("Invalid component type:", config.componentType, "of device:", device.info.title);
-		});
-	});
+	// const boxes: JSX.Element[] = devices.map((device: Device) => generateBoxes(device, classes)).flat();
 
 	return (
 		<div className={classes.root}>
-			{isEmpty(arr) ? <Typography>Nebyla nalezena žádná zařízení</Typography> : arr}
-			<FullScreenDialog
+			{isEmpty(devices) ? (
+				<Typography>Nebyla nalezena žádná zařízení</Typography>
+			) : (
+				[...rooms.entries()].map(([_, devices]) => <RoomWidget devices={devices} />)
+			)}
+			{/* <FullScreenDialog
 				open={openNotifyDialog && !!selectedDevice}
 				onClose={() => history.push({ hash: "", search: "" })}
 				onExited={resetEditNotifyControlA}
@@ -159,7 +138,7 @@ function DeviceControl({
 					onPrefill={(id: string) => prefillNotifyControlA(id, JSONkey)}
 					JSONkey={JSONkey}
 				/>
-			</FullScreenDialog>
+			</FullScreenDialog> */}
 		</div>
 	);
 }
@@ -167,8 +146,16 @@ function DeviceControl({
 const _mapStateToProps = (state: any) => {
 	const id = getQueryID(state);
 	const JSONkey = getQueryField("JSONkey", state);
-	const devices = filter(isControllable, getDevices(state));
+	const devices: Device[] = filter(isControllable, getDevices(state));
+
+	const rooms = new Map<string, Device[]>();
+	devices.forEach((device) => {
+		const key = device.info.location.building + "/" + device.info.location.room;
+		rooms.set(key, [...(rooms.get(key) || []), device]);
+	});
+
 	return {
+		rooms,
 		devices,
 		openNotifyDialog: isUrlHash("#editNotify")(state),
 		selectedDevice: devices.find((dev) => dev._id === id),

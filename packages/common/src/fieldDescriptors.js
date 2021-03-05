@@ -142,6 +142,11 @@ const EDIT_USER = assocPath(["auth", "password"], passwdNotReq, {
 });
 
 const CREATE_DEVICE = {
+	_id: {
+		deepPath: "CREATE_DEVICE._id",
+		required: true,
+		validations: [validationFactory("isString", { min: 4, max: 50 })],
+	},
 	info: {
 		title: {
 			deepPath: "CREATE_DEVICE.info.title",
@@ -163,11 +168,6 @@ const CREATE_DEVICE = {
 		// 	name: "image",
 		// 	validations: [validationFactory("isFile")],
 		// },
-		deviceId: {
-			deepPath: "CREATE_DEVICE.info.deviceId",
-			required: true,
-			validations: [validationFactory("isString", { min: 4, max: 50 })],
-		},
 		location: {
 			building: {
 				deepPath: "CREATE_DEVICE.info.location.building",

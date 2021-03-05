@@ -7,7 +7,7 @@ import { validateForm } from "framework-ui/lib/redux/actions/formsData";
 import { add as addDeviceToState } from "./devices";
 
 import type { DeviceDiscovery } from "common/lib/models/deviceDiscovery";
-import type { Device } from "common/lib/models/device";
+import type { Device } from "common/lib/models/interface/device";
 
 export function set(data: DeviceDiscovery[]) {
 	return {
@@ -46,6 +46,7 @@ export function deleteDevices() {
 		const result = dispatch(validateForm(DISCOVERY_DEVICES)());
 		if (result.valid) {
 			const formData = getFormData(DISCOVERY_DEVICES)(getState()) as any;
+			console.log("formData", formData);
 			return deleteDiscovery(
 				{
 					token: getToken(getState()),
@@ -73,7 +74,7 @@ export function addDevice() {
 					token: getToken(getState()),
 					body: { formData: { [CREATE_DEVICE]: formData } },
 					onSuccess: (json: { doc: Device }) => {
-						dispatch(remove(formData.info.deviceId));
+						dispatch(remove(formData._id));
 						dispatch(addDeviceToState(json.doc));
 					},
 				},
