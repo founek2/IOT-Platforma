@@ -59,6 +59,7 @@ function BorderBox({ className, data, onClick, component, deviceStatus, ...other
 	const { inTransition, updatedAt } = data || {};
 	const afk = deviceStatus && isAfk(deviceStatus.value);
 	const Component = component;
+	console.log("all props", other);
 	return (
 		<Box
 			display="inline-block"
@@ -80,4 +81,4 @@ function BorderBox({ className, data, onClick, component, deviceStatus, ...other
 	);
 }
 
-export default forceUpdateHoc(BorderBox);
+export default BorderBox;

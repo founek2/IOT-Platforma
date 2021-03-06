@@ -5,18 +5,8 @@ import Typography from "@material-ui/core/Typography";
 import boxHoc from "./components/boxHoc";
 import ControlContextMenu from "./components/ControlContextMenu";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import { ReactComponent as ThermometrIcon } from "./sensor/thermometr.svg";
-import { ReactComponent as HumidityIcon } from "./sensor/humidity.svg";
-import { ReactComponent as VoltageIcon } from "./sensor/voltage.svg";
-import { ReactComponent as BarometrIcon } from "./sensor/barometer.svg";
 import { DeviceClass, IThing } from "common/lib/models/interface/thing";
-
-const icons = {
-	[DeviceClass.Humidity]: HumidityIcon,
-	[DeviceClass.Temperature]: ThermometrIcon,
-	[DeviceClass.Voltage]: VoltageIcon,
-	[DeviceClass.Pressure]: BarometrIcon,
-};
+import { SensorIcons } from "frontend/src/components/SensorIcons";
 
 const useStyles = makeStyles({
 	root: {
@@ -54,7 +44,7 @@ interface ActivatorProps {
 }
 function Activator({ onClick, data, ackTime, afk, pending, id, config }: ActivatorProps) {
 	const classes = useStyles();
-	const Icon = icons[config.deviceClass as DeviceClass];
+	const Icon = SensorIcons[config.deviceClass as DeviceClass];
 
 	return (
 		<ControlContextMenu

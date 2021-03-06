@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { withStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { Content as Switch } from "../roomWidget/Swich";
+import { Content as Switch } from "./Swich";
 import MenuItem from "@material-ui/core/MenuItem";
 import boxHoc from "./components/boxHoc";
 import TuneIcon from "@material-ui/icons/Tune";

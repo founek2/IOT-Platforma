@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { filter, isEmpty } from "ramda";
+import { filter, findLastIndex, isEmpty } from "ramda";
 import { bindActionCreators } from "redux";
-import { makeStyles, Typography } from "@material-ui/core";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
 import FullScreenDialog from "framework-ui/lib/Components/FullScreenDialog";
 import isBefore from "date-fns/isBefore";
 import subSeconds from "date-fns/subSeconds";
@@ -21,6 +21,9 @@ import * as controlActions from "../store/actions/application/devices/control";
 import { ComponentType, IThing } from "common/lib/models/interface/thing";
 import { Device } from "common/lib/models/interface/device";
 import RoomWidget from "./deviceControl/RoomWidget";
+import { LocationTypography } from "../components/LocationTypography";
+import { Link } from "react-router-dom";
+import Room from "./deviceControl/Room";
 
 function isControllable(device: Device) {
 	return Boolean(device.permissions && device.permissions.control);
@@ -28,8 +31,8 @@ function isControllable(device: Device) {
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		display: "flex",
-		flexWrap: "wrap",
+		// display: "flex",
+		// flexWrap: "wrap",
 	},
 	item: {
 		width: 150,
@@ -37,6 +40,14 @@ const useStyles = makeStyles((theme) => ({
 			width: `calc(50% - ${theme.spacing(1.5)}px)`, // to add spacing to right
 			margin: `${theme.spacing(1)}px 0 0 ${theme.spacing(1)}px`,
 		},
+	},
+	widgetContainer: {
+		display: "flex",
+		flexWrap: "wrap",
+	},
+	widget: {
+		flex: "1 0 44%",
+		margin: 10,
 	},
 }));
 
@@ -60,7 +71,8 @@ interface DeviceControlProps {
 	updateDeviceAction: any;
 	fetchControlAction: any;
 	devicesLastUpdate: any;
-	rooms: Map<string, Device[]>;
+	buildings: Map<string, Map<string, Device[]>>;
+	selectedLocation: Device["info"]["location"];
 }
 function DeviceControl({
 	devices,
@@ -76,7 +88,8 @@ function DeviceControl({
 	// prefillNotifyControlA,
 	// JSONkey,
 	devicesLastUpdate,
-	rooms,
+	buildings,
+	selectedLocation,
 }: DeviceControlProps) {
 	const classes = useStyles();
 	useEffect(() => {
@@ -118,13 +131,52 @@ function DeviceControl({
 
 	// const boxes: JSX.Element[] = devices.map((device: Device) => generateBoxes(device, classes)).flat();
 
+	// let lastBuilding: string | undefined = undefined;
+	console.log("location selected", selectedLocation);
+	const selectedBuilding = buildings.get(selectedLocation.building);
+	const selectedRoom = selectedBuilding?.get(selectedLocation.room);
 	return (
 		<div className={classes.root}>
-			{isEmpty(devices) ? (
-				<Typography>Nebyla nalezena žádná zařízení</Typography>
-			) : (
-				[...rooms.entries()].map(([_, devices]) => <RoomWidget devices={devices} />)
-			)}
+			<Grid container justify="center">
+				<Grid md={8} item>
+					{!selectedRoom ? (
+						isEmpty(devices) ? (
+							<Typography>Nebyla nalezena žádná zařízení</Typography>
+						) : (
+							<div className={classes.widgetContainer}>
+								{(selectedBuilding
+									? ([[selectedLocation.building, selectedBuilding]] as Array<
+											[string, Map<string, Device[]>]
+									  >)
+									: [...buildings.entries()]
+								).map(([building, rooms]) => {
+									return (
+										<Fragment key={building}>
+											<LocationTypography
+												location={{ building }}
+												linkBuilding={Boolean(!selectedBuilding)}
+											/>
+											{[...rooms.entries()].map(([room, devices]) => (
+												<Link
+													to={{
+														search: `?building=${building}&room=${room}`,
+													}}
+													className={classes.widget}
+													key={building + "/" + room}
+												>
+													<RoomWidget devices={devices} />
+												</Link>
+											))}
+										</Fragment>
+									);
+								})}
+							</div>
+						)
+					) : (
+						<Room location={selectedLocation} devices={selectedRoom} />
+					)}
+				</Grid>
+			</Grid>
 			{/* <FullScreenDialog
 				open={openNotifyDialog && !!selectedDevice}
 				onClose={() => history.push({ hash: "", search: "" })}
@@ -148,20 +200,26 @@ const _mapStateToProps = (state: any) => {
 	const JSONkey = getQueryField("JSONkey", state);
 	const devices: Device[] = filter(isControllable, getDevices(state));
 
-	const rooms = new Map<string, Device[]>();
+	const buildings = new Map<string, Map<string, Device[]>>();
 	devices.forEach((device) => {
-		const key = device.info.location.building + "/" + device.info.location.room;
-		rooms.set(key, [...(rooms.get(key) || []), device]);
+		const { building, room } = device.info.location;
+		if (!buildings.has(building)) buildings.set(building, new Map());
+		const roomMap = buildings.get(building)!;
+		roomMap.set(room, [...(roomMap.get(room) || []), device]);
 	});
 
 	return {
-		rooms,
+		buildings,
 		devices,
 		openNotifyDialog: isUrlHash("#editNotify")(state),
 		selectedDevice: devices.find((dev) => dev._id === id),
 		isUserPresent: getUserPresence(state),
 		devicesLastUpdate: getDevicesLastUpdate(state),
 		JSONkey,
+		selectedLocation: {
+			building: getQueryField("building", state),
+			room: getQueryField("room", state),
+		},
 	};
 };
 

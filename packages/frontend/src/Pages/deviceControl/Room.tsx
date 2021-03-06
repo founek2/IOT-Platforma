@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { filter, isEmpty } from "ramda";
 import { bindActionCreators } from "redux";
-import { makeStyles, Paper, Typography } from "@material-ui/core";
+import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import FullScreenDialog from "framework-ui/lib/Components/FullScreenDialog";
 import isBefore from "date-fns/isBefore";
 import subSeconds from "date-fns/subSeconds";
@@ -25,6 +25,7 @@ import MusicCast from "./room/MusicCast";
 import Sensor from "./room/Sensor";
 import { ComponentType, IThing } from "common/lib/models/interface/thing";
 import { Device } from "common/lib/models/interface/device";
+import { LocationTypography } from "frontend/src/components/LocationTypography";
 
 const compMapper = {
 	[ComponentType.Switch]: Switch,
@@ -70,13 +71,22 @@ function generateBoxes(device: Device, classes: any) {
 
 interface RoomProps {
 	devices: Device[];
+	location: Device["info"]["location"];
 }
-function RoomWidget({ devices }: RoomProps) {
+function Room({ devices }: RoomProps) {
 	const classes = useStyles();
 
 	const location = devices[0].info.location;
+	const boxes: (JSX.Element | null)[] = devices.map((device: Device) => generateBoxes(device, classes)).flat();
 
-	return <Paper elevation={3}>{location.building + "/" + location.room}</Paper>;
+	return (
+		<div>
+			<LocationTypography location={location} />
+			<Grid container justify="center">
+				{boxes}
+			</Grid>
+		</div>
+	);
 }
 
-export default RoomWidget;
+export default Room;
