@@ -2,12 +2,12 @@
 import { Router } from "express";
 import user from "./user";
 import device from "./device";
-import iot from "./iot";
 import auth from "./auth";
 import control from "./devices/control";
 import sensors from "./devices/sensors";
 import notify from "./device/notify";
 import discovery from "./discovery";
+import history from "./thing/history";
 
 export default ({ config }) => {
 	let api = Router();
@@ -22,9 +22,9 @@ export default ({ config }) => {
 
 	api.use("/device", device({ config }));
 
-	api.use("/discovery", discovery({ config }));
+	api.use("/device/:deviceId/thing/:thingId/history", history({ config }));
 
-	api.use("/iot", iot({ config }));
+	api.use("/discovery", discovery({ config }));
 
 	api.use("/auth", auth({ config }));
 

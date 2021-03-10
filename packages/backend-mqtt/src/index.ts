@@ -3,7 +3,7 @@ import express, { Application } from "express";
 import morgan from "morgan";
 import { Config } from "./types";
 import mqttService from "./service/mqtt";
-// import webSockets from "./webSockets";
+import webSockets from "./service/webSocket";
 import config from "./config";
 import Jwt from "framework/lib/services/jwt";
 import api from "./api";
@@ -47,7 +47,7 @@ async function startServer(config: Config) {
 		})(req, res, next)
 	);
 
-	// app.use("/websocket/io", webSockets(app.io));
+	app.use("/websocket/io", webSockets(app.io));
 
 	app.use("/api", api({ config }));
 

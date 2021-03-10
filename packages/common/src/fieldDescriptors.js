@@ -148,8 +148,8 @@ const CREATE_DEVICE = {
 		validations: [validationFactory("isString", { min: 4, max: 50 })],
 	},
 	info: {
-		title: {
-			deepPath: "CREATE_DEVICE.info.title",
+		name: {
+			deepPath: "CREATE_DEVICE.info.name",
 			required: true,
 			label: "Název",
 			name: "title",

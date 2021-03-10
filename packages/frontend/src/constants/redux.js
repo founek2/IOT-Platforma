@@ -9,5 +9,8 @@ export const ActionTypes = keymirror({
 	UPDATE_STATE_DEVICE: null,
 	UPDATE_DEVICES: null,
 	SET_DISCOVERED_DEVICES: null,
+	UPDATE_THING: null,
 	REMOVE_DISCOVERED_DEVICE: null,
+	ADD_DISCOVERED_DEVICES: null,
+	SET_THING_HISTORY: null,
 });

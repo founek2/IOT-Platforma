@@ -31,3 +31,8 @@ export interface Config {
 		jobs?: string;
 	};
 }
+
+export interface UpdateThingState {
+	_id: string;
+	state: any;
+}

@@ -1,12 +1,13 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
 import Typography from "@material-ui/core/Typography";
 import switchCss from "./components/switch/css";
 import boxHoc from "./components/boxHoc";
 import ControlContextMenu from "./components/ControlContextMenu";
+import { BoxWidgetProps } from "./components/BorderBox";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
 	...switchCss(theme),
 	root: {
 		display: "flex",
@@ -18,33 +19,22 @@ const styles = (theme) => ({
 		textAlign: "center",
 		userSelect: "none",
 	},
-});
+}));
 
-function MySwitch({
-	classes,
-	description,
-	onClick,
-	data = { state: { on: 0 } },
-	ackTime,
-	afk,
-	pending,
-	forceUpdate,
-	config,
-	id,
-	...props
-}) {
-	const { state = { on: 0 } } = data || {};
+function MySwitch({ onClick, deviceId, thing, room, fetchHistory, disabled }: BoxWidgetProps) {
+	const classes = useStyles();
+	const { power } = thing.state?.value || { power: "off" };
+	const { config } = thing;
 
 	return (
 		<ControlContextMenu
 			name={config.name}
-			id={id}
 			//  JSONkey={JSONkey}
-			render={({ handleOpen }) => {
+			render={({ handleOpen }: any) => {
 				return (
 					<div
 						className={classes.root}
-						onClick={(e) => !afk && !pending && onClick({ on: state.on ? 0 : 1 })}
+						onClick={(e) => !disabled && onClick({ power: power === "on" ? "off" : "on" })}
 					>
 						<div className={classes.header} onContextMenu={handleOpen}>
 							<Typography component="span">{config.name}</Typography>
@@ -61,10 +51,9 @@ function MySwitch({
 									checked: classes.checked,
 									disabled: classes.disabled,
 								}}
-								disabled={pending || afk}
-								{...props}
+								disabled={disabled}
 								// onClick={handleClick}
-								checked={!!state.on}
+								checked={power === "on"}
 							/>
 						</div>
 					</div>
@@ -74,6 +63,6 @@ function MySwitch({
 	);
 }
 
-export const Content = withStyles(styles)(MySwitch);
+export const Content = MySwitch;
 
 export default boxHoc(Content);

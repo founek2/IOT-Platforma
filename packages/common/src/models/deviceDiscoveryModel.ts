@@ -1,6 +1,6 @@
 import mongoose, { Document, Model } from "mongoose";
 import hat from "hat";
-import { thingSchema } from "./schema/thing";
+import { thingSchema } from "./schema/thingSchema";
 import { IThing } from "./interface/thing";
 
 const Schema = mongoose.Schema;

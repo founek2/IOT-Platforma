@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import Box from "@material-ui/core/Box";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import OnlineCircle from "../../../../components/OnlineCircle";
@@ -7,7 +7,11 @@ import forceUpdateHoc from "framework-ui/lib/Components/forceUpdateHoc";
 import ControlDetail from "./borderBox/ControlDetail";
 import Loader from "framework-ui/lib/Components/Loader";
 import { IThing } from "common/lib/models/interface/thing";
-import { Device, IDeviceStatus } from "common/lib/models/interface/device";
+import { Device, DeviceStatus, IDeviceStatus } from "common/lib/models/interface/device";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import * as deviceActions from "../../../../store/actions/application/devices";
+import * as thingHistoryActions from "../../../../store/actions/application/thingHistory";
 
 const useStyles = makeStyles({
 	circle: {
@@ -32,23 +36,75 @@ const defaultProps = {
 	position: "relative",
 };
 
-interface BorderBoxProps {
-	component: any;
+export interface BoxWidgetProps {
 	className?: string;
-	config: IThing["config"];
-	data: any;
-	onClick: any;
+	thing: IThing;
+	onClick: (newState: any) => Promise<void>;
 	deviceStatus: IDeviceStatus;
+	deviceId: Device["_id"];
+	disabled?: boolean;
+	fetchHistory: () => Promise<void>;
+	room: string;
 }
-function BorderBox({ className, data, onClick, component, deviceStatus, ...other }: BorderBoxProps) {
+export interface GeneralBoxProps {
+	lastChange?: Date;
+	className?: string;
+	thing: IThing;
+	onClick: (newState: any) => Promise<void>;
+	deviceStatus: IDeviceStatus;
+	deviceId: Device["_id"];
+	room: string;
+}
+
+export interface BorderBoxProps extends GeneralBoxProps {
+	component: FunctionComponent<BoxWidgetProps>;
+	fetchThingHistory: any;
+	updateDeviceAction: any;
+}
+
+function clear(ref: React.MutableRefObject<NodeJS.Timeout | null>) {
+	if (ref.current) {
+		clearTimeout(ref.current);
+		ref.current = null;
+	}
+}
+function BorderBox({
+	className,
+	onClick,
+	component,
+	deviceStatus,
+	deviceId,
+	updateDeviceAction,
+	lastChange,
+	fetchThingHistory,
+	thing,
+	...other
+}: BorderBoxProps) {
 	const classes = useStyles();
 	const [detailOpen, setOpen] = useState(false);
 	const [pending, setPending] = useState(false);
+	const ref: React.MutableRefObject<NodeJS.Timeout | null> = useRef(null);
+
+	useEffect(() => {
+		clear(ref);
+		return () => clear(ref);
+	}, [lastChange]);
 
 	async function handleClick(newState: any) {
 		setPending(true);
 		await onClick(newState);
 		setPending(false);
+		ref.current = setTimeout(() => {
+			updateDeviceAction({
+				_id: deviceId,
+				state: {
+					status: {
+						value: DeviceStatus.Alert,
+						timestamp: new Date(),
+					},
+				},
+			});
+		}, 2000);
 	}
 
 	function handleContext(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -56,10 +112,8 @@ function BorderBox({ className, data, onClick, component, deviceStatus, ...other
 		setOpen(true);
 	}
 
-	const { inTransition, updatedAt } = data || {};
 	const afk = deviceStatus && isAfk(deviceStatus.value);
 	const Component = component;
-	console.log("all props", other);
 	return (
 		<Box
 			display="inline-block"
@@ -68,9 +122,19 @@ function BorderBox({ className, data, onClick, component, deviceStatus, ...other
 			className={className ? className : ""}
 			{...defaultProps}
 		>
-			<OnlineCircle inTransition={inTransition} className={classes.circle} status={deviceStatus} />
-			<Component data={data} onClick={handleClick} pending={pending} afk={Boolean(afk)} {...other} />
-			<Loader open={pending} className="marginAuto" />
+			{deviceStatus?.value !== DeviceStatus.Ready && (
+				<OnlineCircle inTransition={false} className={classes.circle} status={deviceStatus} />
+			)}
+			<Component
+				onClick={handleClick}
+				// lastChange={lastChange}
+				deviceStatus={deviceStatus}
+				thing={thing}
+				deviceId={deviceId}
+				fetchHistory={() => fetchThingHistory(deviceId, thing._id)}
+				{...other}
+			/>
+			{/* <Loader open={pending} className="marginAuto" /> */}
 			<div onContextMenu={handleContext} className={classes.contextMenu}></div>
 			{/* <ControlDetail
 				open={detailOpen}
@@ -80,5 +144,13 @@ function BorderBox({ className, data, onClick, component, deviceStatus, ...other
 		</Box>
 	);
 }
+const _mapDispatchToProps = (dispatch: any) =>
+	bindActionCreators(
+		{
+			updateDeviceAction: deviceActions.update,
+			fetchThingHistory: thingHistoryActions.fetchHistory,
+		},
+		dispatch
+	);
 
-export default BorderBox;
+export default connect(null, _mapDispatchToProps)(BorderBox);

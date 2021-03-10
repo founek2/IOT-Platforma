@@ -1,22 +1,34 @@
 import mqtt, { MqttClient } from "mqtt";
 // import { getConfig } from './config'
 import config from "../config";
-import { map, flip, keys, all, equals, contains, toPairs } from "ramda";
+import { map, flip, keys, all, equals, contains, toPairs, uniq } from "ramda";
 import { processSensorsData, processControlData } from "./FireBase";
-import { DeviceDiscovery } from "common/lib/models/deviceDiscovery";
+import { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
 import { Server as serverIO } from "socket.io";
 import EventEmitter from "events";
-import { DeviceModel } from "common/src/models/device";
+import { DeviceModel, IDevice } from "common/lib/models/deviceModel";
+import { HistoricalModel } from "common/lib/models/historyModel";
 import eventEmitter from "./eventEmitter";
+import { Device, DeviceStatus } from "common/lib/models/interface/device";
+import { SocketThingState } from "common/lib/types";
+import { IThing } from "common/lib/models/interface/thing";
+import User from "backend/dist/models/user";
+
 const emitter = new EventEmitter();
 
 let mqttClient: mqtt.MqttClient | undefined;
 
 type qosType = { qos: 0 | 2 | 1 | undefined };
-export function publish(topic: string, message: Object, opt: qosType = { qos: 2 }) {
+export function publishStr(topic: string, message: string, opt: qosType = { qos: 2 }) {
 	if (!mqttClient) throw new Error("client was not inicialized");
 
-	return mqttClient.publish(topic, JSON.stringify(message), { qos: opt.qos });
+	return mqttClient.publish(topic, message, { qos: opt.qos });
+}
+
+export function publish(topic: string, message: string, opt: qosType = { qos: 2 }) {
+	if (!mqttClient) throw new Error("client was not inicialized");
+
+	return mqttClient.publish(topic, message, { qos: opt.qos });
 }
 
 type cbFn = (topic: string, message: any, groups: string[]) => void;
@@ -71,14 +83,17 @@ export default (io: serverIO): MqttClient => {
 				);
 			} else {
 				if (await DeviceDiscovery.exists({ deviceId })) {
-					const query =
-						componentType === "sensor"
-							? { deviceId, "things.config.componentId": message.componentId }
-							: { deviceId, "things.config.nodeId": message.nodeId };
+					let query;
+					if (componentType === "sensor") {
+						query = { deviceId, "things.config.propertyId": message.propertyId };
+						message.nodeId = "sensor";
+					} else query = { deviceId, "things.config.nodeId": message.nodeId };
+
 					const res = await DeviceDiscovery.updateOne(query, {
 						$set: { "things.$.config": { ...message, componentType } },
 					});
 					if (res.nModified === 1) return;
+					console.log("not updated");
 				}
 				await DeviceDiscovery.updateOne(
 					{ deviceId },
@@ -88,74 +103,126 @@ export default (io: serverIO): MqttClient => {
 			}
 		});
 
-		handle("prefix/+/$state", async function (topic, message, [deviceId]) {
-			if (message.toString() === "paired") {
+		handle("prefix/+/$state", async function (topic, data, [deviceId]) {
+			const message: DeviceStatus = data.toString();
+			if (message === DeviceStatus.Disconnected) return;
+
+			if (message === DeviceStatus.Paired) {
 				return DeviceDiscovery.deleteOne({ deviceId, pairing: true }).exec();
 			}
 
-			if (message.toString() === "ready") {
+			if (message === DeviceStatus.Ready) {
 				const doc = await DeviceDiscovery.findOne({ deviceId, pairing: true }).exec();
 				if (doc) {
 					const device = await DeviceModel.findOne({
-						"info.deviceId": deviceId,
+						"metadata.deviceId": deviceId,
 						"metadata.topicPrefix": doc?.userName,
 					});
 					if (device) return eventEmitter.emit("device_pairing_init", { deviceId, apiKey: device.apiKey });
 				}
 			}
 
-			DeviceDiscovery.updateOne(
+			const doc = await DeviceDiscovery.findOneAndUpdate(
 				{ deviceId },
-				{ "state.status.value": message.toString(), "state.status.timestamp": new Date() },
-				{ upsert: true, setDefaultsOnInsert: true }
-			).exec();
+				{ "state.status.value": message, "state.status.timestamp": new Date() },
+				{ upsert: true, setDefaultsOnInsert: true, new: true }
+			)
+				.lean()
+				.exec();
+
+			const user = await User.findOne({ "info.userName": doc?.userName }).select("_id").lean();
+			if (user?._id) io.to(user._id.toString()).emit("deviceDiscovered", doc);
 		});
 
-		handle("v2/+/+/$state", async function (topic, message, [topicPrefix, deviceId]) {
-			console.log("got", message.toString(), topicPrefix, deviceId);
-			DeviceModel.updateOne(
+		handle("v2/+/+/$state", async function (topic, data, [topicPrefix, deviceId]) {
+			const message: DeviceStatus = data.toString();
+			console.log("got", message, topicPrefix, deviceId);
+			const device = await DeviceModel.findOneAndUpdate(
 				{
-					"info.deviceId": deviceId,
+					"metadata.deviceId": deviceId,
 					"metadata.topicPrefix": topicPrefix,
 				},
 				{
-					"state.status.value": message.toString(),
+					"state.status.value": message,
 					"state.status.timestamp": new Date(),
-				}
-			).exec();
+				},
+				{ new: true }
+			)
+				.lean()
+				.exec();
+
+			if (device)
+				uniq(Object.values(device.permissions).flat().map(String)).forEach((userId) =>
+					io.to(userId).emit("device", {
+						_id: device._id,
+						state: {
+							status: device.state!.status,
+						},
+					})
+				);
 		});
 
 		handle("v2/+/+/sensor/+", async function (topic, message, [topicPrefix, deviceId, propertyId]) {
-			DeviceModel.updateOne(
+			const timestamp = new Date();
+			const device = await DeviceModel.findOneAndUpdate(
 				{
-					"info.deviceId": deviceId,
+					"metadata.deviceId": deviceId,
 					"metadata.topicPrefix": topicPrefix,
 					"things.config.propertyId": propertyId,
 				},
 				{
-					$set: { "things.$.state": { timestamp: new Date(), value: message.toString() } },
+					$set: { "things.$.state": { timestamp, value: message.toString() } },
 				}
-			).exec();
+			)
+				.lean()
+				.exec();
 			console.log("saving sensor data");
+			if (!device) return;
+
+			sendToUsers(io, "read", device, "sensor", propertyId);
+			HistoricalModel.saveSensorData(
+				device?._id,
+				getThing(device, "sensor", propertyId)._id,
+				propertyId,
+				Number(message.toString()),
+				timestamp
+			);
 		});
 
 		handle(
 			"v2/+/+/((?:(?!sensor).)*)/+",
 			async function (topic, message, [topicPrefix, deviceId, nodeId, propertyId]) {
-				DeviceModel.updateOne(
+				const timestamp = new Date();
+				const device = await DeviceModel.findOneAndUpdate(
 					{
-						"info.deviceId": deviceId,
+						"metadata.deviceId": deviceId,
 						"metadata.topicPrefix": topicPrefix,
 						"things.config.nodeId": nodeId,
 					},
 					{
 						$set: {
-							"things.$.state.timestamp": new Date(),
+							"things.$.state.timestamp": timestamp,
 							[`things.$.state.value.${propertyId}`]: message.toString(),
 						},
+					},
+					{
+						new: true,
 					}
-				).exec();
+				)
+					.lean()
+					.exec();
 				console.log("saving not sensor data");
+				if (!device) return;
+
+				sendToUsers(io, "control", device, nodeId, propertyId);
+
+				HistoricalModel.saveControlData(
+					device?._id,
+					getThing(device, nodeId, propertyId)._id,
+					propertyId,
+					Number(message.toString()),
+					timestamp
+				);
 			}
 		);
 	});
@@ -167,3 +234,29 @@ export default (io: serverIO): MqttClient => {
 
 	return client;
 };
+
+function sendToUsers(io: serverIO, type: "read" | "control", device: Device, nodeId: string, propertyId: string) {
+	let thing = getThing(device, nodeId, propertyId, type === "read");
+
+	const updateData: SocketThingState = {
+		_id: device._id,
+		thing: {
+			_id: thing._id,
+			state: thing.state,
+		},
+	};
+	device.permissions[type].forEach((userId) => {
+		io.to(userId.toString()).emit("control", updateData);
+	});
+}
+
+function getThing(
+	device: Device,
+	nodeId: IThing["config"]["nodeId"],
+	propertyId: IThing["config"]["propertyId"],
+	isSensor: boolean = false
+) {
+	if (isSensor)
+		return device.things.find((thing) => thing.config.nodeId === nodeId && thing.config.propertyId === propertyId)!;
+	return device.things.find((thing) => thing.config.nodeId === nodeId)!;
+}

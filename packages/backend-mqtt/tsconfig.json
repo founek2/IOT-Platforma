@@ -10,7 +10,8 @@
         "alwaysStrict": false,
         "lib": [
             "esnext.asynciterable",
-            "DOM" // were problems with @testing-library
+            "DOM", // were problems with @testing-library
+            "ES2019",
         ]
     },
     "exclude": [

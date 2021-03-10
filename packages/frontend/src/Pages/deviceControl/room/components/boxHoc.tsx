@@ -1,8 +1,8 @@
-import React from "react";
-import Box from "./BorderBox";
+import React, { FunctionComponent } from "react";
+import Box, { GeneralBoxProps } from "./BorderBox";
 
 function MyComponent(WrappedComponent: any) {
-	return function (props: any) {
+	return function (props: GeneralBoxProps) {
 		return <Box component={WrappedComponent} {...props} />;
 	};
 }

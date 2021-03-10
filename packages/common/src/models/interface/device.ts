@@ -7,6 +7,7 @@ export enum DeviceStatus {
 	Alert = "alert",
 	Ready = "ready",
 	Init = "init",
+	Paired = "paired",
 }
 
 export type IDeviceStatus =
@@ -19,10 +20,9 @@ export type IDeviceStatus =
 export interface Device {
 	_id?: any;
 	info: {
-		title: string;
+		name: string;
 		description?: string;
 		imgPath?: string;
-		deviceId: string;
 		location: {
 			building: string;
 			room: string;
@@ -41,6 +41,7 @@ export interface Device {
 	apiKey: string;
 	metadata: {
 		topicPrefix: string;
+		deviceId: string;
 		publicRead?: boolean;
 	};
 	createdAt: Date;

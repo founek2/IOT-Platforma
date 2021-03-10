@@ -140,7 +140,7 @@ function RgbSwitch({
 	);
 }
 
-export default boxHoc(withStyles(styles)(RgbSwitch));
+// export default boxHoc(withStyles(styles)(RgbSwitch));
 
 // const _mapStateToProps = (state: any) => ({
 //     formData: getFormData("EDIT_RGB")(state),

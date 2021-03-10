@@ -21,3 +21,5 @@ export const getControl = o(prop("control"), getTmpData);
 export const getUserNames = o(prop("userNames"), getApplication);
 
 export const getDiscovery = o(prop("discovery"), getApplication);
+
+export const getThingHistory = o(prop("thingHistory"), getApplication);

@@ -31,6 +31,7 @@ import { Fab, Grid } from "@material-ui/core";
 import Dialog from "framework-ui/lib/Components/Dialog";
 import DiscoverySection from "./devices/DiscoverySection";
 import OnlineCircle from "../components/OnlineCircle";
+import io from "../webSocket";
 
 function isWritable(device) {
 	return device.permissions && device.permissions.write;
@@ -68,7 +69,15 @@ function Devices(props) {
 	useEffect(() => {
 		props.fetchDevicesAction();
 		props.fetchDiscoveredDevicesAction();
-	}, []);
+
+		io.getSocket().on("device", props.updateDeviceAction);
+		io.getSocket().on("deviceDiscovered", props.addDiscoveredDeviceAction);
+
+		return () => {
+			io.getSocket().off("device", props.updateDeviceAction);
+			io.getSocket().off("deviceDiscovered", props.addDiscoveredDeviceAction);
+		};
+	}, [props.updateDeviceAction, props.addDiscoveredDeviceAction]);
 
 	const {
 		classes,
@@ -89,19 +98,19 @@ function Devices(props) {
 		deleteDiscoveryAction,
 		deleteDevicesAction,
 	} = props;
-	console.log("devices", discoveredDevices);
+
 	return (
 		<Fragment>
 			<Card className={classes.card}>
 				<CardHeader title="Správa zařízení" />
 				<CardContent>
-					{Boolean(discoveredDevices.length) && <DiscoverySection />}
+					<DiscoverySection discoveredDevices={discoveredDevices} />
 					<FieldConnector
 						deepPath="DEVICE_MANAGEMENT.selected"
 						component={({ onChange, value }) => (
 							<EnchancedTable
 								dataProps={[
-									{ path: "info.title", label: "Název" },
+									{ path: "info.name", label: "Název" },
 									{
 										path: "info.location",
 										label: "Umístění",
@@ -214,6 +223,8 @@ const _mapDispatchToProps = (dispatch) =>
 			deleteDiscoveryAction: discoveredActions.deleteDevices,
 			resetAddDeviceAction: formsActions.removeForm("CREATE_DEVICE"),
 			deleteDevicesAction: deviceActions.deleteDevices,
+			updateDeviceAction: deviceActions.update,
+			addDiscoveredDeviceAction: discoveredActions.add,
 		},
 		dispatch
 	);

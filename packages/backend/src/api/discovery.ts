@@ -15,8 +15,8 @@ import { handleMapping } from "common/lib/service/DeviceHandler";
 import { contains, __, flip, filter, o, prop } from "ramda";
 import eventEmitter from "../service/eventEmitter";
 import agenda from "../agenda";
-import { DeviceDiscovery } from "common/lib/models/deviceDiscovery";
-import { DeviceModel } from "common/lib/models/device";
+import { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
+import { DeviceModel } from "common/lib/models/deviceModel";
 import mongoose from "mongoose";
 import { Actions } from "../service/actions";
 
@@ -74,10 +74,11 @@ export default () =>
 				console.log("user is", user);
 				const newDevice = await DeviceModel.createNew(
 					{
-						info: { ...form.info, deviceId: doc.deviceId },
+						info: { ...form.info },
 						things: doc.things,
 						metadata: {
 							topicPrefix: doc.userName,
+							deviceId: doc.deviceId,
 						},
 					},
 					user.id

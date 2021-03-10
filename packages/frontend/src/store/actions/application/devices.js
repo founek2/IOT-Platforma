@@ -164,6 +164,13 @@ export function add(data) {
 	};
 }
 
+export function updateThing(data) {
+	return {
+		type: ActionTypes.UPDATE_THING,
+		payload: data,
+	};
+}
+
 function getBuilding(device) {
 	return device.info.location.building;
 }
@@ -277,27 +284,29 @@ export function updateControl(id) {
 	};
 }
 
-export function updateState(id, JSONkey, data, formName) {
+export function updateState(_id, thingId, state) {
 	return async function (dispatch, getState) {
 		const EDIT_CONTROL = "UPDATE_STATE_DEVICE";
 		baseLogger(EDIT_CONTROL);
-		io.getSocket().emit(
-			"updateState",
-			{
-				formData: {
-					[formName]: { JSONkey: JSONkey, state: data },
-				},
-			},
-			id,
-			function (json) {
-				if (json.error) {
-					dispatch(addNotification({ message: "Nastala chyba", variant: "error" }));
-					errorLog("UpdateState error>", json.error);
-				} else {
-					dispatch(update({ id, control: json.data }));
-				}
+		io.getSocket().emit("updateState", { _id, thing: { _id: thingId, state } }, function (json) {
+			if (json.error) {
+				dispatch(addNotification({ message: "Nastala chyba", variant: "error" }));
+				errorLog("UpdateState error>", json.error);
+			} else {
+				dispatch(
+					updateThing({
+						_id,
+						thing: {
+							_id: thingId,
+							state: {
+								value: state,
+								// timestamp: new Date(),
+							},
+						},
+					})
+				);
 			}
-		);
+		});
 	};
 }
 

@@ -7,6 +7,9 @@ export const createState = () => ({
 		users: [],
 		devices: { data: [] },
 		discovery: { data: [] },
+		thingHistory: {
+			data: [],
+		},
 	},
 	fieldDescriptors,
 	tmpData: {

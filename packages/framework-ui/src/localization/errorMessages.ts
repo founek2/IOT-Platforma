@@ -1,9 +1,10 @@
-import { messageFactory } from './index';
+import { messageFactory } from "./index";
+import * as types from "../types";
 
-export const messages = {
-	userAlreadyExist: 'Uživatel již existuje',
-	passwordMissmatch: 'Nesprávné heslo',
-	unknownUser: 'Neznámý uživatel',
+export const messages: types.messages = {
+	userAlreadyExist: "Uživatel již existuje",
+	passwordMissmatch: "Nesprávné heslo",
+	unknownUser: "Neznámý uživatel",
 	userDoesNotExist: "Uživatel již neexistuje",
 	invalidToken: "Neplatný token",
 	tokenNotProvided: "Token nebyl v hlavičce",
@@ -18,7 +19,8 @@ export const messages = {
 	missingFormData: "V dotazu chybí formulářová data",
 	invalidPermissions: "Nedostatečná oprávnění",
 	validationFailed: "Nevalidní formulář",
-	InvalidParam: "Špatný request"
+	InvalidParam: "Špatný request",
+	notImplemented: "Funkce není implementována",
 };
 
-export default messageFactory(messages)
+export default messageFactory(messages);

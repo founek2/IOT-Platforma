@@ -1,7 +1,7 @@
 import express from "express";
 import Device from "backend/dist/models/Device";
 import User from "backend/dist/models/user";
-import { DeviceModel } from "common/src/models/device";
+import { DeviceModel } from "common/lib/models/deviceModel";
 import device from "../subscribers/device";
 
 const router = express.Router();

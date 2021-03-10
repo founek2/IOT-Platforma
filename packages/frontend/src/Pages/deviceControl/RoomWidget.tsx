@@ -2,7 +2,7 @@ import { makeStyles, Paper, Typography } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import clsx from "clsx";
 import { Device } from "common/lib/models/interface/device";
-import { ComponentType, IThing } from "common/lib/models/interface/thing";
+import { ComponentType, DeviceClass, IThing } from "common/lib/models/interface/thing";
 import { SensorIcons } from "frontend/src/components/SensorIcons";
 import React from "react";
 
@@ -26,17 +26,27 @@ const useStyles = makeStyles((theme) => ({
 		flex: "1 0 22%",
 		margin: 10,
 	},
+	sensorIcon: {
+		verticalAlign: "middle",
+		fontSize: 20,
+		marginRight: 5,
+	},
+	center: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+	},
 }));
-
+type ThingWithDeviceClass = IThing & { config: { deviceClass: DeviceClass } };
 interface SimpleSensorProps {
-	thing: IThing;
+	thing: ThingWithDeviceClass;
 }
 function SimpleSensor({ thing }: SimpleSensorProps) {
 	const classes = useStyles();
-	const Icon = SensorIcons[thing.config.deviceClass!];
+	const Icon = SensorIcons[thing.config.deviceClass];
 	return (
-		<div className={classes.sensorContainer}>
-			<Icon />
+		<div className={clsx(classes.sensorContainer, classes.center)}>
+			<Icon className={classes.sensorIcon} />
 			<Typography component="span">
 				{thing.state?.value}&nbsp;{thing.config.unitOfMeasurement}
 			</Typography>
@@ -56,13 +66,13 @@ function RoomWidget({ devices, className }: RoomProps) {
 	const sensors: JSX.Element[] = [];
 	devices.forEach((device) => {
 		device.things.forEach((thing) => {
-			if (thing.config.componentType === ComponentType.Sensor)
-				sensors.push(<SimpleSensor thing={thing} key={thing._id} />);
+			if (thing.config.componentType === ComponentType.Sensor && thing.config.deviceClass)
+				sensors.push(<SimpleSensor thing={thing as ThingWithDeviceClass} key={thing._id} />);
 		});
 	});
 	return (
 		<Paper className={clsx(className, classes.widget)} elevation={3}>
-			<Typography variant="h3" className={classes.title}>
+			<Typography variant="h3" className={clsx(classes.title, classes.center)}>
 				{location.room}
 			</Typography>
 			<div className={classes.sensorsGrid}>{sensors}</div>

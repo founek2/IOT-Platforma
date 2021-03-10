@@ -15,7 +15,7 @@ export interface IThing {
 	_id?: any;
 	config: {
 		deviceClass?: DeviceClass;
-		name?: string;
+		name: string;
 		unitOfMeasurement?: string;
 		nodeId: string;
 		propertyId?: string;
@@ -23,6 +23,6 @@ export interface IThing {
 	};
 	state?: {
 		timeStamp: Date;
-		value: string;
+		value: any;
 	};
 }

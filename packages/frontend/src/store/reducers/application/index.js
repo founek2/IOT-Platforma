@@ -5,6 +5,7 @@ import users from "framework-ui/lib/redux/reducers/application/users";
 import devices from "./devices";
 import userNames from "./userNames";
 import discovery from "./discovery";
+import thingHistory from "./thingHistory";
 
 export default combineReducers({
 	user,
@@ -13,4 +14,5 @@ export default combineReducers({
 	devices,
 	userNames,
 	discovery,
+	thingHistory,
 });

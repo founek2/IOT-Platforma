@@ -6,12 +6,19 @@ import { fetchDiscovery, deleteDiscovery, addDiscoveredDevice } from "../../../a
 import { validateForm } from "framework-ui/lib/redux/actions/formsData";
 import { add as addDeviceToState } from "./devices";
 
-import type { DeviceDiscovery } from "common/lib/models/deviceDiscovery";
+import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
 import type { Device } from "common/lib/models/interface/device";
 
 export function set(data: DeviceDiscovery[]) {
 	return {
 		type: ActionTypes.SET_DISCOVERED_DEVICES,
+		payload: data,
+	};
+}
+
+export function add(data: DeviceDiscovery[]) {
+	return {
+		type: ActionTypes.ADD_DISCOVERED_DEVICES,
 		payload: data,
 	};
 }

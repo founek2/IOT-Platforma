@@ -1,12 +1,13 @@
 import React, { Fragment, useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { filter, findLastIndex, isEmpty } from "ramda";
+import { filter, findLastIndex, isEmpty, o } from "ramda";
 import { bindActionCreators } from "redux";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import FullScreenDialog from "framework-ui/lib/Components/FullScreenDialog";
 import isBefore from "date-fns/isBefore";
 import subSeconds from "date-fns/subSeconds";
+import { createSelector } from "reselect";
 
 import io from "../webSocket";
 import { isUrlHash, getUserPresence } from "framework-ui/lib/utils/getters";
@@ -24,6 +25,7 @@ import RoomWidget from "./deviceControl/RoomWidget";
 import { LocationTypography } from "../components/LocationTypography";
 import { Link } from "react-router-dom";
 import Room from "./deviceControl/Room";
+import { SocketThingState } from "common/lib/types";
 
 function isControllable(device: Device) {
 	return Boolean(device.permissions && device.permissions.control);
@@ -51,31 +53,27 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function updateDevice(updateDeviceAction: any) {
-	return ({ data, deviceID, updatedAt }: any) => {
-		console.log("web socket GOT");
-		const updateObj: any = {
-			id: deviceID,
-			ack: updatedAt,
-		};
-		if (data) updateObj.control = { current: { data } };
-
-		updateDeviceAction(updateObj);
+function updateDevice(updateThingA: any) {
+	return ({ _id, thing }: SocketThingState) => {
+		console.log("web socket GOT", _id, thing);
+		thing.state!.timeStamp = new Date();
+		updateThingA({ _id, thing });
 	};
 }
 
+type Buildings = Map<string, Map<string, Device[]>>;
+
 interface DeviceControlProps {
-	devices: Device[];
 	fetchDevicesAction: any;
 	// updateDeviceStateA,
 	updateDeviceAction: any;
 	fetchControlAction: any;
 	devicesLastUpdate: any;
-	buildings: Map<string, Map<string, Device[]>>;
+	updateThingA: any;
+	buildings: Buildings;
 	selectedLocation: Device["info"]["location"];
 }
 function DeviceControl({
-	devices,
 	fetchDevicesAction,
 	// updateDeviceStateA,
 	updateDeviceAction,
@@ -87,6 +85,7 @@ function DeviceControl({
 	// updateNotifyControlA,
 	// prefillNotifyControlA,
 	// JSONkey,
+	updateThingA,
 	devicesLastUpdate,
 	buildings,
 	selectedLocation,
@@ -95,8 +94,9 @@ function DeviceControl({
 	useEffect(() => {
 		fetchDevicesAction();
 
-		const listener = updateDevice(updateDeviceAction);
+		const listener = updateDevice(updateThingA);
 		io.getSocket().on("control", listener);
+		io.getSocket().on("device", updateDeviceAction);
 
 		const listenerAck = updateDevice(updateDeviceAction);
 		io.getSocket().on("ack", listenerAck);
@@ -104,8 +104,9 @@ function DeviceControl({
 		return () => {
 			io.getSocket().off("control", listener);
 			io.getSocket().off("ack", listenerAck);
+			io.getSocket().off("device", updateDeviceAction);
 		};
-	}, [fetchDevicesAction, updateDeviceAction]);
+	}, [fetchDevicesAction, updateDeviceAction, updateThingA]);
 
 	useEffect(() => {
 		const handler = () => {
@@ -129,10 +130,6 @@ function DeviceControl({
 		};
 	}, [fetchControlAction, devicesLastUpdate]);
 
-	// const boxes: JSX.Element[] = devices.map((device: Device) => generateBoxes(device, classes)).flat();
-
-	// let lastBuilding: string | undefined = undefined;
-	console.log("location selected", selectedLocation);
 	const selectedBuilding = buildings.get(selectedLocation.building);
 	const selectedRoom = selectedBuilding?.get(selectedLocation.room);
 	return (
@@ -140,7 +137,7 @@ function DeviceControl({
 			<Grid container justify="center">
 				<Grid md={8} item>
 					{!selectedRoom ? (
-						isEmpty(devices) ? (
+						isEmpty(buildings.size === 0) ? (
 							<Typography>Nebyla nalezena žádná zařízení</Typography>
 						) : (
 							<div className={classes.widgetContainer}>
@@ -195,24 +192,29 @@ function DeviceControl({
 	);
 }
 
-const _mapStateToProps = (state: any) => {
-	const id = getQueryID(state);
-	const JSONkey = getQueryField("JSONkey", state);
-	const devices: Device[] = filter(isControllable, getDevices(state));
+const buildingsSelector = createSelector<any, { data: Device[]; lastUpdate: Date }, Buildings>(
+	// (o(filter(isControllable), getDevices) as unknown) as any,
+	(state: any) => state.application.devices,
+	({ data: devices, lastUpdate }: { data: Device[]; lastUpdate: Date }) => {
+		const buildings = new Map<string, Map<string, Device[]>>();
+		devices.forEach((device) => {
+			const { building, room } = device.info.location;
+			if (!buildings.has(building)) buildings.set(building, new Map());
+			const roomMap = buildings.get(building)!;
+			roomMap.set(room, [...(roomMap.get(room) || []), device]);
+		});
 
-	const buildings = new Map<string, Map<string, Device[]>>();
-	devices.forEach((device) => {
-		const { building, room } = device.info.location;
-		if (!buildings.has(building)) buildings.set(building, new Map());
-		const roomMap = buildings.get(building)!;
-		roomMap.set(room, [...(roomMap.get(room) || []), device]);
-	});
+		return buildings;
+	}
+);
+
+const _mapStateToProps = (state: any) => {
+	const JSONkey = getQueryField("JSONkey", state);
 
 	return {
-		buildings,
-		devices,
+		buildings: buildingsSelector(state),
+		// buildings,
 		openNotifyDialog: isUrlHash("#editNotify")(state),
-		selectedDevice: devices.find((dev) => dev._id === id),
 		isUserPresent: getUserPresence(state),
 		devicesLastUpdate: getDevicesLastUpdate(state),
 		JSONkey,
@@ -228,6 +230,7 @@ const _mapDispatchToProps = (dispatch: any) =>
 		{
 			fetchDevicesAction: deviceActions.fetch,
 			updateDeviceStateA: deviceActions.updateState,
+			updateThingA: deviceActions.updateThing,
 			updateDeviceAction: deviceActions.update,
 			fetchControlAction: deviceActions.fetchControl,
 			resetEditNotifyControlA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),

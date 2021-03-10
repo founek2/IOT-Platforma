@@ -1,6 +1,6 @@
 import mongoose, { Document, Model } from "mongoose";
 import hat from "hat";
-import { thingSchema } from "./schema/thing";
+import { thingSchema } from "./schema/thingSchema";
 import { IUser } from "./user";
 import { devLog } from "framework/lib/logger";
 import { Device } from "./interface/device";
@@ -15,10 +15,9 @@ export interface IDevice extends Device, Document {
 const deviceSchema = new Schema<IDevice>(
 	{
 		info: {
-			title: { type: String },
+			name: { type: String },
 			description: { type: String },
 			imgPath: { type: String },
-			deviceId: { type: String, required: true },
 			location: {
 				building: String,
 				room: String,
@@ -39,7 +38,7 @@ const deviceSchema = new Schema<IDevice>(
 			// 	timestamp: Date,
 			// },
 			status: {
-				value: String,
+				value: Schema.Types.Mixed,
 				timestamp: Date,
 			},
 			lastAck: Date,
@@ -47,6 +46,7 @@ const deviceSchema = new Schema<IDevice>(
 		metadata: {
 			topicPrefix: String,
 			publicRead: Boolean,
+			deviceId: { type: String, required: true },
 		},
 	},
 	{ timestamps: true }
@@ -54,7 +54,7 @@ const deviceSchema = new Schema<IDevice>(
 
 export interface IDeviceModel extends Model<IDevice> {
 	createNew(
-		device: { info: any; things: any[]; metadata: { topicPrefix: string } },
+		device: { info: any; things: any[]; metadata: { topicPrefix: string; deviceId: string } },
 		ownerId: string
 	): Promise<IDevice>;
 	// findForPublic(): Promise<IDevice[]>;
@@ -66,7 +66,7 @@ deviceSchema.statics.createNew = async function ({ info, things, metadata }, use
 	const objID = ObjectId(userID);
 
 	const result = await this.exists({
-		"info.deviceId": info.deviceId,
+		"metadata.deviceId": metadata.deviceId,
 		"metadata.topicPrefix": metadata.topicPrefix,
 	});
 	if (result) throw Error("deviceIdTaken");
@@ -154,7 +154,7 @@ deviceSchema.statics.findForUser = async function (userID) {
 deviceSchema.statics.login = async function (topicPrefix: string, deviceId: string, apiKey: string) {
 	return await this.exists({
 		"metadata.topicPrefix": topicPrefix,
-		"info.deviceId": deviceId,
+		"metadata.deviceId": deviceId,
 		apiKey: apiKey,
 	});
 };

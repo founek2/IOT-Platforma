@@ -9,13 +9,11 @@ import isBefore from "date-fns/isBefore";
 import subSeconds from "date-fns/subSeconds";
 
 import io from "../../webSocket";
-import RgbSwitch from "./room/RgbSwitch";
 import { ControlTypesFormNames } from "../../constants";
 import { isUrlHash, getUserPresence } from "framework-ui/lib/utils/getters";
 import { getQueryID, getQueryField, getDevicesLastUpdate } from "../../utils/getters";
 import * as deviceActions from "../../store/actions/application/devices";
 import Switch from "./room/Swich";
-import Activator from "./room/Activator";
 import { getDevices } from "../../utils/getters";
 import { errorLog } from "framework-ui/lib/logger";
 import EditNotifyForm from "../../components/EditNotifyForm";
@@ -47,24 +45,26 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function generateBoxes(device: Device, classes: any) {
-	return device.things.map(({ config, state }) => {
+function generateBoxes(device: Device, updateState: any, classes: any) {
+	return device.things.map((thing) => {
+		const { _id, config, state } = thing;
 		const Comp = compMapper[config.componentType];
 		if (Comp) {
 			const data = state?.value;
 			return (
 				<Comp
-					key={`${device._id}/${config.name}`}
-					config={config}
+					key={_id}
+					thing={thing}
 					// description={description}
-					// onClick={(val) => updateDeviceStateA(device.id, JSONkey, val, ControlTypesFormNames[type])}
-					data={data}
+					onClick={(state: any) => updateState(device._id, _id, state)}
+					lastChange={state?.timeStamp}
 					className={classes.item}
 					deviceStatus={device?.state?.status}
-					id={device._id}
+					deviceId={device._id}
+					room={device.info.location.room}
 				/>
 			);
-		} else errorLog("Invalid component type:", config.componentType, "of device:", device.info.title);
+		} else errorLog("Invalid component type:", config.componentType, "of device:", device.info.name);
 		return null;
 	});
 }
@@ -72,12 +72,15 @@ function generateBoxes(device: Device, classes: any) {
 interface RoomProps {
 	devices: Device[];
 	location: Device["info"]["location"];
+	updateDeviceStateA: any;
 }
-function Room({ devices }: RoomProps) {
+function Room({ devices, updateDeviceStateA }: RoomProps) {
 	const classes = useStyles();
 
 	const location = devices[0].info.location;
-	const boxes: (JSX.Element | null)[] = devices.map((device: Device) => generateBoxes(device, classes)).flat();
+	const boxes: (JSX.Element | null)[] = devices
+		.map((device: Device) => generateBoxes(device, updateDeviceStateA, classes))
+		.flat();
 
 	return (
 		<div>
@@ -88,5 +91,12 @@ function Room({ devices }: RoomProps) {
 		</div>
 	);
 }
+const _mapDispatchToProps = (dispatch: any) =>
+	bindActionCreators(
+		{
+			updateDeviceStateA: deviceActions.updateState,
+		},
+		dispatch
+	);
 
-export default Room;
+export default connect(undefined, _mapDispatchToProps)(Room);

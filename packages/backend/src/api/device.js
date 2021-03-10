@@ -15,7 +15,7 @@ import { handleMapping } from "common/lib/service/DeviceHandler";
 import { contains, __, flip, filter, o, prop } from "ramda";
 import eventEmitter from "../service/eventEmitter";
 import agenda from "../agenda";
-import { DeviceModel } from "common/lib/models/device";
+import { DeviceModel } from "common/lib/models/deviceModel";
 import mongoose from "mongoose";
 
 function checkRead(req, res, next) {
