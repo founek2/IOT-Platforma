@@ -8,15 +8,16 @@ import { add as addDeviceToState } from "./devices";
 
 import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
 import type { Device } from "common/lib/models/interface/device";
+import { IDeviceDiscovery } from "common/lib/models/interface/discovery";
 
-export function set(data: DeviceDiscovery[]) {
+export function set(data: IDeviceDiscovery[]) {
 	return {
 		type: ActionTypes.SET_DISCOVERED_DEVICES,
 		payload: data,
 	};
 }
 
-export function add(data: DeviceDiscovery[]) {
+export function add(data: IDeviceDiscovery[]) {
 	return {
 		type: ActionTypes.ADD_DISCOVERED_DEVICES,
 		payload: data,
@@ -36,7 +37,7 @@ export function fetch() {
 		return fetchDiscovery(
 			{
 				token: getToken(getState()),
-				onSuccess: (json: { docs: DeviceDiscovery[] }) => {
+				onSuccess: (json: { docs: IDeviceDiscovery[] }) => {
 					dispatch(set(json.docs));
 				},
 			},

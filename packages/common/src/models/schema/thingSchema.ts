@@ -7,18 +7,18 @@ const ObjectId = mongoose.Types.ObjectId;
 
 export const thingSchema = new Schema({
 	config: {
-		deviceClass: {
-			type: String,
-			enum: Object.values(DeviceClass),
-		},
 		name: String,
-		unitOfMeasurement: String,
 		nodeId: String,
-		propertyId: String,
-		componentType: {
-			type: String,
-			enum: Object.values(ComponentType),
-		},
+		componentType: String,
+		properties: [
+			{
+				deviceClass: String,
+				name: String,
+				unitOfMeasurement: String,
+				propertyId: String,
+				dataType: String,
+			},
+		],
 	},
 	state: {
 		timestamp: Date,

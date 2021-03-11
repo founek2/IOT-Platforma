@@ -11,7 +11,7 @@ import { HistoricalModel } from "common/lib/models/historyModel";
 import eventEmitter from "./eventEmitter";
 import { Device, DeviceStatus } from "common/lib/models/interface/device";
 import { SocketThingState } from "common/lib/types";
-import { IThing } from "common/lib/models/interface/thing";
+import { ComponentType, IThing } from "common/lib/models/interface/thing";
 import User from "backend/dist/models/user";
 
 const emitter = new EventEmitter();
@@ -70,38 +70,104 @@ export default (io: serverIO): MqttClient => {
 		const handle = topicParser(topic, message);
 		console.log(topic);
 
-		handle("prefix/+/+/$config", async function (topic, data, [deviceId, componentType]) {
-			const message = JSON.parse(data.toString());
-			console.log("component=" + componentType, "deviceId=" + deviceId, "message=" + JSON.stringify(message));
-
-			if (componentType === "device") {
-				console.log("creating");
-				await DeviceDiscovery.updateOne(
-					{ deviceId },
-					{ userName: message.userName, name: message.name || deviceId },
-					{ upsert: true, setDefaultsOnInsert: true }
-				);
-			} else {
-				if (await DeviceDiscovery.exists({ deviceId })) {
-					let query;
-					if (componentType === "sensor") {
-						query = { deviceId, "things.config.propertyId": message.propertyId };
-						message.nodeId = "sensor";
-					} else query = { deviceId, "things.config.nodeId": message.nodeId };
-
-					const res = await DeviceDiscovery.updateOne(query, {
-						$set: { "things.$.config": { ...message, componentType } },
-					});
-					if (res.nModified === 1) return;
-					console.log("not updated");
-				}
-				await DeviceDiscovery.updateOne(
-					{ deviceId },
-					{ $push: { things: { config: { ...message, componentType } } } },
-					{ upsert: true, setDefaultsOnInsert: true }
-				);
-			}
+		handle("prefix/+/$name", async function (topic, data, [deviceId]) {
+			DeviceDiscovery.updateOne({ deviceId }, { name: data.toString() }, { upsert: true }).exec();
 		});
+
+		handle("prefix/+/$realm", async function (topic, data, [deviceId]) {
+			DeviceDiscovery.updateOne({ deviceId }, { userName: data.toString() }, { upsert: true }).exec();
+		});
+
+		handle("prefix/+/$nodes", async function (topic, data, [deviceId]) {
+			const nodeIds: string[] = data.toString().split(",");
+			// DeviceDiscovery.updateOne(
+			// 	{ deviceId },
+			// 	{
+			// 		things: nodeIds.map((nodeId) => ({ config: { nodeId } })),
+			// 	}
+			// ).exec();
+		});
+
+		handle("prefix/+/+/$name", async function (topic, data, [deviceId, nodeId]) {
+			console.log("name22", deviceId, nodeId, data.toString());
+			const res = await DeviceDiscovery.updateOne(
+				{ deviceId },
+				{ [`things.${nodeId}.config.name`]: data.toString() }
+			).exec();
+			console.log("resultt", res);
+		});
+
+		// handle("prefix/+/+/$properties", async function (topic, data, [deviceId, nodeId]) {
+		// 	DeviceDiscovery.updateOne({ deviceId }, { [`things.${nodeId}.config.propertyId`]: data.toString() }).exec();
+		// });
+
+		handle("prefix/+/+/+/$class", async function (topic, data, [deviceId, nodeId, propertyId]) {
+			DeviceDiscovery.updateOne(
+				{ deviceId },
+				{ [`things.${nodeId}.config.properties.${propertyId}.deviceClass`]: data.toString() }
+			).exec();
+		});
+
+		handle("prefix/+/+/+/$unit", async function (topic, data, [deviceId, nodeId, propertyId]) {
+			DeviceDiscovery.updateOne(
+				{ deviceId },
+				{ [`things.${nodeId}.config.properties.${propertyId}.unitOfMeasurement`]: data.toString() }
+			).exec();
+		});
+
+		handle("prefix/+/+/+/$name", async function (topic, data, [deviceId, nodeId, propertyId]) {
+			DeviceDiscovery.updateOne(
+				{ deviceId },
+				{ [`things.${nodeId}.config.properties.${propertyId}.name`]: data.toString() }
+			).exec();
+		});
+
+		handle("prefix/+/+/$type", async function (topic, data, [deviceId, nodeId, propertyId]) {
+			DeviceDiscovery.updateOne(
+				{ deviceId },
+				{ [`things.${nodeId}.config.componentType`]: data.toString() }
+			).exec();
+		});
+
+		handle("prefix/+/+/+/$datatype", async function (topic, data, [deviceId, nodeId, propertyId]) {
+			DeviceDiscovery.updateOne(
+				{ deviceId },
+				{ [`things.${nodeId}.config.properties.${propertyId}.dataType`]: data.toString() }
+			).exec();
+		});
+
+		// handle("prefix/+/+/$config", async function (topic, data, [deviceId, componentType]) {
+		// 	const message = JSON.parse(data.toString());
+		// 	console.log("component=" + componentType, "deviceId=" + deviceId, "message=" + JSON.stringify(message));
+
+		// 	if (componentType === "device") {
+		// 		console.log("creating");
+		// 		await DeviceDiscovery.updateOne(
+		// 			{ deviceId },
+		// 			{ userName: message.userName, name: message.name || deviceId },
+		// 			{ upsert: true, setDefaultsOnInsert: true }
+		// 		);
+		// 	} else {
+		// 		if (await DeviceDiscovery.exists({ deviceId })) {
+		// 			let query;
+		// 			if (componentType === "sensor") {
+		// 				query = { deviceId, "things.config.propertyId": message.propertyId };
+		// 				message.nodeId = "sensor";
+		// 			} else query = { deviceId, "things.config.nodeId": message.nodeId };
+
+		// 			const res = await DeviceDiscovery.updateOne(query, {
+		// 				$set: { "things.$.config": { ...message, componentType } },
+		// 			});
+		// 			if (res.nModified === 1) return;
+		// 			console.log("not updated");
+		// 		}
+		// 		await DeviceDiscovery.updateOne(
+		// 			{ deviceId },
+		// 			{ $push: { things: { config: { ...message, componentType } } } },
+		// 			{ upsert: true, setDefaultsOnInsert: true }
+		// 		);
+		// 	}
+		// });
 
 		handle("prefix/+/$state", async function (topic, data, [deviceId]) {
 			const message: DeviceStatus = data.toString();
@@ -162,69 +228,66 @@ export default (io: serverIO): MqttClient => {
 				);
 		});
 
-		handle("v2/+/+/sensor/+", async function (topic, message, [topicPrefix, deviceId, propertyId]) {
+		// handle("v2/+/+/sensor/+", async function (topic, message, [topicPrefix, deviceId, propertyId]) {
+		// 	const timestamp = new Date();
+		// 	const device = await DeviceModel.findOneAndUpdate(
+		// 		{
+		// 			"metadata.deviceId": deviceId,
+		// 			"metadata.topicPrefix": topicPrefix,
+		// 			"things.config.propertyId": propertyId,
+		// 		},
+		// 		{
+		// 			$set: { "things.$.state": { timestamp, value: message.toString() } },
+		// 		}
+		// 	)
+		// 		.lean()
+		// 		.exec();
+		// 	console.log("saving sensor data");
+		// 	if (!device) return;
+
+		// 	sendToUsers(io, "read", device, "sensor", propertyId);
+		// 	HistoricalModel.saveSensorData(
+		// 		device?._id,
+		// 		getThing(device, "sensor", propertyId)._id,
+		// 		propertyId,
+		// 		Number(message.toString()),
+		// 		timestamp
+		// 	);
+		// });
+
+		handle("v2/+/+/+/+", async function (topic, message, [topicPrefix, deviceId, nodeId, propertyId]) {
 			const timestamp = new Date();
 			const device = await DeviceModel.findOneAndUpdate(
 				{
 					"metadata.deviceId": deviceId,
 					"metadata.topicPrefix": topicPrefix,
-					"things.config.propertyId": propertyId,
+					"things.config.nodeId": nodeId,
 				},
 				{
-					$set: { "things.$.state": { timestamp, value: message.toString() } },
+					$set: {
+						"things.$.state.timestamp": timestamp,
+						[`things.$.state.value.${propertyId}`]: message.toString(),
+					},
+				},
+				{
+					new: true,
 				}
 			)
 				.lean()
 				.exec();
-			console.log("saving sensor data");
+			console.log("saving not sensor data");
 			if (!device) return;
 
-			sendToUsers(io, "read", device, "sensor", propertyId);
-			HistoricalModel.saveSensorData(
+			sendToUsers(io, device, nodeId, propertyId);
+
+			HistoricalModel.saveControlData(
 				device?._id,
-				getThing(device, "sensor", propertyId)._id,
+				getThing(device, nodeId)._id,
 				propertyId,
 				Number(message.toString()),
 				timestamp
 			);
 		});
-
-		handle(
-			"v2/+/+/((?:(?!sensor).)*)/+",
-			async function (topic, message, [topicPrefix, deviceId, nodeId, propertyId]) {
-				const timestamp = new Date();
-				const device = await DeviceModel.findOneAndUpdate(
-					{
-						"metadata.deviceId": deviceId,
-						"metadata.topicPrefix": topicPrefix,
-						"things.config.nodeId": nodeId,
-					},
-					{
-						$set: {
-							"things.$.state.timestamp": timestamp,
-							[`things.$.state.value.${propertyId}`]: message.toString(),
-						},
-					},
-					{
-						new: true,
-					}
-				)
-					.lean()
-					.exec();
-				console.log("saving not sensor data");
-				if (!device) return;
-
-				sendToUsers(io, "control", device, nodeId, propertyId);
-
-				HistoricalModel.saveControlData(
-					device?._id,
-					getThing(device, nodeId, propertyId)._id,
-					propertyId,
-					Number(message.toString()),
-					timestamp
-				);
-			}
-		);
 	});
 
 	client.on("error", function (err) {
@@ -235,8 +298,8 @@ export default (io: serverIO): MqttClient => {
 	return client;
 };
 
-function sendToUsers(io: serverIO, type: "read" | "control", device: Device, nodeId: string, propertyId: string) {
-	let thing = getThing(device, nodeId, propertyId, type === "read");
+function sendToUsers(io: serverIO, device: Device, nodeId: string, propertyId: string) {
+	let thing = getThing(device, nodeId);
 
 	const updateData: SocketThingState = {
 		_id: device._id,
@@ -245,18 +308,11 @@ function sendToUsers(io: serverIO, type: "read" | "control", device: Device, nod
 			state: thing.state,
 		},
 	};
-	device.permissions[type].forEach((userId) => {
+	device.permissions[thing.config.componentType === "sensor" ? "read" : "control"].forEach((userId) => {
 		io.to(userId.toString()).emit("control", updateData);
 	});
 }
 
-function getThing(
-	device: Device,
-	nodeId: IThing["config"]["nodeId"],
-	propertyId: IThing["config"]["propertyId"],
-	isSensor: boolean = false
-) {
-	if (isSensor)
-		return device.things.find((thing) => thing.config.nodeId === nodeId && thing.config.propertyId === propertyId)!;
+function getThing(device: Device, nodeId: IThing["config"]["nodeId"]) {
 	return device.things.find((thing) => thing.config.nodeId === nodeId)!;
 }

@@ -12,13 +12,30 @@ import checkWritePerm from "../middleware/device/checkWritePerm";
 import checkControlPerm from "../middleware/device/checkControlPerm";
 import Notify from "../models/Notification";
 import { handleMapping } from "common/lib/service/DeviceHandler";
-import { contains, __, flip, filter, o, prop } from "ramda";
+import {
+	contains,
+	__,
+	flip,
+	filter,
+	o,
+	prop,
+	assoc,
+	assocPath,
+	over,
+	lensProp,
+	toPairs,
+	map,
+	compose,
+	lensPath,
+} from "ramda";
 import eventEmitter from "../service/eventEmitter";
 import agenda from "../agenda";
 import { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import mongoose from "mongoose";
 import { Actions } from "../service/actions";
+import { IThing } from "common/lib/models/interface/thing";
+import { IThingDiscovery, IPropertyDiscovery } from "common/lib/models/interface/discovery";
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -72,10 +89,25 @@ export default () =>
 				if (!doc) return res.status(208).send({ error: "deviceNotFound" });
 
 				console.log("user is", user);
+				function convertProperties([propertyId, property]: [string, IPropertyDiscovery]) {
+					return assoc("propertyId", propertyId, property);
+				}
+				function convertDiscoveryThing([nodeId, thing]: [string, IThingDiscovery]): IThing {
+					return o<IThingDiscovery, IThingDiscovery, any>(
+						over(lensPath(["config", "properties"]), o(map(convertProperties), toPairs)),
+						assocPath(["config", "nodeId"], nodeId)
+					)(thing);
+				}
+
+				const convertThings = o<
+					{ [propertyId: string]: IThingDiscovery },
+					[string, IThingDiscovery][],
+					IThing[]
+				>(map(convertDiscoveryThing), toPairs);
 				const newDevice = await DeviceModel.createNew(
 					{
 						info: { ...form.info },
-						things: doc.things,
+						things: convertThings(doc.things),
 						metadata: {
 							topicPrefix: doc.userName,
 							deviceId: doc.deviceId,
@@ -83,6 +115,8 @@ export default () =>
 					},
 					user.id
 				);
+
+				console.log(convertThings(doc.things)[1].config);
 
 				const suuccess = await Actions.deviceInitPairing(doc.deviceId, newDevice.apiKey);
 				if (suuccess) {

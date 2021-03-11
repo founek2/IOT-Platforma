@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 function updateDevice(updateThingA: any) {
 	return ({ _id, thing }: SocketThingState) => {
 		console.log("web socket GOT", _id, thing);
-		thing.state!.timeStamp = new Date();
+		thing.state!.timestamp = new Date();
 		updateThingA({ _id, thing });
 	};
 }

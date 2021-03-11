@@ -2,7 +2,7 @@ import { makeStyles, Paper, Typography } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import clsx from "clsx";
 import { Device } from "common/lib/models/interface/device";
-import { ComponentType, DeviceClass, IThing } from "common/lib/models/interface/thing";
+import { ComponentType, DeviceClass, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { SensorIcons } from "frontend/src/components/SensorIcons";
 import React from "react";
 
@@ -37,18 +37,24 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "center",
 	},
 }));
-type ThingWithDeviceClass = IThing & { config: { deviceClass: DeviceClass } };
+type IThingPropertyWithDeviceClass = IThingProperty & { deviceClass: DeviceClass };
 interface SimpleSensorProps {
-	thing: ThingWithDeviceClass;
+	thing: IThing;
+	property: IThingPropertyWithDeviceClass;
 }
-function SimpleSensor({ thing }: SimpleSensorProps) {
+function SimpleSensor({ thing, property }: SimpleSensorProps) {
 	const classes = useStyles();
-	const Icon = SensorIcons[thing.config.deviceClass];
+	const Icon = SensorIcons[property.deviceClass];
+
+	const value = thing.state?.value && thing.state?.value[property.propertyId];
+
+	if (!value) return null;
+
 	return (
 		<div className={clsx(classes.sensorContainer, classes.center)}>
 			<Icon className={classes.sensorIcon} />
 			<Typography component="span">
-				{thing.state?.value}&nbsp;{thing.config.unitOfMeasurement}
+				{value}&nbsp;{property.unitOfMeasurement}
 			</Typography>
 		</div>
 	);
@@ -66,8 +72,17 @@ function RoomWidget({ devices, className }: RoomProps) {
 	const sensors: JSX.Element[] = [];
 	devices.forEach((device) => {
 		device.things.forEach((thing) => {
-			if (thing.config.componentType === ComponentType.Sensor && thing.config.deviceClass)
-				sensors.push(<SimpleSensor thing={thing as ThingWithDeviceClass} key={thing._id} />);
+			if (thing.config.componentType === ComponentType.Sensor)
+				thing.config.properties.forEach((property) => {
+					if (property.deviceClass)
+						sensors.push(
+							<SimpleSensor
+								thing={thing}
+								property={property as IThingPropertyWithDeviceClass}
+								key={thing._id}
+							/>
+						);
+				});
 		});
 	});
 	return (

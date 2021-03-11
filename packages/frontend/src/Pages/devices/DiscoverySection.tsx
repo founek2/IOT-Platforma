@@ -14,9 +14,10 @@ import * as discoveredActions from "../../store/actions/application/discovery";
 import { getDiscovery } from "../../utils/getters";
 import OnlineCircle from "../../components/OnlineCircle";
 import type { DeviceStatus } from "common/lib/models/interface/device";
+import { IDeviceDiscovery, IThingDiscovery } from "common/lib/models/interface/discovery";
 
 interface DiscoverySectionProps {
-	discoveredDevices?: DeviceDiscovery[];
+	discoveredDevices?: IDeviceDiscovery[];
 	resetCreateDeviceAction: any;
 	deleteDiscoveryAction: any;
 	updateFormField: any;
@@ -52,7 +53,10 @@ function DiscoverySection(props: DiscoverySectionProps) {
 								{
 									path: "things",
 									label: "Věcí",
-									convertor: (things: any[]) => things.map((obj) => obj.config.name).join(", "),
+									convertor: (things: { [nodeId: string]: IThingDiscovery }) =>
+										Object.values(things)
+											.map((obj) => obj.config.name)
+											.join(", "),
 								},
 								{
 									path: "createdAt",

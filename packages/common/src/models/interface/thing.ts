@@ -11,15 +11,42 @@ export enum ComponentType {
 	Switch = "switch",
 }
 
+export enum PropertyDataTypes {
+	String = "string",
+	Float = "float",
+	Boolean = "boolean",
+	Integer = "integer",
+}
+
 export interface IThing {
 	_id?: any;
 	config: {
-		deviceClass?: DeviceClass;
 		name: string;
-		unitOfMeasurement?: string;
 		nodeId: string;
-		propertyId?: string;
 		componentType: ComponentType;
+		properties: IThingProperty[];
+	};
+	state?: {
+		timestamp: Date;
+		value: any;
+	};
+}
+
+export interface IThingProperty {
+	deviceClass?: DeviceClass;
+	name: string;
+	unitOfMeasurement: string;
+	propertyId: string;
+	dataType: PropertyDataTypes;
+}
+
+export interface IThingSensor {
+	_id?: any;
+	config: {
+		name: string;
+		nodeId: string;
+		componentType: ComponentType.Sensor;
+		properties: [IThingProperty];
 	};
 	state?: {
 		timeStamp: Date;

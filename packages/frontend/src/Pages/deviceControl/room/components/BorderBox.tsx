@@ -6,7 +6,7 @@ import isAfk from "../../../../utils/isAfk";
 import forceUpdateHoc from "framework-ui/lib/Components/forceUpdateHoc";
 import ControlDetail from "./borderBox/ControlDetail";
 import Loader from "framework-ui/lib/Components/Loader";
-import { IThing } from "common/lib/models/interface/thing";
+import { IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { Device, DeviceStatus, IDeviceStatus } from "common/lib/models/interface/device";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -45,6 +45,7 @@ export interface BoxWidgetProps {
 	disabled?: boolean;
 	fetchHistory: () => Promise<void>;
 	room: string;
+	property?: IThingProperty;
 }
 export interface GeneralBoxProps {
 	lastChange?: Date;
@@ -54,6 +55,7 @@ export interface GeneralBoxProps {
 	deviceStatus: IDeviceStatus;
 	deviceId: Device["_id"];
 	room: string;
+	property?: IThingProperty;
 }
 
 export interface BorderBoxProps extends GeneralBoxProps {

@@ -21,7 +21,7 @@ import * as formsActions from "framework-ui/lib/redux/actions/formsData";
 import * as controlActions from "../../store/actions/application/devices/control";
 import MusicCast from "./room/MusicCast";
 import Sensor from "./room/Sensor";
-import { ComponentType, IThing } from "common/lib/models/interface/thing";
+import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { Device } from "common/lib/models/interface/device";
 import { LocationTypography } from "frontend/src/components/LocationTypography";
 
@@ -49,21 +49,25 @@ function generateBoxes(device: Device, updateState: any, classes: any) {
 	return device.things.map((thing) => {
 		const { _id, config, state } = thing;
 		const Comp = compMapper[config.componentType];
+
 		if (Comp) {
-			const data = state?.value;
-			return (
+			const createComponent = (property?: IThingProperty) => (
 				<Comp
 					key={_id}
 					thing={thing}
-					// description={description}
 					onClick={(state: any) => updateState(device._id, _id, state)}
-					lastChange={state?.timeStamp}
+					lastChange={state?.timestamp}
 					className={classes.item}
 					deviceStatus={device?.state?.status}
 					deviceId={device._id}
 					room={device.info.location.room}
+					property={property}
 				/>
 			);
+			if (config.componentType === ComponentType.Sensor)
+				return thing.config.properties.map((property) => createComponent(property));
+
+			return createComponent();
 		} else errorLog("Invalid component type:", config.componentType, "of device:", device.info.name);
 		return null;
 	});
@@ -78,9 +82,9 @@ function Room({ devices, updateDeviceStateA }: RoomProps) {
 	const classes = useStyles();
 
 	const location = devices[0].info.location;
-	const boxes: (JSX.Element | null)[] = devices
+	const boxes: (JSX.Element | null | void)[] = devices
 		.map((device: Device) => generateBoxes(device, updateDeviceStateA, classes))
-		.flat();
+		.flat(2);
 
 	return (
 		<div>

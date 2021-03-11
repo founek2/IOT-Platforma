@@ -10,6 +10,7 @@ import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
 import type { Device } from "common/lib/models/interface/device";
 import { subDays } from "date-fns";
 import { IThing } from "common/lib/models/interface/thing";
+import { IDeviceDiscovery } from "common/lib/models/interface/discovery";
 
 export function set(data: any) {
 	return {
@@ -29,7 +30,7 @@ export function fetchHistory(deviceId: Device["_id"], thingId: IThing["_id"]) {
 				params: {
 					from: subDays(new Date(), 1).getTime(),
 				},
-				onSuccess: (json: { docs: DeviceDiscovery[] }) => {
+				onSuccess: (json: { docs: IDeviceDiscovery[] }) => {
 					dispatch(set({ data: json.docs, deviceId, thingId }));
 				},
 			},

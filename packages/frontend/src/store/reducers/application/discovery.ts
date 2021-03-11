@@ -4,9 +4,10 @@ import { handleActions } from "redux-actions";
 import { ActionTypes } from "../../../constants/redux";
 
 import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
+import { IDeviceDiscovery } from "common/lib/models/interface/discovery";
 
 export interface state {
-	data: DeviceDiscovery[];
+	data: IDeviceDiscovery[];
 	lastFetch?: Date;
 	lastUpdate?: Date;
 }

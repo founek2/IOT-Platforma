@@ -2,6 +2,7 @@ import { Device } from "./device";
 import { IThing } from "./thing";
 
 export interface HistoricalSensor {
+	_id?: any;
 	device: Device["_id"];
 	thing: IThing["_id"];
 	day: Date;

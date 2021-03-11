@@ -10,11 +10,11 @@
             "name": "backend",
             "restart": true,
             "request": "launch",
-            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/ts-node-dev",
+            "runtimeExecutable": "${workspaceRoot}/packages/backend/node_modules/.bin/ts-node-dev",
             "skipFiles": ["<node_internals>/**"],
             "type": "pwa-node",
-            "runtimeArgs": ["--respawn"],
-            "args": ["${workspaceFolder}/packages/backend/src/index.ts"]
+            // "runtimeArgs": ["--respawn"],
+            "args": ["--project", "${workspaceFolder}/packages/backend/tsconfig.json", "${workspaceFolder}/packages/backend/src/index.ts"]
           },
 
         {
@@ -27,7 +27,7 @@
             "skipFiles": ["<node_internals>/**"],
             "type": "pwa-node",
             "runtimeArgs": ["--respawn"],
-            "args": ["${workspaceFolder}/packages/backend-mqtt/src/index.ts"]
+            "args": ["--project", "${workspaceFolder}/packages/backend-mqtt/tsconfig.json","${workspaceFolder}/packages/backend-mqtt/src/index.ts"]
           }
     ]
 }

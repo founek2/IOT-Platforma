@@ -4,6 +4,7 @@ import { thingSchema } from "./schema/thingSchema";
 import { IUser } from "./user";
 import { devLog } from "framework/lib/logger";
 import { Device } from "./interface/device";
+import { IThing } from "./interface/thing";
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
@@ -54,7 +55,7 @@ const deviceSchema = new Schema<IDevice>(
 
 export interface IDeviceModel extends Model<IDevice> {
 	createNew(
-		device: { info: any; things: any[]; metadata: { topicPrefix: string; deviceId: string } },
+		device: { info: any; things: IThing[]; metadata: { topicPrefix: string; deviceId: string } },
 		ownerId: string
 	): Promise<IDevice>;
 	// findForPublic(): Promise<IDevice[]>;

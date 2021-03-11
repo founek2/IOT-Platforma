@@ -1,5 +1,5 @@
-import { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
 import { Device } from "common/lib/models/interface/device";
+import { IDeviceDiscovery } from "common/lib/models/interface/discovery";
 import { HistoricalSensor } from "common/lib/models/interface/history";
 import { IThing } from "common/lib/models/interface/thing";
 
@@ -20,7 +20,7 @@ export interface IState {
 		notifications: any[];
 		users: any[];
 		devices: { data: Device[]; lastFetch?: Date; lastUpdate?: Date };
-		discovery: { data: DeviceDiscovery[]; lastFetch?: Date; lastUpdate?: Date };
+		discovery: { data: IDeviceDiscovery[]; lastFetch?: Date; lastUpdate?: Date };
 		thingHistory: {
 			data: HistoricalSensor[];
 			deviceId: Device["_id"];

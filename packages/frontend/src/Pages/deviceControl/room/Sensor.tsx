@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import boxHoc from "./components/boxHoc";
 import ControlContextMenu from "./components/ControlContextMenu";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import { DeviceClass, IThing } from "common/lib/models/interface/thing";
+import { DeviceClass, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { SensorIcons } from "../../../components/SensorIcons";
 import { SimpleDialog } from "./components/Dialog";
 import ChartSimple from "frontend/src/components/ChartSimple";
@@ -14,6 +14,8 @@ import { getThingHistory } from "../../../utils/getters";
 import { IState } from "frontend/src/types";
 import { BoxWidgetProps } from "./components/BorderBox";
 import { HistoricalSensor } from "common/lib/models/interface/history";
+import clsx from "clsx";
+import UpdatedBefore from "framework-ui/lib/Components/UpdatedBefore";
 
 const useStyles = makeStyles({
 	root: {
@@ -25,6 +27,7 @@ const useStyles = makeStyles({
 		height: "1.7em",
 		overflow: "hidden",
 		userSelect: "none",
+		marginBottom: 15,
 	},
 	circle: {
 		top: 3,
@@ -33,28 +36,45 @@ const useStyles = makeStyles({
 	},
 	container: {
 		fontSize: 25,
-		marginTop: 10,
+		display: "flex",
+		justifyContent: "center",
 	},
 	icon: {
 		marginRight: 5,
 	},
+	graphTitle: {
+		marginBottom: 10,
+	},
+	updatedBefore: {
+		textAlign: "center",
+		marginBottom: 10,
+	},
 });
 
-function Activator({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProps) {
+function Sensor({
+	onClick,
+	deviceId,
+	thing,
+	room,
+	fetchHistory,
+	property,
+}: BoxWidgetProps & { property: IThingProperty }) {
 	const classes = useStyles();
 	const [openDialog, setOpenDialog] = React.useState(false);
 	const historyData = useSelector<IState, IState["application"]["thingHistory"]>(getThingHistory as any);
-
-	const Icon = thing.config.deviceClass ? SensorIcons[thing.config.deviceClass] : null;
+	const Icon = property.deviceClass ? SensorIcons[property.deviceClass] : null;
 	const title = room + " - " + thing.config.name!;
 
 	useEffect(() => {
 		if (openDialog) fetchHistory();
 	}, [openDialog]);
-	const chartData = useMemo(() => mergeData(historyData.data, thing.config.propertyId), [
-		historyData.data,
-		thing.config.propertyId,
+	const chartData = useMemo(() => mergeData(historyData.data, property.propertyId), [
+		historyData.data.length > 0 && historyData.data[0].first,
+		historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
+		historyData.thingId === thing._id,
 	]);
+
+	const value = thing.state?.value && thing.state.value[property.propertyId];
 
 	return (
 		<ControlContextMenu
@@ -74,20 +94,24 @@ function Activator({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetPr
 						<div className={classes.container}>
 							{Icon ? <Icon className={classes.icon} /> : null}
 							<Typography component="span">
-								{thing.state?.value || "??"} {thing.config.unitOfMeasurement}
+								{value || "??"} {property.unitOfMeasurement}
 							</Typography>
 						</div>
 						<SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} title={title}>
-							{Icon ? <Icon className={classes.icon} /> : null}
-							<Typography>
-								{room +
-									" " +
-									thing.config.name +
-									" " +
-									thing.state?.value +
-									" " +
-									thing.config.unitOfMeasurement}
-							</Typography>
+							<div className={clsx(classes.container, classes.graphTitle)}>
+								{Icon ? <Icon className={classes.icon} /> : null}
+								<Typography>
+									{room + " " + thing.config.name + " " + value + " " + property.unitOfMeasurement}
+								</Typography>
+							</div>
+							{thing.state?.timestamp ? (
+								<UpdatedBefore
+									time={new Date(thing.state.timestamp)}
+									variant="body2"
+									prefix="Aktualizováno před"
+									className={classes.updatedBefore}
+								/>
+							) : null}
 							{historyData.deviceId === deviceId && historyData.thingId === thing._id ? (
 								<ChartSimple data={[[{ type: "date", label: "Čas" }, title], ...chartData]} />
 							) : null}
@@ -99,9 +123,9 @@ function Activator({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetPr
 	);
 }
 
-export default boxHoc(Activator);
+export default boxHoc(Sensor);
 
-function mergeData(data: HistoricalSensor[], propertyId: IThing["config"]["propertyId"]) {
+function mergeData(data: HistoricalSensor[], propertyId: IThingProperty["propertyId"]) {
 	if (!propertyId) return [];
 
 	let result: Array<[Date, number]> = [];
