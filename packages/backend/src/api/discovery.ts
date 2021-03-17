@@ -1,41 +1,18 @@
-import resource from "framework/lib/middlewares/resource-router-middleware";
-import Device from "../models/Device";
-import processError from "framework/lib/utils/processError";
-import { saveImageBase64, validateFileExtension, deleteImage } from "../service/files";
-import { transformSensorsForBE, transformControlForBE } from "common/lib/utils/transform";
-import tokenAuthMIddleware from "framework/lib/middlewares/tokenAuth";
-import formDataChecker from "framework/lib/middlewares/formDataChecker";
-
 import fieldDescriptors from "common/lib/fieldDescriptors";
+import { DiscoveryModel } from "common/lib/models/deviceDiscoveryModel";
+import { DeviceModel } from "common/lib/models/deviceModel";
+import { IDiscoveryProperty, IDiscoveryThing } from "common/lib/models/interface/discovery";
+import { ComponentType, IThing, PredefinedComponentType, ThingProperties } from "common/lib/models/interface/thing";
+import formDataChecker from "framework/lib/middlewares/formDataChecker";
+import resource from "framework/lib/middlewares/resource-router-middleware";
+import tokenAuthMIddleware from "framework/lib/middlewares/tokenAuth";
+import mongoose from "mongoose";
+import { assoc, assocPath, ifElse, lensPath, map, o, over, pathSatisfies, toPairs } from "ramda";
+import checkControlPerm from "../middleware/device/checkControlPerm";
 import checkReadPerm from "../middleware/device/checkReadPerm";
 import checkWritePerm from "../middleware/device/checkWritePerm";
-import checkControlPerm from "../middleware/device/checkControlPerm";
-import Notify from "../models/Notification";
-import { handleMapping } from "common/lib/service/DeviceHandler";
-import {
-	contains,
-	__,
-	flip,
-	filter,
-	o,
-	prop,
-	assoc,
-	assocPath,
-	over,
-	lensProp,
-	toPairs,
-	map,
-	compose,
-	lensPath,
-} from "ramda";
-import eventEmitter from "../service/eventEmitter";
-import agenda from "../agenda";
-import { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
-import { DeviceModel } from "common/lib/models/deviceModel";
-import mongoose from "mongoose";
 import { Actions } from "../service/actions";
-import { IThing } from "common/lib/models/interface/thing";
-import { IThingDiscovery, IPropertyDiscovery } from "common/lib/models/interface/discovery";
+import eventEmitter from "../service/eventEmitter";
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -61,7 +38,7 @@ export default () =>
 		/** GET / - List all entities */
 		async index({ user, root }: any, res: any) {
 			console.log("user - ", user.info.userName);
-			const docs = await DeviceDiscovery.find({ userName: user.info.userName });
+			const docs = await DiscoveryModel.find({ realm: user.realm });
 
 			res.send({ docs });
 		},
@@ -69,7 +46,7 @@ export default () =>
 		async delete({ body, user }: any, res: any) {
 			// TODO check permission
 			const selected = body.formData.DISCOVERY_DEVICES.selected;
-			const result = await DeviceDiscovery.deleteMany({
+			const result = await DiscoveryModel.deleteMany({
 				_id: { $in: selected.map(ObjectId) },
 			});
 			console.log("deleted", result);
@@ -85,23 +62,35 @@ export default () =>
 			if (formData.CREATE_DEVICE) {
 				const form = formData.CREATE_DEVICE;
 
-				const doc = await DeviceDiscovery.findOne({ _id: ObjectId(form._id) });
+				const doc = await DiscoveryModel.findOne({ _id: ObjectId(form._id) });
 				if (!doc) return res.status(208).send({ error: "deviceNotFound" });
 
 				console.log("user is", user);
-				function convertProperties([propertyId, property]: [string, IPropertyDiscovery]) {
+				function convertProperties([propertyId, property]: [string, IDiscoveryProperty]) {
 					return assoc("propertyId", propertyId, property);
 				}
-				function convertDiscoveryThing([nodeId, thing]: [string, IThingDiscovery]): IThing {
-					return o<IThingDiscovery, IThingDiscovery, any>(
-						over(lensPath(["config", "properties"]), o(map(convertProperties), toPairs)),
+				function convertDiscoveryThing([nodeId, thing]: [string, IDiscoveryThing]): IThing {
+					return o<IDiscoveryThing, IDiscoveryThing, any>(
+						ifElse(
+							pathSatisfies<ComponentType, IDiscoveryThing>(
+								(componentType) => componentType in PredefinedComponentType,
+								["config", "componentType"]
+							),
+							(thing: IDiscoveryThing) =>
+								assocPath(
+									["config", "properties"],
+									ThingProperties[(thing.config.componentType as unknown) as PredefinedComponentType],
+									thing
+								),
+							over(lensPath(["config", "properties"]), o(map(convertProperties), toPairs))
+						),
 						assocPath(["config", "nodeId"], nodeId)
 					)(thing);
 				}
 
 				const convertThings = o<
-					{ [propertyId: string]: IThingDiscovery },
-					[string, IThingDiscovery][],
+					{ [propertyId: string]: IDiscoveryThing },
+					[string, IDiscoveryThing][],
 					IThing[]
 				>(map(convertDiscoveryThing), toPairs);
 				const newDevice = await DeviceModel.createNew(
@@ -109,7 +98,7 @@ export default () =>
 						info: { ...form.info },
 						things: convertThings(doc.things),
 						metadata: {
-							topicPrefix: doc.userName,
+							realm: doc.realm,
 							deviceId: doc.deviceId,
 						},
 					},

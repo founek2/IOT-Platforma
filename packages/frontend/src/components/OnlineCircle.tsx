@@ -4,7 +4,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import getLastUpdateText from "framework-ui/lib/utils/getLastUpdateText";
 import getCircleColor, { CircleColors, getCircleTooltipText } from "../utils/getCircleColor";
 import { grey } from "@material-ui/core/colors";
-import { Device, IDeviceStatus, DeviceStatus } from "common/lib/models/interface/device";
+import { IDeviceStatus, DeviceStatus } from "common/lib/models/interface/device";
 
 const useStyles = makeStyles({
 	wrapper: {
@@ -57,7 +57,7 @@ function Circle({ status, className, inTransition }: CircleProps) {
 		return (
 			<Tooltip title="Nikdy nebylo připojeno" placement="bottom" arrow={true}>
 				<CircleComponent
-					color={getCircleColor(inTransition, DeviceStatus.Disconnected)}
+					color={getCircleColor(inTransition, DeviceStatus.disconnected)}
 					className={className}
 				/>
 			</Tooltip>

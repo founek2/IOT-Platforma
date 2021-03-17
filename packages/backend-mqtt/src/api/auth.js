@@ -1,8 +1,6 @@
-import express from "express";
-import Device from "backend/dist/models/Device";
-import User from "backend/dist/models/user";
 import { DeviceModel } from "common/lib/models/deviceModel";
-import device from "../subscribers/device";
+import { UserModel } from "common/lib/models/userModel";
+import express from "express";
 
 const router = express.Router();
 
@@ -43,7 +41,7 @@ router.post("/user", async function (req, res) {
 		const success = await DeviceModel.login(topicPrefix, deviceId, password);
 		return success ? res.send("allow") : sendDeny("/user", res);
 	} else if (isUser(username)) {
-		User.checkCreditals({ userName: username, password, authType: "passwd" })
+		UserModel.checkCreditals({ userName: username, password, authType: "passwd" })
 			.then(({ doc }) => {
 				if (doc.groups.some((group) => group === "root" || group === "admin"))
 					return res.send("allow administrator");

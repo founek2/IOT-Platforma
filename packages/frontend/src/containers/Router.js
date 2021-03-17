@@ -1,21 +1,22 @@
-import React, { Component, Suspense, lazy } from 'react';
-import { createBrowserHistory } from 'history';
-import { Router as RouterReact, Switch, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
-import Layout from '../components/Layout';
-import Sensors from '../Pages/Sensors';
-import RegisterUser from '../Pages/RegisterUser';
-import { bindActionCreators } from 'redux';
-import { map } from 'ramda';
-import { getPathsWithComp } from 'framework-ui/lib/privileges';
+import React, { Component, Suspense, lazy } from "react";
+import { createBrowserHistory } from "history";
+import { Router as RouterReact, Switch, Route } from "react-router-dom";
+import { connect } from "react-redux";
+import Layout from "../components/Layout";
+import Sensors from "../Pages/Sensors";
+import RegisterUser from "../Pages/RegisterUser";
+import { bindActionCreators } from "redux";
+import { map } from "ramda";
+import { getPathsWithComp } from "framework-ui/lib/privileges";
 
-import { getUserPresence, getGroups } from 'framework-ui/lib/utils/getters';
-import { updateHistory, setHistory } from 'framework-ui/lib/redux/actions/history';
-import { updateTmpData } from 'framework-ui/lib/redux/actions/tmpData';
-import Loader from 'framework-ui/lib/Components/Loader';
-import parseQuery from 'framework-ui/lib/utils/parseQuery';
-import { hydrateState } from 'framework-ui/lib/redux/actions';
-import '../firebase'; // init
+import { getUserPresence, getGroups } from "framework-ui/lib/utils/getters";
+import { updateHistory, setHistory } from "framework-ui/lib/redux/actions/history";
+import { updateTmpData } from "framework-ui/lib/redux/actions/tmpData";
+import Loader from "framework-ui/lib/Components/Loader";
+import parseQuery from "framework-ui/lib/utils/parseQuery";
+import { hydrateState } from "framework-ui/lib/redux/actions";
+
+import "../firebase"; // init
 
 const history = createBrowserHistory();
 
@@ -25,8 +26,9 @@ function createRoute({ path, Component }) {
 	return <Route path={path} key={path} render={(props) => <Component {...props} />} />;
 }
 
-const SensorHistoryLazy = lazy(() => import('../Pages/SensorHistory'));
-const ControlHistoryLazy = lazy(() => import('../Pages/ControlHistory'));
+const SensorHistoryLazy = lazy(() => import("../Pages/SensorHistory"));
+const ControlHistoryLazy = lazy(() => import("../Pages/ControlHistory"));
+const EditNotifyFormLazy = lazy(() => import("../Pages/EditNotifyForm"));
 
 class Router extends Component {
 	constructor(props) {
@@ -37,10 +39,10 @@ class Router extends Component {
 			pathname: defLocation.pathname,
 			hash: defLocation.hash,
 			search: defLocation.search,
-			query: parseQuery(defLocation.search)
+			query: parseQuery(defLocation.search),
 		});
 
-		const lastHistory = localStorage.getItem('history');
+		const lastHistory = localStorage.getItem("history");
 		if (lastHistory) history.push(JSON.parse(lastHistory));
 
 		history.listen(({ key, state, ...rest }, action) => {
@@ -52,7 +54,7 @@ class Router extends Component {
 			updateHistoryAction(update);
 			updateTmpDataAction({ dialog: {} });
 
-			localStorage.setItem('history', JSON.stringify(rest));
+			localStorage.setItem("history", JSON.stringify(rest));
 		});
 	}
 	render() {
@@ -75,6 +77,7 @@ class Router extends Component {
 						<Route path="/registerUser" component={RegisterUser} />
 
 						<Route path="/sensor/:deviceId" component={SensorHistoryLazy} />
+						<Route path="/device/:deviceId/thing/:thingId/notify" component={EditNotifyFormLazy} />
 						<Route path="/" component={Sensors} />
 					</Switch>
 				</Suspense>
@@ -84,7 +87,7 @@ class Router extends Component {
 }
 const _mapStateToProps = (state) => ({
 	userPresence: getUserPresence(state),
-	userGroups: getGroups(state)
+	userGroups: getGroups(state),
 });
 
 const _mapActionsToProps = (dispatch) => ({
@@ -93,10 +96,10 @@ const _mapActionsToProps = (dispatch) => ({
 			updateHistoryAction: updateHistory,
 			setHistoryAction: setHistory,
 			updateTmpDataAction: updateTmpData,
-			hydrateStateAction: hydrateState
+			hydrateStateAction: hydrateState,
 		},
 		dispatch
-	)
+	),
 });
 
 export default connect(_mapStateToProps, _mapActionsToProps)(Router);

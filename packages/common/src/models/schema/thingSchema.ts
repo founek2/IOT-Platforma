@@ -1,6 +1,4 @@
-import mongoose, { Document } from "mongoose";
-import hat from "hat";
-import { ComponentType, DeviceClass } from "../interface/thing";
+import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
@@ -12,11 +10,13 @@ export const thingSchema = new Schema({
 		componentType: String,
 		properties: [
 			{
-				deviceClass: String,
-				name: String,
-				unitOfMeasurement: String,
 				propertyId: String,
+				name: String,
+				propertyClass: String,
+				unitOfMeasurement: String,
 				dataType: String,
+				format: Array,
+				settable: Boolean,
 			},
 		],
 	},

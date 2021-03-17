@@ -20,14 +20,14 @@ import EditNotifyForm from "../components/EditNotifyForm";
 import * as formsActions from "framework-ui/lib/redux/actions/formsData";
 import * as controlActions from "../store/actions/application/devices/control";
 import { ComponentType, IThing } from "common/lib/models/interface/thing";
-import { Device } from "common/lib/models/interface/device";
+import { IDevice } from "common/lib/models/interface/device";
 import RoomWidget from "./deviceControl/RoomWidget";
 import { LocationTypography } from "../components/LocationTypography";
 import { Link } from "react-router-dom";
 import Room from "./deviceControl/Room";
 import { SocketThingState } from "common/lib/types";
 
-function isControllable(device: Device) {
+function isControllable(device: IDevice) {
 	return Boolean(device.permissions && device.permissions.control);
 }
 
@@ -61,7 +61,7 @@ function updateDevice(updateThingA: any) {
 	};
 }
 
-type Buildings = Map<string, Map<string, Device[]>>;
+type Buildings = Map<string, Map<string, IDevice[]>>;
 
 interface DeviceControlProps {
 	fetchDevicesAction: any;
@@ -71,7 +71,7 @@ interface DeviceControlProps {
 	devicesLastUpdate: any;
 	updateThingA: any;
 	buildings: Buildings;
-	selectedLocation: Device["info"]["location"];
+	selectedLocation: IDevice["info"]["location"];
 }
 function DeviceControl({
 	fetchDevicesAction,
@@ -143,7 +143,7 @@ function DeviceControl({
 							<div className={classes.widgetContainer}>
 								{(selectedBuilding
 									? ([[selectedLocation.building, selectedBuilding]] as Array<
-											[string, Map<string, Device[]>]
+											[string, Map<string, IDevice[]>]
 									  >)
 									: [...buildings.entries()]
 								).map(([building, rooms]) => {
@@ -192,11 +192,11 @@ function DeviceControl({
 	);
 }
 
-const buildingsSelector = createSelector<any, { data: Device[]; lastUpdate: Date }, Buildings>(
+const buildingsSelector = createSelector<any, { data: IDevice[]; lastUpdate: Date }, Buildings>(
 	// (o(filter(isControllable), getDevices) as unknown) as any,
 	(state: any) => state.application.devices,
-	({ data: devices, lastUpdate }: { data: Device[]; lastUpdate: Date }) => {
-		const buildings = new Map<string, Map<string, Device[]>>();
+	({ data: devices, lastUpdate }: { data: IDevice[]; lastUpdate: Date }) => {
+		const buildings = new Map<string, Map<string, IDevice[]>>();
 		devices.forEach((device) => {
 			const { building, room } = device.info.location;
 			if (!buildings.has(building)) buildings.set(building, new Map());

@@ -6,18 +6,17 @@ import { fetchDiscovery, deleteDiscovery, addDiscoveredDevice } from "../../../a
 import { validateForm } from "framework-ui/lib/redux/actions/formsData";
 import { add as addDeviceToState } from "./devices";
 
-import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
-import type { Device } from "common/lib/models/interface/device";
-import { IDeviceDiscovery } from "common/lib/models/interface/discovery";
+import type { IDevice } from "common/lib/models/interface/device";
+import { IDiscovery } from "common/lib/models/interface/discovery";
 
-export function set(data: IDeviceDiscovery[]) {
+export function set(data: IDiscovery[]) {
 	return {
 		type: ActionTypes.SET_DISCOVERED_DEVICES,
 		payload: data,
 	};
 }
 
-export function add(data: IDeviceDiscovery[]) {
+export function add(data: IDiscovery[]) {
 	return {
 		type: ActionTypes.ADD_DISCOVERED_DEVICES,
 		payload: data,
@@ -37,7 +36,7 @@ export function fetch() {
 		return fetchDiscovery(
 			{
 				token: getToken(getState()),
-				onSuccess: (json: { docs: IDeviceDiscovery[] }) => {
+				onSuccess: (json: { docs: IDiscovery[] }) => {
 					dispatch(set(json.docs));
 				},
 			},
@@ -81,7 +80,7 @@ export function addDevice() {
 				{
 					token: getToken(getState()),
 					body: { formData: { [CREATE_DEVICE]: formData } },
-					onSuccess: (json: { doc: Device }) => {
+					onSuccess: (json: { doc: IDevice }) => {
 						dispatch(remove(formData._id));
 						dispatch(addDeviceToState(json.doc));
 					},

@@ -22,13 +22,13 @@ import * as controlActions from "../../store/actions/application/devices/control
 import MusicCast from "./room/MusicCast";
 import Sensor from "./room/Sensor";
 import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
-import { Device } from "common/lib/models/interface/device";
+import { IDevice } from "common/lib/models/interface/device";
 import { LocationTypography } from "frontend/src/components/LocationTypography";
 
 const compMapper = {
-	[ComponentType.Switch]: Switch,
-	[ComponentType.BinarySensor]: null,
-	[ComponentType.Sensor]: Sensor,
+	[ComponentType.switch]: Switch,
+	// [ComponentType.inarySensor]: null,
+	[ComponentType.sensor]: Sensor,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function generateBoxes(device: Device, updateState: any, classes: any) {
+function generateBoxes(device: IDevice, updateState: any, classes: any) {
 	return device.things.map((thing) => {
 		const { _id, config, state } = thing;
 		const Comp = compMapper[config.componentType];
@@ -64,7 +64,7 @@ function generateBoxes(device: Device, updateState: any, classes: any) {
 					property={property}
 				/>
 			);
-			if (config.componentType === ComponentType.Sensor)
+			if (config.componentType === ComponentType.sensor)
 				return thing.config.properties.map((property) => createComponent(property));
 
 			return createComponent();
@@ -74,8 +74,8 @@ function generateBoxes(device: Device, updateState: any, classes: any) {
 }
 
 interface RoomProps {
-	devices: Device[];
-	location: Device["info"]["location"];
+	devices: IDevice[];
+	location: IDevice["info"]["location"];
 	updateDeviceStateA: any;
 }
 function Room({ devices, updateDeviceStateA }: RoomProps) {
@@ -83,7 +83,7 @@ function Room({ devices, updateDeviceStateA }: RoomProps) {
 
 	const location = devices[0].info.location;
 	const boxes: (JSX.Element | null | void)[] = devices
-		.map((device: Device) => generateBoxes(device, updateDeviceStateA, classes))
+		.map((device: IDevice) => generateBoxes(device, updateDeviceStateA, classes))
 		.flat(2);
 
 	return (

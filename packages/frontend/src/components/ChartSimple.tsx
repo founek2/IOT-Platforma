@@ -8,7 +8,9 @@ const useStyles = makeStyles((theme) => ({
 	root: {
 		paddingBottom: 15,
 		// marginLeft: "10%"
-		[theme.breakpoints.up("md")]: {
+		marginLeft: 10,
+		marginRight: 10,
+		[theme.breakpoints.up("sm")]: {
 			width: "90%",
 			margin: "0 auto",
 		},

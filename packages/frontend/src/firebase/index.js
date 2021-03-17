@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/messaging";
-import initConfig from "./config";
+import initConfig, { vapidKey } from "./config";
 
 let messaging;
 
@@ -43,7 +43,7 @@ export function getToken() {
 
 	return messaging
 		.getToken({
-			vapidKey: "BBS4vYFJBlWV7LbC_8jcitDdIEqtNDOZKPu3RaWIZlLBepbWRpYp1PX7tUO2Kouo5QMwmcUsPCyG6eKDp-R-pI0",
+			vapidKey: vapidKey,
 		})
 		.then((currentToken) => (currentToken ? currentToken : null))
 		.catch((err) => {

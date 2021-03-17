@@ -1,6 +1,4 @@
 import express from "express";
-import Device from "backend/dist/models/Device";
-import User from "backend/dist/models/user";
 import eventEmitter from "../service/eventEmitter";
 
 const router = express.Router();

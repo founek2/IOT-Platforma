@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import boxHoc from "./components/boxHoc";
 import ControlContextMenu from "./components/ControlContextMenu";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import { DeviceClass, IThing, IThingProperty } from "common/lib/models/interface/thing";
+import { PropertyClass, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { SensorIcons } from "../../../components/SensorIcons";
 import { SimpleDialog } from "./components/Dialog";
 import ChartSimple from "frontend/src/components/ChartSimple";
@@ -62,7 +62,7 @@ function Sensor({
 	const classes = useStyles();
 	const [openDialog, setOpenDialog] = React.useState(false);
 	const historyData = useSelector<IState, IState["application"]["thingHistory"]>(getThingHistory as any);
-	const Icon = property.deviceClass ? SensorIcons[property.deviceClass] : null;
+	const Icon = property.propertyClass ? SensorIcons[property.propertyClass] : null;
 	const title = room + " - " + thing.config.name!;
 
 	useEffect(() => {
@@ -97,7 +97,13 @@ function Sensor({
 								{value || "??"} {property.unitOfMeasurement}
 							</Typography>
 						</div>
-						<SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} title={title}>
+						<SimpleDialog
+							open={openDialog}
+							onClose={() => setOpenDialog(false)}
+							title={title}
+							deviceId={deviceId}
+							thing={thing}
+						>
 							<div className={clsx(classes.container, classes.graphTitle)}>
 								{Icon ? <Icon className={classes.icon} /> : null}
 								<Typography>

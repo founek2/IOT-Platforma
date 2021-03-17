@@ -1,7 +1,6 @@
 import React from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
-import { Device } from "common/lib/models/interface/device";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({

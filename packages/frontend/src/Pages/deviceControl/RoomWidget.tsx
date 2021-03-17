@@ -1,8 +1,8 @@
 import { makeStyles, Paper, Typography } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import clsx from "clsx";
-import { Device } from "common/lib/models/interface/device";
-import { ComponentType, DeviceClass, IThing, IThingProperty } from "common/lib/models/interface/thing";
+import { IDevice } from "common/lib/models/interface/device";
+import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { SensorIcons } from "frontend/src/components/SensorIcons";
 import React from "react";
 
@@ -37,14 +37,14 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "center",
 	},
 }));
-type IThingPropertyWithDeviceClass = IThingProperty & { deviceClass: DeviceClass };
+type IThingPropertyWithDeviceClass = IThingProperty & { propertyClass: NonNullable<IThingProperty["propertyClass"]> };
 interface SimpleSensorProps {
 	thing: IThing;
 	property: IThingPropertyWithDeviceClass;
 }
 function SimpleSensor({ thing, property }: SimpleSensorProps) {
 	const classes = useStyles();
-	const Icon = SensorIcons[property.deviceClass];
+	const Icon = SensorIcons[property.propertyClass];
 
 	const value = thing.state?.value && thing.state?.value[property.propertyId];
 
@@ -61,7 +61,7 @@ function SimpleSensor({ thing, property }: SimpleSensorProps) {
 }
 
 interface RoomProps {
-	devices: Device[];
+	devices: IDevice[];
 	className?: string;
 }
 function RoomWidget({ devices, className }: RoomProps) {
@@ -72,9 +72,9 @@ function RoomWidget({ devices, className }: RoomProps) {
 	const sensors: JSX.Element[] = [];
 	devices.forEach((device) => {
 		device.things.forEach((thing) => {
-			if (thing.config.componentType === ComponentType.Sensor)
+			if (thing.config.componentType === ComponentType.sensor)
 				thing.config.properties.forEach((property) => {
-					if (property.deviceClass)
+					if (property.propertyClass)
 						sensors.push(
 							<SimpleSensor
 								thing={thing}

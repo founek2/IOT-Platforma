@@ -1,18 +1,19 @@
-import { ComponentType, DeviceClass } from "./thing";
+import { ComponentType, PropertyClass } from "./thing";
 
-export interface IPropertyDiscovery {
-	deviceClass?: DeviceClass;
+export interface IDiscoveryProperty {
+	propertyClass?: PropertyClass;
 	name?: string;
 	unitOfMeasurement?: string;
 	dataType?: string;
 }
-export interface IThingDiscovery {
+
+export interface IDiscoveryThing {
 	_id?: any;
 	config: {
 		name?: string;
 		nodeId?: string;
 		componentType?: ComponentType;
-		properties: { [propertyId: string]: IPropertyDiscovery };
+		properties: { [propertyId: string]: IDiscoveryProperty };
 	};
 	state?: {
 		timeStamp: Date;
@@ -20,12 +21,12 @@ export interface IThingDiscovery {
 	};
 }
 
-export interface IDeviceDiscovery {
+export interface IDiscovery {
 	_id?: any;
 	deviceId: string;
-	userName: string;
+	realm: string;
 	name: string;
-	things: { [nodeId: string]: IThingDiscovery };
+	things: { [nodeId: string]: IDiscoveryThing };
 	createdAt: Date;
 	updatedAt: Date;
 	state: {

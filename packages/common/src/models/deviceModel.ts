@@ -1,66 +1,19 @@
-import mongoose, { Document, Model } from "mongoose";
-import hat from "hat";
-import { thingSchema } from "./schema/thingSchema";
-import { IUser } from "./user";
 import { devLog } from "framework/lib/logger";
-import { Device } from "./interface/device";
+import mongoose, { Model } from "mongoose";
 import { IThing } from "./interface/thing";
+import { deviceSchema, IDeviceDocument } from "./schema/deviceSchema";
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
 
-export interface IDevice extends Device, Document {
-	createdBy: IUser["_id"];
-}
-
-const deviceSchema = new Schema<IDevice>(
-	{
-		info: {
-			name: { type: String },
-			description: { type: String },
-			imgPath: { type: String },
-			location: {
-				building: String,
-				room: String,
-			},
-		},
-		apiKey: { type: String, default: hat, index: { unique: true } },
-		publicRead: Boolean,
-		permissions: {
-			read: [{ type: ObjectId, ref: "User" }],
-			write: [{ type: ObjectId, ref: "User" }],
-			control: [{ type: ObjectId, ref: "User" }],
-		},
-		createdBy: { type: ObjectId, ref: "User" },
-		things: [thingSchema],
-		state: {
-			// paired: {
-			// 	value: { type: Boolean, default: false },
-			// 	timestamp: Date,
-			// },
-			status: {
-				value: Schema.Types.Mixed,
-				timestamp: Date,
-			},
-			lastAck: Date,
-		},
-		metadata: {
-			topicPrefix: String,
-			publicRead: Boolean,
-			deviceId: { type: String, required: true },
-		},
-	},
-	{ timestamps: true }
-);
-
-export interface IDeviceModel extends Model<IDevice> {
+export interface IDeviceModel extends Model<IDeviceDocument> {
 	createNew(
-		device: { info: any; things: IThing[]; metadata: { topicPrefix: string; deviceId: string } },
+		device: { info: any; things: IThing[]; metadata: { realm: string; deviceId: string } },
 		ownerId: string
-	): Promise<IDevice>;
+	): Promise<IDeviceDocument>;
 	// findForPublic(): Promise<IDevice[]>;
-	findForUser(userId: string): Promise<IDevice[]>;
-	login(topicPrefix: string, deviceId: string, apiKey: string): Promise<boolean>;
+	findForUser(userId: string): Promise<IDeviceDocument[]>;
+	login(realm: string, deviceId: string, apiKey: string): Promise<boolean>;
 }
 
 deviceSchema.statics.createNew = async function ({ info, things, metadata }, userID) {
@@ -68,7 +21,7 @@ deviceSchema.statics.createNew = async function ({ info, things, metadata }, use
 
 	const result = await this.exists({
 		"metadata.deviceId": metadata.deviceId,
-		"metadata.topicPrefix": metadata.topicPrefix,
+		"metadata.realm": metadata.realm,
 	});
 	if (result) throw Error("deviceIdTaken");
 
@@ -152,12 +105,12 @@ deviceSchema.statics.findForUser = async function (userID) {
 	]);
 };
 
-deviceSchema.statics.login = async function (topicPrefix: string, deviceId: string, apiKey: string) {
+deviceSchema.statics.login = async function (realm: string, deviceId: string, apiKey: string) {
 	return await this.exists({
-		"metadata.topicPrefix": topicPrefix,
+		"metadata.realm": realm,
 		"metadata.deviceId": deviceId,
 		apiKey: apiKey,
 	});
 };
 
-export const DeviceModel: IDeviceModel = mongoose.model<IDevice, IDeviceModel>("DeviceAdded", deviceSchema);
+export const DeviceModel = mongoose.model<IDeviceDocument, IDeviceModel>("DeviceAdded", deviceSchema);

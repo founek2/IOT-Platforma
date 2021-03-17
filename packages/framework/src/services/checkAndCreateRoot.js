@@ -1,8 +1,6 @@
-import mongoose from "mongoose";
 import { infoLog, errorLog } from "../logger";
 
-export default () => {
-	const UserModel = mongoose.model("User");
+export default (UserModel) => {
 	UserModel.findByUserName("root")
 		.exec()
 		.then((doc) => {
@@ -25,7 +23,7 @@ export default () => {
 						} else {
 							rl.close();
 							console.log("\n");
-							UserModel.create({
+							UserModel.createNew({
 								info: { userName: "root", firstName: "root", lastName: "root" },
 								auth: { password: password },
 								groups: ["root"],

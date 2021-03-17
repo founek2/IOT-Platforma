@@ -3,11 +3,10 @@ import { compose } from "redux";
 import { handleActions } from "redux-actions";
 import { ActionTypes } from "../../../constants/redux";
 
-import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
-import { IDeviceDiscovery } from "common/lib/models/interface/discovery";
+import { IDiscovery } from "common/lib/models/interface/discovery";
 
 export interface state {
-	data: IDeviceDiscovery[];
+	data: IDiscovery[];
 	lastFetch?: Date;
 	lastUpdate?: Date;
 }

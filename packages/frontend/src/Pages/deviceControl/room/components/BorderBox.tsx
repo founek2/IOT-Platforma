@@ -7,7 +7,7 @@ import forceUpdateHoc from "framework-ui/lib/Components/forceUpdateHoc";
 import ControlDetail from "./borderBox/ControlDetail";
 import Loader from "framework-ui/lib/Components/Loader";
 import { IThing, IThingProperty } from "common/lib/models/interface/thing";
-import { Device, DeviceStatus, IDeviceStatus } from "common/lib/models/interface/device";
+import { IDevice, DeviceStatus, IDeviceStatus } from "common/lib/models/interface/device";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as deviceActions from "../../../../store/actions/application/devices";
@@ -41,7 +41,7 @@ export interface BoxWidgetProps {
 	thing: IThing;
 	onClick: (newState: any) => Promise<void>;
 	deviceStatus: IDeviceStatus;
-	deviceId: Device["_id"];
+	deviceId: IDevice["_id"];
 	disabled?: boolean;
 	fetchHistory: () => Promise<void>;
 	room: string;
@@ -53,7 +53,7 @@ export interface GeneralBoxProps {
 	thing: IThing;
 	onClick: (newState: any) => Promise<void>;
 	deviceStatus: IDeviceStatus;
-	deviceId: Device["_id"];
+	deviceId: IDevice["_id"];
 	room: string;
 	property?: IThingProperty;
 }
@@ -101,7 +101,7 @@ function BorderBox({
 				_id: deviceId,
 				state: {
 					status: {
-						value: DeviceStatus.Alert,
+						value: DeviceStatus.alert,
 						timestamp: new Date(),
 					},
 				},
@@ -124,7 +124,7 @@ function BorderBox({
 			className={className ? className : ""}
 			{...defaultProps}
 		>
-			{deviceStatus?.value !== DeviceStatus.Ready && (
+			{deviceStatus?.value !== DeviceStatus.ready && (
 				<OnlineCircle inTransition={false} className={classes.circle} status={deviceStatus} />
 			)}
 			<Component

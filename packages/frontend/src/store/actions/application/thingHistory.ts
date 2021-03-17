@@ -6,11 +6,10 @@ import { fetchHistory as fetchHistoryApi } from "../../../api/thingApi";
 import { validateForm } from "framework-ui/lib/redux/actions/formsData";
 import { add as addDeviceToState } from "./devices";
 
-import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
-import type { Device } from "common/lib/models/interface/device";
+import type { IDevice } from "common/lib/models/interface/device";
 import { subDays } from "date-fns";
 import { IThing } from "common/lib/models/interface/thing";
-import { IDeviceDiscovery } from "common/lib/models/interface/discovery";
+import type { IDiscovery } from "common/lib/models/interface/discovery";
 
 export function set(data: any) {
 	return {
@@ -19,7 +18,7 @@ export function set(data: any) {
 	};
 }
 
-export function fetchHistory(deviceId: Device["_id"], thingId: IThing["_id"]) {
+export function fetchHistory(deviceId: IDevice["_id"], thingId: IThing["_id"]) {
 	return function (dispatch: any, getState: any) {
 		baseLogger("FETCH_DISCOVERED_DEVICES");
 		return fetchHistoryApi(
@@ -30,7 +29,7 @@ export function fetchHistory(deviceId: Device["_id"], thingId: IThing["_id"]) {
 				params: {
 					from: subDays(new Date(), 1).getTime(),
 				},
-				onSuccess: (json: { docs: IDeviceDiscovery[] }) => {
+				onSuccess: (json: { docs: IDiscovery[] }) => {
 					dispatch(set({ data: json.docs, deviceId, thingId }));
 				},
 			},

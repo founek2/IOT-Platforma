@@ -1,10 +1,7 @@
-import mongoose, { Document, Model } from "mongoose";
-import hat from "hat";
-import { thingSchema } from "./schema/thingSchema";
-import { IThing } from "./interface/thing";
-import { HistoricalSensor } from "./interface/history";
+import mongoose, { Model } from "mongoose";
+import { IThing, IThingProperty } from "./interface/thing";
 import { historicalSensorSchema, IHistorical } from "./schema/historicalSchema";
-import { Device } from "./interface/device";
+import { IDevice } from "./interface/device";
 import resetTime from "framework/lib/utils/resetTime";
 
 import { DAY_START_HOURS, DAY_END_HOURS } from "../constants";
@@ -18,28 +15,28 @@ const ObjectId = mongoose.Types.ObjectId;
 
 export interface HistoricalModel extends Model<IHistorical> {
 	saveSensorData(
-		deviceId: Device["_id"],
+		deviceId: IDevice["_id"],
 		thingId: IThing["_id"],
-		propertyId: IThing["config"]["propertyId"],
+		propertyId: IThingProperty["propertyId"],
 		value: any,
 		timestamp: Date
 	): void;
 
 	saveControlData(
-		deviceId: Device["_id"],
+		deviceId: IDevice["_id"],
 		thingId: IThing["_id"],
-		propertyId: IThing["config"]["propertyId"],
+		propertyId: IThingProperty["propertyId"],
 		value: any,
 		timestamp: Date
 	): void;
 
-	getData(deviceId: Device["_id"], thingId: IThing["_id"], from: Date, to: Date): Promise<IHistorical[]>;
+	getData(deviceId: IDevice["_id"], thingId: IThing["_id"], from: Date, to: Date): Promise<IHistorical[]>;
 }
 
 historicalSensorSchema.statics.saveControlData = function (
-	deviceId: Device["_id"],
+	deviceId: IDevice["_id"],
 	thingId: IThing["_id"],
-	propertyId: IThing["config"]["propertyId"],
+	propertyId: IThingProperty["propertyId"],
 	value: any,
 	timestamp: Date
 ) {
@@ -64,9 +61,9 @@ historicalSensorSchema.statics.saveControlData = function (
 };
 
 historicalSensorSchema.statics.saveSensorData = function (
-	deviceId: Device["_id"],
+	deviceId: IDevice["_id"],
 	thingId: IThing["_id"],
-	propertyId: IThing["config"]["propertyId"],
+	propertyId: IThingProperty["propertyId"],
 	value: any,
 	timestamp: Date
 ) {
@@ -94,7 +91,7 @@ historicalSensorSchema.statics.saveSensorData = function (
 };
 
 historicalSensorSchema.statics.getData = function (
-	deviceId: Device["_id"],
+	deviceId: IDevice["_id"],
 	thingId: IThing["_id"],
 	from: Date,
 	to: Date

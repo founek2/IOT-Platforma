@@ -1,6 +1,5 @@
 import { Fab, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
 import Dialog from "framework-ui/lib/Components/Dialog";
 import FieldConnector from "framework-ui/lib/Components/FieldConnector";
 import EnchancedTable from "framework-ui/lib/Components/Table";
@@ -14,10 +13,10 @@ import * as discoveredActions from "../../store/actions/application/discovery";
 import { getDiscovery } from "../../utils/getters";
 import OnlineCircle from "../../components/OnlineCircle";
 import type { DeviceStatus } from "common/lib/models/interface/device";
-import { IDeviceDiscovery, IThingDiscovery } from "common/lib/models/interface/discovery";
+import { IDiscovery, IDiscoveryThing } from "common/lib/models/interface/discovery";
 
 interface DiscoverySectionProps {
-	discoveredDevices?: IDeviceDiscovery[];
+	discoveredDevices?: IDiscovery[];
 	resetCreateDeviceAction: any;
 	deleteDiscoveryAction: any;
 	updateFormField: any;
@@ -53,7 +52,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
 								{
 									path: "things",
 									label: "Věcí",
-									convertor: (things: { [nodeId: string]: IThingDiscovery }) =>
+									convertor: (things: { [nodeId: string]: IDiscoveryThing }) =>
 										Object.values(things)
 											.map((obj) => obj.config.name)
 											.join(", "),

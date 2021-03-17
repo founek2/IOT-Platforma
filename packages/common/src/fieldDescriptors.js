@@ -13,6 +13,7 @@ import {
 } from "./constants";
 import { assocPath, is, forEachObjIndexed } from "ramda";
 import setInPath from "framework-ui/lib/utils/setInPath";
+import { NotifyType } from "./models/interface/notifyInterface";
 
 function recursive(transform, predicate, object) {
 	const func = (accum = "") => (value, key) => {
@@ -305,104 +306,67 @@ const EDIT_CONTROL = {
 	},
 };
 
-const advanced = {
+const EDIT_NOTIFY = {
+	deviceId: {
+		deepPath: "EDIT_NOTIFY.deviceId",
+		required: true,
+		validations: [validationFactory("isString")],
+	},
+	nodeId: {
+		deepPath: "EDIT_NOTIFY.nodeId",
+		required: true,
+		validations: [validationFactory("isString")],
+	},
+	"propertyId[]": {
+		deepPath: "EDIT_NOTIFY.propertyId[]",
+		label: "Vlastnost",
+		required: true,
+		validations: [validationFactory("isString")],
+	},
+	"type[]": {
+		deepPath: "EDIT_NOTIFY.type[]",
+		label: "Podmínoa",
+		required: true,
+		validations: [validationFactory("isOneOf", Object.values(NotifyType))],
+	},
+	"value[]": {
+		deepPath: "EDIT_NOTIFY.value[]",
+		label: "Mezní hodnota",
+		required: true,
+		when: ({ type }, { i }) => !type || type[i] !== NotifyType.always,
+		// validations: [validationFactory("isNumber")],
+	},
 	advanced: {
 		"daysOfWeek[]": {
-			deepPath: "EDIT_NOTIFY_SENSORS.advanced.daysOfWeek[]",
+			deepPath: "EDIT_NOTIFY.advanced.daysOfWeek[]",
 			label: "Dny v týdnu",
 			// required: true,
 			validations: [validationFactory("isArray", { min: 1, max: 200 })],
 		},
 		"interval[]": {
-			deepPath: "EDIT_NOTIFY_SENSORS.advanced.interval[]",
+			deepPath: "EDIT_NOTIFY.advanced.interval[]",
 			label: "Interval",
 			// required: true,
 			validations: [validationFactory("isOneOf", { values: NotifyIntervals.map((obj) => obj.value) })],
 		},
 		"from[]": {
-			deepPath: "EDIT_NOTIFY_SENSORS.advanced.from[]",
+			deepPath: "EDIT_NOTIFY.advanced.from[]",
 			label: "Od",
 			// required: true,
 			validations: [validationFactory("isTime")],
 		},
 		"to[]": {
-			deepPath: "EDIT_NOTIFY_SENSORS.advanced.to[]",
+			deepPath: "EDIT_NOTIFY.advanced.to[]",
 			label: "Do",
 			// required: true,
 			validations: [validationFactory("isTime")],
 		},
 	},
-};
-
-const EDIT_NOTIFY_SENSORS = {
-	"JSONkey[]": {
-		deepPath: "EDIT_NOTIFY_SENSORS.JSONkey[]",
-		label: "Veličina",
-		required: true,
-		validations: [validationFactory("isString", { min: 1, max: 20 })],
-	},
-	"type[]": {
-		deepPath: "EDIT_NOTIFY_SENSORS.type[]",
-		label: "Podmínka",
-		required: true,
-		validations: [validationFactory("isOneOf", { values: NotifyTypes.map((obj) => obj.value) })],
-	},
-	"value[]": {
-		deepPath: "EDIT_NOTIFY_SENSORS.value[]",
-		label: "Mezní hodnota",
-		required: true,
-		when: ({ type }, { i }) => !type || type[i] !== NOTIFY_TYPES.ALWAYS, // needs constant
-		validations: [validationFactory("isNumber")],
-	},
-	"description[]": {
-		deepPath: "EDIT_NOTIFY_SENSORS.description[]",
-		label: "Popis",
-		validations: [validationFactory("isString", { min: 1, max: 200 })],
-	},
 	count: {
-		deepPath: "EDIT_NOTIFY_SENSORS.count",
+		deepPath: "EDIT_NOTIFY.count",
 		required: true,
 		validations: [validationFactory("isNumber")],
 	},
-	...transformToForm("EDIT_NOTIFY_SENSORS", advanced),
-};
-
-const EDIT_NOTIFY_CONTROL = {
-	"JSONkey[]": {
-		deepPath: "EDIT_NOTIFY_CONTROL.JSONkey[]",
-		label: "Veličina",
-		required: true,
-		validations: [validationFactory("isOneOf", { values: CONTROL_STATE_KEYS })],
-	},
-	"type[]": {
-		deepPath: "EDIT_NOTIFY_CONTROL.type[]",
-		label: "Podmínoa",
-		required: true,
-		validations: [validationFactory("isString", { min: 1 })], // TODO one of constants - depends on JSONkey, currently not possible
-	},
-	"value[]": {
-		deepPath: "EDIT_NOTIFY_SENSORS.value[]",
-		label: "Mezní hodnota",
-		// required: true,
-		// when: ({ type }, { i }) => !type || type[i] !== NOTIFY_TYPES.ALWAYS,  // needs constant
-		validations: [validationFactory("isNumber")],
-	},
-	"description[]": {
-		deepPath: "EDIT_NOTIFY_CONTROL.description[]",
-		label: "Popis",
-		validations: [validationFactory("isString", { min: 1, max: 200 })],
-	},
-	key: {
-		deepPath: "EDIT_NOTIFY_CONTROL.key",
-		required: true,
-		validations: [validationFactory("isString", { min: 1, max: 20 })],
-	},
-	count: {
-		deepPath: "EDIT_NOTIFY_CONTROL.count",
-		required: true,
-		validations: [validationFactory("isNumber")],
-	},
-	...transformToForm("EDIT_NOTIFY_CONTROL", advanced),
 };
 
 const EDIT_RGB = {
@@ -569,8 +533,8 @@ export default {
 	CHANGE_DEVICE_STATE_RGB,
 	CHANGE_DEVICE_STATE_SWITCH,
 	CHANGE_DEVICE_MUSIC_CAST,
-	EDIT_NOTIFY_SENSORS,
-	EDIT_NOTIFY_CONTROL,
+	EDIT_NOTIFY,
+	EDIT_NOTIFY,
 	FIREBASE_ADD,
 	DEVICE_MANAGEMENT,
 	DISCOVERY_DEVICES,

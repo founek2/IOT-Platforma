@@ -1,7 +1,6 @@
 import { EventEmitter } from "events";
 import * as types from "../types";
-import type { IDevice } from "common/lib/models/deviceModel";
-import { Device } from "common/lib/models/interface/device";
+import type { IDevice } from "common/lib/models/interface/device";
 import { IThing } from "common/lib/models/interface/thing";
 
 type EventMap = Record<string, any>;
@@ -32,9 +31,9 @@ class MyEmitter<T extends EventMap> implements Emitter<T> {
 
 export interface deviceSetState {
 	device: {
-		_id: Device["_id"];
+		_id: IDevice["_id"];
 		things: [IThing];
-		metadata: Device["metadata"];
+		metadata: IDevice["metadata"];
 	};
 	state: any;
 }

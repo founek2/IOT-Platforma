@@ -1,13 +1,13 @@
 import { IThing } from "./thing";
 
 export enum DeviceStatus {
-	Disconnected = "disconnected",
-	Lost = "lost",
-	Error = "error",
-	Alert = "alert",
-	Ready = "ready",
-	Init = "init",
-	Paired = "paired",
+	disconnected = "disconnected",
+	lost = "lost",
+	error = "error",
+	alert = "alert",
+	ready = "ready",
+	init = "init",
+	paired = "paired",
 }
 
 export type IDeviceStatus =
@@ -17,7 +17,7 @@ export type IDeviceStatus =
 	  }
 	| undefined;
 
-export interface Device {
+export interface IDevice {
 	_id?: any;
 	info: {
 		name: string;
@@ -40,7 +40,7 @@ export interface Device {
 	};
 	apiKey: string;
 	metadata: {
-		topicPrefix: string;
+		realm: string;
 		deviceId: string;
 		publicRead?: boolean;
 	};

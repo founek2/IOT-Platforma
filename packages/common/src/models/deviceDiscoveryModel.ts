@@ -1,18 +1,15 @@
 import mongoose, { Document, Model } from "mongoose";
-import hat from "hat";
-import { thingSchema } from "./schema/thingSchema";
-import { ComponentType, DeviceClass, IThing } from "./interface/thing";
-import { IDeviceDiscovery } from "./interface/discovery";
+import { IDiscovery } from "./interface/discovery";
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
 
-export interface DeviceDiscoveryDoc extends IDeviceDiscovery, Document {}
+export interface IDiscoveryDocument extends IDiscovery, Document {}
 
-const deviceDiscoverySchema = new Schema<DeviceDiscoveryDoc>(
+const deviceDiscoverySchema = new Schema<IDiscoveryDocument>(
 	{
 		deviceId: String,
-		userName: String,
+		realm: String,
 		name: String,
 		things: Schema.Types.Mixed,
 		state: {
@@ -26,9 +23,6 @@ const deviceDiscoverySchema = new Schema<DeviceDiscoveryDoc>(
 	{ timestamps: true }
 );
 
-export interface DeviceDiscoveryModel extends Model<DeviceDiscoveryDoc> {}
+export interface IDiscoveryModel extends Model<IDiscoveryDocument> {}
 
-export const DeviceDiscovery = mongoose.model<DeviceDiscoveryDoc, DeviceDiscoveryModel>(
-	"Discovery",
-	deviceDiscoverySchema
-);
+export const DiscoveryModel = mongoose.model<IDiscoveryDocument, IDiscoveryModel>("Discovery", deviceDiscoverySchema);

@@ -1,5 +1,5 @@
 import { CONTROL_TYPES } from "../constants";
-import { Device } from "../models/interface/device";
+import { IDevice } from "../models/interface/device";
 import { IThing } from "../models/interface/thing";
 
 export type FormType<T> = { JSONkey: string } & T;
@@ -23,7 +23,7 @@ export type ChangeHandler<T = any> = (
 export type AckHandler = (recipe: ControlRecipe) => Promise<boolean>;
 
 export type SocketThingState = {
-	_id: Device["_id"];
+	_id: IDevice["_id"];
 	thing: {
 		_id: IThing["_id"];
 		state: IThing["state"];

@@ -1,9 +1,9 @@
-import { Device } from "./device";
+import { IDevice } from "./device";
 import { IThing } from "./thing";
 
 export interface HistoricalSensor {
 	_id?: any;
-	device: Device["_id"];
+	device: IDevice["_id"];
 	thing: IThing["_id"];
 	day: Date;
 	first: Date;

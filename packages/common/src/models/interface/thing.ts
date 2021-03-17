@@ -1,22 +1,40 @@
-export enum DeviceClass {
-	Temperature = "temperature",
-	Humidity = "humidity",
-	Pressure = "pressure",
-	Voltage = "voltage",
+export enum PropertyClass {
+	temperature = "temperature",
+	humidity = "humidity",
+	pressure = "pressure",
+	voltage = "voltage",
 }
 
 export enum ComponentType {
-	Sensor = "sensor",
-	BinarySensor = "binary_sensor",
-	Switch = "switch",
+	sensor = "sensor",
+	// BinarySensor = "binary_sensor",
+	switch = "switch",
 }
 
-export enum PropertyDataTypes {
-	String = "string",
-	Float = "float",
-	Boolean = "boolean",
-	Integer = "integer",
+export enum PropertyDataType {
+	string = "string",
+	float = "float",
+	boolean = "boolean",
+	integer = "integer",
 }
+
+export enum PredefinedComponentType {
+	switch = ComponentType.switch,
+}
+
+export const ThingProperties: {
+	[componentType in PredefinedComponentType]: Array<IThingProperty>;
+} = {
+	[PredefinedComponentType.switch]: [
+		{
+			propertyId: "power",
+			name: "Zapnuto",
+			dataType: PropertyDataType.string,
+			format: ["on", "off"],
+			settable: true,
+		},
+	],
+};
 
 export interface IThing {
 	_id?: any;
@@ -33,23 +51,26 @@ export interface IThing {
 }
 
 export interface IThingProperty {
-	deviceClass?: DeviceClass;
-	name: string;
-	unitOfMeasurement: string;
+	_id?: string;
 	propertyId: string;
-	dataType: PropertyDataTypes;
+	name: string;
+	propertyClass?: PropertyClass;
+	unitOfMeasurement?: string;
+	dataType: PropertyDataType;
+	format: Array<any>;
+	settable: boolean;
 }
 
-export interface IThingSensor {
-	_id?: any;
-	config: {
-		name: string;
-		nodeId: string;
-		componentType: ComponentType.Sensor;
-		properties: [IThingProperty];
-	};
-	state?: {
-		timeStamp: Date;
-		value: any;
-	};
-}
+// export interface IThingSensor {
+// 	_id?: any;
+// 	config: {
+// 		name: string;
+// 		nodeId: string;
+// 		componentType: ComponentType.sensor;
+// 		properties: [IThingProperty];
+// 	};
+// 	state?: {
+// 		timeStamp: Date;
+// 		value: any;
+// 	};
+// }

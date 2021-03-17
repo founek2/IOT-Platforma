@@ -3,7 +3,6 @@ import { compose } from "redux";
 import { handleActions } from "redux-actions";
 import { ActionTypes } from "../../../constants/redux";
 
-import type { DeviceDiscovery } from "common/lib/models/deviceDiscoveryModel";
 import { HistoricalSensor } from "common/lib/models/interface/history";
 
 export interface state {

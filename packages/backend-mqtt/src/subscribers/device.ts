@@ -15,7 +15,7 @@ export default function (eventEmitter: Emitter<EmitterEvents>) {
 		console.log("state to change", device.things[0]._id, device.things[0].config, state);
 		Object.entries(state).forEach(([propertyId, value]) => {
 			publishStr(
-				`v2/${device.metadata.topicPrefix}/${device.metadata.deviceId}/${device.things[0].config.nodeId}/${propertyId}/set`,
+				`v2/${device.metadata.realm}/${device.metadata.deviceId}/${device.things[0].config.nodeId}/${propertyId}/set`,
 				String(value)
 			);
 		});

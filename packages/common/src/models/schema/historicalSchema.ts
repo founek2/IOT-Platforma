@@ -1,6 +1,4 @@
 import mongoose, { Document } from "mongoose";
-import hat from "hat";
-import { ComponentType, DeviceClass } from "../interface/thing";
 import { HistoricalSensor } from "../interface/history";
 
 const Schema = mongoose.Schema;
