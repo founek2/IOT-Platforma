@@ -23,7 +23,7 @@ const init = function ({
 	expiresIn = exIn;
 };
 
-const sign = function (object: any) {
+const sign = function (object: any): Promise<string> {
 	return new Promise(function (resolve, reject) {
 		if (privKey === null) {
 			reject("Not initialised");
@@ -56,7 +56,7 @@ const verify = function (token: string): Promise<any> {
 	});
 };
 
-export default {
+export const JwtService = {
 	sign,
 	verify,
 	init,

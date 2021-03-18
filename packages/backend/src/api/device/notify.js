@@ -3,8 +3,8 @@ import tokenAuthMIddleware from "framework/lib/middlewares/tokenAuth";
 import formDataChecker from "framework/lib/middlewares/formDataChecker";
 
 import fieldDescriptors from "common/lib/fieldDescriptors";
-import checkReadPerm from "../../middleware/device/checkReadPerm";
-import checkControlPerm from "../../middleware/device/checkControlPerm";
+import checkReadPerm from "../../middlewares/device/checkReadPerm";
+import checkControlPerm from "../../middlewares/device/checkControlPerm";
 import Notify from "../../models/Notification";
 import { transformNotifyForBE } from "common/lib/utils/transform";
 import { NotifyModel } from "common/lib/models/notifyModel";

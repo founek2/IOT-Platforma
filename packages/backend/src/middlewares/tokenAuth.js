@@ -1,4 +1,4 @@
-import Jwt from "../services/jwt";
+import { JwtService } from "common/lib/services/jwtService";
 import mongoose from "mongoose";
 import { equals, T } from "ramda";
 import { infoLog, warningLog } from "../logger";
@@ -13,14 +13,14 @@ export default function (options = { restricted: true }) {
 			const token = req.get("Authorization-JWT");
 			if (token) {
 				try {
-					const obj = await Jwt.verify(token);
+					const obj = await JwtService.verify(token);
 
 					const days7_sec = 7 * 24 * 60 * 60;
 					const now_sec = new Date().getTime() / 1000;
 
 					if (obj.exp - now_sec < days7_sec) {
 						infoLog("Resigning jwt token");
-						const newToken = await Jwt.sign({ id: obj.id });
+						const newToken = await JwtService.sign({ id: obj.id });
 						res.set("Authorization-JWT-new", newToken);
 					}
 					req.user = obj;

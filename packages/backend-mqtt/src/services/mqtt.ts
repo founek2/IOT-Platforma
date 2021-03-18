@@ -1,6 +1,5 @@
 import mqtt, { MqttClient } from "mqtt";
 // import { getConfig } from './config'
-import config from "../config";
 import { map, flip, keys, all, equals, contains, toPairs, uniq } from "ramda";
 import { processSensorsData, processControlData } from "./FireBase";
 import { DiscoveryModel } from "common/lib/models/deviceDiscoveryModel";
@@ -13,6 +12,7 @@ import { IDevice, DeviceStatus } from "common/lib/models/interface/device";
 import { SocketThingState } from "common/lib/types";
 import { ComponentType, IThing } from "common/lib/models/interface/thing";
 import handlePrefix from "./mqtt/prefix";
+import { Config } from "../types";
 
 const emitter = new EventEmitter();
 
@@ -49,7 +49,7 @@ export function subscribeDeviceState(deviceId: string, cb: (status: string) => v
 }
 
 const magicRegex = /^(?:\/([\w]*)([/]\w+[/]\w+[/]\w+)(.*))/;
-export default (io: serverIO): MqttClient => {
+export default (io: serverIO, config: Config): MqttClient => {
 	console.log("connecting to mqtt");
 	const client = mqtt.connect(config.mqtt.url, {
 		username: `${config.mqtt.userName}`,

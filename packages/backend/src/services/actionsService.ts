@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import config from "../config";
+import config from "common/lib/config";
 
 export class Actions {
 	public static async deviceInitPairing(deviceId: string, apiKey: string): Promise<boolean> {

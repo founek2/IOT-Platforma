@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Jwt from "framework/lib/services/jwt";
+import { JwtService } from "common/lib/services/jwtService";
 import Device from "backend/dist/models/Device";
 import { includes } from "ramda";
 import { CONTROL_TYPES } from "common/lib/constants";
@@ -9,7 +9,7 @@ import { UpdateThingState } from "../types";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import mongoose from "mongoose";
 import eventEmitter, { deviceSetState } from "./eventEmitter";
-import { SocketThingState } from "common/src/types";
+import { SocketThingState } from "common/lib/types";
 
 const ObjectId = mongoose.Types.ObjectId;
 type socketWithUser = {
@@ -20,7 +20,7 @@ export default (io: serverIO) => {
 	io.use((socket: socketWithUser, next) => {
 		let token = socket.handshake.query.token as string;
 		console.log("middleware loging io");
-		Jwt.verify(token)
+		JwtService.verify(token)
 			.then((payload) => {
 				socket.request.user = payload;
 				next();

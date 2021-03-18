@@ -1,9 +1,8 @@
 import http from "http";
 import express, { Application } from "express";
-import config from "./config";
+import config from "common/lib/config";
 import checkAndCreateRoot from "framework/lib/services/checkAndCreateRoot";
-import * as Files from "./service/files";
-import Jwt from "framework/lib/services/jwt";
+import { JwtService } from "common/lib/services/jwtService";
 import { devLog } from "framework/lib/logger";
 import { Config } from "./types";
 import loadersInit from "./loaders";
@@ -32,8 +31,7 @@ interface customApp extends Application {
 }
 
 async function startServer(config: Config) {
-	Jwt.init(config.jwt);
-	Files.init(config);
+	JwtService.init(config.jwt);
 
 	const app: customApp = express();
 

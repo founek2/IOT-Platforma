@@ -2,7 +2,7 @@ import { UserModel } from "common/lib/models/userModel";
 import { DiscoveryModel } from "common/lib/models/deviceDiscoveryModel";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import { DeviceStatus } from "common/lib/models/interface/device";
-import { ComponentType, PropertyClass, PropertyDataType } from "common/src/models/interface/thing";
+import { ComponentType, PropertyClass, PropertyDataType } from "common/lib/models/interface/thing";
 import { Server as serverIO } from "socket.io";
 import eventEmitter from "../eventEmitter";
 

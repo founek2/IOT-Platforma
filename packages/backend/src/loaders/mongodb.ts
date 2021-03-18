@@ -1,9 +1,9 @@
 import logger from "framework-ui/lib/logger";
-import * as types from "../types";
+import { Config } from "../types";
 import mongoose from "mongoose";
 import createMongoUri from "common/lib/utils/createMongoUri";
 
-export default async (config: types.Config["db"]): Promise<mongoose.Connection | null> => {
+export default async (config: Config["db"]): Promise<mongoose.Connection | null> => {
 	try {
 		const mong = await mongoose.connect(createMongoUri(config), {
 			useNewUrlParser: true,

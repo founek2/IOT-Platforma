@@ -2,18 +2,18 @@ import http from "http";
 import express, { Application } from "express";
 import morgan from "morgan";
 import { Config } from "./types";
-import mqttService from "./service/mqtt";
-import webSockets from "./service/webSocket";
-import config from "./config";
-import Jwt from "framework/lib/services/jwt";
+import mqttService from "./services/mqtt";
+import webSockets from "./services/webSocket";
+import { JwtService } from "common/lib/services/jwtService";
 import api from "./api";
 import bodyParser from "body-parser";
-import * as FireBase from "./service/FireBase";
+import * as FireBase from "./services/FireBase";
 import { Server as serverIO } from "socket.io";
 import createMongoUri from "common/lib/utils/createMongoUri";
 import mongoose from "mongoose";
+import config from "common/lib/config";
 
-import eventEmitter from "./service/eventEmitter";
+import eventEmitter from "./services/eventEmitter";
 import initSubscribers from "./subscribers";
 
 interface customApp extends Application {
@@ -22,7 +22,7 @@ interface customApp extends Application {
 }
 
 async function startServer(config: Config) {
-	Jwt.init(config.jwt);
+	JwtService.init(config.jwt);
 	FireBase.init(config);
 	initSubscribers(eventEmitter);
 
@@ -53,7 +53,7 @@ async function startServer(config: Config) {
 
 	app.server.listen(config.portAuth, () => {
 		console.log(`Started on port ${(app.server?.address() as any).port}`);
-		if (app.io) setTimeout(() => mqttService(app.io), 1000); //init
+		if (app.io) setTimeout(() => mqttService(app.io, config), 1000); //init
 	});
 
 	require("./agenda"); // init

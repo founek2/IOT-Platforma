@@ -1,6 +1,6 @@
-import eventEmitter from '../service/eventEmitter';
-import init from '../subscribers';
+import eventEmitter from "../services/eventEmitter";
+import init from "../subscribers";
 
 export default async () => {
-    init(eventEmitter)
+	init(eventEmitter);
 };

@@ -2,7 +2,7 @@ import logger from "framework-ui/lib/logger";
 import Email from "email-templates";
 import { createTransport } from "nodemailer";
 import path from "path";
-import config from "../config";
+import config from "common/lib/config";
 import { UserBasic } from "../types";
 
 const emailConf = config.email;

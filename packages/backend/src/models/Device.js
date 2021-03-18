@@ -6,8 +6,8 @@ import { devLog } from "framework/lib/logger";
 import SensorHistory from "./SensorHistory";
 import { keys, head } from "ramda";
 import { IMAGES_DEVICES_FOLDER } from "../constants";
-import { isDay } from "../lib/util";
-import prepareControlHistoryData from "../lib/prepareControlHistoryData";
+import { isDay } from "../utils";
+// import prepareControlHistoryData from "../lib/prepareControlHistoryData";
 import ControlHistory from "./ControlHistory";
 
 const mongoose = require("mongoose");
@@ -88,9 +88,9 @@ deviceSchema.statics.updateStateByDevice = async function (createdBy, topic, dat
 
 	const JSONkey = head(keys(data));
 	const state = data[JSONkey];
-	const query = prepareControlHistoryData(state, JSONkey, doc.control, updateTime);
+	// const query = prepareControlHistoryData(state, JSONkey, doc.control, updateTime);
 
-	ControlHistory.saveData(doc._id, JSONkey, query, updateTime);
+	// ControlHistory.saveData(doc._id, JSONkey, query, updateTime);
 
 	return doc;
 };

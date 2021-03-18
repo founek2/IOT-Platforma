@@ -7,8 +7,9 @@ import groupRestriction from "framework/lib/middlewares/groupRestriction";
 import { getAllowedGroups } from "framework-ui/lib/privileges";
 
 import fieldDescriptors from "common/lib/fieldDescriptors";
-import checkWritePerm from "../middleware/user/checkWritePerm";
-import eventEmitter from "../service/eventEmitter";
+import checkWritePerm from "../middlewares/user/checkWritePerm";
+import eventEmitter from "../services/eventEmitter";
+import { UserService } from "common/lib/services/userService";
 
 function removeUser(id) {
 	return function (doc) {
@@ -55,7 +56,7 @@ export default ({ config, db }) =>
 
 			if (formData.LOGIN) {
 				// tested 2
-				UserModel.checkCreditals(formData.LOGIN)
+				UserService.checkCreditals(formData.LOGIN)
 					.then(({ doc, token }) => {
 						const { groups, id, allowedSensors, allowedControlls, info, auth, deviceUser } = doc;
 						res.send({
@@ -75,7 +76,7 @@ export default ({ config, db }) =>
 					.catch(processError(res));
 			} else if (formData.REGISTRATION) {
 				// tested
-				UserModel.createNew(formData.REGISTRATION)
+				UserService.create(formData.REGISTRATION)
 					.then(({ doc, token }) => {
 						const { groups, id, allowedSensors, allowedControlls, info } = doc;
 						res.send({

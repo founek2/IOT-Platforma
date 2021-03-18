@@ -8,11 +8,11 @@ import resource from "framework/lib/middlewares/resource-router-middleware";
 import tokenAuthMIddleware from "framework/lib/middlewares/tokenAuth";
 import mongoose from "mongoose";
 import { assoc, assocPath, ifElse, lensPath, map, o, over, pathSatisfies, toPairs } from "ramda";
-import checkControlPerm from "../middleware/device/checkControlPerm";
-import checkReadPerm from "../middleware/device/checkReadPerm";
-import checkWritePerm from "../middleware/device/checkWritePerm";
-import { Actions } from "../service/actions";
-import eventEmitter from "../service/eventEmitter";
+import checkControlPerm from "../middlewares/device/checkControlPerm";
+import checkReadPerm from "../middlewares/device/checkReadPerm";
+import checkWritePerm from "../middlewares/device/checkWritePerm";
+import { Actions } from "../services/actionsService";
+import eventEmitter from "../services/eventEmitter";
 
 const ObjectId = mongoose.Types.ObjectId;
 

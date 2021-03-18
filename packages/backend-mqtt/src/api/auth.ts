@@ -1,30 +1,31 @@
 import { DeviceModel } from "common/lib/models/deviceModel";
-import { UserModel } from "common/lib/models/userModel";
-import express from "express";
+import { UserService } from "common/lib/services/userService";
+import express, { Response } from "express";
+import { AuthTypes } from "common/lib/constants";
 
 const router = express.Router();
 
-function sendDeny(path, res) {
+function sendDeny(path: string, res: Response) {
 	console.log(path, "deny");
 	res.send("deny");
 }
 
-function isGuest(userName) {
+function isGuest(userName: string) {
 	return userName.startsWith("guest=");
 }
 
-function isUser(userName) {
+function isUser(userName: string) {
 	return !isGuest(userName) && !isDevice(userName);
 }
-function isDevice(userName) {
+function isDevice(userName: string) {
 	return userName.startsWith("device=");
 }
 
-function splitUserName(userName) {
+function splitUserName(userName: string) {
 	return removeUserNamePrefix(userName).split("/");
 }
 
-function removeUserNamePrefix(userName) {
+function removeUserNamePrefix(userName: string) {
 	return userName.replace(/^[^=]+=/, "");
 }
 
@@ -41,7 +42,7 @@ router.post("/user", async function (req, res) {
 		const success = await DeviceModel.login(topicPrefix, deviceId, password);
 		return success ? res.send("allow") : sendDeny("/user", res);
 	} else if (isUser(username)) {
-		UserModel.checkCreditals({ userName: username, password, authType: "passwd" })
+		UserService.checkCreditals({ userName: username, password, authType: AuthTypes.PASSWD })
 			.then(({ doc }) => {
 				if (doc.groups.some((group) => group === "root" || group === "admin"))
 					return res.send("allow administrator");

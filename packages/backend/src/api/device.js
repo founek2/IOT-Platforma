@@ -1,19 +1,19 @@
 import resource from "framework/lib/middlewares/resource-router-middleware";
 import Device from "../models/Device";
 import processError from "framework/lib/utils/processError";
-import { saveImageBase64, validateFileExtension, deleteImage } from "../service/files";
+import { saveImageBase64, validateFileExtension, deleteImage } from "../services/files";
 import { transformSensorsForBE, transformControlForBE } from "common/lib/utils/transform";
 import tokenAuthMIddleware from "framework/lib/middlewares/tokenAuth";
 import formDataChecker from "framework/lib/middlewares/formDataChecker";
 
 import fieldDescriptors from "common/lib/fieldDescriptors";
-import checkReadPerm from "../middleware/device/checkReadPerm";
-import checkWritePerm from "../middleware/device/checkWritePerm";
-import checkControlPerm from "../middleware/device/checkControlPerm";
+import checkReadPerm from "../middlewares/device/checkReadPerm";
+import checkWritePerm from "../middlewares/device/checkWritePerm";
+import checkControlPerm from "../middlewares/device/checkControlPerm";
 import Notify from "../models/Notification";
-import { handleMapping } from "common/lib/service/DeviceHandler";
+import { handleMapping } from "common/lib/services/DeviceHandler";
 import { contains, __, flip, filter, o, prop } from "ramda";
-import eventEmitter from "../service/eventEmitter";
+import eventEmitter from "../services/eventEmitter";
 import agenda from "../agenda";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import mongoose from "mongoose";

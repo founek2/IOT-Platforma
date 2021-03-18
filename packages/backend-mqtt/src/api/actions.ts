@@ -1,5 +1,5 @@
 import express from "express";
-import eventEmitter from "../service/eventEmitter";
+import eventEmitter from "../services/eventEmitter";
 
 const router = express.Router();
 

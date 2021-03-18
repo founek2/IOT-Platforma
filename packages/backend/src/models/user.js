@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import Jwt from "framework/lib/services/jwt";
+import { JwtService } from "common/lib/services/jwtService";
 import { createHash, compare } from "../lib/password";
 import catcher from "framework/lib/mongoose/catcher";
 import { keys } from "ramda";
@@ -50,7 +50,7 @@ userSchema.statics.create = function (object) {
 				obj = obj.toObject();
 				delete obj.password;
 
-				return Jwt.sign(obj).then((token) => {
+				return JwtService.sign(obj).then((token) => {
 					return { doc: obj, token };
 				});
 			});
@@ -71,7 +71,7 @@ userSchema.statics.checkCreditals = function ({ userName, password, authType }) 
 				if (authType === "passwd") {
 					return compare(password, doc.auth.password).then((out) => {
 						if (out) {
-							return Jwt.sign({ id: doc._id }).then((token) => {
+							return JwtService.sign({ id: doc._id }).then((token) => {
 								const obj = doc.toObject();
 								delete obj.password;
 								return {

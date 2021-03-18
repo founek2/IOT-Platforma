@@ -1,6 +1,6 @@
 import Agenda from "agenda";
 import logger from "framework-ui/lib/logger";
-import Mailer from "../service/mailer";
+import Mailer from "../services/mailerService";
 import { AGENDA_JOB_TYPE } from "common/lib/constants/agenda";
 
 const mailer = new Mailer();
