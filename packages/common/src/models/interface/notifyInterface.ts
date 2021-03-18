@@ -1,5 +1,6 @@
 import { IDevice } from "./device";
 import { IThing, IThingProperty } from "./thing";
+import { IUser } from "./userInterface";
 
 export enum NotifyType {
 	always = "always",
@@ -31,6 +32,6 @@ export interface INotifyThing {
 export interface INotify {
 	_id?: any;
 	deviceId: IDevice["_id"];
-	userId: string;
+	userId: IUser["_id"];
 	things: INotifyThing[];
 }

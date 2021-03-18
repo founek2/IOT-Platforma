@@ -86,9 +86,9 @@ export const updateNotify = ({ id, ...object }, dispatch) =>
 		dispatch,
 	});
 
-export const getNotify = ({ id, ...object }, dispatch) =>
+export const getNotify = ({ id, nodeId, ...object }, dispatch) =>
 	paramSender({
-		url: API_URL + `/device/${id}/notify`,
+		url: API_URL + `/device/${id}/thing/${nodeId}/notify`,
 		...object,
 		dispatch,
 	});

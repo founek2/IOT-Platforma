@@ -327,7 +327,7 @@ const EDIT_NOTIFY = {
 		deepPath: "EDIT_NOTIFY.type[]",
 		label: "Podmínoa",
 		required: true,
-		validations: [validationFactory("isOneOf", Object.values(NotifyType))],
+		validations: [validationFactory("isOneOf", { values: Object.values(NotifyType) })],
 	},
 	"value[]": {
 		deepPath: "EDIT_NOTIFY.value[]",

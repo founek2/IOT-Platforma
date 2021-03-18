@@ -1,6 +1,6 @@
 import { ActionTypes } from "../../../constants/redux";
 import { getFormData, getToken } from "framework-ui/lib/utils/getters";
-import { resetForm, validateRegisteredFields } from "framework-ui/lib/redux/actions/formsData";
+import { resetForm, validateRegisteredFields, fillForm } from "framework-ui/lib/redux/actions/formsData";
 import { updateTmpData } from "framework-ui/lib/redux/actions/tmpData";
 import { baseLogger, errorLog } from "framework-ui/lib/logger";
 import loadFilesInFormData from "framework-ui/lib/utils/loadFilesInFormData";
@@ -14,8 +14,9 @@ import {
 	deleteDevice as deleteDeviceApi,
 	deleteDevices as deleteDevicesApi,
 	fetchDeviceData as fetchDeviceDataApi,
+	getNotify as getNotifyApi,
 } from "../../../api/deviceApi";
-import { transformSensorsForBE, transformControlForBE } from "common/lib/utils/transform";
+import { transformSensorsForBE, transformControlForBE, transformNotifyForFE } from "common/lib/utils/transform";
 import io from "../../../webSocket";
 import { addNotification } from "framework-ui/lib/redux/actions/application/notifications";
 
@@ -322,5 +323,23 @@ export function fetchApiKey(id) {
 				dispatch(updateTmpData({ dialog: { apiKey: json.apiKey } }));
 			},
 		});
+	};
+}
+
+export function prefillNotify(id, nodeId) {
+	return async function (dispatch, getState) {
+		return getNotifyApi(
+			{
+				token: getToken(getState()),
+				id,
+				nodeId,
+				onSuccess: (json) => {
+					console.log("json", json);
+					const formData = transformNotifyForFE(json.doc.things);
+					dispatch(fillForm("EDIT_NOTIFY")(formData));
+				},
+			},
+			dispatch
+		);
 	};
 }

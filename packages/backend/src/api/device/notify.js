@@ -1,89 +1,69 @@
-import resource from 'framework/lib/middlewares/resource-router-middleware'
-import tokenAuthMIddleware from 'framework/lib/middlewares/tokenAuth'
-import formDataChecker from 'framework/lib/middlewares/formDataChecker'
+import resource from "framework/lib/middlewares/resource-router-middleware";
+import tokenAuthMIddleware from "framework/lib/middlewares/tokenAuth";
+import formDataChecker from "framework/lib/middlewares/formDataChecker";
 
-import fieldDescriptors from 'common/lib/fieldDescriptors'
-import checkReadPerm from '../../middleware/device/checkReadPerm'
-import checkControlPerm from '../../middleware/device/checkControlPerm'
-import Notify from '../../models/Notification'
-import { transformNotifyForBE } from 'common/lib/utils/transform'
-
-function checkIndex() {
-    return (req, res, next) => {
-        if (req.query.type === "sensors")
-            return checkReadPerm()(req, res, next)
-        if (req.query.type === "control" && req.query.JSONkey)
-            return checkControlPerm()(req, res, next)
-
-        res.status(208).send({ error: 'InvalidParam' })
-    }
-}
+import fieldDescriptors from "common/lib/fieldDescriptors";
+import checkReadPerm from "../../middleware/device/checkReadPerm";
+import checkControlPerm from "../../middleware/device/checkControlPerm";
+import Notify from "../../models/Notification";
+import { transformNotifyForBE } from "common/lib/utils/transform";
+import { NotifyModel } from "common/lib/models/notifyModel";
 
 function checkUpdate(req, res, next) {
-    console.log(req.body)
-    if (req.body.formData.EDIT_NOTIFY_SENSORS)
-        return checkReadPerm()(req, res, next)
-    else if (req.body.formData.EDIT_NOTIFY_CONTROL)
-        return checkControlPerm()(req, res, next)
+	console.log(req.body);
+	if (req.body.formData.EDIT_NOTIFY_SENSORS) return checkReadPerm()(req, res, next);
+	else if (req.body.formData.EDIT_NOTIFY_CONTROL) return checkControlPerm()(req, res, next);
 
-    res.status(208).send({ error: 'InvalidParam' })
+	res.status(208).send({ error: "InvalidParam" });
 }
 
 export default ({ config, db }) =>
-    resource({
-        mergeParams: true,
+	resource({
+		mergeParams: true,
 
-        middlewares: {
-            update: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors), checkUpdate],
-            index: [tokenAuthMIddleware(), checkIndex()],
-        },
+		middlewares: {
+			update: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors), checkUpdate],
+			index: [tokenAuthMIddleware()],
+		},
 
-        index({ params: { id }, user, query: { type, JSONkey } }, res) {
-            console.log("index", type, JSONkey)
+		index({ params, user }, res) {
+			const { deviceId, nodeId } = params;
 
-            if (type === "sensors") {
-                Notify.getSensors(id, user.id).then(doc => {
-                    // console.log("items", doc.items)
-                    res.send({
-                        doc: {
-                            items: doc && doc.items ? doc.items : []
-                        }
-                    });
-                })
-            }
+			console.log("index", params);
 
-            if (type === "control") {
-                Notify.getControl(id, user.id, JSONkey).then(doc => {
-                    // console.log("items", doc.items)
-                    res.send({
-                        doc: {
-                            items: doc && doc.items ? doc.items : []
-                        }
-                    });
-                })
-            }
-        },
+			NotifyModel.getForThing(deviceId, nodeId, user.id).then((doc) => {
+				console.log("items", doc);
+				res.send({
+					doc: {
+						things: doc && doc.things ? doc.things : [],
+					},
+				});
+			});
+		},
 
-        // PUT
-        update({ params: { id }, body: { formData }, user }, res) {
-            if (formData.EDIT_NOTIFY_SENSORS) {
-                const { sensors } = transformNotifyForBE(formData.EDIT_NOTIFY_SENSORS)
-                Notify.addOrUpdateSensors(user.id, id, sensors).then((result) => {
-                    res.sendStatus(204);
-                }).catch((e) => {
-                    console.log("err", e)
-                    res.sendStatus(500);
-                })
-
-            } else if (formData.EDIT_NOTIFY_CONTROL) {
-                const { sensors, key } = transformNotifyForBE(formData.EDIT_NOTIFY_CONTROL)
-                console.log("transformed", transformNotifyForBE(formData.EDIT_NOTIFY_CONTROL))
-                Notify.addOrUpdateControl(user.id, id, key, sensors).then((result) => {
-                    res.sendStatus(204);
-                }).catch((e) => {
-                    console.log("err", e)
-                    res.sendStatus(500);
-                })
-            } else res.sendStatus(400)
-        },
-    })
+		// PUT
+		update({ params: { id }, body: { formData }, user }, res) {
+			if (formData.EDIT_NOTIFY_SENSORS) {
+				const { sensors } = transformNotifyForBE(formData.EDIT_NOTIFY_SENSORS);
+				Notify.addOrUpdateSensors(user.id, id, sensors)
+					.then((result) => {
+						res.sendStatus(204);
+					})
+					.catch((e) => {
+						console.log("err", e);
+						res.sendStatus(500);
+					});
+			} else if (formData.EDIT_NOTIFY_CONTROL) {
+				const { sensors, key } = transformNotifyForBE(formData.EDIT_NOTIFY_CONTROL);
+				console.log("transformed", transformNotifyForBE(formData.EDIT_NOTIFY_CONTROL));
+				Notify.addOrUpdateControl(user.id, id, key, sensors)
+					.then((result) => {
+						res.sendStatus(204);
+					})
+					.catch((e) => {
+						console.log("err", e);
+						res.sendStatus(500);
+					});
+			} else res.sendStatus(400);
+		},
+	});

@@ -16,9 +16,14 @@ import { getFormData } from "framework-ui/lib/utils/getters";
 import * as formsActions from "framework-ui/lib/redux/actions/formsData";
 import EditNotify from "./editNotifyForm/EditNotify";
 import Typography from "@material-ui/core/Typography";
-import * as sensorsActions from "../store/actions/application/devices/sensors";
+import * as deviceActions from "../store/actions/application/devices";
 import * as userActions from "../store/actions/application/user";
 import { getToken } from "../firebase";
+import { getNotify } from "../api/deviceApi";
+import { IDevice } from "common/lib/models/interface/device";
+import { IThing } from "common/lib/models/interface/thing";
+import { IState } from "../types";
+import { getDevices } from "../utils/getters";
 
 const useStyles = makeStyles((theme) => ({
 	textField: {
@@ -98,31 +103,53 @@ const useStyles = makeStyles((theme) => ({
 const FIELDS = ["propertyId", "type", "value", "interval"];
 const formName = "EDIT_NOTIFY";
 
+interface EditDeviceDialogProps {
+	updateSensorCount: any;
+	fillEditFormAction: any;
+	editForm: any;
+	sensorCount?: number;
+	preFillForm: any;
+	onUpdate: any;
+	registerTokenAction: any;
+	match: { params: { deviceId: IDevice["_id"]; nodeId: IThing["config"]["nodeId"] } };
+	device?: IDevice;
+	thing?: IThing;
+}
+
 function EditDeviceDialog({
 	updateSensorCount,
-	onPrefill,
-	device,
 	fillEditFormAction,
 	editForm,
-	sensorCount,
+	sensorCount = 0,
 	onUpdate,
 	registerTokenAction,
-	JSONkey,
-}) {
+	match: { params },
+	preFillForm,
+	device,
+	thing,
+}: EditDeviceDialogProps) {
 	const [pending, setPending] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const classes = useStyles();
-
+	console.log("match", params);
 	useEffect(() => {
 		async function preFill() {
+			setPending(true);
+			const success = await preFillForm(params.deviceId, params.nodeId);
+			if (success) setLoaded(true);
+			setPending(false);
+		}
+
+		async function sendToken() {
 			const token = await getToken();
 			console.log("getting token: ", token);
 			registerTokenAction(token);
 		}
 		preFill();
+		sendToken();
 	}, []);
 
-	function removeSensorByIndex(idx) {
+	function removeSensorByIndex(idx: number) {
 		const newEditForm = clone(editForm);
 		for (let i = idx + 1; i < sensorCount; i++) {
 			FIELDS.forEach((key) => {
@@ -139,44 +166,27 @@ function EditDeviceDialog({
 
 	const handleSave = async () => {
 		setPending(true);
-		await onUpdate(device.id);
+		await onUpdate(params.deviceId);
 		setPending(false);
 	};
 
-	return loaded && device ? (
+	return loaded && thing?.config ? (
 		<Card className={classes.card}>
-			<CardHeader className={classes.header} title={device.info.title} titleTypographyProps={{ variant: "h3" }} />
+			<CardHeader className={classes.header} titleTypographyProps={{ variant: "h3" }} />
 			<CardContent className={classes.content}>
 				<div>
 					{/* <Typography variant="subtitle1" align="center" >Notifikace:</Typography> */}
-					{/* {sensorCount > 0 &&
+					{sensorCount > 0 &&
 						[...Array(sensorCount).keys()].map((i) => (
-							<EditNotify
-								id={i}
-								key={i}
-								onDelete={removeSensorByIndex}
-								recipe={device[mode].recipe}
-								formName={formName}
-								JSONkey={JSONkey}
-							/>
-						))} */}
+							<EditNotify id={i} key={i} onDelete={removeSensorByIndex} config={thing.config} />
+						))}
 				</div>
-				<IconButton
-					className={classes.addButton}
-					aria-label="Add a sensor"
-					onClick={() => updateSensorCount(sensorCount + 1)}
-				>
-					<AddCircle className={classes.addIcon} />
+				<IconButton aria-label="Add a sensor" onClick={() => updateSensorCount(sensorCount + 1)}>
+					<AddCircle />
 				</IconButton>
 			</CardContent>
 			<CardActions className={classes.actions}>
-				<Button
-					color="primary"
-					variant="contained"
-					className={classes.button}
-					onClick={handleSave}
-					disabled={pending}
-				>
+				<Button color="primary" variant="contained" onClick={handleSave} disabled={pending}>
 					Uložit
 				</Button>
 				<Loader open={pending} />
@@ -189,20 +199,25 @@ function EditDeviceDialog({
 	);
 }
 
-const _mapStateToProps = (state, { formName }) => {
-	const editForm = getFormData(formName)(state);
-	const sensorCount = editForm ? editForm.count : 0;
+const _mapStateToProps = (state: IState, { match: { params } }: EditDeviceDialogProps) => {
+	const editForm: any = getFormData("EDIT_NOTIFY")(state);
+	const sensorCount = editForm ? editForm.count : undefined;
+	const device = (getDevices(state) as IDevice[]).find((obj) => obj._id === params.deviceId);
+	const thing = device?.things.find((thing) => thing.config.nodeId === params.nodeId);
 	return {
 		sensorCount,
 		editForm,
+		device,
+		thing,
 	};
 };
 
-const _mapDispatchToProps = (dispatch, { formName }) => ({
+const _mapDispatchToProps = (dispatch: any) => ({
 	...bindActionCreators(
 		{
-			updateSensorCount: formsActions.updateFormField(`${formName}.count`),
-			fillEditFormAction: formsActions.fillForm(`${formName}`),
+			updateSensorCount: formsActions.updateFormField("EDIT_NOTIFY.count"),
+			fillEditFormAction: formsActions.fillForm("EDIT_NOTIFY"),
+			preFillForm: deviceActions.prefillNotify,
 			registerTokenAction: userActions.registerToken,
 		},
 		dispatch

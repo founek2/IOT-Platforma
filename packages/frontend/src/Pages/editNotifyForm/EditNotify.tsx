@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from "react";
 import FieldConnector from "framework-ui/lib/Components/FieldConnector";
 import FormLabel from "@material-ui/core/FormLabel";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 import ClearIcon from "@material-ui/icons/Clear";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -13,8 +13,10 @@ import { getFieldVal } from "framework-ui/lib/utils/getters";
 import DaysOfWeekPicker from "./DaysOfWeekPicker";
 import { NotifyIntervals } from "common/lib/constants";
 import PropertyPart from "./editNotify/PropertyPart";
+import { IThing } from "common/lib/models/interface/thing";
+import { IState } from "frontend/src/types";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
 	quantity: {
 		marginTop: 30,
 		position: "relative",
@@ -36,27 +38,29 @@ const styles = (theme) => ({
 		// display: "flex",
 		margin: "0 auto",
 	},
-});
+}));
 
-function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formName, JSONkey }) {
+interface EditNotifyProps {
+	id: number;
+	onDelete: (id: number) => void;
+	config: IThing["config"];
+	editedAdvanced: boolean;
+}
+
+function EditNotify({ id, onDelete, config, editedAdvanced }: EditNotifyProps) {
 	const [openAdvanced, setOpen] = useState(false);
-	const sensorMode = formName === "EDIT_NOTIFY_SENSORS";
-	const props = { JSONkey, id, recipe };
+	const classes = useStyles();
 
 	return (
 		<Grid container key={id} spacing={2} className={classes.quantity}>
 			<Grid item md={12}>
 				<FormLabel component="legend">Notifikace {id}:</FormLabel>
-				<IconButton
-					className={classes.clearButton}
-					aria-label="Delete a sensor"
-					onClick={(e) => onDelete(id, e)}
-				>
+				<IconButton className={classes.clearButton} aria-label="Delete a sensor" onClick={(e) => onDelete(id)}>
 					<ClearIcon />
 				</IconButton>
 			</Grid>
 
-			<PropertyPart {...props} />
+			<PropertyPart config={config} id={id} />
 			{/* <Grid item md={12} xs={12}>
             <FieldConnector
                 fieldProps={{
@@ -64,7 +68,7 @@ function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formNa
                     multiline: true,
                     fullWidth: true
                 }}
-                deepPath={`${formName}.description.${id}`}
+                deepPath={`EDIT_NOTIFY.description.${id}`}
             />
         </Grid> */}
 			<Grid item md={12} xs={12}>
@@ -78,7 +82,7 @@ function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formNa
 					<Grid item md={4} xs={12}>
 						<FieldConnector
 							component="Select"
-							deepPath={`${formName}.advanced.interval.${id}`}
+							deepPath={`EDIT_NOTIFY.advanced.interval.${id}`}
 							selectOptions={NotifyIntervals.map(({ value, label }) => (
 								<MenuItem value={value} key={value}>
 									{label}
@@ -91,7 +95,7 @@ function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formNa
 					</Grid>
 					<Grid item md={2} xs={6}>
 						<FieldConnector
-							deepPath={`${formName}.advanced.from.${id}`}
+							deepPath={`EDIT_NOTIFY.advanced.from.${id}`}
 							fieldProps={{
 								// defaultValue: "00:00",
 								fullWidth: true,
@@ -101,7 +105,7 @@ function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formNa
 					</Grid>
 					<Grid item md={2} xs={6}>
 						<FieldConnector
-							deepPath={`${formName}.advanced.to.${id}`}
+							deepPath={`EDIT_NOTIFY.advanced.to.${id}`}
 							fieldProps={{
 								// defaultValue: "23:59",
 								fullWidth: true,
@@ -113,8 +117,8 @@ function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formNa
 					<Grid item md={12} xs={12}>
 						<div className={classes.daysPicker}>
 							<FieldConnector
-								deepPath={`${formName}.advanced.daysOfWeek.${id}`}
-								component={DaysOfWeekPicker}
+								deepPath={`EDIT_NOTIFY.advanced.daysOfWeek.${id}`}
+								component={(props) => <DaysOfWeekPicker {...props} />}
 							/>
 						</div>
 					</Grid>
@@ -124,11 +128,11 @@ function EditSensor({ id, classes, onDelete, recipe = [], editedAdvanced, formNa
 	);
 }
 
-const _mapStateToProps = (state, { id, formName }) => {
-	const days = getFieldVal(`${formName}.advanced.daysOfWeek.${id}`, state);
+const _mapStateToProps = (state: IState, { id }: { id: number }) => {
+	const days = getFieldVal(`EDIT_NOTIFY.advanced.daysOfWeek.${id}`, state);
 	const editedAdvanced =
-		getFieldVal(`${formName}.advanced.to.${id}`, state) ||
-		getFieldVal(`${formName}.advanced.from.${id}`, state) ||
+		getFieldVal(`EDIT_NOTIFY.advanced.to.${id}`, state) ||
+		getFieldVal(`EDIT_NOTIFY.advanced.from.${id}`, state) ||
 		(days && days.length < 7);
 
 	return {
@@ -136,4 +140,4 @@ const _mapStateToProps = (state, { id, formName }) => {
 	};
 };
 
-export default connect(_mapStateToProps)(withStyles(styles)(EditSensor));
+export default connect(_mapStateToProps)(EditNotify);

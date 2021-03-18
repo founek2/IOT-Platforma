@@ -70,7 +70,7 @@ export function SimpleDialog({ onClose, open, title, children, deviceId, thing }
 			</DialogTitle>
 			{children}
 			<Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleMoreClose}>
-				<Link to={"/device/" + deviceId + "/thing/" + thing._id + "/notify"}>
+				<Link to={"/device/" + deviceId + "/thing/" + thing.config.nodeId + "/notify"}>
 					<MenuItem onClick={handleMoreClose}>Notifikace</MenuItem>
 				</Link>
 				{/* <MenuItem onClick={handleMoreClose}>My account</MenuItem>

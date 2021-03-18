@@ -18,7 +18,7 @@ export default ({ config }) => {
 
 	api.use("/devices/sensors", sensors({ config }));
 
-	api.use("/device/:id/notify", notify({ config }));
+	api.use("/device/:deviceId/thing/:nodeId/notify", notify({ config }));
 
 	api.use("/device", device({ config }));
 
