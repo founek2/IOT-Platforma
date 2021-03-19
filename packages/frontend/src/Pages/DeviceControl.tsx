@@ -132,12 +132,14 @@ function DeviceControl({
 
 	const selectedBuilding = buildings.get(selectedLocation.building);
 	const selectedRoom = selectedBuilding?.get(selectedLocation.room);
+
+	console.log("lalala", buildings.size);
 	return (
 		<div className={classes.root}>
 			<Grid container justify="center">
 				<Grid md={8} item>
 					{!selectedRoom ? (
-						isEmpty(buildings.size === 0) ? (
+						buildings.size === 0 ? (
 							<Typography>Nebyla nalezena žádná zařízení</Typography>
 						) : (
 							<div className={classes.widgetContainer}>

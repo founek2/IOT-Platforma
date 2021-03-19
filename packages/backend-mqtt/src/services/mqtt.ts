@@ -1,7 +1,7 @@
 import mqtt, { MqttClient } from "mqtt";
 // import { getConfig } from './config'
 import { map, flip, keys, all, equals, contains, toPairs, uniq } from "ramda";
-import { processSensorsData, processControlData } from "./FireBase";
+import * as FireBaseService from "./FireBase";
 import { DiscoveryModel } from "common/lib/models/deviceDiscoveryModel";
 import { Server as serverIO } from "socket.io";
 import EventEmitter from "events";
@@ -10,9 +10,10 @@ import { HistoricalModel } from "common/lib/models/historyModel";
 import eventEmitter from "./eventEmitter";
 import { IDevice, DeviceStatus } from "common/lib/models/interface/device";
 import { SocketThingState } from "common/lib/types";
-import { ComponentType, IThing } from "common/lib/models/interface/thing";
+import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import handlePrefix from "./mqtt/prefix";
 import { Config } from "../types";
+import { getThing } from "../utils/getThing";
 
 const emitter = new EventEmitter();
 
@@ -102,6 +103,7 @@ export default (io: serverIO, config: Config): MqttClient => {
 
 		handle("v2/+/+/+/+", async function (topic, message, [realm, deviceId, nodeId, propertyId]) {
 			const timestamp = new Date();
+			const value = message.toString();
 			const device = await DeviceModel.findOneAndUpdate(
 				{
 					"metadata.deviceId": deviceId,
@@ -111,7 +113,7 @@ export default (io: serverIO, config: Config): MqttClient => {
 				{
 					$set: {
 						"things.$.state.timestamp": timestamp,
-						[`things.$.state.value.${propertyId}`]: message.toString(),
+						[`things.$.state.value.${propertyId}`]: value,
 					},
 				},
 				{
@@ -125,13 +127,10 @@ export default (io: serverIO, config: Config): MqttClient => {
 
 			sendToUsers(io, device, nodeId, propertyId);
 
-			HistoricalModel.saveControlData(
-				device?._id,
-				getThing(device, nodeId)._id,
-				propertyId,
-				Number(message.toString()),
-				timestamp
-			);
+			const thing = getThing(device, nodeId);
+			HistoricalModel.saveControlData(device._id, thing._id, propertyId, Number(value), timestamp);
+
+			FireBaseService.processData(device, nodeId, propertyId, value);
 		});
 	});
 
@@ -156,8 +155,4 @@ function sendToUsers(io: serverIO, device: IDevice, nodeId: string, propertyId: 
 	device.permissions[thing.config.componentType === "sensor" ? "read" : "control"].forEach((userId) => {
 		io.to(userId.toString()).emit("control", updateData);
 	});
-}
-
-function getThing(device: IDevice, nodeId: IThing["config"]["nodeId"]) {
-	return device.things.find((thing) => thing.config.nodeId === nodeId)!;
 }

@@ -22,48 +22,39 @@ export default ({ config, db }) =>
 		mergeParams: true,
 
 		middlewares: {
-			update: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors), checkUpdate],
+			update: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
 			index: [tokenAuthMIddleware()],
 		},
 
-		index({ params, user }, res) {
+		async index({ params, user }, res) {
 			const { deviceId, nodeId } = params;
 
 			console.log("index", params);
 
-			NotifyModel.getForThing(deviceId, nodeId, user.id).then((doc) => {
-				console.log("items", doc);
-				res.send({
-					doc: {
-						things: doc && doc.things ? doc.things : [],
-					},
-				});
+			const doc = await NotifyModel.getForThing(deviceId, nodeId, user.id);
+			console.log("items", doc);
+			res.send({
+				doc: {
+					thing: doc && doc.things ? doc.things[0] : { nodeId, properties: [] },
+				},
 			});
 		},
 
 		// PUT
-		update({ params: { id }, body: { formData }, user }, res) {
-			if (formData.EDIT_NOTIFY_SENSORS) {
-				const { sensors } = transformNotifyForBE(formData.EDIT_NOTIFY_SENSORS);
-				Notify.addOrUpdateSensors(user.id, id, sensors)
-					.then((result) => {
-						res.sendStatus(204);
-					})
-					.catch((e) => {
-						console.log("err", e);
-						res.sendStatus(500);
+		update({ params, body: { formData }, user }, res) {
+			const { deviceId, nodeId } = params;
+			console.log("params", params);
+			if (formData.EDIT_NOTIFY) {
+				const { properties } = transformNotifyForBE(formData.EDIT_NOTIFY);
+				console.log("properties", properties);
+				NotifyModel.setForThing(deviceId, nodeId, user.id, properties).then((doc) => {
+					console.log("items", doc);
+					res.send({
+						doc: {
+							things: doc && doc.things ? doc.things : [],
+						},
 					});
-			} else if (formData.EDIT_NOTIFY_CONTROL) {
-				const { sensors, key } = transformNotifyForBE(formData.EDIT_NOTIFY_CONTROL);
-				console.log("transformed", transformNotifyForBE(formData.EDIT_NOTIFY_CONTROL));
-				Notify.addOrUpdateControl(user.id, id, key, sensors)
-					.then((result) => {
-						res.sendStatus(204);
-					})
-					.catch((e) => {
-						console.log("err", e);
-						res.sendStatus(500);
-					});
-			} else res.sendStatus(400);
+				});
+			}
 		},
 	});

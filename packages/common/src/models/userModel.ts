@@ -80,7 +80,7 @@ userSchema.statics.removeNotifyTokens = function (tokens) {
 		{
 			$pull: { notifyTokens: { $in: tokens } },
 		}
-	);
+	).exec();
 };
 
 userSchema.statics.getNotifyTokens = function (userID: IUser["_id"]) {

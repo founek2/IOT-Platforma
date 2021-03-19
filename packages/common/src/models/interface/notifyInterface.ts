@@ -9,6 +9,7 @@ export enum NotifyType {
 }
 
 export interface INotifyThingProperty {
+	_id?: any;
 	propertyId: IThingProperty["propertyId"];
 	type: NotifyType;
 	value: string | number;
@@ -25,6 +26,7 @@ export interface INotifyThingProperty {
 }
 
 export interface INotifyThing {
+	_id?: any;
 	nodeId: IThing["config"]["nodeId"];
 	properties: INotifyThingProperty[];
 }

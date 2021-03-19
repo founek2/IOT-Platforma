@@ -1,7 +1,7 @@
 import http from "http";
 import express, { Application } from "express";
 import config from "common/lib/config";
-import checkAndCreateRoot from "framework/lib/services/checkAndCreateRoot";
+import checkAndCreateRoot from "common/lib/services/checkAndCreateRoot";
 import { JwtService } from "common/lib/services/jwtService";
 import { devLog } from "framework/lib/logger";
 import { Config } from "./types";
@@ -10,7 +10,6 @@ import mongoose from "mongoose";
 import initPrivileges from "framework-ui/lib/privileges";
 import { groupsHeritage, allowedGroups } from "common/lib/constants/privileges";
 import "./models/Device"; // init
-import { UserModel } from "common/lib/models/userModel";
 
 export const routes = {
 	user: {
@@ -40,7 +39,7 @@ async function startServer(config: Config) {
 
 	await loadersInit({ app, config });
 
-	if (process.env.NODE_ENV_TEST !== "true") checkAndCreateRoot(UserModel); // check for roor existence, if not, then ask for password in terminal
+	if (process.env.NODE_ENV_TEST !== "true") checkAndCreateRoot(); // check for roor existence, if not, then ask for password in terminal
 
 	if (process.env.NODE_ENV === "development") {
 		console.log("Socket redirect enabled");

@@ -114,6 +114,7 @@ interface EditDeviceDialogProps {
 	match: { params: { deviceId: IDevice["_id"]; nodeId: IThing["config"]["nodeId"] } };
 	device?: IDevice;
 	thing?: IThing;
+	onSaveAction: any;
 }
 
 function EditDeviceDialog({
@@ -126,6 +127,7 @@ function EditDeviceDialog({
 	match: { params },
 	preFillForm,
 	device,
+	onSaveAction,
 	thing,
 }: EditDeviceDialogProps) {
 	const [pending, setPending] = useState(false);
@@ -166,7 +168,7 @@ function EditDeviceDialog({
 
 	const handleSave = async () => {
 		setPending(true);
-		await onUpdate(params.deviceId);
+		await onSaveAction(params.deviceId, params.nodeId);
 		setPending(false);
 	};
 
@@ -218,6 +220,7 @@ const _mapDispatchToProps = (dispatch: any) => ({
 			updateSensorCount: formsActions.updateFormField("EDIT_NOTIFY.count"),
 			fillEditFormAction: formsActions.fillForm("EDIT_NOTIFY"),
 			preFillForm: deviceActions.prefillNotify,
+			onSaveAction: deviceActions.updateNotify,
 			registerTokenAction: userActions.registerToken,
 		},
 		dispatch

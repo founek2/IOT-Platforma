@@ -307,16 +307,6 @@ const EDIT_CONTROL = {
 };
 
 const EDIT_NOTIFY = {
-	deviceId: {
-		deepPath: "EDIT_NOTIFY.deviceId",
-		required: true,
-		validations: [validationFactory("isString")],
-	},
-	nodeId: {
-		deepPath: "EDIT_NOTIFY.nodeId",
-		required: true,
-		validations: [validationFactory("isString")],
-	},
 	"propertyId[]": {
 		deepPath: "EDIT_NOTIFY.propertyId[]",
 		label: "Vlastnost",

@@ -15,6 +15,7 @@ import {
 	deleteDevices as deleteDevicesApi,
 	fetchDeviceData as fetchDeviceDataApi,
 	getNotify as getNotifyApi,
+	updateNotify as updateNotifyApi,
 } from "../../../api/deviceApi";
 import { transformSensorsForBE, transformControlForBE, transformNotifyForFE } from "common/lib/utils/transform";
 import io from "../../../webSocket";
@@ -335,11 +336,35 @@ export function prefillNotify(id, nodeId) {
 				nodeId,
 				onSuccess: (json) => {
 					console.log("json", json);
-					const formData = transformNotifyForFE(json.doc.things);
+					const formData = transformNotifyForFE(json.doc.thing.properties);
 					dispatch(fillForm("EDIT_NOTIFY")(formData));
 				},
 			},
 			dispatch
 		);
+	};
+}
+
+export function updateNotify(id, nodeId) {
+	return async function (dispatch, getState) {
+		const EDIT_NOTIFY = "EDIT_NOTIFY";
+		baseLogger(EDIT_NOTIFY);
+		const result = dispatch(validateRegisteredFields(EDIT_NOTIFY)());
+		const formData = getFormData(EDIT_NOTIFY)(getState());
+		if (result.valid) {
+			return updateNotifyApi(
+				{
+					token: getToken(getState()),
+					id,
+					nodeId,
+					body: { formData: { [EDIT_NOTIFY]: formData } },
+					onSuccess: (json) => {
+						// const formData = transformNotifyForFE(json.doc.thing.properties);
+						// dispatch(fillForm("EDIT_NOTIFY")(formData));
+					},
+				},
+				dispatch
+			);
+		}
 	};
 }

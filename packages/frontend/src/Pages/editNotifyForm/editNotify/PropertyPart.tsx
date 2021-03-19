@@ -57,7 +57,7 @@ function PropertyPart({ id, config, selectedProperty }: PropertyPartProps) {
 					</Grid>
 					<Grid item md={4} xs={12}>
 						<FieldConnector
-							component="Select"
+							// component="Select"
 							deepPath={`EDIT_NOTIFY.value.${id}`}
 							fieldProps={{
 								fullWidth: true,
@@ -67,11 +67,11 @@ function PropertyPart({ id, config, selectedProperty }: PropertyPartProps) {
 							// 		{label}
 							// 	</MenuItem>
 							// ))}
-							selectOptions={selectedProperty?.format.map((value) => (
-								<MenuItem value={value} key={value}>
-									{value}
-								</MenuItem>
-							))}
+							// selectOptions={selectedProperty?.format.map((value) => (
+							// 	<MenuItem value={value} key={value}>
+							// 		{value}
+							// 	</MenuItem>
+							// ))}
 						/>
 					</Grid>
 				</Fragment>

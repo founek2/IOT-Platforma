@@ -10,6 +10,7 @@ import fieldDescriptors from "common/lib/fieldDescriptors";
 import checkWritePerm from "../middlewares/user/checkWritePerm";
 import eventEmitter from "../services/eventEmitter";
 import { UserService } from "common/lib/services/userService";
+import { rateLimiterMiddleware } from "../middlewares/rateLimiter";
 
 function removeUser(id) {
 	return function (doc) {
@@ -22,7 +23,7 @@ export default ({ config, db }) =>
 		middlewares: {
 			index: [tokenAuthMIddleware()],
 			updateId: [tokenAuthMIddleware(), checkWritePerm(), formDataChecker(fieldDescriptors)], // TODO add test when user can change his userName
-			create: [formDataChecker(fieldDescriptors)],
+			create: [formDataChecker(fieldDescriptors), rateLimiterMiddleware],
 			delete: [tokenAuthMIddleware(), groupRestriction("admin"), formDataChecker(fieldDescriptors)],
 		},
 		/** GET / - List all entities */
@@ -56,6 +57,7 @@ export default ({ config, db }) =>
 
 			if (formData.LOGIN) {
 				// tested 2
+
 				UserService.checkCreditals(formData.LOGIN)
 					.then(({ doc, token }) => {
 						const { groups, id, allowedSensors, allowedControlls, info, auth, deviceUser } = doc;
@@ -140,7 +142,7 @@ export default ({ config, db }) =>
 				if (!body.formData.EDIT_USER.groups.every((group) => allowedGroups.includes(group)))
 					return res.status(208).send({ error: "invalidPermissions" });
 
-				await UserModel.updateUser(id, body.formData.EDIT_USER);
+				await UserService.updateUser(id, body.formData.EDIT_USER);
 				res.sendStatus(204);
 			} else if (body.formData.FIREBASE_ADD) {
 				await UserModel.addNotifyToken(id, body.formData.FIREBASE_ADD.token);

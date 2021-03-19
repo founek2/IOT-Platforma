@@ -1,7 +1,4 @@
-import agenda from "../agenda";
 import { Emitter, EmitterEvents } from "../services/eventEmitter";
-import * as types from "../types";
-import { AGENDA_JOB_TYPE } from "common/lib/constants/agenda";
 import { publishStr } from "../services/mqtt";
 
 export default function (eventEmitter: Emitter<EmitterEvents>) {

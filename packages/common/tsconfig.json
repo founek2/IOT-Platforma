@@ -9,6 +9,9 @@
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
         "strictNullChecks": true,
+        "lib": [
+            "ES2019"
+        ]
     },
     "include": [
         "src/**/*"

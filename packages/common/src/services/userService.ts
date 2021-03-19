@@ -1,17 +1,18 @@
-import bcrypt from "bcrypt";
-import { IUser } from "common/lib/models/interface/userInterface";
+import argon2 from "argon2";
+import { IUser } from "../models/interface/userInterface";
 import { devLog } from "framework-ui/lib/logger";
-import { UserModel } from "common/lib/models/userModel";
-import { JwtService } from "common/lib/services/jwtService";
-import { IUserDocument } from "common/lib/models/schema/userSchema";
+import { UserModel } from "../models/userModel";
+import { JwtService } from "../services/jwtService";
+import { IUserDocument } from "../models/schema/userSchema";
 import mongoose from "mongoose";
+import { AuthTypes } from "../constants";
 
 async function createHash(plainText: string) {
-	return bcrypt.hash(plainText, 10);
+	return argon2.hash(plainText);
 }
 
 function comparePasswd(plainText: string, hash: IUser["auth"]["password"]) {
-	return bcrypt.compare(plainText, hash);
+	return argon2.verify(hash, plainText);
 }
 
 export type UserWithToken = { doc: IUser; token: string };
@@ -24,9 +25,9 @@ export type CredentialData = {
 export const UserService = {
 	async create(object: IUser): Promise<UserWithToken> {
 		const { password, type } = object.auth;
-		if (type) throw new Error("notImplemented");
+		if (type && type !== AuthTypes.PASSWD) throw new Error("notImplemented");
 		devLog("user creating:", object);
-		const hash = createHash(password);
+		const hash = await createHash(password);
 
 		const user = new UserModel({ ...object, auth: { password: hash }, realm: object.info.userName });
 		const obj = await user.save();
@@ -37,7 +38,8 @@ export const UserService = {
 	},
 
 	async checkCreditals({ userName, authType, password }: CredentialData): Promise<UserWithToken> {
-		if (authType !== "passwd") throw new Error("notImplemented");
+		if (authType !== AuthTypes.PASSWD) throw new Error("notImplemented");
+
 		const doc = await UserModel.findOne({ "info.userName": userName, "auth.type": authType });
 		if (!doc) throw Error("unknownUser");
 

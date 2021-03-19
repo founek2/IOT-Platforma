@@ -10,6 +10,7 @@ import { DeviceModel } from "common/lib/models/deviceModel";
 import mongoose from "mongoose";
 import eventEmitter, { deviceSetState } from "./eventEmitter";
 import { SocketThingState } from "common/lib/types";
+import mongoSanitize from "express-mongo-sanitize";
 
 const ObjectId = mongoose.Types.ObjectId;
 type socketWithUser = {
@@ -33,11 +34,6 @@ export default (io: serverIO) => {
 		if (socket.request.user) {
 			console.log("user joined group");
 			socket.join(socket.request.user.id);
-			// const id = socket.request.user.id;
-			// setTimeout(function () {
-			// 	console.log(typeof id);
-			// 	io.to(id).emit("control", "blabla");
-			// }, 2000);
 		}
 
 		socket.join("public");
@@ -46,7 +42,8 @@ export default (io: serverIO) => {
 			console.log("Client disconnected");
 		});
 
-		socket.on("updateState", async ({ _id, thing }: SocketThingState, fn: (json: Object) => void) => {
+		socket.on("updateState", async (data: SocketThingState, fn: (json: Object) => void) => {
+			const { _id, thing } = mongoSanitize.sanitize(data);
 			try {
 				const doc = await DeviceModel.findOne(
 					{

@@ -78,9 +78,9 @@ export const fetchDeviceData = ({ id, ...object }, dispatch) =>
 		dispatch,
 	});
 
-export const updateNotify = ({ id, ...object }, dispatch) =>
+export const updateNotify = ({ id, nodeId, ...object }, dispatch) =>
 	putJson({
-		url: API_URL + `/device/${id}/notify`,
+		url: API_URL + `/device/${id}/thing/${nodeId}/notify`,
 		...object,
 		successMessage: "deviceUpdated",
 		dispatch,

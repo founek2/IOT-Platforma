@@ -55,8 +55,6 @@ async function startServer(config: Config) {
 		console.log(`Started on port ${(app.server?.address() as any).port}`);
 		if (app.io) setTimeout(() => mqttService(app.io, config), 1000); //init
 	});
-
-	require("./agenda"); // init
 }
 
 startServer(config);
