@@ -40,36 +40,33 @@ export default ({ config, db }) =>
 			delete: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
 		},
 		/** GET /:param - List all entities */
-		read({ params: { id }, query: { from, to = new Date(), type, JSONkey }, user }, res) {
-			if (type === "sensors") {
-				if (user && user.admin) {
-					Device.getSensorsDataForAdmin(id, new Date(Number(from)), new Date(Number(to)))
-						.then((docs) => {
-							res.send({ data: docs });
-							// res.sendStatus(204)
-						})
-						.catch(processError(res));
-				} else {
-					Device.getSensorsData(id, new Date(Number(from)), new Date(Number(to)), user)
-						.then((docs) => {
-							res.send({ data: docs });
-							// res.sendStatus(204)
-						})
-						.catch(processError(res));
-				}
-			} else if (type === "control") {
-				Device.getControlData(id, JSONkey, new Date(Number(from)), new Date(Number(to)), user)
-					.then((docs) => {
-						res.send({ data: docs });
-						// res.sendStatus(204)
-					})
-					.catch(processError(res));
-			} else if (type === "apiKey") {
-				Device.getApiKey(id, user)
-					.then((apiKey) => res.send({ apiKey }))
-					.catch(processError(res)); // TODO not protected for notOwner?
-			} else res.sendStatus(404);
-		},
+		// read({ params: { id }, query: { from, to = new Date(), type, JSONkey }, user }, res) {
+		// 	if (type === "sensors") {
+		// 		if (user && user.admin) {
+		// 			Device.getSensorsDataForAdmin(id, new Date(Number(from)), new Date(Number(to)))
+		// 				.then((docs) => {
+		// 					res.send({ data: docs });
+		// 				})
+		// 				.catch(processError(res));
+		// 		} else {
+		// 			Device.getSensorsData(id, new Date(Number(from)), new Date(Number(to)), user)
+		// 				.then((docs) => {
+		// 					res.send({ data: docs });
+		// 				})
+		// 				.catch(processError(res));
+		// 		}
+		// 	} else if (type === "control") {
+		// 		Device.getControlData(id, JSONkey, new Date(Number(from)), new Date(Number(to)), user)
+		// 			.then((docs) => {
+		// 				res.send({ data: docs });
+		// 			})
+		// 			.catch(processError(res));
+		// 	} else if (type === "apiKey") {
+		// 		Device.getApiKey(id, user)
+		// 			.then((apiKey) => res.send({ apiKey }))
+		// 			.catch(processError(res)); // TODO not protected for notOwner?
+		// 	} else res.sendStatus(404);
+		// },
 
 		/* PUT */
 		updateId({ body, params: { id }, user }, res) {
@@ -90,30 +87,6 @@ export default ({ config, db }) =>
 				}
 				Device.updateByFormData(id, form, extension, user)
 					.then(async (origImgPath) => {
-						try {
-							if (image && origImgPath) await deleteImage(origImgPath);
-						} catch (e) {
-							console.log("removing file failed", e);
-						}
-
-						try {
-							if (image) {
-								await saveImageBase64(image.data, id, extension);
-							}
-							res.sendStatus(204);
-						} catch (e) {
-							console.log("creating file failed", e);
-							res.sendStatus(500);
-						}
-					})
-					.catch(processError(res));
-			} else if (formData.EDIT_SENSORS) {
-				// tested
-				const newJSONkeys = formData.EDIT_SENSORS.JSONkey;
-				const { sensors, sampleInterval } = transformSensorsForBE(formData.EDIT_SENSORS);
-				Device.updateSensorsRecipe(id, sampleInterval, sensors, user)
-					.then(() => {
-						Notify.removeSpareSensors(id, newJSONkeys).exec();
 						res.sendStatus(204);
 					})
 					.catch(processError(res));
@@ -121,24 +94,6 @@ export default ({ config, db }) =>
 				// tested
 				Device.updatePermissions(id, formData.EDIT_PERMISSIONS, user)
 					.then(() => res.sendStatus(204))
-					.catch(processError(res));
-			} else if (formData.EDIT_CONTROL) {
-				const newJSONkeys = formData.EDIT_CONTROL.JSONkey;
-				const { control } = transformControlForBE(formData.EDIT_CONTROL);
-				Device.updateControlRecipe(id, control, user)
-					.then(() => {
-						Notify.removeSpareControl(id, newJSONkeys).exec();
-
-						const arrayOfRecipes = filter(
-							o(contains(__, Object.keys(handleMapping)), prop("type")),
-							control
-						);
-						eventEmitter.emit("device_control_recipe_change", {
-							recipes: arrayOfRecipes,
-							deviceId: id,
-						});
-						res.sendStatus(204);
-					})
 					.catch(processError(res));
 			} else res.sendStatus(500);
 		},

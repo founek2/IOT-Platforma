@@ -230,82 +230,6 @@ const EDIT_DEVICE = {
 	},
 };
 
-const EDIT_SENSORS = {
-	sampleInterval: {
-		deepPath: "EDIT_SENSORS.sampleInterval",
-		required: true,
-		label: "Interval samplování",
-		name: "sampleinterval",
-		validations: [validationFactory("isOneOf", { values: SampleIntervals.map((obj) => obj.value) })],
-	},
-
-	"name[]": {
-		deepPath: "EDIT_SENSORS.name[]",
-		label: "Název",
-		required: true,
-		validations: [validationFactory("isString", { min: 2, max: 30 })],
-	},
-	"unit[]": {
-		deepPath: "EDIT_SENSORS.unit[]",
-		label: "Jednotka",
-		required: true,
-		validations: [validationFactory("isString", { min: 1, max: 6 })],
-	},
-	"JSONkey[]": {
-		deepPath: "EDIT_SENSORS.JSONkey[]",
-		label: "Označení",
-		required: true,
-		validations: [validationFactory("isString", { min: 1, max: 20 })],
-	},
-	"description[]": {
-		deepPath: "EDIT_SENSORS.description[]",
-		defaultValue: "",
-		label: "Popis",
-		validations: [validationFactory("isString", { min: 1, max: 200 })],
-	},
-	count: {
-		deepPath: "EDIT_SENSORS.count",
-		validations: [validationFactory("isNumber")],
-	},
-};
-
-const EDIT_CONTROL = {
-	"name[]": {
-		deepPath: "EDIT_SENSORS.name[]",
-		label: "Název",
-		required: true,
-		validations: [validationFactory("isString", { min: 2, max: 30 })],
-	},
-	"type[]": {
-		deepPath: "EDIT_SENSORS.type[]",
-		label: "Typ",
-		required: true,
-		validations: [validationFactory("isOneOf", { values: Object.values(CONTROL_TYPES) })],
-	},
-	"JSONkey[]": {
-		deepPath: "EDIT_SENSORS.JSONkey[]",
-		label: "Klíč",
-		required: true,
-		validations: [validationFactory("isString", { min: 1, max: 20 })],
-	},
-	"description[]": {
-		deepPath: "EDIT_SENSORS.description[]",
-		label: "Popis",
-		validations: [validationFactory("isString", { min: 1, max: 200 })],
-	},
-	"ipAddress[]": {
-		deepPath: "EDIT_SENSORS.ipAddress[]",
-		label: "Ip adresa",
-		required: true,
-		when: ({ type }, { i }) => type && type[i] === CONTROL_TYPES.MUSIC_CAST,
-		validations: [validationFactory("isIpAddress", { min: 1, max: 200 })],
-	},
-	count: {
-		deepPath: "EDIT_SENSORS.count",
-		validations: [validationFactory("isNumber")],
-	},
-};
-
 const EDIT_NOTIFY = {
 	"propertyId[]": {
 		deepPath: "EDIT_NOTIFY.propertyId[]",
@@ -516,9 +440,7 @@ export default {
 	EDIT_USER,
 	CREATE_DEVICE,
 	EDIT_DEVICE,
-	EDIT_SENSORS,
 	EDIT_PERMISSIONS,
-	EDIT_CONTROL,
 	EDIT_RGB,
 	CHANGE_DEVICE_STATE_RGB,
 	CHANGE_DEVICE_STATE_SWITCH,

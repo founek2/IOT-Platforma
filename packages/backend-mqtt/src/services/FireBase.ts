@@ -1,17 +1,14 @@
-import * as admin from "firebase-admin";
-import Notify from "backend/dist/models/Notification";
-import { UserModel } from "common/lib/models/userModel";
-import functions from "../lib/notifications/functions";
-import { head, keys } from "ramda";
-import { ControlStateValuesToText } from "common/lib/constants";
-import { NotifyModel } from "common/lib/models/notifyModel";
-import { getThing } from "../utils/getThing";
-import { getProperty } from "../utils/getProperty";
-import { Config } from "../types";
 import { IDevice } from "common/lib/models/interface/device";
+import { INotifyThingProperty } from "common/lib/models/interface/notifyInterface";
 import { IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { IUser } from "common/lib/models/interface/userInterface";
-import { INotifyThingProperty } from "common/lib/models/interface/notifyInterface";
+import { NotifyModel } from "common/lib/models/notifyModel";
+import { UserModel } from "common/lib/models/userModel";
+import * as admin from "firebase-admin";
+import { Config } from "../types";
+import { getProperty } from "../utils/getProperty";
+import { getThing } from "../utils/getThing";
+import functions from "./fireBase/notifications/functions";
 
 const defaultAdvanced = {
 	interval: -1,
