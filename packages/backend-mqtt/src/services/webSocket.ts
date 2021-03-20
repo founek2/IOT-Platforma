@@ -1,16 +1,11 @@
-import { Router } from "express";
-import { JwtService } from "common/lib/services/jwtService";
-import Device from "backend/dist/models/Device";
-import { includes } from "ramda";
-import { CONTROL_TYPES } from "common/lib/constants";
-import DeviceHandler, { handleMapping } from "common/lib/service/DeviceHandler";
-import { Server as serverIO, Socket } from "socket.io";
-import { UpdateThingState } from "../types";
 import { DeviceModel } from "common/lib/models/deviceModel";
-import mongoose from "mongoose";
-import eventEmitter, { deviceSetState } from "./eventEmitter";
+import { JwtService } from "common/lib/services/jwtService";
 import { SocketThingState } from "common/lib/types";
+import { Router } from "express";
 import mongoSanitize from "express-mongo-sanitize";
+import mongoose from "mongoose";
+import { Server as serverIO, Socket } from "socket.io";
+import eventEmitter, { deviceSetState } from "./eventEmitter";
 
 const ObjectId = mongoose.Types.ObjectId;
 type socketWithUser = {

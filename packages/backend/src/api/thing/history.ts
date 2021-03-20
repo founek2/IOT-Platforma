@@ -1,7 +1,7 @@
 import { HistoricalModel } from "common/lib/models/historyModel";
 import express from "express";
-import resource from "../middlewares/resource-router-middleware";
-import tokenAuthMIddleware from "../middlewares/tokenAuth";
+import resource from "../../middlewares/resource-router-middleware";
+import tokenAuthMIddleware from "../../middlewares/tokenAuth";
 
 export default ({ config, db }: any) =>
 	resource({

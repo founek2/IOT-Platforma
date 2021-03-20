@@ -4,7 +4,7 @@ import { IUserDocument, userSchema } from "./schema/userSchema";
 import { NotifyModel } from "./notifyModel";
 import { DeviceModel } from "./deviceModel";
 import { keys } from "ramda";
-import { devLog } from "framework/lib/logger";
+import { devLog } from "framework-ui/lib/logger";
 
 const ObjectId = mongoose.Types.ObjectId;
 
