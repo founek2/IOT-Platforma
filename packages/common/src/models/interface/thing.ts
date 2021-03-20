@@ -9,6 +9,7 @@ export enum ComponentType {
 	sensor = "sensor",
 	// BinarySensor = "binary_sensor",
 	switch = "switch",
+	generic = "generic",
 }
 
 export enum PropertyDataType {
@@ -16,6 +17,7 @@ export enum PropertyDataType {
 	float = "float",
 	boolean = "boolean",
 	integer = "integer",
+	enum = "enum",
 }
 
 export enum PredefinedComponentType {
@@ -29,10 +31,10 @@ export const ThingProperties: {
 		{
 			propertyId: "power",
 			name: "Zapnuto",
-			dataType: PropertyDataType.string,
+			dataType: PropertyDataType.enum,
 			format: ["on", "off"],
 			settable: true,
-		},
+		} as IThingPropertyEnum,
 	],
 };
 
@@ -57,8 +59,17 @@ export interface IThingProperty {
 	propertyClass?: PropertyClass;
 	unitOfMeasurement?: string;
 	dataType: PropertyDataType;
-	format: Array<any>;
 	settable: boolean;
+}
+
+export interface IThingPropertyNumeric extends IThingProperty {
+	dataType: PropertyDataType.integer | PropertyDataType.float;
+	format?: { from: number; to: number };
+}
+
+export interface IThingPropertyEnum extends IThingProperty {
+	dataType: PropertyDataType.enum;
+	format?: string[];
 }
 
 // export interface IThingSensor {

@@ -14,6 +14,7 @@ import { isUrlHash, getUserPresence } from "framework-ui/lib/utils/getters";
 import { getQueryID, getQueryField, getDevicesLastUpdate } from "../../utils/getters";
 import * as deviceActions from "../../store/actions/application/devices";
 import Switch from "./room/Swich";
+import Generic from "./room/Generic";
 import { getDevices } from "../../utils/getters";
 import { errorLog } from "framework-ui/lib/logger";
 import EditNotifyForm from "../../components/EditNotifyForm";
@@ -27,7 +28,7 @@ import { LocationTypography } from "frontend/src/components/LocationTypography";
 
 const compMapper = {
 	[ComponentType.switch]: Switch,
-	// [ComponentType.inarySensor]: null,
+	[ComponentType.generic]: Generic,
 	[ComponentType.sensor]: Sensor,
 };
 

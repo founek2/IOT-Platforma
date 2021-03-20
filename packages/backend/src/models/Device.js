@@ -2,7 +2,7 @@ import catcher from "framework/lib/mongoose/catcher";
 import sensorsScheme from "./schema/sensors";
 import controlScheme from "./schema/control";
 import hat from "hat";
-import { devLog } from "framework/lib/logger";
+import { devLog } from "framework-ui/lib/logger";
 import SensorHistory from "./SensorHistory";
 import { keys, head } from "ramda";
 import { IMAGES_DEVICES_FOLDER } from "../constants";

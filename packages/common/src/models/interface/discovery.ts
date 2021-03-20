@@ -5,6 +5,7 @@ export interface IDiscoveryProperty {
 	name?: string;
 	unitOfMeasurement?: string;
 	dataType?: string;
+	format?: string;
 }
 
 export interface IDiscoveryThing {

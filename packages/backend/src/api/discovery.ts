@@ -2,10 +2,16 @@ import fieldDescriptors from "common/lib/fieldDescriptors";
 import { DiscoveryModel } from "common/lib/models/deviceDiscoveryModel";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import { IDiscoveryProperty, IDiscoveryThing } from "common/lib/models/interface/discovery";
-import { ComponentType, IThing, PredefinedComponentType, ThingProperties } from "common/lib/models/interface/thing";
-import formDataChecker from "framework/lib/middlewares/formDataChecker";
-import resource from "framework/lib/middlewares/resource-router-middleware";
-import tokenAuthMIddleware from "framework/lib/middlewares/tokenAuth";
+import {
+	ComponentType,
+	IThing,
+	PredefinedComponentType,
+	ThingProperties,
+	PropertyDataType,
+} from "common/lib/models/interface/thing";
+import formDataChecker from "../middlewares/formDataChecker";
+import resource from "../middlewares/resource-router-middleware";
+import tokenAuthMIddleware from "../middlewares/tokenAuth";
 import mongoose from "mongoose";
 import { assoc, assocPath, ifElse, lensPath, map, o, over, pathSatisfies, toPairs } from "ramda";
 import checkControlPerm from "../middlewares/device/checkControlPerm";
@@ -67,7 +73,20 @@ export default () =>
 
 				console.log("user is", user);
 				function convertProperties([propertyId, property]: [string, IDiscoveryProperty]) {
-					return assoc("propertyId", propertyId, property);
+					// TODO validace + konverze
+					let newProperty = assoc("propertyId", propertyId, property);
+					if (!property.format) return newProperty;
+
+					if (
+						property.dataType === PropertyDataType.float ||
+						property.dataType === PropertyDataType.integer
+					) {
+						const range = property.format.split(":");
+						return assoc("format", { from: range[0], to: range[1] }, newProperty);
+					} else if (property.dataType === PropertyDataType.enum)
+						return assoc("format", property.format.split(","), newProperty);
+
+					return newProperty;
 				}
 				function convertDiscoveryThing([nodeId, thing]: [string, IDiscoveryThing]): IThing {
 					return o<IDiscoveryThing, IDiscoveryThing, any>(

@@ -1,10 +1,10 @@
-import resource from "framework/lib/middlewares/resource-router-middleware";
+import resource from "../middlewares/resource-router-middleware";
 import Device from "../models/Device";
 import processError from "framework/lib/utils/processError";
 import { saveImageBase64, validateFileExtension, deleteImage } from "../services/files";
 import { transformSensorsForBE, transformControlForBE } from "common/lib/utils/transform";
-import tokenAuthMIddleware from "framework/lib/middlewares/tokenAuth";
-import formDataChecker from "framework/lib/middlewares/formDataChecker";
+import tokenAuthMIddleware from "../middlewares/tokenAuth";
+import formDataChecker from "..device/middlewares/formDataChecker";
 
 import fieldDescriptors from "common/lib/fieldDescriptors";
 import checkReadPerm from "../middlewares/device/checkReadPerm";

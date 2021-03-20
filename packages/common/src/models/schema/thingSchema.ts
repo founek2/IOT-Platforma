@@ -15,7 +15,7 @@ export const thingSchema = new Schema({
 				propertyClass: String,
 				unitOfMeasurement: String,
 				dataType: String,
-				format: Array,
+				format: Schema.Types.Mixed,
 				settable: Boolean,
 			},
 		],

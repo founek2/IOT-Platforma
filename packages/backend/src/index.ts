@@ -3,7 +3,7 @@ import express, { Application } from "express";
 import config from "common/lib/config";
 import checkAndCreateRoot from "common/lib/services/checkAndCreateRoot";
 import { JwtService } from "common/lib/services/jwtService";
-import { devLog } from "framework/lib/logger";
+import { devLog } from "framework-ui/lib/logger";
 import { Config } from "./types";
 import loadersInit from "./loaders";
 import mongoose from "mongoose";
