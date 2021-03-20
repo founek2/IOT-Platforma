@@ -32,7 +32,7 @@ async function startServer(config: Config) {
 		useFindAndModify: false,
 		useUnifiedTopology: true,
 	});
-	mongoose.set("debug", true);
+	mongoose.set("debug", process.env.NODE_ENV === "development");
 
 	const appInstance = express();
 	const server = http.createServer(appInstance);

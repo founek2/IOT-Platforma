@@ -48,7 +48,7 @@ export interface IThing {
 	};
 	state?: {
 		timestamp: Date;
-		value: any;
+		value: { [propertyId: string]: string | number | undefined };
 	};
 }
 
@@ -69,7 +69,7 @@ export interface IThingPropertyNumeric extends IThingProperty {
 
 export interface IThingPropertyEnum extends IThingProperty {
 	dataType: PropertyDataType.enum;
-	format?: string[];
+	format: string[];
 }
 
 // export interface IThingSensor {

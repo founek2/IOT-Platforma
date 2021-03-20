@@ -20,7 +20,7 @@ const set = {
 
 const add = {
 	next(state: state, action: any) {
-		return { data: append(action.payload, action.payload), lastFetch: state.lastFetch, lastUpdate: new Date() };
+		return { data: append(action.payload, state.data), lastFetch: state.lastFetch, lastUpdate: new Date() };
 	},
 };
 

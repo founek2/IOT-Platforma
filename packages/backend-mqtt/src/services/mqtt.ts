@@ -10,10 +10,13 @@ import { HistoricalModel } from "common/lib/models/historyModel";
 import eventEmitter from "./eventEmitter";
 import { IDevice, DeviceStatus } from "common/lib/models/interface/device";
 import { SocketThingState } from "common/lib/types";
-import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
+import { ComponentType, IThing, IThingProperty, PropertyDataType } from "common/lib/models/interface/thing";
 import handlePrefix from "./mqtt/prefix";
 import { Config } from "../types";
 import { getThing } from "../utils/getThing";
+import { getProperty } from "../utils/getProperty";
+import { validateValue } from "common/lib/utils/validateValue";
+import { devLog } from "framework-ui/lib/logger";
 
 const emitter = new EventEmitter();
 
@@ -103,34 +106,41 @@ export default (io: serverIO, config: Config): MqttClient => {
 
 		handle("v2/+/+/+/+", async function (topic, message, [realm, deviceId, nodeId, propertyId]) {
 			const timestamp = new Date();
-			const value = message.toString();
-			const device = await DeviceModel.findOneAndUpdate(
+
+			const device = await DeviceModel.findOne({
+				"metadata.deviceId": deviceId,
+				"metadata.realm": realm,
+				"things.config.nodeId": nodeId,
+				"things.config.properties.propertyId": propertyId,
+			})
+				.lean()
+				.exec();
+			if (!device) return devLog("mqtt - Got data from invalid/misconfigured device");
+
+			const thing = getThing(device, nodeId);
+			const property = getProperty(thing, propertyId);
+			const result = validateValue(property, message.toString());
+			if (!result.valid) return devLog("mqtt - Got invalid data");
+
+			DeviceModel.updateOne(
 				{
-					"metadata.deviceId": deviceId,
-					"metadata.realm": realm,
+					_id: device._id,
 					"things.config.nodeId": nodeId,
 				},
 				{
 					$set: {
 						"things.$.state.timestamp": timestamp,
-						[`things.$.state.value.${propertyId}`]: value,
+						[`things.$.state.value.${propertyId}`]: result.value,
 					},
-				},
-				{
-					new: true,
 				}
-			)
-				.lean()
-				.exec();
-			console.log("saving not sensor data");
-			if (!device) return;
+			).exec();
+
+			console.log("saving data");
 
 			sendToUsers(io, device, nodeId, propertyId);
 
-			const thing = getThing(device, nodeId);
-			HistoricalModel.saveControlData(device._id, thing._id, propertyId, Number(value), timestamp);
-
-			FireBaseService.processData(device, nodeId, propertyId, value);
+			HistoricalModel.saveData(device._id, thing._id, propertyId, result.value, timestamp);
+			FireBaseService.processData(device, nodeId, propertyId, result.value);
 		});
 	});
 

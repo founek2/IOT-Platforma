@@ -91,7 +91,6 @@ notifySchema.statics.getForProperty = async function (
 	nodeId: IThing["config"]["nodeId"],
 	propertyId: IThingProperty["propertyId"]
 ) {
-	console.log("args2", deviceId, nodeId, propertyId);
 	const docs = await this.find(
 		{
 			deviceId: ObjectId(deviceId),

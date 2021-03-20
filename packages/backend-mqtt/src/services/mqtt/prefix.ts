@@ -31,6 +31,13 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 		DiscoveryModel.updateOne({ deviceId }, { [`things.${nodeId}.config.componentType`]: componentType }).exec();
 	});
 
+	handle("prefix/+/+/+/$name", async function (topic, data, [deviceId, nodeId, propertyId]) {
+		DiscoveryModel.updateOne(
+			{ deviceId },
+			{ [`things.${nodeId}.config.properties.${propertyId}.name`]: data.toString() }
+		).exec();
+	});
+
 	handle("prefix/+/+/+/$class", async function (topic, data, [deviceId, nodeId, propertyId]) {
 		const propertyClass = data.toString();
 		if (!(propertyClass in PropertyClass)) return;
@@ -41,20 +48,6 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 		).exec();
 	});
 
-	handle("prefix/+/+/+/$unit", async function (topic, data, [deviceId, nodeId, propertyId]) {
-		DiscoveryModel.updateOne(
-			{ deviceId },
-			{ [`things.${nodeId}.config.properties.${propertyId}.unitOfMeasurement`]: data.toString() }
-		).exec();
-	});
-
-	handle("prefix/+/+/+/$name", async function (topic, data, [deviceId, nodeId, propertyId]) {
-		DiscoveryModel.updateOne(
-			{ deviceId },
-			{ [`things.${nodeId}.config.properties.${propertyId}.name`]: data.toString() }
-		).exec();
-	});
-
 	handle("prefix/+/+/+/$datatype", async function (topic, data, [deviceId, nodeId, propertyId]) {
 		const dataType = data.toString();
 		if (!(dataType in PropertyDataType)) return;
@@ -62,6 +55,13 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 		DiscoveryModel.updateOne(
 			{ deviceId },
 			{ [`things.${nodeId}.config.properties.${propertyId}.dataType`]: dataType }
+		).exec();
+	});
+
+	handle("prefix/+/+/+/$unit", async function (topic, data, [deviceId, nodeId, propertyId]) {
+		DiscoveryModel.updateOne(
+			{ deviceId },
+			{ [`things.${nodeId}.config.properties.${propertyId}.unitOfMeasurement`]: data.toString() }
 		).exec();
 	});
 

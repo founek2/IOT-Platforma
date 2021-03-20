@@ -90,20 +90,19 @@ function Generic({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProp
 						>
 							<div>
 								{thing.config.properties.map(
-									({ unitOfMeasurement, propertyId, propertyClass, name }) => {
+									({ unitOfMeasurement, propertyId, propertyClass, name, settable }) => {
 										const Icon = propertyClass ? SensorIcons[propertyClass] : null;
+										console.log("tady", room, name);
+										const units = unitOfMeasurement ? " " + unitOfMeasurement : "";
+										const value = thing.state?.value[propertyId]
+											? thing.state?.value[propertyId]
+											: "[Chybí hodnota]";
 										return (
 											<div className={clsx(classes.container, classes.graphTitle)}>
 												{Icon ? <Icon className={classes.icon} /> : null}
-												<Typography>
-													{room +
-														" " +
-														name +
-														" " +
-														thing.state?.value[propertyId] +
-														" " +
-														unitOfMeasurement}
-												</Typography>
+												<Typography component="span">{name}</Typography>
+												{value}
+												<Typography>{units}</Typography>
 											</div>
 										);
 									}
