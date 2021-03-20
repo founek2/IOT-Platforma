@@ -3,10 +3,10 @@
     "scripts": {
         "bootstrap": "lerna bootstrap",
         "build": "lerna run --parallel --scope backend --scope frontend build && lerna run --scope backend-mqtt build",
-        "clean": "rimraf packages/frontend/build packages/common/lib packages/framework/lib packages/framework-ui/lib packages/backend/dist packages/backend-mqtt/dist",
+        "clean": "rimraf packages/frontend/build packages/common/lib packages/framework-ui/lib packages/backend/dist packages/backend-mqtt/dist",
         "test": "lerna run test",
-        "watch": "lerna run --parallel --scope common --scope framework --scope framework-ui dev",
-        "pre": "lerna run --scope framework-ui build && lerna run --scope framework build && lerna run  --scope common  build"
+        "watch": "lerna run --parallel --scope common --scope framework-ui dev",
+        "pre": "lerna run --scope framework-ui build && && lerna run  --scope common  build"
     },
     "devDependencies": {
         "@types/node": "^14.0.20",

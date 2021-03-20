@@ -2,7 +2,7 @@ import mongoose, { Model } from "mongoose";
 import { IThing, IThingProperty } from "./interface/thing";
 import { historicalSensorSchema, IHistorical } from "./schema/historicalSchema";
 import { IDevice } from "./interface/device";
-import resetTime from "framework/lib/utils/resetTime";
+import resetTime from "../utils/resetTime";
 
 import { DAY_START_HOURS, DAY_END_HOURS } from "../constants";
 

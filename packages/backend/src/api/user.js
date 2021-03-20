@@ -1,9 +1,9 @@
 import resource from "../middlewares/resource-router-middleware";
 import { UserModel } from "common/lib/models/userModel";
-import processError from "framework/lib/utils/processError";
+import processError from "../utils/processError";
 import tokenAuthMIddleware from "../middlewares/tokenAuth";
 import formDataChecker from "../middlewares/formDataChecker";
-import groupRestriction from "..middlewares/groupRestriction";
+import groupRestriction from "../middlewares/groupRestriction";
 import { getAllowedGroups } from "framework-ui/lib/privileges";
 
 import fieldDescriptors from "common/lib/fieldDescriptors";

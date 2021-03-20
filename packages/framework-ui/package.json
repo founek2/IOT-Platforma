@@ -12,8 +12,8 @@
     "main": "lib/index.js",
     "typings": "index.d.ts",
     "scripts": {
-        "build": "rimraf tsconfig.tsbuildinfo lib && tsc -p . && yarn copy-files",
-        "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.css lib/",
+        "build": "rimraf tsconfig.tsbuildinfo lib && tsc -p . && yarn copyFiles",
+        "copyFiles": "copyfiles -u 1 src/**/*.html src/**/*.css lib/",
         "dev": "tsc -w",
         "test": "jest",
         "coverage": "yarn test --collectCoverage"

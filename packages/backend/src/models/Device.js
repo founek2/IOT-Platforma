@@ -1,4 +1,4 @@
-import catcher from "framework/lib/mongoose/catcher";
+import catcher from "../utils/catcher";
 import sensorsScheme from "./schema/sensors";
 import controlScheme from "./schema/control";
 import hat from "hat";

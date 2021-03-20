@@ -1,6 +1,6 @@
-import resource from "../middlewares/resource-router-middleware";
-import tokenAuthMIddleware from "../middlewares/tokenAuth";
-import formDataChecker from "../middlewares/formDataChecker";
+import resource from "../../middlewares/resource-router-middleware";
+import tokenAuthMIddleware from "../../middlewares/tokenAuth";
+import formDataChecker from "../../middlewares/formDataChecker";
 
 import fieldDescriptors from "common/lib/fieldDescriptors";
 import checkReadPerm from "../../middlewares/device/checkReadPerm";

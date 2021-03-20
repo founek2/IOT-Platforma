@@ -3,8 +3,6 @@ import { Router } from "express";
 import user from "./user";
 import device from "./device";
 import auth from "./auth";
-import control from "./devices/control";
-import sensors from "./devices/sensors";
 import notify from "./device/notify";
 import discovery from "./discovery";
 import history from "./thing/history";
@@ -13,10 +11,6 @@ export default ({ config }) => {
 	let api = Router();
 	// mount the user resource
 	api.use("/user", user({ config }));
-
-	api.use("/devices/control", control({ config }));
-
-	api.use("/devices/sensors", sensors({ config }));
 
 	api.use("/device/:deviceId/thing/:nodeId/notify", notify({ config }));
 

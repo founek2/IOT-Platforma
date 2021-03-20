@@ -1,4 +1,4 @@
-import resetTime from "framework/lib/utils/resetTime";
+import resetTime from "common/lib/utils/resetTime";
 import mongoose from "mongoose";
 import { isDay as isDayFn } from "../utils";
 const Schema = mongoose.Schema;

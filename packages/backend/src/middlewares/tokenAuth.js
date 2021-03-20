@@ -1,7 +1,7 @@
 import { JwtService } from "common/lib/services/jwtService";
 import mongoose from "mongoose";
 import { equals, T } from "ramda";
-import { infoLog, warningLog } from "../logger";
+import { infoLog, warningLog } from "framework-ui/lib/logger";
 
 import { enrichGroups } from "framework-ui/lib/privileges";
 
