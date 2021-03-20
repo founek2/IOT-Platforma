@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "ts-node-dev src/index.ts",
         "devWin": "yarn nodemon --watch 'src/**/*.ts' --verbose --exec node -r ts-node/register src/index.ts",
-        "build": "tsc -p .",
+        "build": "rimraf tsconfig.tsbuildinfo && tsc -p .",
         "test": "jest",
         "coverage": "yarn test --collectCoverage",
         "runAgenda": "ts-node src/runAgendaDash.ts"

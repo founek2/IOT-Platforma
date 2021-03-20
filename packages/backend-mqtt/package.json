@@ -5,7 +5,7 @@
     "main": "lib/main.js",
     "scripts": {
         "dev": "ts-node-dev src/index.ts",
-        "build": "tsc -p .",
+        "build": "rimraf tsconfig.tsbuildinfo && tsc -p .",
         "test": "jest"
     },
     "keywords": [],
