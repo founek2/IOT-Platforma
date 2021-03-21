@@ -81,8 +81,8 @@ export default () =>
 						property.dataType === PropertyDataType.float ||
 						property.dataType === PropertyDataType.integer
 					) {
-						const range = property.format.split(":");
-						return assoc("format", { from: range[0], to: range[1] }, newProperty);
+						const range = property.format.split(":").map(Number);
+						return assoc("format", { min: range[0], max: range[1] }, newProperty);
 					} else if (property.dataType === PropertyDataType.enum)
 						return assoc("format", property.format.split(","), newProperty);
 

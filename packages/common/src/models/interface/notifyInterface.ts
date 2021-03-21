@@ -1,12 +1,21 @@
 import { IDevice } from "./device";
-import { IThing, IThingProperty } from "./thing";
+import { IThing, IThingProperty, PropertyDataType } from "./thing";
 import { IUser } from "./userInterface";
 
 export enum NotifyType {
 	always = "always",
 	below = "below",
 	over = "over",
+	equal = "equal",
 }
+const numericNotifyTypes = [NotifyType.below, NotifyType.over, NotifyType.equal, NotifyType.always];
+export const NotfyTypeForDataType: { [dataType in PropertyDataType]: NotifyType[] } = {
+	[PropertyDataType.string]: [NotifyType.equal, NotifyType.always],
+	[PropertyDataType.float]: numericNotifyTypes,
+	[PropertyDataType.integer]: numericNotifyTypes,
+	[PropertyDataType.boolean]: [NotifyType.equal, NotifyType.always],
+	[PropertyDataType.enum]: [NotifyType.equal, NotifyType.always],
+};
 
 export interface INotifyThingProperty {
 	_id?: any;

@@ -4,20 +4,27 @@ import { withStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import Grid from "@material-ui/core/Grid";
 import { connect } from "react-redux";
+import { formsDataActions } from "framework-ui/lib/redux/actions";
 
 import { getFieldVal } from "framework-ui/lib/utils/getters";
 import { ControlStateTypes, NotifyControlTypes } from "../../../constants";
 import { IState } from "frontend/src/types";
-import { IThingProperty, IThing } from "common/lib/models/interface/thing";
-import { NotifyType } from "common/lib/models/interface/notifyInterface";
+import { IThingProperty, IThing, PropertyDataType, IThingPropertyEnum } from "common/lib/models/interface/thing";
+import { NotifyType, NotfyTypeForDataType } from "common/lib/models/interface/notifyInterface";
+import { isNumericDataType } from "common/lib/utils/isNumericDataType";
+import { bindActionCreators } from "redux";
 
 interface PropertyPartProps {
 	id: number;
 	config: IThing["config"];
 	selectedProperty?: IThingProperty;
+	selectedType?: NotifyType;
+	updateFormField: (deepPath: string, value: any) => void;
 }
 
-function PropertyPart({ id, config, selectedProperty }: PropertyPartProps) {
+function PropertyPart({ id, config, selectedProperty, selectedType, updateFormField }: PropertyPartProps) {
+	const isEnum = selectedProperty ? selectedProperty.dataType === PropertyDataType.enum : false;
+	const isNumerical = selectedProperty ? isNumericDataType(selectedProperty.dataType) : false;
 	return (
 		<Fragment>
 			<Grid item md={4} xs={12}>
@@ -32,9 +39,14 @@ function PropertyPart({ id, config, selectedProperty }: PropertyPartProps) {
 							{name}
 						</MenuItem>
 					))}
+					onChange={() => {
+						console.log("setting");
+						updateFormField(`EDIT_NOTIFY.type.${id}`, "");
+						updateFormField(`EDIT_NOTIFY.value.${id}`, "");
+					}}
 				/>
 			</Grid>
-			{Boolean(selectedProperty) && (
+			{selectedProperty ? (
 				<Fragment>
 					<Grid item md={4} xs={12}>
 						<FieldConnector
@@ -43,39 +55,51 @@ function PropertyPart({ id, config, selectedProperty }: PropertyPartProps) {
 							fieldProps={{
 								fullWidth: true,
 							}}
-							// selectOptions={NotifyControlTypes[selectedJSONkey].map(({ value, label }) => (
-							// 	<MenuItem value={value} key={value}>
-							// 		{label}
-							// 	</MenuItem>
-							// ))}
-							selectOptions={Object.values(NotifyType).map((value) => (
-								<MenuItem value={value} key={value}>
-									{value}
-								</MenuItem>
-							))}
-						/>
-					</Grid>
-					<Grid item md={4} xs={12}>
-						<FieldConnector
-							// component="Select"
-							deepPath={`EDIT_NOTIFY.value.${id}`}
-							fieldProps={{
-								fullWidth: true,
+							onChange={() => {
+								updateFormField(`EDIT_NOTIFY.value.${id}`, "");
 							}}
 							// selectOptions={NotifyControlTypes[selectedJSONkey].map(({ value, label }) => (
 							// 	<MenuItem value={value} key={value}>
 							// 		{label}
 							// 	</MenuItem>
 							// ))}
-							// selectOptions={selectedProperty?.format.map((value) => (
-							// 	<MenuItem value={value} key={value}>
-							// 		{value}
-							// 	</MenuItem>
-							// ))}
+							selectOptions={Object.values(NotfyTypeForDataType[selectedProperty.dataType]).map(
+								(value) => (
+									<MenuItem value={value} key={value}>
+										{value}
+									</MenuItem>
+								)
+							)}
 						/>
 					</Grid>
+					{selectedType && selectedType !== NotifyType.always ? (
+						<Grid item md={4} xs={12}>
+							<FieldConnector
+								component={isEnum ? "Select" : "TextField"}
+								deepPath={`EDIT_NOTIFY.value.${id}`}
+								fieldProps={{
+									fullWidth: true,
+									type: isNumerical ? "number" : "text",
+								}}
+								selectOptions={
+									isEnum
+										? (selectedProperty as IThingPropertyEnum).format.map((label) => (
+												<MenuItem value={label} key={label}>
+													{label}
+												</MenuItem>
+										  ))
+										: undefined
+								}
+								// selectOptions={selectedProperty?.format.map((value) => (
+								// 	<MenuItem value={value} key={value}>
+								// 		{value}
+								// 	</MenuItem>
+								// ))}
+							/>
+						</Grid>
+					) : null}
 				</Fragment>
-			)}
+			) : null}
 			{/* <FieldConnector
                 deepPath={`EDIT_NOTIFY.value.${id}`}
             /> */}
@@ -94,7 +118,17 @@ const _mapStateToProps = (state: IState, { id, config }: { id: number; config: I
 
 	return {
 		selectedProperty,
+		selectedType: getFieldVal(`EDIT_NOTIFY.type.${id}`, state) as NotifyType | undefined,
 	};
 };
 
-export default connect(_mapStateToProps)(PropertyPart);
+function _mapDispatchToProps(dispatch: any) {
+	return bindActionCreators(
+		{
+			updateFormField: formsDataActions.updateFormField,
+		},
+		dispatch
+	);
+}
+
+export default connect(_mapStateToProps, _mapDispatchToProps)(PropertyPart);

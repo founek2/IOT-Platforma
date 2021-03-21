@@ -45,6 +45,13 @@ const functions: {
 			valid: true && shouldSend(advanced, tmp),
 		};
 	},
+	[NotifyType.equal]: function below(value, limit, advanced, tmp) {
+		const ruleSatisfied = value === limit;
+		return {
+			ruleSatisfied,
+			valid: ruleSatisfied && shouldSend(advanced, tmp),
+		};
+	},
 };
 
 export default functions;

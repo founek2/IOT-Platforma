@@ -16,12 +16,15 @@ import { BoxWidgetProps } from "./components/BorderBox";
 import { HistoricalSensor } from "common/lib/models/interface/history";
 import clsx from "clsx";
 import UpdatedBefore from "framework-ui/lib/Components/UpdatedBefore";
+import PropertyRow from "./components/PropertyRow";
 
 const useStyles = makeStyles({
 	root: {
 		display: "flex",
 		flexDirection: "column",
 		textAlign: "center",
+		height: "100%",
+		cursor: "pointer",
 	},
 	header: {
 		height: "1.7em",
@@ -66,47 +69,44 @@ function Generic({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProp
 			// JSONkey={JSONkey}
 			render={({ handleOpen }: any) => {
 				return (
-					<div className={classes.root}>
-						<Typography
-							className={classes.header}
-							onContextMenu={handleOpen}
-							onClick={() => setOpenDialog(true)}
+					<>
+						<div
+							className={classes.root}
+							onClick={(e) => {
+								console.log("clicked", e.target);
+								setOpenDialog(true);
+							}}
 						>
-							{thing.config.name}
-						</Typography>
+							<Typography className={classes.header} onContextMenu={handleOpen}>
+								{thing.config.name}
+							</Typography>
 
-						{/* <div className={classes.container}>
+							{/* <div className={classes.container}>
 							{Icon ? <Icon className={classes.icon} /> : null}
 							<Typography component="span">
 								{value || "??"} {property.unitOfMeasurement}
 							</Typography>
 						</div> */}
+						</div>
 						<SimpleDialog
 							open={openDialog}
-							onClose={() => setOpenDialog(false)}
+							onClose={() => {
+								console.log("closing");
+								setOpenDialog(false);
+							}}
 							title={title}
 							deviceId={deviceId}
 							thing={thing}
 						>
 							<div>
-								{thing.config.properties.map(
-									({ unitOfMeasurement, propertyId, propertyClass, name, settable }) => {
-										const Icon = propertyClass ? SensorIcons[propertyClass] : null;
-										console.log("tady", room, name);
-										const units = unitOfMeasurement ? " " + unitOfMeasurement : "";
-										const value = thing.state?.value[propertyId]
-											? thing.state?.value[propertyId]
-											: "[Chybí hodnota]";
-										return (
-											<div className={clsx(classes.container, classes.graphTitle)}>
-												{Icon ? <Icon className={classes.icon} /> : null}
-												<Typography component="span">{name}</Typography>
-												{value}
-												<Typography>{units}</Typography>
-											</div>
-										);
-									}
-								)}
+								{thing.config.properties.map((property) => (
+									<PropertyRow
+										key={property.propertyId}
+										property={property}
+										value={thing.state?.value[property.propertyId]}
+										onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
+									/>
+								))}
 							</div>
 							{thing.state?.timestamp ? (
 								<UpdatedBefore
@@ -117,7 +117,7 @@ function Generic({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProp
 								/>
 							) : null}
 						</SimpleDialog>
-					</div>
+					</>
 				);
 			}}
 		/>

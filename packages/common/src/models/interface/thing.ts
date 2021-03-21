@@ -52,7 +52,9 @@ export interface IThing {
 	};
 }
 
-export interface IThingProperty {
+export type IThingProperty = IThingPropertyBase | IThingPropertyNumeric | IThingPropertyEnum;
+
+export interface IThingPropertyBase {
 	_id?: string;
 	propertyId: string;
 	name: string;
@@ -62,12 +64,12 @@ export interface IThingProperty {
 	settable: boolean;
 }
 
-export interface IThingPropertyNumeric extends IThingProperty {
+export interface IThingPropertyNumeric extends IThingPropertyBase {
 	dataType: PropertyDataType.integer | PropertyDataType.float;
-	format?: { from: number; to: number };
+	format?: { min: number; max: number };
 }
 
-export interface IThingPropertyEnum extends IThingProperty {
+export interface IThingPropertyEnum extends IThingPropertyBase {
 	dataType: PropertyDataType.enum;
 	format: string[];
 }

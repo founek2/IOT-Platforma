@@ -17,7 +17,8 @@ import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { useMediaQuery } from "@material-ui/core";
+import DialogContent from "@material-ui/core/DialogContent";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { IDevice } from "common/lib/models/interface/device";
 import { IThing } from "common/lib/models/interface/thing";
 import { Link } from "react-router-dom";
@@ -68,7 +69,7 @@ export function SimpleDialog({ onClose, open, title, children, deviceId, thing }
 					<MoreVertIcon />
 				</IconButton>
 			</DialogTitle>
-			{children}
+			<DialogContent>{children}</DialogContent>
 			<Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleMoreClose}>
 				<Link to={"/device/" + deviceId + "/thing/" + thing.config.nodeId + "/notify"}>
 					<MenuItem onClick={handleMoreClose}>Notifikace</MenuItem>

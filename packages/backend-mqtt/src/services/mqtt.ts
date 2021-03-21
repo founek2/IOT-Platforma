@@ -137,7 +137,7 @@ export default (io: serverIO, config: Config): MqttClient => {
 
 			console.log("saving data");
 
-			sendToUsers(io, device, nodeId, propertyId);
+			sendToUsers(io, device, nodeId, propertyId, result.value);
 
 			HistoricalModel.saveData(device._id, thing._id, propertyId, result.value, timestamp);
 			FireBaseService.processData(device, nodeId, propertyId, result.value);
@@ -152,8 +152,10 @@ export default (io: serverIO, config: Config): MqttClient => {
 	return client;
 };
 
-function sendToUsers(io: serverIO, device: IDevice, nodeId: string, propertyId: string) {
+function sendToUsers(io: serverIO, device: IDevice, nodeId: string, propertyId: string, newValue: string | number) {
 	let thing = getThing(device, nodeId);
+	if (thing.state) thing.state.value[propertyId] = newValue;
+	else thing.state = { timestamp: new Date(), value: { [propertyId]: newValue } };
 
 	const updateData: SocketThingState = {
 		_id: device._id,
@@ -162,7 +164,7 @@ function sendToUsers(io: serverIO, device: IDevice, nodeId: string, propertyId: 
 			state: thing.state,
 		},
 	};
-	device.permissions[thing.config.componentType === "sensor" ? "read" : "control"].forEach((userId) => {
+	device.permissions["read"].forEach((userId) => {
 		io.to(userId.toString()).emit("control", updateData);
 	});
 }

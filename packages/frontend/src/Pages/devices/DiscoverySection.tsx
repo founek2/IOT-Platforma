@@ -38,6 +38,12 @@ function DiscoverySection(props: DiscoverySectionProps) {
 		setOpenAddDialog(false);
 	}
 
+	async function onAgree() {
+		const result = await addDiscoveryAction();
+		console.log("result", result);
+		if (result) closeDialog();
+	}
+
 	return (
 		<Fragment>
 			{discoveredDevices && discoveredDevices?.length > 0 && (
@@ -107,10 +113,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
 				title="Přidání zařízení"
 				cancelText="Zrušit"
 				agreeText="Přidat"
-				onAgree={async () => {
-					await addDiscoveryAction();
-					closeDialog();
-				}}
+				onAgree={onAgree}
 				onClose={closeDialog}
 				content={
 					<Grid container spacing={2}>
@@ -121,7 +124,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
 							<FieldConnector deepPath="CREATE_DEVICE.info.location.building" />
 						</Grid>
 						<Grid item md={4}>
-							<FieldConnector deepPath="CREATE_DEVICE.info.location.room" />
+							<FieldConnector deepPath="CREATE_DEVICE.info.location.room" onEnter={onAgree} />
 						</Grid>
 					</Grid>
 				}

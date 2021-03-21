@@ -239,7 +239,7 @@ const EDIT_NOTIFY = {
 	},
 	"type[]": {
 		deepPath: "EDIT_NOTIFY.type[]",
-		label: "Podmínoa",
+		label: "Podmínka",
 		required: true,
 		validations: [validationFactory("isOneOf", { values: Object.values(NotifyType) })],
 	},

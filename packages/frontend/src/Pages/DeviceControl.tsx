@@ -133,7 +133,6 @@ function DeviceControl({
 	const selectedBuilding = buildings.get(selectedLocation.building);
 	const selectedRoom = selectedBuilding?.get(selectedLocation.room);
 
-	console.log("lalala", buildings.size);
 	return (
 		<div className={classes.root}>
 			<Grid container justify="center">
