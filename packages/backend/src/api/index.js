@@ -3,9 +3,10 @@ import { Router } from "express";
 import user from "./user";
 import device from "./device";
 import auth from "./auth";
-import notify from "./device/notify";
+import notify from "./notify";
 import discovery from "./discovery";
-import history from "./thing/history";
+import history from "./history";
+import thing from "./thing";
 
 export default ({ config }) => {
 	let api = Router();
@@ -17,6 +18,8 @@ export default ({ config }) => {
 	api.use("/device", device({ config }));
 
 	api.use("/device/:deviceId/thing/:thingId/history", history({ config }));
+
+	api.use("/device/:deviceId/thing/:thingId", thing({ config }));
 
 	api.use("/discovery", discovery({ config }));
 

@@ -1,31 +1,20 @@
-import React, { Fragment, useEffect } from "react";
-import { withStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
-import { filter, findLastIndex, isEmpty, o } from "ramda";
-import { bindActionCreators } from "redux";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
-import FullScreenDialog from "framework-ui/lib/Components/FullScreenDialog";
-import isBefore from "date-fns/isBefore";
-import subSeconds from "date-fns/subSeconds";
-import { createSelector } from "reselect";
-
-import io from "../webSocket";
-import { isUrlHash, getUserPresence } from "framework-ui/lib/utils/getters";
-import { getQueryID, getQueryField, getDevicesLastUpdate } from "../utils/getters";
-import * as deviceActions from "../store/actions/application/devices";
-
-import { getDevices } from "../utils/getters";
-import { errorLog } from "framework-ui/lib/logger";
-import EditNotifyForm from "../components/EditNotifyForm";
-import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import * as controlActions from "../store/actions/application/devices/control";
-import { ComponentType, IThing } from "common/lib/models/interface/thing";
 import { IDevice } from "common/lib/models/interface/device";
-import RoomWidget from "./deviceControl/RoomWidget";
-import { LocationTypography } from "../components/LocationTypography";
+import { SocketUpdateThingState } from "common/lib/types";
+import * as formsActions from "framework-ui/lib/redux/actions/formsData";
+import { getUserPresence, isUrlHash } from "framework-ui/lib/utils/getters";
+import React, { Fragment, useEffect } from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import { createSelector } from "reselect";
+import { LocationTypography } from "../components/LocationTypography";
+import * as deviceActions from "../store/actions/application/devices";
+import * as controlActions from "../store/actions/application/devices/control";
+import { getDevicesLastUpdate, getQueryField } from "../utils/getters";
+import io from "../webSocket";
 import Room from "./deviceControl/Room";
-import { SocketThingState } from "common/lib/types";
+import RoomWidget from "./deviceControl/RoomWidget";
 
 function isControllable(device: IDevice) {
 	return Boolean(device.permissions && device.permissions.control);
@@ -54,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function updateDevice(updateThingA: any) {
-	return ({ _id, thing }: SocketThingState) => {
+	return ({ _id, thing }: SocketUpdateThingState) => {
 		console.log("web socket GOT", _id, thing);
 		thing.state!.timestamp = new Date();
 		updateThingA({ _id, thing });
@@ -67,7 +56,6 @@ interface DeviceControlProps {
 	fetchDevicesAction: any;
 	// updateDeviceStateA,
 	updateDeviceAction: any;
-	fetchControlAction: any;
 	devicesLastUpdate: any;
 	updateThingA: any;
 	buildings: Buildings;
@@ -77,7 +65,6 @@ function DeviceControl({
 	fetchDevicesAction,
 	// updateDeviceStateA,
 	updateDeviceAction,
-	fetchControlAction,
 	// openNotifyDialog,
 	// selectedDevice,
 	// history,
@@ -109,16 +96,13 @@ function DeviceControl({
 	}, [fetchDevicesAction, updateDeviceAction, updateThingA]);
 
 	useEffect(() => {
-		const handler = () => {
-			if (isBefore(new Date(devicesLastUpdate), subSeconds(new Date(), 30))) fetchControlAction();
-		};
 		const listenConnect = () => {
 			console.log("connect");
-			window.removeEventListener("focus", handler);
+			// window.removeEventListener("focus", handler);
 		};
 		const listenDisconnect = () => {
 			console.log("disconnected");
-			window.addEventListener("focus", handler);
+			// window.addEventListener("focus", handler);
 		};
 
 		io.getSocket().on("disconnect", listenDisconnect);
@@ -128,7 +112,7 @@ function DeviceControl({
 			io.getSocket().off("disconnect", listenDisconnect);
 			io.getSocket().off("connect", listenConnect);
 		};
-	}, [fetchControlAction, devicesLastUpdate]);
+	}, [devicesLastUpdate]);
 
 	const selectedBuilding = buildings.get(selectedLocation.building);
 	const selectedRoom = selectedBuilding?.get(selectedLocation.room);
@@ -233,7 +217,6 @@ const _mapDispatchToProps = (dispatch: any) =>
 			updateDeviceStateA: deviceActions.updateState,
 			updateThingA: deviceActions.updateThing,
 			updateDeviceAction: deviceActions.update,
-			fetchControlAction: deviceActions.fetchControl,
 			resetEditNotifyControlA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),
 			updateNotifyControlA: controlActions.updateNotify,
 			prefillNotifyControlA: controlActions.prefillNotify,

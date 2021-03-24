@@ -3,7 +3,7 @@ import express, { Application } from "express";
 import morgan from "morgan";
 import { Config } from "./types";
 import mqttService from "./services/mqtt";
-import webSockets from "./services/webSocket";
+// import webSockets from "./services/webSocket";
 import { JwtService } from "common/lib/services/jwtService";
 import api from "./api";
 import bodyParser from "body-parser";
@@ -36,7 +36,7 @@ async function startServer(config: Config) {
 
 	const appInstance = express();
 	const server = http.createServer(appInstance);
-	const app: customApp = Object.assign(appInstance, { server, io: require("socket.io")(server) });
+	const app: customApp = Object.assign(appInstance, { server, io: new serverIO(server, { path: "/socket.io" }) });
 
 	app.use(express.urlencoded({ extended: true }));
 	app.use(morgan("dev"));
@@ -47,9 +47,7 @@ async function startServer(config: Config) {
 		})(req, res, next)
 	);
 
-	app.use("/websocket/io", webSockets(app.io));
-
-	app.use("/api", api({ config }));
+	app.use("/api", api({ io: app.io }));
 
 	app.server.listen(config.portAuth, () => {
 		console.log(`Started on port ${(app.server?.address() as any).port}`);

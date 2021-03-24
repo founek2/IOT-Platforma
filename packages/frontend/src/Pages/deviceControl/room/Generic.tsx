@@ -25,12 +25,7 @@ const useStyles = makeStyles({
 		textAlign: "center",
 		height: "100%",
 		cursor: "pointer",
-	},
-	header: {
-		height: "1.7em",
-		overflow: "hidden",
-		userSelect: "none",
-		marginBottom: 15,
+		justifyContent: "center",
 	},
 	circle: {
 		top: 3,
@@ -77,9 +72,7 @@ function Generic({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProp
 								setOpenDialog(true);
 							}}
 						>
-							<Typography className={classes.header} onContextMenu={handleOpen}>
-								{thing.config.name}
-							</Typography>
+							<Typography onContextMenu={handleOpen}>{thing.config.name}</Typography>
 
 							{/* <div className={classes.container}>
 							{Icon ? <Icon className={classes.icon} /> : null}

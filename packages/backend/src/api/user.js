@@ -140,7 +140,7 @@ export default ({ config, db }) =>
 
 				// TODO this is not Tested!!!!
 				if (!body.formData.EDIT_USER.groups.every((group) => allowedGroups.includes(group)))
-					return res.status(208).send({ error: "invalidPermissions" });
+					return res.sendStatus(403);
 
 				await UserService.updateUser(id, body.formData.EDIT_USER);
 				res.sendStatus(204);

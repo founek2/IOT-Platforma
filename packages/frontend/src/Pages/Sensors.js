@@ -51,7 +51,6 @@ function Sensors({
 	updateDeviceAction,
 	devices,
 	classes,
-	updateSensorsAction,
 	openNotifyDialog,
 	selectedDevice,
 	resetEditNotifySensorsA,
@@ -66,11 +65,11 @@ function Sensors({
 		const listener = updateDevice(updateDeviceAction);
 		io.getSocket().on("sensors", listener);
 
-		window.addEventListener("focus", updateSensorsAction);
+		// window.addEventListener("focus", updateSensorsAction);
 
 		return () => {
 			io.getSocket().off("control", listener);
-			window.removeEventListener("focus", updateSensorsAction);
+			// window.removeEventListener("focus", updateSensorsAction);
 		};
 	}, []);
 
@@ -125,7 +124,6 @@ const _mapDispatchToProps = (dispatch) =>
 		{
 			fetchDevicesAction: deviceActions.fetch,
 			updateDeviceAction: deviceActions.update,
-			updateSensorsAction: deviceActions.fetchSensors,
 			resetEditNotifySensorsA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),
 			updateNotifySensorsAction: sensorsActions.updateNotifySensors,
 			prefillNotifySensorsAction: sensorsActions.prefillNotify,

@@ -1,19 +1,25 @@
 import mongoose, { Model, Query } from "mongoose";
 import { IUser } from "./interface/userInterface";
-import { IUserDocument, userSchema } from "./schema/userSchema";
+import { IUserDocument, userSchemaPlain } from "./schema/userSchema";
 import { NotifyModel } from "./notifyModel";
 import { DeviceModel } from "./deviceModel";
 import { keys } from "ramda";
 import { devLog } from "framework-ui/lib/logger";
 
 const ObjectId = mongoose.Types.ObjectId;
+const Schema = mongoose.Schema;
 
-type CredentialData = {
-	userName: IUser["info"]["userName"];
-	password: IUser["auth"]["password"];
-	authType: IUser["auth"]["type"];
-};
-type UserWithToken = { doc: IUser; token: string };
+export const userSchema = new Schema<IUserDocument, IUserModel>(userSchemaPlain, {
+	toObject: {
+		transform: function (doc, ret) {
+			ret.id = ret._id.toString();
+			delete ret.__v;
+			delete ret._id;
+			if (ret.auth) delete ret.auth.password;
+		},
+	},
+	timestamps: true,
+});
 
 export interface IUserModel extends Model<IUserDocument> {
 	findByUserName(userName: string): Promise<IUserDocument>;
@@ -48,6 +54,7 @@ userSchema.statics.removeUsers = function (arrayOfIDs: Array<IUser["_id"]>) {
 		{},
 		{
 			$pull: {
+				// @ts-ignore
 				"permissions.read": { $in: ids },
 				"permissions.write": { $in: ids },
 				"permissions.control": { $in: ids },
@@ -89,9 +96,7 @@ userSchema.statics.getNotifyTokens = function (userID: IUser["_id"]) {
 		.lean();
 };
 
-userSchema.statics.checkExist = async function (userID = "") {
-	if (userID.length != 24) return false;
-
+userSchema.statics.checkExist = async function (userID: IUser["_id"]) {
 	return await this.exists({
 		_id: mongoose.Types.ObjectId(userID),
 	});

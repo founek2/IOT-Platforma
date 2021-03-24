@@ -1,6 +1,6 @@
 import mongoose, { Model } from "mongoose";
 import { IThing, IThingProperty } from "./interface/thing";
-import { historicalSensorSchema, IHistorical } from "./schema/historicalSchema";
+import { historicalSchemaPlain, IHistorical } from "./schema/historicalSchema";
 import { IDevice } from "./interface/device";
 import resetTime from "../utils/resetTime";
 
@@ -13,23 +13,9 @@ export function isDay(dateTime: Date) {
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
 
+export const historicalSensorSchema = new Schema<IHistorical, HistoricalModel>(historicalSchemaPlain);
+
 export interface HistoricalModel extends Model<IHistorical> {
-	// saveNumericData(
-	// 	deviceId: IDevice["_id"],
-	// 	thingId: IThing["_id"],
-	// 	propertyId: IThingProperty["propertyId"],
-	// 	value: number,
-	// 	timestamp: Date
-	// ): void;
-
-	// saveStrData(
-	// 	deviceId: IDevice["_id"],
-	// 	thingId: IThing["_id"],
-	// 	propertyId: IThingProperty["propertyId"],
-	// 	value: string,
-	// 	timestamp: Date
-	// ): void;
-
 	saveData(
 		deviceId: IDevice["_id"],
 		thingId: IThing["_id"],

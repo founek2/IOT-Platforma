@@ -156,19 +156,6 @@ const CREATE_DEVICE = {
 			name: "title",
 			validations: [validationFactory("isString", { min: 4, max: 20 })],
 		},
-		// description: {
-		// 	deepPath: "CREATE_DEVICE.info.description",
-		// 	label: "Popis",
-		// 	name: "description",
-		// 	validations: [validationFactory("isString", { min: 2, max: 200 })],
-		// },
-		// image: {
-		// 	deepPath: "CREATE_DEVICE.info.image",
-		// 	required: true,
-		// 	label: "Obrázek",
-		// 	name: "image",
-		// 	validations: [validationFactory("isFile")],
-		// },
 		location: {
 			building: {
 				deepPath: "CREATE_DEVICE.info.location.building",
@@ -186,48 +173,47 @@ const CREATE_DEVICE = {
 	},
 };
 
+const EDIT_PERMISSIONS = {
+	read: {
+		deepPath: "EDIT_PERMISSIONS.read",
+		label: "Čtení",
+	},
+	write: {
+		deepPath: "EDIT_PERMISSIONS.write",
+		required: true,
+		label: "Editace",
+	},
+	control: {
+		deepPath: "EDIT_PERMISSIONS.control",
+		label: "Ovládání",
+	},
+};
+
 const EDIT_DEVICE = {
 	info: {
-		title: {
-			deepPath: "EDIT_DEVICE.info.title",
+		name: {
+			deepPath: "EDIT_DEVICE.info.name",
 			required: true,
 			label: "Název",
 			name: "title",
 			validations: [validationFactory("isString", { min: 4, max: 20 })],
 		},
-		description: {
-			deepPath: "EDIT_DEVICE.info.description",
-			label: "Popis",
-			name: "description",
-			validations: [validationFactory("isString", { min: 2, max: 200 })],
-		},
-		image: {
-			deepPath: "EDIT_DEVICE.info.image",
-			label: "Obrázek",
-			name: "image",
-			validations: [validationFactory("isFile")],
-		},
-	},
-	publicRead: {
-		deepPath: "EDIT_DEVICE.publicRead",
-		label: "Veřejné zařízení",
-		name: "public",
-		validations: [validationFactory("isBool")],
-	},
-	gps: {
-		"coordinates[]": {
-			deepPath: "EDIT_DEVICE.gps.coordinates[]",
-			required: true,
-			validations: [validationFactory("isNumber")],
+		location: {
+			building: {
+				deepPath: "EDIT_DEVICE.info.location.building",
+				required: true,
+				label: "Budova",
+				validations: [validationFactory("isString", { min: 2, max: 50 })],
+			},
+			room: {
+				deepPath: "EDIT_DEVICE.info.location.room",
+				required: true,
+				label: "Místnost",
+				validations: [validationFactory("isString", { min: 2, max: 50 })],
+			},
 		},
 	},
-	topic: {
-		deepPath: "EDIT_DEVICE.topic",
-		required: true,
-		label: "Topic",
-		name: "topic",
-		validations: [validationFactory("isString", { min: 2, max: 100, startsWith: "/", pattern: /\/.+\/.+\/.+/ })],
-	},
+	permissions: transformToForm("EDIT_DEVICE.permissions", EDIT_PERMISSIONS),
 };
 
 const EDIT_NOTIFY = {
@@ -401,22 +387,6 @@ const DISCOVERY_DEVICES = {
 		deepPath: "DISCOVERY_DEVICES.selected",
 		required: true,
 		validations: [validationFactory("isNotEmptyArray")],
-	},
-};
-
-const EDIT_PERMISSIONS = {
-	read: {
-		deepPath: "EDIT_PERMISSIONS.read",
-		label: "Čtení",
-	},
-	write: {
-		deepPath: "EDIT_PERMISSIONS.write",
-		required: true,
-		label: "Editace",
-	},
-	control: {
-		deepPath: "EDIT_PERMISSIONS.control",
-		label: "Ovládání",
 	},
 };
 

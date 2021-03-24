@@ -6,9 +6,9 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Loader from "./Loader";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 
-const styles = {
+const useStyles = makeStyles({
 	loader: {
 		position: "absolute",
 	},
@@ -17,11 +17,20 @@ const styles = {
 		alignItems: "center",
 		justifyContent: "center",
 	},
-};
+});
 
+interface AlertDialogProps {
+	onAgree: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+	onClose: () => void;
+	open: boolean;
+	title: string;
+	content: string | JSX.Element | JSX.Element[];
+	cancelText?: string;
+	agreeText?: string;
+	disablePending?: boolean;
+}
 function AlertDialog({
 	onAgree,
-	classes,
 	onClose,
 	open,
 	title,
@@ -29,9 +38,10 @@ function AlertDialog({
 	cancelText,
 	agreeText = "Souhlasím",
 	disablePending = false,
-}) {
+}: AlertDialogProps) {
 	const [pending, setPending] = useState(false);
-	async function handleAgree(e) {
+	const classes = useStyles();
+	async function handleAgree(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
 		if (!disablePending) setPending(true);
 		await onAgree(e);
 		if (!disablePending) setPending(false);
@@ -68,4 +78,4 @@ function AlertDialog({
 	);
 }
 
-export default withStyles(styles)(AlertDialog);
+export default AlertDialog;

@@ -21,6 +21,7 @@ export const messages: types.messages = {
 	validationFailed: "Nevalidní formulář",
 	InvalidParam: "Špatný request",
 	notImplemented: "Funkce není implementována",
+	entityNotFound: "Požadovaný zdroj nebyl nalezen",
 };
 
 export default messageFactory(messages);

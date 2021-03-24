@@ -29,7 +29,7 @@ export interface INotifyModel extends Model<INotifyDocument> {
 	): Promise<INotifyDocument[]>;
 }
 
-const notifySchema = new Schema<INotifyDocument>({
+const notifySchema = new Schema<INotifyDocument, INotifyModel>({
 	deviceId: { type: ObjectId, ref: "Device" },
 	userId: { type: ObjectId, ref: "User" },
 	things: [notifyThingSchema],

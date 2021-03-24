@@ -18,11 +18,11 @@
         "src/**/*.spec.ts"
     ],
     "include": [
-        "src/**/*"
+        "src/**/*",
     ],
-    "references": [
-        {
-            "path": "../common"
-        }
-    ],
+    // "references": [
+    //     {
+    //         "path": "../common"
+    //     }
+    // ],
 }

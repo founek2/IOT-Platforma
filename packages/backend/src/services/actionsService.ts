@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import config from "common/lib/config";
+import { IDevice } from "common/lib/models/interface/device";
 
 export class Actions {
 	public static async deviceInitPairing(deviceId: string, apiKey: string): Promise<boolean> {
@@ -8,6 +9,27 @@ export class Actions {
 			{
 				method: "PUT",
 				body: JSON.stringify({ apiKey }),
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		return res.status === 204;
+	}
+
+	public static async deviceSetProperty(
+		deviceId: string,
+		nodeId: string,
+		propertyId: string,
+		value: string | number,
+		device: IDevice
+	): Promise<boolean> {
+		const res = await fetch(
+			`http://localhost:${config.portAuth}/api/actions/device/${deviceId}/thing/${nodeId}/property/${propertyId}`,
+			{
+				method: "PATCH",
+				body: JSON.stringify({ value, device }),
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",

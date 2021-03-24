@@ -1,25 +1,22 @@
-import { ActionTypes } from "../../../constants/redux";
-import { getFormData, getToken } from "framework-ui/lib/utils/getters";
-import { resetForm, validateRegisteredFields, fillForm } from "framework-ui/lib/redux/actions/formsData";
-import { updateTmpData } from "framework-ui/lib/redux/actions/tmpData";
-import { baseLogger, errorLog } from "framework-ui/lib/logger";
-import loadFilesInFormData from "framework-ui/lib/utils/loadFilesInFormData";
+import { transformNotifyForFE } from "common/lib/utils/transform";
+import { baseLogger } from "framework-ui/lib/logger";
 import { dehydrateState } from "framework-ui/lib/redux/actions";
+import { fillForm, resetForm, validateRegisteredFields } from "framework-ui/lib/redux/actions/formsData";
+import { updateTmpData } from "framework-ui/lib/redux/actions/tmpData";
+import { getFormData, getToken } from "framework-ui/lib/utils/getters";
+import loadFilesInFormData from "framework-ui/lib/utils/loadFilesInFormData";
 import {
 	createDevice as createDeviceApi,
-	fetchDevices as fetchDevicesApi,
-	fetchDeviceSensors as fetchDeviceSensorsApi,
-	fetchDeviceControl as fetchDeviceControlApi,
-	putDevice as putDeviceApi,
 	deleteDevice as deleteDeviceApi,
 	deleteDevices as deleteDevicesApi,
 	fetchDeviceData as fetchDeviceDataApi,
+	fetchDevices as fetchDevicesApi,
 	getNotify as getNotifyApi,
 	updateNotify as updateNotifyApi,
+	updateDevice as updateDeviceApi,
 } from "../../../api/deviceApi";
-import { transformSensorsForBE, transformControlForBE, transformNotifyForFE } from "common/lib/utils/transform";
-import io from "../../../webSocket";
-import { addNotification } from "framework-ui/lib/redux/actions/application/notifications";
+import { updateState as updateStateThingApi } from "../../../api/thingApi";
+import { ActionTypes } from "../../../constants/redux";
 
 export function createDevice() {
 	return async function (dispatch, getState) {
@@ -55,43 +52,16 @@ export function updateDevice(id) {
 		if (result.valid) {
 			const state = getState();
 			const formData = getFormData(EDIT_DEVICE)(state);
-			const newFormDataWithFiles = await loadFilesInFormData(formData);
 
-			return putDeviceApi(
+			return updateDeviceApi(
 				{
-					body: { formData: { [EDIT_DEVICE]: newFormDataWithFiles } },
+					body: { formData: { [EDIT_DEVICE]: formData } },
 					token: getToken(state),
 					onSuccess: () => {
-						// TODO force refresh new image - maybe add timestamp as query to disable cache
-						delete formData.image;
-						dispatch(update({ ...formData, id }));
+						dispatch(update({ ...formData, _id: id }));
 						dispatch(dehydrateState());
 					},
 					id,
-				},
-				dispatch
-			);
-		}
-	};
-}
-
-export function updatePermissions(id) {
-	return async function (dispatch, getState) {
-		const EDIT_PERMISSIONS = "EDIT_PERMISSIONS";
-		baseLogger(EDIT_PERMISSIONS);
-		const result = dispatch(validateRegisteredFields(EDIT_PERMISSIONS)());
-		if (result.valid) {
-			const state = getState();
-			const formData = getFormData(EDIT_PERMISSIONS)(state);
-
-			return putDeviceApi(
-				{
-					body: { formData: { [EDIT_PERMISSIONS]: formData } },
-					token: getToken(state),
-					id,
-					onSuccess: () => {
-						dispatch(update({ id, permissions: formData }));
-					},
 				},
 				dispatch
 			);
@@ -145,13 +115,6 @@ export function update(device) {
 	};
 }
 
-export function updateAll(devices) {
-	return {
-		type: ActionTypes.UPDATE_DEVICES,
-		payload: devices,
-	};
-}
-
 export function remove(id) {
 	return {
 		type: ActionTypes.REMOVE_DEVICE,
@@ -201,38 +164,6 @@ export function fetch() {
 	};
 }
 
-export function fetchControl() {
-	return function (dispatch, getState) {
-		baseLogger("FETCH_DEVICES_CONTROL");
-		return fetchDeviceControlApi(
-			{
-				token: getToken(getState()),
-				onSuccess: (json) => {
-					dispatch(updateAll(json.docs));
-					dispatch(dehydrateState());
-				},
-			},
-			dispatch
-		);
-	};
-}
-
-export function fetchSensors() {
-	return function (dispatch, getState) {
-		baseLogger("FETCH_DEVICES_SENSORS");
-		return fetchDeviceSensorsApi(
-			{
-				token: getToken(getState()),
-				onSuccess: (json) => {
-					dispatch(updateAll(json.docs));
-					dispatch(dehydrateState());
-				},
-			},
-			dispatch
-		);
-	};
-}
-
 export function set(data) {
 	return {
 		type: ActionTypes.SET_DEVICES,
@@ -240,75 +171,52 @@ export function set(data) {
 	};
 }
 
-export function updateSensors(id) {
-	return async function (dispatch, getState) {
-		const EDIT_SENSORS = "EDIT_SENSORS";
-		baseLogger(EDIT_SENSORS);
-		const result = dispatch(validateRegisteredFields(EDIT_SENSORS)());
-		const formData = getFormData(EDIT_SENSORS)(getState());
-		if (result.valid) {
-			return putDeviceApi(
-				{
-					token: getToken(getState()),
-					body: { formData: { [EDIT_SENSORS]: formData } },
-					id,
-					onSuccess: () => {
-						const { sampleInterval, sensors } = transformSensorsForBE(formData);
-						dispatch(update({ id, sensors: { recipe: sensors, sampleInterval } }));
-					},
-				},
-				dispatch
-			);
-		}
-	};
-}
-
-export function updateControl(id) {
-	return async function (dispatch, getState) {
-		const EDIT_CONTROL = "EDIT_CONTROL";
-		baseLogger(EDIT_CONTROL);
-		const result = dispatch(validateRegisteredFields(EDIT_CONTROL)());
-		const formData = getFormData(EDIT_CONTROL)(getState());
-		if (result.valid) {
-			return putDeviceApi(
-				{
-					token: getToken(getState()),
-					body: { formData: { [EDIT_CONTROL]: formData } },
-					id,
-					onSuccess: () => {
-						const { control } = transformControlForBE(formData);
-						dispatch(update({ id, control: { recipe: control } }));
-					},
-				},
-				dispatch
-			);
-		}
-	};
-}
-
-export function updateState(_id, thingId, state) {
+export function updateState(deviceId, thingId, state) {
 	return async function (dispatch, getState) {
 		const EDIT_CONTROL = "UPDATE_STATE_DEVICE";
 		baseLogger(EDIT_CONTROL);
-		io.getSocket().emit("updateState", { _id, thing: { _id: thingId, state } }, function (json) {
-			if (json.error) {
-				dispatch(addNotification({ message: "Nastala chyba", variant: "error" }));
-				errorLog("UpdateState error>", json.error);
-			} else {
-				dispatch(
-					updateThing({
-						_id,
-						thing: {
-							_id: thingId,
-							state: {
-								value: state,
-								// timestamp: new Date(),
+		return updateStateThingApi(
+			{
+				token: getToken(getState()),
+				deviceId,
+				thingId,
+				body: { state },
+				onSuccess: () => {
+					dispatch(
+						updateThing({
+							_id: deviceId,
+							thing: {
+								nodeId: thingId,
+								state: {
+									value: state,
+									// timestamp: new Date(),
+								},
 							},
-						},
-					})
-				);
-			}
-		});
+						})
+					);
+				},
+			},
+			dispatch
+		);
+		// io.getSocket().emit("updateState", { _id, thing: { nodeId, state: { value: state } } }, function (json) {
+		// 	if (json.error) {
+		// 		dispatch(addNotification({ message: "Nastala chyba", variant: "error" }));
+		// 		errorLog("UpdateState error>", json.error);
+		// 	} else {
+		// 		dispatch(
+		// 			updateThing({
+		// 				_id,
+		// 				thing: {
+		// 					nodeId,
+		// 					state: {
+		// 						value: state,
+		// 						// timestamp: new Date(),
+		// 					},
+		// 				},
+		// 			})
+		// 		);
+		// 	}
+		// });
 	};
 }
 

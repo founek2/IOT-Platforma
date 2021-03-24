@@ -29,7 +29,7 @@ const processResponse = (dispatch, successMessage) => (response) => {
 	} else if (status === 404) {
 		dispatch(
 			addNotification({
-				message: ErrorMessages.getMessage("unavailableBackend"),
+				message: ErrorMessages.getMessage("entityNotFound"),
 				variant: "error",
 				duration: 3000,
 			})
@@ -38,6 +38,20 @@ const processResponse = (dispatch, successMessage) => (response) => {
 	} else if (status === 413) {
 		dispatch(
 			addNotification({ message: ErrorMessages.getMessage("payloadTooLarge"), variant: "error", duration: 3000 })
+		);
+		throw new Error("breakChain");
+	} else if (status === 403) {
+		dispatch(
+			addNotification({
+				message: ErrorMessages.getMessage("invalidPermissions"),
+				variant: "error",
+				duration: 3000,
+			})
+		);
+		throw new Error("breakChain");
+	} else if (status === 400) {
+		dispatch(
+			addNotification({ message: ErrorMessages.getMessage("InvalidParam"), variant: "error", duration: 3000 })
 		);
 		throw new Error("breakChain");
 	} else if (status === 204) {

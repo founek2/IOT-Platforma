@@ -10,6 +10,9 @@ export const createState = () => ({
 		thingHistory: {
 			data: [],
 		},
+		userNames: {
+			data: [],
+		},
 	},
 	fieldDescriptors,
 	tmpData: {

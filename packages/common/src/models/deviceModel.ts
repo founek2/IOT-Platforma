@@ -1,10 +1,14 @@
 import { devLog } from "framework-ui/lib/logger";
 import mongoose, { Model } from "mongoose";
 import { IThing } from "./interface/thing";
-import { deviceSchema, IDeviceDocument } from "./schema/deviceSchema";
+import { deviceSchemaPlain, IDeviceDocument } from "./schema/deviceSchema";
+import { IDevice } from "./interface/device";
+import { IUser } from "./interface/userInterface";
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
+
+export const deviceSchema = new Schema<IDeviceDocument, IDeviceModel>(deviceSchemaPlain, { timestamps: true });
 
 export interface IDeviceModel extends Model<IDeviceDocument> {
 	createNew(
@@ -14,6 +18,10 @@ export interface IDeviceModel extends Model<IDeviceDocument> {
 	// findForPublic(): Promise<IDevice[]>;
 	findForUser(userId: string): Promise<IDeviceDocument[]>;
 	login(realm: string, deviceId: string, apiKey: string): Promise<boolean>;
+	checkExists(id: IDevice["_id"]): Promise<boolean>;
+	checkWritePerm(id: IDevice["_id"], userId: IUser["_id"]): Promise<boolean>;
+	checkReadPerm(id: IDevice["_id"], userId: IUser["_id"]): Promise<boolean>;
+	updateByFormData(id: IDevice["_id"], object: Partial<IDevice>): Promise<void>;
 }
 
 deviceSchema.statics.createNew = async function ({ info, things, metadata }, userID) {
@@ -111,6 +119,43 @@ deviceSchema.statics.login = async function (realm: string, deviceId: string, ap
 		"metadata.deviceId": deviceId,
 		apiKey: apiKey,
 	});
+};
+
+deviceSchema.statics.checkExists = function (id: IDevice["_id"]) {
+	return this.exists({
+		_id: ObjectId(id),
+	});
+};
+
+deviceSchema.statics.checkWritePerm = function (id: IDevice["_id"], userId: IUser["_id"]) {
+	const userID = ObjectId(userId);
+	return this.exists({
+		_id: ObjectId(id),
+		$or: [
+			// @ts-ignore
+			{ "permissions.write": userID },
+		],
+	});
+};
+
+deviceSchema.statics.checkReadPerm = function (id: IDevice["_id"], userId: IUser["_id"]) {
+	const userID = ObjectId(userId);
+	return this.exists({
+		_id: ObjectId(id),
+		$or: [
+			// @ts-ignore
+			{ "permissions.read": userID },
+		],
+	});
+};
+
+deviceSchema.statics.updateByFormData = function (id: IDevice["_id"], object: Partial<IDevice>) {
+	return this.updateOne(
+		{
+			_id: ObjectId(id),
+		},
+		object
+	);
 };
 
 export const DeviceModel = mongoose.model<IDeviceDocument, IDeviceModel>("DeviceAdded", deviceSchema);

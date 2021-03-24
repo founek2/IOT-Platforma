@@ -56,7 +56,7 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
 				<Comp
 					key={_id}
 					thing={thing}
-					onClick={(state: any) => updateState(device._id, _id, state)}
+					onClick={(state: any) => updateState(device._id, thing.config.nodeId, state)}
 					lastChange={state?.timestamp}
 					className={classes.item}
 					deviceStatus={device?.state?.status}

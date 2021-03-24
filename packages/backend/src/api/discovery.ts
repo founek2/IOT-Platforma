@@ -22,17 +22,6 @@ import eventEmitter from "../services/eventEmitter";
 
 const ObjectId = mongoose.Types.ObjectId;
 
-function checkRead(req: any, res: any, next: any) {
-	if (req.query.type === "sensors") return checkReadPerm()(req, res, next);
-
-	if (req.query.type === "control") return checkControlPerm()(req, res, next);
-
-	if (req.query.type === "apiKey") return checkWritePerm()(req, res, next);
-	res.status(208).send({ error: "InvalidParam" });
-}
-
-// TODO - iot library -> on reconnect device doesnt send actual status
-// TODO - api /device just for single device manipulation
 export default () =>
 	resource({
 		middlewares: {
@@ -44,7 +33,7 @@ export default () =>
 		/** GET / - List all entities */
 		async index({ user, root }: any, res: any) {
 			console.log("user - ", user.info.userName);
-			const docs = await DiscoveryModel.find({ realm: user.realm });
+			const docs = await DiscoveryModel.find({ realm: user.realm, pairing: { $ne: true } });
 
 			res.send({ docs });
 		},
@@ -68,7 +57,7 @@ export default () =>
 			if (formData.CREATE_DEVICE) {
 				const form = formData.CREATE_DEVICE;
 
-				const doc = await DiscoveryModel.findOne({ _id: ObjectId(form._id) });
+				const doc = await DiscoveryModel.findOne({ _id: ObjectId(form._id), pairing: { $ne: true } });
 				if (!doc) return res.status(208).send({ error: "deviceNotFound" });
 
 				console.log("user is", user);

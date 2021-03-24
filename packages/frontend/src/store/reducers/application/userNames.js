@@ -1,12 +1,12 @@
-import { ActionTypes } from '../../../constants/redux'
-import { handleActions } from 'redux-actions'
+import { ActionTypes } from "../../../constants/redux";
+import { handleActions } from "redux-actions";
 
 const set = {
-    next(state, action) {
-        console.log("setting")
-        return { data: action.payload, lastFetch: new Date() }
-    }
-}
+	next(state, action) {
+		console.log("setting");
+		return { data: action.payload, lastFetch: new Date() };
+	},
+};
 
 // const update = {
 //     next(state, action) {
@@ -15,7 +15,7 @@ const set = {
 // }
 
 const sensorsReducers = {
-    [ActionTypes.SET_USER_NAMES]: set,
-    // [ActionTypes.UPDATE_USER_NAMES]: update
-}
-export default handleActions(sensorsReducers, {})
+	[ActionTypes.SET_USER_NAMES]: set,
+	// [ActionTypes.UPDATE_USER_NAMES]: update
+};
+export default handleActions(sensorsReducers, {});

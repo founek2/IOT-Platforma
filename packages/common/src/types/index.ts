@@ -66,10 +66,13 @@ export type ChangeHandler<T = any> = (
 
 export type AckHandler = (recipe: ControlRecipe) => Promise<boolean>;
 
-export type SocketThingState = {
+export type SocketUpdateThingState = {
 	_id: IDevice["_id"];
 	thing: {
-		_id: IThing["_id"];
-		state: IThing["state"];
+		nodeId: IThing["config"]["nodeId"];
+		state: {
+			value: { [propertyId: string]: string | number };
+			timestamp: Date;
+		};
 	};
 };

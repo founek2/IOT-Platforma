@@ -18,84 +18,29 @@ import agenda from "../agenda";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import mongoose from "mongoose";
 
-function checkRead(req, res, next) {
-	if (req.query.type === "sensors") return checkReadPerm()(req, res, next);
-
-	if (req.query.type === "control") return checkControlPerm()(req, res, next);
-
-	if (req.query.type === "apiKey") return checkWritePerm()(req, res, next);
-	res.status(208).send({ error: "InvalidParam" });
-}
-
 // TODO - iot library -> on reconnect device doesnt send actual status
 // TODO - api /device just for single device manipulation
 export default ({ config, db }) =>
 	resource({
 		middlewares: {
-			index: [tokenAuthMIddleware({ restricted: false })],
-			read: [tokenAuthMIddleware({ restricted: false }), checkRead],
-			updateId: [tokenAuthMIddleware(), checkWritePerm(), formDataChecker(fieldDescriptors)],
+			index: [tokenAuthMIddleware()],
+			read: [tokenAuthMIddleware(), checkReadPerm()],
+			patchId: [tokenAuthMIddleware(), checkWritePerm(), formDataChecker(fieldDescriptors)],
 			create: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
-			patchId: [tokenAuthMIddleware(), checkControlPerm(), formDataChecker(fieldDescriptors)],
 			delete: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
 		},
-		/** GET /:param - List all entities */
-		// read({ params: { id }, query: { from, to = new Date(), type, JSONkey }, user }, res) {
-		// 	if (type === "sensors") {
-		// 		if (user && user.admin) {
-		// 			Device.getSensorsDataForAdmin(id, new Date(Number(from)), new Date(Number(to)))
-		// 				.then((docs) => {
-		// 					res.send({ data: docs });
-		// 				})
-		// 				.catch(processError(res));
-		// 		} else {
-		// 			Device.getSensorsData(id, new Date(Number(from)), new Date(Number(to)), user)
-		// 				.then((docs) => {
-		// 					res.send({ data: docs });
-		// 				})
-		// 				.catch(processError(res));
-		// 		}
-		// 	} else if (type === "control") {
-		// 		Device.getControlData(id, JSONkey, new Date(Number(from)), new Date(Number(to)), user)
-		// 			.then((docs) => {
-		// 				res.send({ data: docs });
-		// 			})
-		// 			.catch(processError(res));
-		// 	} else if (type === "apiKey") {
-		// 		Device.getApiKey(id, user)
-		// 			.then((apiKey) => res.send({ apiKey }))
-		// 			.catch(processError(res)); // TODO not protected for notOwner?
-		// 	} else res.sendStatus(404);
-		// },
 
 		/* PUT */
-		updateId({ body, params: { id }, user }, res) {
+		async patchId({ body, params: { id }, user }, res) {
 			const { formData } = body;
 
 			if (formData.EDIT_DEVICE) {
 				// tested
 				const form = formData.EDIT_DEVICE;
-				const image = form.info.image;
-				let extension = null;
-				if (image) {
-					delete form.info.image;
-					extension = image.name.split(".").pop();
-					if (!validateFileExtension(extension)) {
-						res.status(208).send({ error: "notAllowedExtension" });
-						return;
-					}
-				}
-				Device.updateByFormData(id, form, extension, user)
-					.then(async (origImgPath) => {
-						res.sendStatus(204);
-					})
-					.catch(processError(res));
-			} else if (formData.EDIT_PERMISSIONS) {
-				// tested
-				Device.updatePermissions(id, formData.EDIT_PERMISSIONS, user)
-					.then(() => res.sendStatus(204))
-					.catch(processError(res));
-			} else res.sendStatus(500);
+
+				await DeviceModel.updateByFormData(id, formData);
+				res.sendStatus(204);
+			} else res.sendStatus(400);
 		},
 
 		/** POST / - Create a new entity */
@@ -139,15 +84,24 @@ export default ({ config, db }) =>
 				res.sendStatus(501);
 			}
 		},
+		async deleteId({ params }, res) {
+			// TODO delete references in DB - history + notify
+			const result = await DeviceModel.deleteOne({
+				_id: mongoose.Types.ObjectId(params.id),
+			});
+			if (result.deletedCount === 1) res.sendStatus(204);
+			else res.sendStatus(404);
+			eventEmitter.emit("device_delete", params.id);
+		},
 
 		/** DELETE - Delete a given entities */
-		async delete({ body, user }, res) {
-			const selected = body.formData.DEVICE_MANAGEMENT.selected;
-			const result = await DeviceModel.deleteMany({
-				_id: { $in: selected.map(mongoose.Types.ObjectId) },
-			});
-			console.log("deleted", result);
-			eventEmitter.emit("devices_delete", selected);
-			res.sendStatus(204);
-		},
+		// async delete({ body, user }, res) {
+		// 	const selected = body.formData.DEVICE_MANAGEMENT.selected;
+		// 	const result = await DeviceModel.deleteMany({
+		// 		_id: { $in: selected.map(mongoose.Types.ObjectId) },
+		// 	});
+		// 	console.log("deleted", result);
+		// 	eventEmitter.emit("devices_delete", selected);
+		// 	res.sendStatus(204);
+		// },
 	});

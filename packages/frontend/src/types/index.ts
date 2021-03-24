@@ -27,6 +27,7 @@ export interface IState {
 			thingId: IThing["_id"];
 			lastFetch?: Date;
 		};
+		userNames: { data: Array<{ _id: string; userName: string }>; lastFetch?: Date; lastUpdate?: Date };
 	};
 	fieldDescriptors: any;
 	tmpData: {

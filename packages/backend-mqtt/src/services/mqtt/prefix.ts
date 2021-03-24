@@ -101,6 +101,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 					"metadata.topicPrefix": doc?.realm,
 				});
 				if (device) return eventEmitter.emit("device_pairing_init", { deviceId, apiKey: device.apiKey });
+				else DiscoveryModel.updateOne({ deviceId }, { pairing: false }).exec(); // if user deleted his device, but wasnt paired yet
 			}
 		}
 

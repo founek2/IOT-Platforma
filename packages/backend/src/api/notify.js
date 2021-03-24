@@ -1,29 +1,26 @@
-import resource from "../../middlewares/resource-router-middleware";
-import tokenAuthMIddleware from "../../middlewares/tokenAuth";
-import formDataChecker from "../../middlewares/formDataChecker";
+import resource from "../middlewares/resource-router-middleware";
+import tokenAuthMIddleware from "../middlewares/tokenAuth";
+import formDataChecker from "../middlewares/formDataChecker";
 
 import fieldDescriptors from "common/lib/fieldDescriptors";
-import checkReadPerm from "../../middlewares/device/checkReadPerm";
-import checkControlPerm from "../../middlewares/device/checkControlPerm";
-import Notify from "../../models/Notification";
+import checkReadPerm from "../middlewares/device/checkReadPerm";
+import checkControlPerm from "../middlewares/device/checkControlPerm";
 import { transformNotifyForBE } from "common/lib/utils/transform";
 import { NotifyModel } from "common/lib/models/notifyModel";
-
-function checkUpdate(req, res, next) {
-	console.log(req.body);
-	if (req.body.formData.EDIT_NOTIFY_SENSORS) return checkReadPerm()(req, res, next);
-	else if (req.body.formData.EDIT_NOTIFY_CONTROL) return checkControlPerm()(req, res, next);
-
-	res.status(208).send({ error: "InvalidParam" });
-}
+import checkWritePerm from "../middlewares/device/checkWritePerm";
+import checkReadPerm from "../middlewares/device/checkReadPerm";
 
 export default ({ config, db }) =>
 	resource({
 		mergeParams: true,
 
 		middlewares: {
-			update: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
-			index: [tokenAuthMIddleware()],
+			update: [
+				tokenAuthMIddleware(),
+				checkWritePerm({ paramKey: "deviceId" }),
+				formDataChecker(fieldDescriptors),
+			],
+			index: [tokenAuthMIddleware(), checkReadPerm({ paramKey: "deviceId" })],
 		},
 
 		async index({ params, user }, res) {

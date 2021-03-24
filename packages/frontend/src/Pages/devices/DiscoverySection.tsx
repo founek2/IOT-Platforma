@@ -14,6 +14,8 @@ import { getDiscovery } from "../../utils/getters";
 import OnlineCircle from "../../components/OnlineCircle";
 import type { DeviceStatus } from "common/lib/models/interface/device";
 import { IDiscovery, IDiscoveryThing } from "common/lib/models/interface/discovery";
+import DeviceSection from "./DeviceSection";
+import { DeviceForm } from "frontend/src/components/DeviceForm";
 
 interface DiscoverySectionProps {
 	discoveredDevices?: IDiscovery[];
@@ -43,7 +45,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
 		console.log("result", result);
 		if (result) closeDialog();
 	}
-
+	console.log("discovered", discoveredDevices);
 	return (
 		<Fragment>
 			{discoveredDevices && discoveredDevices?.length > 0 && (
@@ -117,15 +119,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
 				onClose={closeDialog}
 				content={
 					<Grid container spacing={2}>
-						<Grid item md={12}>
-							<FieldConnector deepPath="CREATE_DEVICE.info.name" fieldProps={{ fullWidth: true }} />
-						</Grid>
-						<Grid item md={4}>
-							<FieldConnector deepPath="CREATE_DEVICE.info.location.building" />
-						</Grid>
-						<Grid item md={4}>
-							<FieldConnector deepPath="CREATE_DEVICE.info.location.room" onEnter={onAgree} />
-						</Grid>
+						<DeviceForm formName="CREATE_DEVICE" onEnter={onAgree} />
 					</Grid>
 				}
 			/>
@@ -142,7 +136,6 @@ const _mapStateToProps = (state: any) => {
 const _mapDispatchToProps = (dispatch: any) =>
 	bindActionCreators(
 		{
-			fetchDiscoveredDevicesAction: discoveredActions.fetch,
 			deleteDiscoveryAction: discoveredActions.deleteDevices,
 			addDiscoveryAction: discoveredActions.addDevice,
 			resetCreateDeviceAction: formsActions.removeForm("CREATE_DEVICE"),

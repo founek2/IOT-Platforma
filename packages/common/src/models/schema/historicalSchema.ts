@@ -6,7 +6,7 @@ const ObjectId = mongoose.Types.ObjectId;
 
 export interface IHistorical extends HistoricalSensor, Document {}
 
-export const historicalSensorSchema = new Schema<IHistorical>({
+export const historicalSchemaPlain = {
 	device: { type: ObjectId, ref: "Device" },
 	thingId: ObjectId,
 	day: Date,
@@ -14,20 +14,4 @@ export const historicalSensorSchema = new Schema<IHistorical>({
 	last: Date,
 	properties: Schema.Types.Mixed,
 	nsamples: Number,
-	// [
-	// 	{
-	// 		propertyId: String,
-	// 		samples: [{ value: Number, timestamp: {type: Date, default: Date.now} }],
-	// 		sum: {
-	// 			day: Number,
-	// 			night: Number,
-	// 		},
-	// 		nsamples: {
-	// 			day: Number,
-	// 			night: Number,
-	// 		},
-	// 		min: Number,
-	// 		max: Number,
-	// 	},
-	// ],
-});
+};

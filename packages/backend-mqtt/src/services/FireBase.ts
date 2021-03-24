@@ -6,8 +6,8 @@ import { NotifyModel } from "common/lib/models/notifyModel";
 import { UserModel } from "common/lib/models/userModel";
 import * as admin from "firebase-admin";
 import { Config } from "../types";
-import { getProperty } from "../utils/getProperty";
-import { getThing } from "../utils/getThing";
+import { getProperty } from "common/lib/utils/getProperty";
+import { getThing } from "common/lib/utils/getThing";
 import functions from "./fireBase/notifications/functions";
 
 const defaultAdvanced = {

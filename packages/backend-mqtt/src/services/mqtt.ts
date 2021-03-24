@@ -1,22 +1,18 @@
-import mqtt, { MqttClient } from "mqtt";
-// import { getConfig } from './config'
-import { map, flip, keys, all, equals, contains, toPairs, uniq } from "ramda";
-import * as FireBaseService from "./FireBase";
-import { DiscoveryModel } from "common/lib/models/deviceDiscoveryModel";
-import { Server as serverIO } from "socket.io";
-import EventEmitter from "events";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import { HistoricalModel } from "common/lib/models/historyModel";
-import eventEmitter from "./eventEmitter";
-import { IDevice, DeviceStatus } from "common/lib/models/interface/device";
-import { SocketThingState } from "common/lib/types";
-import { ComponentType, IThing, IThingProperty, PropertyDataType } from "common/lib/models/interface/thing";
-import handlePrefix from "./mqtt/prefix";
-import { Config } from "../types";
-import { getThing } from "../utils/getThing";
-import { getProperty } from "../utils/getProperty";
+import { DeviceStatus, IDevice } from "common/lib/models/interface/device";
+import { SocketUpdateThingState } from "common/lib/types";
 import { validateValue } from "common/lib/utils/validateValue";
+import { getProperty } from "common/lib/utils/getProperty";
+import { getThing } from "common/lib/utils/getThing";
+import EventEmitter from "events";
 import { devLog } from "framework-ui/lib/logger";
+import mqtt, { MqttClient } from "mqtt";
+import { uniq } from "ramda";
+import { Server as serverIO } from "socket.io";
+import { Config } from "../types";
+import * as FireBaseService from "./FireBase";
+import handlePrefix from "./mqtt/prefix";
 
 const emitter = new EventEmitter();
 
@@ -38,7 +34,7 @@ export function publish(topic: string, message: string, opt: qosType = { qos: 2 
 type cbFn = (topic: string, message: any, groups: string[]) => void;
 function topicParser(topic: string, message: any) {
 	return (stringTemplate: string, fn: cbFn) => {
-		const regex = new RegExp(stringTemplate.replace("$", "\\$").replace(/\+/g, "([^/\\$]+)"));
+		const regex = new RegExp("^" + stringTemplate.replace("$", "\\$").replace(/\+/g, "([^/\\$]+)") + "$");
 		const match = topic.match(regex) as any;
 		//console.log("matching topic=" + topic, "by regex=" + regex, "result=" + match);
 		if (!match) return;
@@ -48,11 +44,6 @@ function topicParser(topic: string, message: any) {
 	};
 }
 
-export function subscribeDeviceState(deviceId: string, cb: (status: string) => void) {
-	emitter.on("device_" + deviceId, cb);
-}
-
-const magicRegex = /^(?:\/([\w]*)([/]\w+[/]\w+[/]\w+)(.*))/;
 export default (io: serverIO, config: Config): MqttClient => {
 	console.log("connecting to mqtt");
 	const client = mqtt.connect(config.mqtt.url, {
@@ -157,10 +148,10 @@ function sendToUsers(io: serverIO, device: IDevice, nodeId: string, propertyId: 
 	if (thing.state) thing.state.value[propertyId] = newValue;
 	else thing.state = { timestamp: new Date(), value: { [propertyId]: newValue } };
 
-	const updateData: SocketThingState = {
+	const updateData: SocketUpdateThingState = {
 		_id: device._id,
 		thing: {
-			_id: thing._id,
+			nodeId: thing.config.nodeId,
 			state: thing.state,
 		},
 	};

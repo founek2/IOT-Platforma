@@ -48,7 +48,7 @@ export interface IThing {
 	};
 	state?: {
 		timestamp: Date;
-		value: { [propertyId: string]: string | number | undefined };
+		value: { [propertyId: string]: string | number };
 	};
 }
 
