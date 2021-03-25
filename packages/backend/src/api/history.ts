@@ -2,7 +2,7 @@ import { HistoricalModel } from "common/lib/models/historyModel";
 import express from "express";
 import resource from "../middlewares/resource-router-middleware";
 import tokenAuthMIddleware from "../middlewares/tokenAuth";
-import checkReadPerm from "backend/src/middlewares/device/checkReadPerm";
+import checkReadPerm from "../middlewares/device/checkReadPerm";
 
 export default ({ config, db }: any) =>
 	resource({
