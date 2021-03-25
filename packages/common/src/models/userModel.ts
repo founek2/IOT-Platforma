@@ -14,7 +14,7 @@ export const userSchema = new Schema<IUserDocument, IUserModel>(userSchemaPlain,
 		transform: function (doc, ret) {
 			ret.id = ret._id.toString();
 			delete ret.__v;
-			delete ret._id;
+			// delete ret._id;
 			if (ret.auth) delete ret.auth.password;
 		},
 	},

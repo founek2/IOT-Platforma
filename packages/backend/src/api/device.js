@@ -17,6 +17,7 @@ import eventEmitter from "../services/eventEmitter";
 import agenda from "../agenda";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import mongoose from "mongoose";
+import { DeviceService } from "../services/deviceService";
 
 // TODO - iot library -> on reconnect device doesnt send actual status
 // TODO - api /device just for single device manipulation
@@ -24,10 +25,9 @@ export default ({ config, db }) =>
 	resource({
 		middlewares: {
 			index: [tokenAuthMIddleware()],
-			read: [tokenAuthMIddleware(), checkReadPerm()],
 			patchId: [tokenAuthMIddleware(), checkWritePerm(), formDataChecker(fieldDescriptors)],
 			create: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
-			delete: [tokenAuthMIddleware(), formDataChecker(fieldDescriptors)],
+			deleteId: [tokenAuthMIddleware(), checkWritePerm()],
 		},
 
 		/* PUT */
@@ -86,10 +86,8 @@ export default ({ config, db }) =>
 		},
 		async deleteId({ params }, res) {
 			// TODO delete references in DB - history + notify
-			const result = await DeviceModel.deleteOne({
-				_id: mongoose.Types.ObjectId(params.id),
-			});
-			if (result.deletedCount === 1) res.sendStatus(204);
+			const result = await DeviceService.deleteById(params.id);
+			if (result) res.sendStatus(204);
 			else res.sendStatus(404);
 			eventEmitter.emit("device_delete", params.id);
 		},

@@ -6,6 +6,7 @@ import { JwtService } from "../services/jwtService";
 import { IUserDocument } from "../models/schema/userSchema";
 import mongoose from "mongoose";
 import { AuthTypes } from "../constants";
+import { NotifyModel } from "../models/notifyModel";
 
 async function createHash(plainText: string) {
 	return argon2.hash(plainText);
@@ -65,5 +66,18 @@ export const UserService = {
 		if (!doc) throw Error("unknownUser");
 
 		return doc;
+	},
+
+	async deleteById(userId: IUser["_id"]): Promise<boolean> {
+		const result = await UserModel.deleteOne({
+			_id: mongoose.Types.ObjectId(userId),
+		});
+
+		if (result.deletedCount !== 1) return false;
+		await NotifyModel.deleteMany({
+			userId: mongoose.Types.ObjectId(userId),
+		});
+
+		return true;
 	},
 };

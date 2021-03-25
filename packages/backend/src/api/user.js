@@ -18,6 +18,8 @@ function removeUser(id) {
 	};
 }
 
+function canDeleteUser() {}
+
 export default ({ config, db }) =>
 	resource({
 		middlewares: {
@@ -25,6 +27,7 @@ export default ({ config, db }) =>
 			updateId: [tokenAuthMIddleware(), checkWritePerm(), formDataChecker(fieldDescriptors)], // TODO add test when user can change his userName
 			create: [formDataChecker(fieldDescriptors), rateLimiterMiddleware],
 			delete: [tokenAuthMIddleware(), groupRestriction("admin"), formDataChecker(fieldDescriptors)],
+			deleteId: [tokenAuthMIddleware(), checkWritePerm()],
 		},
 		/** GET / - List all entities */
 		index({ user, root, query: { type } }, res) {
@@ -80,15 +83,8 @@ export default ({ config, db }) =>
 				// tested
 				UserService.create(formData.REGISTRATION)
 					.then(({ doc, token }) => {
-						const { groups, id, allowedSensors, allowedControlls, info } = doc;
 						res.send({
-							user: {
-								groups,
-								id,
-								allowedSensors,
-								allowedControlls,
-								info,
-							},
+							user: doc,
 							token,
 						});
 						eventEmitter.emit("user_signup", { id, info, groups });
@@ -120,16 +116,20 @@ export default ({ config, db }) =>
 		/** PUT /:id - Create a given entity */
 
 		/** DELETE - Delete a given entities */
-		delete({ body }, res) {
+		async delete({ body }, res) {
 			// tested
 			console.log("data", body.formData);
-			UserModel.removeUsers(body.formData.USER_MANAGEMENT.selected)
-				.then((result) => {
-					console.log("deleting result> ", result);
-					if (result.deletedCount >= 1) res.sendStatus(204);
-					else res.status(208).send({ message: "noneUserFoundForDelete" });
-				})
-				.catch(processError(res));
+			const success = await Promise.all(body.formData.USER_MANAGEMENT.selected.map(UserService.deleteById));
+			if (success.every(Boolean)) res.sendStatus(204);
+			else res.sendStatus(500);
+		},
+
+		async deleteId({ body, params }, res) {
+			// tested
+			console.log("data", body.formData);
+			const success = await UserService.deleteById(params.id);
+			if (success) res.sendStatus(204);
+			else res.sendStatus(500);
 		},
 
 		async updateId({ body, params, user }, res) {
