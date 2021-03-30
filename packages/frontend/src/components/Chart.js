@@ -10,8 +10,8 @@ const styles = (theme) => ({
 		[theme.breakpoints.up('md')]: {
 			width: '90%',
 			margin: '0 auto'
-		},
-		height: 415
+		}
+		// height: 415
 	},
 	loader: {
 		left: 10
