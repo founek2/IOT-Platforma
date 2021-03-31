@@ -50,15 +50,14 @@ function ValueComponent({
     onChange: (newValue: string | number) => void;
 }) {
     const classes = useStyles();
-    const [stateValue, setStateValue] = useState(value);
+    const [stateValue, setStateValue] = useState(value);    // TODO rozbije se při příchozí změně z websocketu (desync)
 
     if (property.settable) {
         if (property.dataType === PropertyDataType.enum) {
             return (
                 <Select
-                    value={stateValue}
+                    value={value}
                     onChange={(e) => {
-                        setStateValue(e.target.value as string);
                         onChange(e.target.value as string);
                     }}
                     disableUnderline
@@ -72,7 +71,7 @@ function ValueComponent({
             );
         } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format) {
             const propertyNumeric = property as IThingPropertyNumeric;
-            return (
+            return (    // TODO debounce bude lepší
                 <Slider
                     className={classes.slider}
                     onChangeCommitted={(e, newValue) => onChange(newValue as number)}
@@ -87,18 +86,15 @@ function ValueComponent({
         } else if (property.dataType === PropertyDataType.boolean) {
             return (
                 <SwitchMy
-                    // className={classes.slider}
                     onClick={() => {
-                        const newValue = stateValue === "true" ? "false" : "true";
-                        setStateValue(newValue)
-                        onChange(newValue)
+                        onChange(value === "true" ? "false" : "true")
                     }}
-                    checked={stateValue === "true"}
+                    checked={value === "true"}
                 />
             );
         }
         const isNum = isNumericDataType(property.dataType);
-        return (
+        return (    // TODO debounce nějaký delší?
             <TextField
                 value={isNum ? Number(stateValue) : stateValue}
                 type={isNum ? "number" : "text"}
