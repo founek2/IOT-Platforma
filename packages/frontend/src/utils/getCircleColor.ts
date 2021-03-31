@@ -3,25 +3,26 @@ import { DeviceStatus } from "common/lib/models/interface/device";
 import isAfk from "./isAfk";
 
 export enum CircleColors {
-	Grey = "grey",
-	Orange = "orange",
-	Green = "green",
-	Red = "red",
+    Grey = "grey",
+    Orange = "orange",
+    Green = "green",
+    Red = "red",
 }
 
 export function getCircleTooltipText(inTransition: boolean, status: DeviceStatus) {
-	if (!status || status === DeviceStatus.disconnected || status === DeviceStatus.lost) return "Odpojeno";
-	else if (inTransition) return "Čeká na potvrzení";
-	else if (status === DeviceStatus.alert) return "Zařízení vyžaduje pozornost";
-	else if (status === DeviceStatus.ready) return "Aktivní";
+    if (!status || status === DeviceStatus.disconnected || status === DeviceStatus.lost) return "Odpojeno";
+    else if (inTransition) return "Čeká na potvrzení";
+    else if (status === DeviceStatus.alert) return "Zařízení vyžaduje pozornost";
+    else if (status === DeviceStatus.ready) return "Aktivní";
+    else if (status === DeviceStatus.sleeping) return "Uspané";
 
-	return "Chybový stav";
+    return "Chybový stav";
 }
 
 export default function getCircleColor(inTransition: boolean, status: DeviceStatus): CircleColors {
-	if (!status || status === DeviceStatus.disconnected || status === DeviceStatus.lost) return CircleColors.Grey;
-	else if (status === DeviceStatus.alert) return CircleColors.Orange;
-	else if (status === DeviceStatus.ready) return CircleColors.Green;
+    if (!status || status === DeviceStatus.disconnected || status === DeviceStatus.lost) return CircleColors.Grey;
+    else if (status === DeviceStatus.alert) return CircleColors.Orange;
+    else if (status === DeviceStatus.ready || status === DeviceStatus.sleeping) return CircleColors.Green;
 
-	return CircleColors.Red;
+    return CircleColors.Red;
 }
