@@ -81,7 +81,7 @@ function RoomWidget({ devices, className }: RoomProps) {
                             <SimpleSensor
                                 thing={thing}
                                 property={property as IThingPropertyWithDeviceClass}
-                                key={thing._id}
+                                key={property._id}
                             />
                         );
                 });

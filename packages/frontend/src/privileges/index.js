@@ -15,7 +15,7 @@ const Devices = lazy(() => import('../Pages/Devices'));
 export const routes = {
 	user: {
 		routes: [
-			{ path: '/deviceControl', Component: DeviceControl, name: 'deviceControl', Icon: BuildIcon },
+			// { path: '/deviceControl', Component: DeviceControl, name: 'deviceControl', Icon: BuildIcon },
 			{ path: '/devices', Component: Devices, name: 'devices', Icon: DevicesIcon }
 		]
 	},

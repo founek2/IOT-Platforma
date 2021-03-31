@@ -96,7 +96,7 @@ function Sensor({
                         <div className={classes.container}>
                             {Icon ? <Icon className={classes.icon} /> : null}
                             <Typography component="span">
-                                {value || "??"} {property.unitOfMeasurement}
+                                {value || "??"} {property.unitOfMeasurement || ""}
                             </Typography>
                         </div>
                         <SimpleDialog
@@ -109,7 +109,7 @@ function Sensor({
                             <div className={clsx(classes.container, classes.graphTitle)}>
                                 {Icon ? <Icon className={classes.icon} /> : null}
                                 <Typography>
-                                    {room + " " + thing.config.name + " " + value + " " + property.unitOfMeasurement}
+                                    {room + " " + thing.config.name + " " + (value || "??") + " " + (property.unitOfMeasurement || "")}
                                 </Typography>
                             </div>
                             {thing.state?.timestamp ? (
@@ -120,7 +120,7 @@ function Sensor({
                                     className={classes.updatedBefore}
                                 />
                             ) : null}
-                            {historyData.deviceId === deviceId && historyData.thingId === thing._id ? (
+                            {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 2 ? (
                                 <ChartSimple data={[[{ type: "date", label: "Čas" }, title], ...chartData]} />
                             ) : null}
 
