@@ -6,6 +6,9 @@ import {
     ComponentType,
     IThing,
     PropertyDataType,
+    IThingProperty,
+    IThingPropertyEnum,
+    IThingPropertyNumeric,
 } from "common/lib/models/interface/thing";
 import formDataChecker from "../middlewares/formDataChecker";
 import resource from "../middlewares/resource-router-middleware";
@@ -59,50 +62,40 @@ export default () =>
                 if (!doc) return res.status(208).send({ error: "deviceNotFound" });
 
                 console.log("user is", user);
-                function convertProperties([propertyId, property]: [string, IDiscoveryProperty]) {
+                function convertProperty(property: IDiscoveryProperty): IThingProperty {
                     // TODO validace + konverze
-                    let newProperty = assoc("propertyId", propertyId, property);
-                    if (!property.format) return newProperty;
+                    if (!property.format) return property as IThingProperty;
 
                     if (
                         property.dataType === PropertyDataType.float ||
                         property.dataType === PropertyDataType.integer
                     ) {
                         const range = property.format.split(":").map(Number);
-                        return assoc("format", { min: range[0], max: range[1] }, newProperty);
+                        return assoc("format", { min: range[0], max: range[1] }, property) as IThingPropertyNumeric;
                     } else if (property.dataType === PropertyDataType.enum)
-                        return assoc("format", property.format.split(","), newProperty);
+                        return assoc("format", property.format.split(","), property) as unknown as IThingPropertyEnum;
 
-                    return newProperty;
-                }
-                function convertDiscoveryThing([nodeId, thing]: [string, IDiscoveryThing]): IThing {
-                    return o<IDiscoveryThing, IDiscoveryThing, any>(
-                        // ifElse(
-                        // 	pathSatisfies<ComponentType, IDiscoveryThing>(
-                        // 		(componentType) => componentType in PredefinedComponentType,
-                        // 		["config", "componentType"]
-                        // 	),
-                        // 	(thing: IDiscoveryThing) =>
-                        // 		assocPath(
-                        // 			["config", "properties"],
-                        // 			ThingProperties[(thing.config.componentType as unknown) as PredefinedComponentType],
-                        // 			thing
-                        // 		),
-                        over(lensPath(["config", "properties"]), o(map(convertProperties), toPairs)),
-                        // ),
-                        assocPath(["config", "nodeId"], nodeId)
-                    )(thing);
+                    return property as IThingProperty;
                 }
 
-                const convertThings = o<
-                    { [propertyId: string]: IDiscoveryThing },
-                    [string, IDiscoveryThing][],
-                    IThing[]
-                >(map(convertDiscoveryThing), toPairs);
+                function convertDiscoveryThing(thing: IDiscoveryThing): IThing {
+                    return assocPath(["config", "properties"],
+                        map(o(
+                            convertProperty,
+                            propertyId => assocPath(["propertyId"], propertyId, thing.config.properties[propertyId])
+                        ),
+                            thing.config.propertyIds!),
+                        thing) as unknown as IThing
+                }
+
+                const convertThings = map(convertDiscoveryThing);
+
                 const newDevice = await DeviceModel.createNew(
                     {
                         info: { ...form.info },
-                        things: convertThings(doc.things),
+                        things: convertThings(
+                            map(nodeId => assocPath(["config", "nodeId"], nodeId, doc.things[nodeId]), doc.nodeIds)
+                        ),
                         metadata: {
                             realm: doc.realm,
                             deviceId: doc.deviceId,
@@ -111,7 +104,7 @@ export default () =>
                     user.id
                 );
 
-                console.log(convertThings(doc.things)[1].config);
+                // console.log(convertThings(doc.things)[1].config);
 
                 const suuccess = await Actions.deviceInitPairing(doc.deviceId, newDevice.apiKey);
                 if (suuccess) {
