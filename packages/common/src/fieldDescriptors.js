@@ -1,4 +1,4 @@
-import validationFactory from "framework-ui/lib/validations/validationFactory";
+import validationFactory from 'framework-ui/lib/validations/validationFactory';
 import {
 	AuthTypes,
 	ControlTypes,
@@ -9,15 +9,16 @@ import {
 	NOTIFY_TYPES,
 	NotifyIntervals,
 	CONTROL_STATE_KEYS,
-	CONTROL_TYPES,
-} from "./constants";
-import { assocPath, is, forEachObjIndexed } from "ramda";
-import setInPath from "framework-ui/lib/utils/setInPath";
-import { NotifyType } from "./models/interface/notifyInterface";
+	CONTROL_TYPES
+} from './constants';
+import { assocPath, is, forEachObjIndexed } from 'ramda';
+import setInPath from 'framework-ui/lib/utils/setInPath';
+import { NotifyType } from './models/interface/notifyInterface';
+import { DeviceCommand } from './models/interface/device';
 
 function recursive(transform, predicate, object) {
-	const func = (accum = "") => (value, key) => {
-		if (predicate(value)) return rec(value, accum + key + ".");
+	const func = (accum = '') => (value, key) => {
+		if (predicate(value)) return rec(value, accum + key + '.');
 		transform(value, accum + key);
 	};
 
@@ -44,363 +45,274 @@ function transformToForm(formName, fields) {
 
 const LOGIN = {
 	userName: {
-		deepPath: "LOGIN.userName",
+		deepPath: 'LOGIN.userName',
 		required: true,
-		label: "Uživatelské jméno",
-		name: "username",
-		validations: [validationFactory("isString", { min: 4, max: 30 })],
+		label: 'Uživatelské jméno',
+		name: 'username',
+		validations: [ validationFactory('isString', { min: 4, max: 30 }) ]
 	},
 	password: {
-		deepPath: "LOGIN.password",
+		deepPath: 'LOGIN.password',
 		required: true,
 		when: ({ authType }) => authType === AuthTypes.PASSWD,
-		label: "Heslo",
-		name: "password",
-		validations: [validationFactory("isString", { min: 4, max: 20 })],
+		label: 'Heslo',
+		name: 'password',
+		validations: [ validationFactory('isString', { min: 4, max: 20 }) ]
 	},
 	authType: {
-		deepPath: "LOGIN.authType",
+		deepPath: 'LOGIN.authType',
 		required: true,
-		label: "Pokročilá autentizace",
-		name: "authtype",
-		validations: [validationFactory("isString", { min: 4, max: 20 })],
-	},
+		label: 'Pokročilá autentizace',
+		name: 'authtype',
+		validations: [ validationFactory('isString', { min: 4, max: 20 }) ]
+	}
 };
 const userFields = {
 	info: {
 		userName: {
-			deepPath: "REGISTRATION.info.userName",
+			deepPath: 'REGISTRATION.info.userName',
 			required: true,
-			label: "Uživatelské jméno",
-			name: "username",
-			validations: [validationFactory("isString", { min: 4, max: 30 })],
+			label: 'Uživatelské jméno',
+			name: 'username',
+			validations: [ validationFactory('isString', { min: 4, max: 30 }) ]
 		},
 		firstName: {
-			deepPath: "REGISTRATION.info.firstName",
+			deepPath: 'REGISTRATION.info.firstName',
 			required: true,
-			label: "Jméno",
-			name: "firstname",
-			validations: [validationFactory("isString", { min: 2, max: 20 })],
+			label: 'Jméno',
+			name: 'firstname',
+			validations: [ validationFactory('isString', { min: 2, max: 20 }) ]
 		},
 		lastName: {
-			deepPath: "REGISTRATION.info.lastName",
+			deepPath: 'REGISTRATION.info.lastName',
 			required: true,
-			label: "Příjmení",
-			name: "lastname",
-			validations: [validationFactory("isString", { min: 2, max: 20 })],
+			label: 'Příjmení',
+			name: 'lastname',
+			validations: [ validationFactory('isString', { min: 2, max: 20 }) ]
 		},
 		email: {
-			deepPath: "REGISTRATION.info.email",
-			label: "Email",
-			name: "email",
-			validations: [validationFactory("isEmail")],
+			deepPath: 'REGISTRATION.info.email',
+			label: 'Email',
+			name: 'email',
+			validations: [ validationFactory('isEmail') ]
 		},
 		phoneNumber: {
-			deepPath: "REGISTRATION.info.phoneNumber",
-			label: "Telefonní číslo",
-			name: "phonenumber",
-			validations: [validationFactory("isPhoneNumber")],
-		},
+			deepPath: 'REGISTRATION.info.phoneNumber',
+			label: 'Telefonní číslo',
+			name: 'phonenumber',
+			validations: [ validationFactory('isPhoneNumber') ]
+		}
 	},
 	auth: {
 		type: {
-			deepPath: "REGISTRATION.auth.type",
+			deepPath: 'REGISTRATION.auth.type',
 			// required: true,
-			label: "Pokročilá autentizace",
-			name: "authtype",
-			validations: [validationFactory("isString", { min: 4, max: 20 })],
-		},
-	},
+			label: 'Pokročilá autentizace',
+			name: 'authtype',
+			validations: [ validationFactory('isString', { min: 4, max: 20 }) ]
+		}
+	}
 };
 
 const passwd = {
-	deepPath: "REGISTRATION.auth.password",
+	deepPath: 'REGISTRATION.auth.password',
 	required: true,
-	label: "Heslo",
-	name: "password",
-	validations: [validationFactory("isString", { min: 4, max: 20 })],
+	label: 'Heslo',
+	name: 'password',
+	validations: [ validationFactory('isString', { min: 4, max: 20 }) ]
 };
 
-const REGISTRATION = assocPath(["auth", "password"], passwd, userFields);
+const REGISTRATION = assocPath([ 'auth', 'password' ], passwd, userFields);
 
 const passwdNotReq = {
-	deepPath: "EDIT_USER.auth.password",
+	deepPath: 'EDIT_USER.auth.password',
 	// required: true,
-	label: "Heslo",
-	name: "password",
-	validations: [validationFactory("isString", { min: 4, max: 20 })],
+	label: 'Heslo',
+	name: 'password',
+	validations: [ validationFactory('isString', { min: 4, max: 20 }) ]
 };
 
-const EDIT_USER = assocPath(["auth", "password"], passwdNotReq, {
-	...transformToForm("EDIT_USER", userFields),
+const EDIT_USER = assocPath([ 'auth', 'password' ], passwdNotReq, {
+	...transformToForm('EDIT_USER', userFields),
 	groups: {
-		deepPath: "EDIT_USER.groups",
-		label: "Uživatelské skupiny",
+		deepPath: 'EDIT_USER.groups',
+		label: 'Uživatelské skupiny',
 		required: true,
-		name: "groups",
-		validations: [validationFactory("isNotEmptyArray")],
-	},
+		name: 'groups',
+		validations: [ validationFactory('isNotEmptyArray') ]
+	}
 });
 
 const CREATE_DEVICE = {
 	_id: {
-		deepPath: "CREATE_DEVICE._id",
+		deepPath: 'CREATE_DEVICE._id',
 		required: true,
-		validations: [validationFactory("isString", { min: 4, max: 50 })],
+		validations: [ validationFactory('isString', { min: 4, max: 50 }) ]
 	},
 	info: {
 		name: {
-			deepPath: "CREATE_DEVICE.info.name",
+			deepPath: 'CREATE_DEVICE.info.name',
 			required: true,
-			label: "Název",
-			name: "title",
-			validations: [validationFactory("isString", { min: 4, max: 20 })],
+			label: 'Název',
+			name: 'title',
+			validations: [ validationFactory('isString', { min: 4, max: 20 }) ]
 		},
 		location: {
 			building: {
-				deepPath: "CREATE_DEVICE.info.location.building",
+				deepPath: 'CREATE_DEVICE.info.location.building',
 				required: true,
-				label: "Budova",
-				validations: [validationFactory("isString", { min: 2, max: 50 })],
+				label: 'Budova',
+				validations: [ validationFactory('isString', { min: 2, max: 50 }) ]
 			},
 			room: {
-				deepPath: "CREATE_DEVICE.info.location.room",
+				deepPath: 'CREATE_DEVICE.info.location.room',
 				required: true,
-				label: "Místnost",
-				validations: [validationFactory("isString", { min: 2, max: 50 })],
-			},
-		},
-	},
+				label: 'Místnost',
+				validations: [ validationFactory('isString', { min: 2, max: 50 }) ]
+			}
+		}
+	}
 };
 
 const EDIT_PERMISSIONS = {
 	read: {
-		deepPath: "EDIT_PERMISSIONS.read",
-		label: "Čtení",
+		deepPath: 'EDIT_PERMISSIONS.read',
+		label: 'Čtení'
 	},
 	write: {
-		deepPath: "EDIT_PERMISSIONS.write",
+		deepPath: 'EDIT_PERMISSIONS.write',
 		required: true,
-		label: "Editace",
+		label: 'Editace'
 	},
 	control: {
-		deepPath: "EDIT_PERMISSIONS.control",
-		label: "Ovládání",
-	},
+		deepPath: 'EDIT_PERMISSIONS.control',
+		label: 'Ovládání'
+	}
 };
 
 const EDIT_DEVICE = {
 	info: {
 		name: {
-			deepPath: "EDIT_DEVICE.info.name",
+			deepPath: 'EDIT_DEVICE.info.name',
 			required: true,
-			label: "Název",
-			name: "title",
-			validations: [validationFactory("isString", { min: 4, max: 20 })],
+			label: 'Název',
+			name: 'title',
+			validations: [ validationFactory('isString', { min: 4, max: 20 }) ]
 		},
 		location: {
 			building: {
-				deepPath: "EDIT_DEVICE.info.location.building",
+				deepPath: 'EDIT_DEVICE.info.location.building',
 				required: true,
-				label: "Budova",
-				validations: [validationFactory("isString", { min: 2, max: 50 })],
+				label: 'Budova',
+				validations: [ validationFactory('isString', { min: 2, max: 50 }) ]
 			},
 			room: {
-				deepPath: "EDIT_DEVICE.info.location.room",
+				deepPath: 'EDIT_DEVICE.info.location.room',
 				required: true,
-				label: "Místnost",
-				validations: [validationFactory("isString", { min: 2, max: 50 })],
-			},
-		},
+				label: 'Místnost',
+				validations: [ validationFactory('isString', { min: 2, max: 50 }) ]
+			}
+		}
 	},
-	permissions: transformToForm("EDIT_DEVICE.permissions", EDIT_PERMISSIONS),
+	permissions: transformToForm('EDIT_DEVICE.permissions', EDIT_PERMISSIONS)
 };
 
 const EDIT_NOTIFY = {
-	"propertyId[]": {
-		deepPath: "EDIT_NOTIFY.propertyId[]",
-		label: "Vlastnost",
+	'propertyId[]': {
+		deepPath: 'EDIT_NOTIFY.propertyId[]',
+		label: 'Vlastnost',
 		required: true,
-		validations: [validationFactory("isString")],
+		validations: [ validationFactory('isString') ]
 	},
-	"type[]": {
-		deepPath: "EDIT_NOTIFY.type[]",
-		label: "Podmínka",
+	'type[]': {
+		deepPath: 'EDIT_NOTIFY.type[]',
+		label: 'Podmínka',
 		required: true,
-		validations: [validationFactory("isOneOf", { values: Object.values(NotifyType) })],
+		validations: [ validationFactory('isOneOf', { values: Object.values(NotifyType) }) ]
 	},
-	"value[]": {
-		deepPath: "EDIT_NOTIFY.value[]",
-		label: "Mezní hodnota",
+	'value[]': {
+		deepPath: 'EDIT_NOTIFY.value[]',
+		label: 'Mezní hodnota',
 		required: true,
-		when: ({ type }, { i }) => !type || type[i] !== NotifyType.always,
+		when: ({ type }, { i }) => !type || type[i] !== NotifyType.always
 		// validations: [validationFactory("isNumber")],
 	},
 	advanced: {
-		"daysOfWeek[]": {
-			deepPath: "EDIT_NOTIFY.advanced.daysOfWeek[]",
-			label: "Dny v týdnu",
+		'daysOfWeek[]': {
+			deepPath: 'EDIT_NOTIFY.advanced.daysOfWeek[]',
+			label: 'Dny v týdnu',
 			// required: true,
-			validations: [validationFactory("isArray", { min: 1, max: 200 })],
+			validations: [ validationFactory('isArray', { min: 1, max: 200 }) ]
 		},
-		"interval[]": {
-			deepPath: "EDIT_NOTIFY.advanced.interval[]",
-			label: "Interval",
+		'interval[]': {
+			deepPath: 'EDIT_NOTIFY.advanced.interval[]',
+			label: 'Interval',
 			// required: true,
-			validations: [validationFactory("isOneOf", { values: NotifyIntervals.map((obj) => obj.value) })],
+			validations: [ validationFactory('isOneOf', { values: NotifyIntervals.map((obj) => obj.value) }) ]
 		},
-		"from[]": {
-			deepPath: "EDIT_NOTIFY.advanced.from[]",
-			label: "Od",
+		'from[]': {
+			deepPath: 'EDIT_NOTIFY.advanced.from[]',
+			label: 'Od',
 			// required: true,
-			validations: [validationFactory("isTime")],
+			validations: [ validationFactory('isTime') ]
 		},
-		"to[]": {
-			deepPath: "EDIT_NOTIFY.advanced.to[]",
-			label: "Do",
+		'to[]': {
+			deepPath: 'EDIT_NOTIFY.advanced.to[]',
+			label: 'Do',
 			// required: true,
-			validations: [validationFactory("isTime")],
-		},
+			validations: [ validationFactory('isTime') ]
+		}
 	},
 	count: {
-		deepPath: "EDIT_NOTIFY.count",
+		deepPath: 'EDIT_NOTIFY.count',
 		required: true,
-		validations: [validationFactory("isNumber")],
-	},
-};
-
-const EDIT_RGB = {
-	type: {
-		deepPath: "EDIT_RGB.type",
-		label: "Typ",
-		// required: true,
-		name: "type",
-		validations: [validationFactory("isOneOf", { values: RgbTypes.map((obj) => obj.value) })],
-	},
-	color: {
-		deepPath: "EDIT_RGB.color",
-		label: "Barva",
-		required: true,
-		name: "color",
-		when: ({ type }) => type === LINEAR_TYPE,
-		validations: [validationFactory("isColor")],
-	},
-	bright: {
-		deepPath: "EDIT_RGB.bright",
-		label: "Jas",
-		name: "brightness",
-		// required: true,
-		validations: [validationFactory("isNumber", { min: 0, max: 100 })],
-	},
-	on: {
-		deepPath: "EDIT_RGB.on",
-		label: "Zapnuto",
-		// required: true,
-		validations: [validationFactory("isNumber", { min: 0, max: 1 })],
-	},
-};
-
-const CHANGE_DEVICE_STATE_RGB = {
-	JSONkey: {
-		deepPath: "CHANGE_DEVICE_STATE_RGB.JSONkey",
-		required: true,
-	},
-	state: {
-		type: {
-			deepPath: "CHANGE_DEVICE_STATE_RGB.state.type",
-			label: "Typ",
-			name: "type",
-			validations: [validationFactory("isOneOf", { values: RgbTypes.map((obj) => obj.value) })],
-		},
-		color: {
-			deepPath: "CHANGE_DEVICE_STATE_RGB.state.color",
-			label: "Barva",
-			name: "color",
-			when: ({ type }) => type === LINEAR_TYPE,
-			required: true,
-			validations: [validationFactory("isColor")],
-		},
-		bright: {
-			deepPath: "CHANGE_DEVICE_STATE_RGB.state.bright",
-			label: "Jas",
-			name: "brightness",
-			validations: [validationFactory("isNumber", { min: 0, max: 100 })],
-		},
-		on: {
-			deepPath: "CHANGE_DEVICE_STATE_RGB.state.on",
-			label: "Zapnuto",
-			validations: [validationFactory("isNumber", { min: 0, max: 1 })],
-		},
-	},
-};
-
-const CHANGE_DEVICE_STATE_SWITCH = {
-	JSONkey: {
-		deepPath: "CHANGE_DEVICE_STATE_SWITCH.JSONkey",
-		required: true,
-	},
-	state: {
-		on: {
-			deepPath: "CHANGE_DEVICE_STATE_SWITCH.state.on",
-			label: "Zapnuto",
-			required: true,
-			validations: [validationFactory("isNumber", { min: 0, max: 1 })],
-		},
-	},
-};
-
-const CHANGE_DEVICE_MUSIC_CAST = {
-	JSONkey: {
-		deepPath: "CHANGE_DEVICE_MUSIC_CAST.JSONkey",
-		required: true,
-	},
-	state: {
-		on: {
-			deepPath: "CHANGE_DEVICE_MUSIC_CAST.state.on",
-			label: "Zapnuto",
-			validations: [validationFactory("isNumber", { min: 0, max: 1 })],
-		},
-		input: {
-			deepPath: "CHANGE_DEVICE_MUSIC_CAST.state.input",
-			label: "Vstup",
-		},
-	},
+		validations: [ validationFactory('isNumber') ]
+	}
 };
 
 const USER_MANAGEMENT = {
 	selected: {
-		deepPath: "USER_MANAGEMENT.selected",
+		deepPath: 'USER_MANAGEMENT.selected',
 		required: true,
-		validations: [validationFactory("isNotEmptyArray")],
-	},
+		validations: [ validationFactory('isNotEmptyArray') ]
+	}
 };
 const DEVICE_MANAGEMENT = {
 	selected: {
-		deepPath: "DEVICE_MANAGEMENT.selected",
+		deepPath: 'DEVICE_MANAGEMENT.selected',
 		required: true,
-		validations: [validationFactory("isNotEmptyArray")],
-	},
+		validations: [ validationFactory('isNotEmptyArray') ]
+	}
 };
 
 const DISCOVERY_DEVICES = {
 	selected: {
-		deepPath: "DISCOVERY_DEVICES.selected",
+		deepPath: 'DISCOVERY_DEVICES.selected',
 		required: true,
-		validations: [validationFactory("isNotEmptyArray")],
-	},
+		validations: [ validationFactory('isNotEmptyArray') ]
+	}
 };
 
 const FIREBASE_ADD = {
 	token: {
-		deepPath: "FIREBASE_ADD.token",
-		label: "Token",
+		deepPath: 'FIREBASE_ADD.token',
+		label: 'Token',
 		required: true,
 		validations: [
-			validationFactory("isString", {
-				min: 100,
-			}),
-		],
-	},
+			validationFactory('isString', {
+				min: 100
+			})
+		]
+	}
+};
+
+const DEVICE_SEND = {
+	command: {
+		deepPath: 'DEVICE_SEND.command',
+		label: 'Příkaz',
+		required: true,
+		validations: [ validationFactory('isOneOf', { values: Object.values(DeviceCommand) }) ]
+	}
 };
 
 export default {
@@ -411,13 +323,10 @@ export default {
 	CREATE_DEVICE,
 	EDIT_DEVICE,
 	EDIT_PERMISSIONS,
-	EDIT_RGB,
-	CHANGE_DEVICE_STATE_RGB,
-	CHANGE_DEVICE_STATE_SWITCH,
-	CHANGE_DEVICE_MUSIC_CAST,
 	EDIT_NOTIFY,
 	EDIT_NOTIFY,
 	FIREBASE_ADD,
 	DEVICE_MANAGEMENT,
 	DISCOVERY_DEVICES,
+	DEVICE_SEND
 };

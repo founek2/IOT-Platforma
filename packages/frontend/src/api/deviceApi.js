@@ -1,13 +1,13 @@
-import { postJson, paramSender, deleteJson, patchJson, putJson } from "framework-ui/lib/api";
+import { postJson, paramSender, deleteJson, patchJson, putJson } from 'framework-ui/lib/api';
 
-export const API_URL = "/api";
+export const API_URL = '/api';
 
-export const createDevice = (object, dispatch) =>
+export const postDevice = ({ id, ...object }, dispatch) =>
 	postJson({
-		url: API_URL + "/device",
+		url: API_URL + `/device/${id}`,
 		...object,
-		successMessage: "deviceCreated",
-		dispatch,
+		successMessage: 'commandSended',
+		dispatch
 	});
 
 export const updateState = ({ id, ...object }, dispatch) =>
@@ -15,58 +15,58 @@ export const updateState = ({ id, ...object }, dispatch) =>
 		url: API_URL + `/device/${id}`,
 		...object,
 		// successMessage: 'deviceCreated',
-		dispatch,
+		dispatch
 	});
 
 export const fetchDevices = (object, dispatch) =>
 	paramSender({
-		url: API_URL + "/device",
+		url: API_URL + '/device',
 		...object,
-		dispatch,
+		dispatch
 	});
 
 export const updateDevice = ({ id, ...object }, dispatch) =>
 	patchJson({
 		url: API_URL + `/device/${id}`,
 		...object,
-		successMessage: "deviceUpdated",
-		dispatch,
+		successMessage: 'deviceUpdated',
+		dispatch
 	});
 
 export const deleteDevice = ({ id, ...object }, dispatch) =>
 	deleteJson({
 		url: API_URL + `/device/${id}`,
 		...object,
-		successMessage: "deviceDeleted",
-		dispatch,
+		successMessage: 'deviceDeleted',
+		dispatch
 	});
 
 export const deleteDevices = (object, dispatch) =>
 	deleteJson({
-		url: API_URL + "/device",
+		url: API_URL + '/device',
 		...object,
-		successMessage: "deviceDeleted",
-		dispatch,
+		successMessage: 'deviceDeleted',
+		dispatch
 	});
 
 export const fetchDeviceData = ({ id, ...object }, dispatch) =>
 	paramSender({
 		url: API_URL + `/device/${id}`,
 		...object,
-		dispatch,
+		dispatch
 	});
 
 export const updateNotify = ({ id, nodeId, ...object }, dispatch) =>
 	putJson({
 		url: API_URL + `/device/${id}/thing/${nodeId}/notify`,
 		...object,
-		successMessage: "deviceUpdated",
-		dispatch,
+		successMessage: 'deviceUpdated',
+		dispatch
 	});
 
 export const getNotify = ({ id, nodeId, ...object }, dispatch) =>
 	paramSender({
 		url: API_URL + `/device/${id}/thing/${nodeId}/notify`,
 		...object,
-		dispatch,
+		dispatch
 	});

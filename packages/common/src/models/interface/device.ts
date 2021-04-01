@@ -1,11 +1,17 @@
 import { IThing } from "./thing";
 
+export enum DeviceCommand {
+    restart = "restart",
+    reset = "reset",
+}
+
 export enum DeviceStatus {
     disconnected = "disconnected",
     lost = "lost",
     error = "error",
     alert = "alert",
     sleeping = "sleeping",
+    restarting = "restarting",
     ready = "ready",
     init = "init",
     paired = "paired",

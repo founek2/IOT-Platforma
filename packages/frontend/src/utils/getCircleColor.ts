@@ -15,12 +15,13 @@ export function getCircleTooltipText(inTransition: boolean, status: DeviceStatus
     else if (status === DeviceStatus.alert) return "Zařízení vyžaduje pozornost";
     else if (status === DeviceStatus.ready) return "Aktivní";
     else if (status === DeviceStatus.sleeping) return "Uspané";
+    else if (status === DeviceStatus.restarting) return "Restartování";
 
     return "Chybový stav";
 }
 
 export default function getCircleColor(inTransition: boolean, status: DeviceStatus): CircleColors {
-    if (!status || status === DeviceStatus.disconnected || status === DeviceStatus.lost) return CircleColors.Grey;
+    if (!status || status === DeviceStatus.disconnected || status === DeviceStatus.lost || status === DeviceStatus.restarting) return CircleColors.Grey;
     else if (status === DeviceStatus.alert) return CircleColors.Orange;
     else if (status === DeviceStatus.ready || status === DeviceStatus.sleeping) return CircleColors.Green;
 

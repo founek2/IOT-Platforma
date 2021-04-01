@@ -2,18 +2,28 @@ import { Emitter, EmitterEvents } from "../services/eventEmitter";
 import { publishStr } from "../services/mqtt";
 
 export default function (eventEmitter: Emitter<EmitterEvents>) {
-	eventEmitter.on("device_pairing_init", async ({ apiKey, deviceId }) => {
-		publishStr(`prefix/${deviceId}/$config/apiKey/set`, apiKey);
-	});
+    eventEmitter.on("device_pairing_init", async ({ apiKey, deviceId }) => {
+        publishStr(`prefix/${deviceId}/$config/apiKey/set`, apiKey);
+    });
 
-	eventEmitter.on("device_pairing_done", async (deviceId) => {});
+    eventEmitter.on("device_pairing_done", async (deviceId) => { });
 
-	eventEmitter.on("device_set_state", ({ device, value, nodeId, propertyId }) => {
-		console.log("state to change", value);
+    eventEmitter.on("device_set_state", ({ device, value, nodeId, propertyId }) => {
+        console.log("state to change", value);
 
-		publishStr(
-			`v2/${device.metadata.realm}/${device.metadata.deviceId}/${nodeId}/${propertyId}/set`,
-			String(value)
-		);
-	});
+        publishStr(
+            `v2/${device.metadata.realm}/${device.metadata.deviceId}/${nodeId}/${propertyId}/set`,
+            String(value)
+        );
+    });
+
+
+    eventEmitter.on("device_send_command", ({ device, command }) => {
+        console.log("command to send", command);
+
+        publishStr(
+            `v2/${device.metadata.realm}/${device.metadata.deviceId}/$cmd/set`,
+            command
+        );
+    });
 }
