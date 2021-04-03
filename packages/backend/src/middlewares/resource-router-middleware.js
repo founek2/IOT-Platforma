@@ -76,7 +76,7 @@ function apply(key, fn, router, route) {
 	if (typeof router[method] != 'function') return;
 
 	let url;
-	if (key.endsWith('Id')) {
+	if (key.endsWith('Id') || key === 'read') {
 		url = '/:id';
 	} else {
 		url = ~keyed.indexOf(key) && route.load ? '/:' + route.id : '/';
