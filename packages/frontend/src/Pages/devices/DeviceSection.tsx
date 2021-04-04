@@ -74,6 +74,8 @@ function DiscoverySection({
     }
 
     async function onAgreeDelete() {
+        setCommandField(DeviceCommand.reset)
+        await sendDeviceCommandA(menuForId)
         const result = await deleteDeviceAction(menuForId);
         console.log("result", result);
         if (result) {
@@ -172,7 +174,7 @@ function DiscoverySection({
             />
             <AlertDialog
                 title="Odstranění zařízení"
-                content="Opravdu chcete odstranit toto zařízení? Tato akce je nevratná."
+                content="Opravdu chcete odstranit toto zařízení? Tato akce je nevratná. Pokud je zařízení online, tak obdrží příkaz k resetování (uvede se do výchozího stavu)."
                 open={openAlertDialog}
                 onClose={() => setOpenAlertDialog(false)}
                 onAgree={onAgreeDelete}
