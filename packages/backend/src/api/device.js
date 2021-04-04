@@ -38,8 +38,7 @@ export default ({ config, db }) =>
 			if (formData.EDIT_DEVICE) {
 				// tested
 				const form = formData.EDIT_DEVICE;
-
-				await DeviceModel.updateByFormData(id, formData);
+				await DeviceModel.updateByFormData(id, form);
 				res.sendStatus(204);
 			} else res.sendStatus(400);
 		},
