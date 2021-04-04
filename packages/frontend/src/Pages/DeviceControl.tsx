@@ -37,10 +37,9 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         flexWrap: "wrap",
     },
-    // widget: {
-    //     flex: "1 0 44%",
-    //     // margin: 10,
-    // },
+    widget: {
+        height: "100%"
+    },
 }));
 
 function updateDevice(updateThingA: any) {
@@ -140,7 +139,7 @@ function DeviceControl({
                                                                 // className={classes.widget}
                                                                 key={building + "/" + room}
                                                             >
-                                                                <RoomWidget devices={devices} />
+                                                                <RoomWidget devices={devices} className={classes.widget} />
                                                             </Link>
                                                         </Grid>
                                                     ))}

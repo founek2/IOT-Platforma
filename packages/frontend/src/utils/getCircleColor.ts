@@ -21,9 +21,9 @@ export function getCircleTooltipText(inTransition: boolean, status: DeviceStatus
 }
 
 export default function getCircleColor(inTransition: boolean, status: DeviceStatus): CircleColors {
-    if (!status || status === DeviceStatus.disconnected || status === DeviceStatus.lost || status === DeviceStatus.restarting) return CircleColors.Grey;
+    if (!status || status === DeviceStatus.disconnected || status === DeviceStatus.lost || status === DeviceStatus.restarting || status === DeviceStatus.sleeping) return CircleColors.Grey;
     else if (status === DeviceStatus.alert) return CircleColors.Orange;
-    else if (status === DeviceStatus.ready || status === DeviceStatus.sleeping) return CircleColors.Green;
+    else if (status === DeviceStatus.ready) return CircleColors.Green;
 
     return CircleColors.Red;
 }
