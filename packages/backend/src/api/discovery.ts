@@ -3,21 +3,17 @@ import { DiscoveryModel } from "common/lib/models/deviceDiscoveryModel";
 import { DeviceModel } from "common/lib/models/deviceModel";
 import { IDiscoveryProperty, IDiscoveryThing } from "common/lib/models/interface/discovery";
 import {
-    ComponentType,
     IThing,
-    PropertyDataType,
+
     IThingProperty,
     IThingPropertyEnum,
-    IThingPropertyNumeric,
+    IThingPropertyNumeric, PropertyDataType
 } from "common/lib/models/interface/thing";
+import mongoose from "mongoose";
+import { assoc, assocPath, map, o } from "ramda";
 import formDataChecker from "../middlewares/formDataChecker";
 import resource from "../middlewares/resource-router-middleware";
 import tokenAuthMIddleware from "../middlewares/tokenAuth";
-import mongoose from "mongoose";
-import { assoc, assocPath, ifElse, lensPath, map, o, over, pathSatisfies, toPairs } from "ramda";
-import checkControlPerm from "../middlewares/device/checkControlPerm";
-import checkReadPerm from "../middlewares/device/checkReadPerm";
-import checkWritePerm from "../middlewares/device/checkWritePerm";
 import { Actions } from "../services/actionsService";
 import eventEmitter from "../services/eventEmitter";
 

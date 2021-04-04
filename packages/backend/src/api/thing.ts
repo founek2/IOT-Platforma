@@ -11,28 +11,28 @@ import tokenAuthMIddleware from "../middlewares/tokenAuth";
 import { Actions } from "../services/actionsService";
 
 export default ({ config, db }: any) =>
-	resource({
-		mergeParams: true,
-		middlewares: {
-			read: [tokenAuthMIddleware(), checkControlPerm({ paramKey: "deviceId" })],
-		},
+    resource({
+        mergeParams: true,
+        middlewares: {
+            read: [tokenAuthMIddleware(), checkControlPerm({ paramKey: "deviceId" })],
+        },
 
-		async patch({ params, body }: any, res: express.Response) {
-			const { deviceId, thingId } = params;
+        async patch({ params, body }: any, res: express.Response) {
+            const { deviceId, thingId } = params;
 
-			const doc: IDevice = await DeviceModel.findById(deviceId).lean();
-			const thing = getThing(doc, thingId);
+            const doc: IDevice = await DeviceModel.findById(deviceId).lean();
+            const thing = getThing(doc, thingId);
 
-			const promises = [];
-			for (const [propertyId, value] of Object.entries(body.state as { [propertyId: string]: number | string })) {
-				const property = getProperty(thing, propertyId);
-				const result = validateValue(property, value.toString());
-				if (result.valid) promises.push(Actions.deviceSetProperty(deviceId, thingId, propertyId, value, doc));
-				else return res.sendStatus(400);
-			}
+            const promises = [];
+            for (const [propertyId, value] of Object.entries(body.state as { [propertyId: string]: number | string })) {
+                const property = getProperty(thing, propertyId);
+                const result = validateValue(property, value.toString());
+                if (result.valid) promises.push(Actions.deviceSetProperty(deviceId, thingId, propertyId, value, doc));
+                else return res.sendStatus(400);
+            }
 
-			const values = await Promise.all(promises);
-			if (all(equals(true), values)) res.sendStatus(204);
-			else res.sendStatus(400);
-		},
-	});
+            const values = await Promise.all(promises);
+            if (all(equals(true), values)) res.sendStatus(204);
+            else res.sendStatus(400);
+        },
+    });
