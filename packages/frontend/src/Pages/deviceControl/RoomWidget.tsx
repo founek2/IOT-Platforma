@@ -9,16 +9,18 @@ import React from "react";
 const useStyles = makeStyles((theme) => ({
     widget: {
         display: "flex",
-        paddingLeft: theme.spacing(3),
-        paddingRight: theme.spacing(3),
-        paddingBottom: theme.spacing(3),
-        paddingTop: theme.spacing(3),
-        // borderRadius: "1em",
+        padding: theme.spacing(3),
+        [theme.breakpoints.down("sm")]: {
+            padding: theme.spacing(1.5),
+            flexDirection: "column"
+        }
     },
     title: {
         color: grey[700],
         paddingRight: 10,
-        // width: "100%",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "3em"
+        }
     },
     sensorsGrid: {
         display: "flex",
@@ -39,6 +41,14 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         justifyContent: "center",
     },
+    // centerIcons: {
+    //     display: "flex",
+    //     alignItems: "center",
+    //     justifyContent: "center",
+    //     [theme.breakpoints.down("sm")]: {
+    //         justifyContent: "flex-end",
+    //     }
+    // },
 }));
 type IThingPropertyWithDeviceClass = IThingProperty & { propertyClass: NonNullable<IThingProperty["propertyClass"]> };
 interface SimpleSensorProps {

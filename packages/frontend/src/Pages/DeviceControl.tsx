@@ -111,7 +111,7 @@ function DeviceControl({
     return (
         <div className={classes.root}>
             <Grid container justify="center">
-                <Grid md={8} xs={12} item>
+                <Grid xs={12} md={10} lg={8} item>
                     {!selectedRoom ? (
                         buildings.size === 0 ? (
                             <Typography>Nebyla nalezena žádná zařízení</Typography>

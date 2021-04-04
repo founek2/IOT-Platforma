@@ -5,10 +5,10 @@ export default (theme) => ({
         padding: 0,
         paddin: theme.spacing(1)
     },
-    switchContainer: {
-        margin: '0 auto'
-        // paddingTop: 10
-    },
+    // switchContainer: {
+    //     margin: '0 auto'
+    //     // paddingTop: 10
+    // },
     switchBase: {
         padding: 1,
         '&$checked': {

@@ -9,22 +9,34 @@ import Switch from "./components/Switch"
 import { head, drop } from "ramda";
 import { SimpleDialog } from "./components/Dialog";
 import PropertyRow from "./components/PropertyRow";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
     ...switchCss(theme),
     root: {
         display: "flex",
         flexDirection: "column",
+        height: "100%",
     },
     header: {
-        height: "3em", // I hope it is for 2 lines
+        // height: "3em", // I hope it is for 2 lines
+        paddingBottom: "0.4em",
         overflow: "hidden",
         textAlign: "center",
         cursor: "pointer"
     },
+    switchContainer: {
+        margin: "0 auto",
+        padding: "5px 10px 5px 10px",
+    },
+    verticalAlign: {
+        display: "flex",
+        height: "100%",
+        alignItems: "flex-end",
+    }
 }));
 
-function MySwitch({ onClick, deviceId, thing, room, fetchHistory, disabled }: BoxWidgetProps) {
+function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled }: BoxWidgetProps) {
     const classes = useStyles();
     const property = head(thing.config.properties)!;
     const value = (thing.state?.value || { [property.propertyId]: "false" })[property.propertyId];
@@ -37,21 +49,23 @@ function MySwitch({ onClick, deviceId, thing, room, fetchHistory, disabled }: Bo
             render={({ handleOpen }: any) => {
                 return (
                     <div
-                        className={classes.root}
+                        className={clsx(className, classes.root)}
                     >
                         <div className={classes.header} onContextMenu={handleOpen} onClick={() => setOpenDialog(true)}>
                             <Typography component="span">{thing.config.name}</Typography>
                         </div>
-                        <div
-                            className={classes.switchContainer}
-                            onClick={(e) => !disabled && onClick({
-                                [property.propertyId]: value === "true" ? "false" : "true"
-                            })}>
-                            <Switch
-                                disabled={disabled}
-                                // onClick={handleClick}
-                                checked={value === "true"}
-                            />
+                        <div className={classes.verticalAlign}>
+                            <div
+                                className={classes.switchContainer}
+                                onClick={(e) => !disabled && onClick({
+                                    [property.propertyId]: value === "true" ? "false" : "true"
+                                })}>
+                                <Switch
+                                    disabled={disabled}
+                                    // onClick={handleClick}
+                                    checked={value === "true"}
+                                />
+                            </div>
                         </div>
 
                         <SimpleDialog

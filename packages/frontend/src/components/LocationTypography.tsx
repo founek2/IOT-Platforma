@@ -10,6 +10,9 @@ const useStyles = makeStyles((theme) => ({
         // marginTop: 10,
         // paddingBottom: 10,
         textAlign: "center",
+        [theme.breakpoints.down("sm")]: {
+            textAlign: "left",
+        },
         color: grey[700],
     },
 }));

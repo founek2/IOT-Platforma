@@ -27,11 +27,13 @@ const useStyles = makeStyles((theme) => ({
 
 const options = {
     hAxis: {
+        gridlines: { color: "transparent", count: 3 },
         format: "HH:mm",
     },
-    // vAxis: {
-    // 	title: "Popularity",
-    // },
+    vAxis: {
+        gridlines: { count: 3 },
+        // baseline: 0
+    },
     legend: { position: "none" },
 };
 

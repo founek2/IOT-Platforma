@@ -40,21 +40,17 @@ const useStyles = makeStyles((theme) => ({
     },
     location: {
         paddingBottom: 10,
-    }
+    },
     // item: {
-    //     width: 150,
-    //     [theme.breakpoints.down("sm")]: {
-    //         width: `calc(50% - ${theme.spacing(1.5)}px)`, // to add spacing to right
-    //         margin: `${theme.spacing(1)}px 0 0 ${theme.spacing(1)}px`,
-    //     },
-    // },
+    //     height: "100%",
+    // }
 }));
 
 function generateBoxes(device: IDevice, updateState: any, classes: any) {
     return device.things.map((thing) => {
         const { _id, config, state } = thing;
         const Comp = compMapper[config.componentType];
-
+        console.log("classs", classes)
         if (Comp) {
             const createComponent = () => (
                 <Grid
@@ -67,7 +63,7 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
                         thing={thing}
                         onClick={(state: any) => updateState(device._id, thing.config.nodeId, state)}
                         lastChange={state?.timestamp}
-                        className={classes.item}
+                        // className={classes.item}
                         deviceStatus={device?.state?.status}
                         deviceId={device._id}
                         room={device.info.location.room}
