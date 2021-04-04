@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
         height: "3em", // I hope it is for 2 lines
         overflow: "hidden",
         textAlign: "center",
-        userSelect: "none",
+        cursor: "pointer"
     },
 }));
 

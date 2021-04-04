@@ -28,8 +28,8 @@ const useStyles = makeStyles({
     header: {
         height: "1.7em",
         overflow: "hidden",
-        userSelect: "none",
         marginBottom: 15,
+        cursor: "pointer"
     },
     circle: {
         top: 3,
@@ -96,7 +96,7 @@ function Sensor({
                         <div className={classes.container}>
                             {Icon ? <Icon className={classes.icon} /> : null}
                             <Typography component="span">
-                                {value || "??"} {property.unitOfMeasurement || ""}
+                                {value || "??"}&nbsp;{property.unitOfMeasurement || ""}
                             </Typography>
                         </div>
                         <SimpleDialog
@@ -109,7 +109,7 @@ function Sensor({
                             <div className={clsx(classes.container, classes.graphTitle)}>
                                 {Icon ? <Icon className={classes.icon} /> : null}
                                 <Typography>
-                                    {room + " " + thing.config.name + " " + (value || "??") + " " + (property.unitOfMeasurement || "")}
+                                    {room + " " + thing.config.name + " " + (value || "??")}&nbsp;{property.unitOfMeasurement || ""}
                                 </Typography>
                             </div>
                             {thing.state?.timestamp ? (

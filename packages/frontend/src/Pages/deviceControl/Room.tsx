@@ -25,6 +25,7 @@ import Sensor from "./room/Sensor";
 import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { IDevice } from "common/lib/models/interface/device";
 import { LocationTypography } from "frontend/src/components/LocationTypography";
+import { grey } from "@material-ui/core/colors";
 
 const compMapper = {
     [ComponentType.switch]: Switch,
@@ -34,16 +35,19 @@ const compMapper = {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: "flex",
-        flexWrap: "wrap",
+        // padding: theme.spacing(2),
+        // backgroundColor: grey[100],
     },
-    item: {
-        width: 150,
-        [theme.breakpoints.down("sm")]: {
-            width: `calc(50% - ${theme.spacing(1.5)}px)`, // to add spacing to right
-            margin: `${theme.spacing(1)}px 0 0 ${theme.spacing(1)}px`,
-        },
-    },
+    location: {
+        paddingBottom: 10,
+    }
+    // item: {
+    //     width: 150,
+    //     [theme.breakpoints.down("sm")]: {
+    //         width: `calc(50% - ${theme.spacing(1.5)}px)`, // to add spacing to right
+    //         margin: `${theme.spacing(1)}px 0 0 ${theme.spacing(1)}px`,
+    //     },
+    // },
 }));
 
 function generateBoxes(device: IDevice, updateState: any, classes: any) {
@@ -53,16 +57,22 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
 
         if (Comp) {
             const createComponent = () => (
-                <Comp
-                    key={_id}
-                    thing={thing}
-                    onClick={(state: any) => updateState(device._id, thing.config.nodeId, state)}
-                    lastChange={state?.timestamp}
-                    className={classes.item}
-                    deviceStatus={device?.state?.status}
-                    deviceId={device._id}
-                    room={device.info.location.room}
-                />
+                <Grid
+                    item
+                    xs={6}
+                    md={3}
+                >
+                    <Comp
+                        key={_id}
+                        thing={thing}
+                        onClick={(state: any) => updateState(device._id, thing.config.nodeId, state)}
+                        lastChange={state?.timestamp}
+                        className={classes.item}
+                        deviceStatus={device?.state?.status}
+                        deviceId={device._id}
+                        room={device.info.location.room}
+                    />
+                </Grid>
             );
 
             return createComponent();
@@ -85,9 +95,9 @@ function Room({ devices, updateDeviceStateA }: RoomProps) {
         .flat(2);
 
     return (
-        <div>
-            <LocationTypography location={location} />
-            <Grid container justify="center">
+        <div className={classes.root}>
+            <LocationTypography location={location} className={classes.location} />
+            <Grid container justify="center" spacing={2}>
                 {boxes}
             </Grid>
         </div>

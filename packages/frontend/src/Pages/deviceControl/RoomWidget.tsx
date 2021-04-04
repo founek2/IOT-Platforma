@@ -9,8 +9,11 @@ import React from "react";
 const useStyles = makeStyles((theme) => ({
     widget: {
         display: "flex",
-        padding: theme.spacing(4),
-        borderRadius: "1em",
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3),
+        paddingBottom: theme.spacing(3),
+        paddingTop: theme.spacing(3),
+        // borderRadius: "1em",
     },
     title: {
         color: grey[700],
@@ -24,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     },
     sensorContainer: {
         flex: "1 0 22%",
-        margin: 10,
+        padding: 5,
     },
     sensorIcon: {
         verticalAlign: "middle",

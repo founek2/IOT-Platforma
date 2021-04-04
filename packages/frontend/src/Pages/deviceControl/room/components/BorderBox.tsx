@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react";
-import Box from "@material-ui/core/Box";
+import Paper from "@material-ui/core/Paper";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import OnlineCircle from "../../../../components/OnlineCircle";
 import isAfk from "../../../../utils/isAfk";
@@ -12,6 +12,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as deviceActions from "../../../../store/actions/application/devices";
 import * as thingHistoryActions from "../../../../store/actions/application/thingHistory";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles({
     circle: {
@@ -26,15 +27,24 @@ const useStyles = makeStyles({
         right: 0,
         bottom: 0,
     },
+    box: {
+        backgroundColor: "white",
+        // border: "1px solid rgb(189, 189, 189)",
+        // borderRadius: 10,
+        padding: "1rem",
+        boxSizing: "border-box",
+    }
 });
 
-const defaultProps = {
-    bgcolor: "background.paper",
-    m: 1,
-    border: 1,
-    style: { padding: "1rem" },
-    position: "relative",
-};
+// const defaultProps = {
+//     bgcolor: "background.paper",
+//     // m: 1,
+//     border: 1,
+//     style: { padding: "1rem" },
+//     position: "relative",
+//     width: "100%",
+//     boxSizing: "border-box"
+// };
 
 export interface BoxWidgetProps {
     className?: string;
@@ -117,12 +127,14 @@ function BorderBox({
     const afk = deviceStatus && isAfk(deviceStatus.value);
     const Component = component;
     return (
-        <Box
-            display="inline-block"
-            borderRadius={10}
-            borderColor="grey.400"
-            className={className ? className : ""}
-            {...defaultProps}
+        <Paper
+            // display="inline-block"
+            // borderRadius={10}
+            // borderColor="grey.400"
+            // className={className ? className : ""}
+            // {...defaultProps}
+            elevation={2}
+            className={classes.box}
         >
             {deviceStatus?.value && deviceStatus?.value !== DeviceStatus.ready && deviceStatus?.value !== DeviceStatus.sleeping && (
                 <OnlineCircle inTransition={false} className={classes.circle} status={deviceStatus} />
@@ -137,13 +149,13 @@ function BorderBox({
                 {...other}
             />
             {/* <Loader open={pending} className="marginAuto" /> */}
-            <div onContextMenu={handleContext} className={classes.contextMenu}></div>
+            {/* <div onContextMenu={handleContext} className={classes.contextMenu}></div> */}
             {/* <ControlDetail
 				open={detailOpen}
 				data={data}
 				handleClose={() => setOpen(false)}
 			/> */}
-        </Box>
+        </Paper>
     );
 }
 const _mapDispatchToProps = (dispatch: any) =>
