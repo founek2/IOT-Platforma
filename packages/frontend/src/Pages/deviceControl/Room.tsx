@@ -22,6 +22,7 @@ import * as formsActions from "framework-ui/lib/redux/actions/formsData";
 import * as controlActions from "../../store/actions/application/devices/control";
 import MusicCast from "./room/MusicCast";
 import Sensor from "./room/Sensor";
+import Activator from "./room/Activator";
 import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { IDevice } from "common/lib/models/interface/device";
 import { LocationTypography } from "frontend/src/components/LocationTypography";
@@ -31,6 +32,7 @@ const compMapper = {
     [ComponentType.switch]: Switch,
     [ComponentType.generic]: Generic,
     [ComponentType.sensor]: Sensor,
+    [ComponentType.activator]: Activator,
 };
 
 const useStyles = makeStyles((theme) => ({

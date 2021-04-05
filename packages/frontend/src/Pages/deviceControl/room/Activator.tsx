@@ -10,16 +10,19 @@ import { head, drop } from "ramda";
 import { SimpleDialog } from "./components/Dialog";
 import PropertyRow from "./components/PropertyRow";
 import clsx from "clsx";
+import IconButton from "@material-ui/core/IconButton";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import { IThingPropertyEnum } from "common/lib/models/interface/thing";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const useStyles = makeStyles((theme) => ({
-    ...switchCss(theme),
     root: {
         display: "flex",
         flexDirection: "column",
         height: "100%",
     },
     header: {
-        // height: "3em", // I hope it is for 2 lines
         paddingBottom: "0.4em",
         overflow: "hidden",
         textAlign: "center",
@@ -27,21 +30,26 @@ const useStyles = makeStyles((theme) => ({
     },
     switchContainer: {
         // margin: "0 auto",
-        dispaly: "inline-box",
-        padding: "5px 10px 5px 10px",
         cursor: "pointer",
+        display: "inline-box"
     },
     verticalAlign: {
         display: "flex",
         height: "100%",
         alignItems: "flex-end",
         justifyContent: "center"
+    },
+    button: {
+        padding: "6px 18px 6px 18px"
+    },
+    select: {
+        paddingLeft: 5
     }
 }));
 
 function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled }: BoxWidgetProps) {
     const classes = useStyles();
-    const property = head(thing.config.properties)!;
+    const property = head(thing.config.properties)! as IThingPropertyEnum;
     const value = (thing.state?.value || { [property.propertyId]: "false" })[property.propertyId];
     const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -57,16 +65,35 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled 
                             <Typography component="span">{thing.config.name}</Typography>
                         </div>
                         <div className={classes.verticalAlign}>
-                            <div
+                            {property.format.length === 1 ? <div
                                 className={classes.switchContainer}
-                                onClick={(e) => !disabled && onClick({
-                                    [property.propertyId]: value === "true" ? "false" : "true"
-                                })}>
-                                <Switch
+                            >
+                                <IconButton
+                                    aria-label="delete"
+                                    className={classes.button}
                                     disabled={disabled}
-                                    checked={value === "true"}
-                                />
-                            </div>
+                                    onClick={() => onClick({
+                                        [property.propertyId]: head(property.format)
+                                    })}
+                                >
+                                    <PowerSettingsNewIcon fontSize="large" />
+                                </IconButton>
+                            </div> :
+                                <Select
+                                    className={classes.select}
+                                    value={value}
+                                    // className={}
+                                    onChange={(e) => {
+                                        onClick({ [property.propertyId]: e.target.value as string });
+                                    }}
+                                    disableUnderline
+                                >
+                                    {property.format.map((label) => (
+                                        <MenuItem value={label} key={label}>
+                                            {label}
+                                        </MenuItem>
+                                    ))}
+                                </Select>}
                         </div>
 
                         <SimpleDialog

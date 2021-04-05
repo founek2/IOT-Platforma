@@ -7,6 +7,7 @@ export enum PropertyClass {
 
 export enum ComponentType {
     sensor = "sensor",
+    activator = "activator",
     // BinarySensor = "binary_sensor",
     switch = "switch",
     generic = "generic",
