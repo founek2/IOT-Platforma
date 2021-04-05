@@ -33,7 +33,8 @@ const useStyles = makeStyles({
         // borderRadius: 10,
         padding: "1rem",
         boxSizing: "border-box",
-        height: "100%"
+        height: "100%",
+        position: "relative",
     }
 });
 

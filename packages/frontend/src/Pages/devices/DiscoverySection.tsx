@@ -18,130 +18,129 @@ import DeviceSection from "./DeviceSection";
 import { DeviceForm } from "frontend/src/components/DeviceForm";
 
 interface DiscoverySectionProps {
-	discoveredDevices?: IDiscovery[];
-	resetCreateDeviceAction: any;
-	deleteDiscoveryAction: any;
-	updateFormField: any;
-	addDiscoveryAction: any;
+    discoveredDevices?: IDiscovery[];
+    resetCreateDeviceAction: any;
+    deleteDiscoveryAction: any;
+    updateFormField: any;
+    addDiscoveryAction: any;
 }
 
 function DiscoverySection(props: DiscoverySectionProps) {
-	const [openAddDialog, setOpenAddDialog] = useState(false);
-	const {
-		discoveredDevices,
-		resetCreateDeviceAction,
-		deleteDiscoveryAction,
-		updateFormField,
-		addDiscoveryAction,
-	} = props;
+    const [openAddDialog, setOpenAddDialog] = useState(false);
+    const {
+        discoveredDevices,
+        resetCreateDeviceAction,
+        deleteDiscoveryAction,
+        updateFormField,
+        addDiscoveryAction,
+    } = props;
 
-	function closeDialog() {
-		resetCreateDeviceAction();
-		setOpenAddDialog(false);
-	}
+    function closeDialog() {
+        resetCreateDeviceAction();
+        setOpenAddDialog(false);
+    }
 
-	async function onAgree() {
-		const result = await addDiscoveryAction();
-		console.log("result", result);
-		if (result) closeDialog();
-	}
-	console.log("discovered", discoveredDevices);
-	return (
-		<Fragment>
-			{discoveredDevices && discoveredDevices?.length > 0 && (
-				<FieldConnector
-					deepPath="DISCOVERY_DEVICES.selected"
-					component={({ onChange, value }) => (
-						<EnchancedTable
-							// @ts-ignore
-							dataProps={[
-								{ path: "name", label: "Název" },
-								{ path: "deviceId", label: "ID zařízení" },
-								{
-									path: "things",
-									label: "Věcí",
-									convertor: (things: { [nodeId: string]: IDiscoveryThing }) =>
-										Object.values(things)
-											.map((obj) => obj.config.name)
-											.join(", "),
-								},
-								{
-									path: "createdAt",
-									label: "Vytvořeno",
-									convertor: (date: string) => new Date(date).toLocaleDateString(),
-								},
-								{
-									path: "state.status",
-									label: "Status",
-									convertor: (status: { value: DeviceStatus; timestamp: Date }) => (
-										<OnlineCircle status={status} inTransition={false} />
-									),
-								},
-							]}
-							data={discoveredDevices.map((device: any) => assoc("id", prop("_id", device), device))}
-							toolbarHead="Přidání zařízení"
-							onDelete={deleteDiscoveryAction}
-							orderBy="Název"
-							// enableCreation={isAdmin}
-							//onAdd={() => this.updateCreateForm({ open: true })}
-							enableEdit
-							customEditButton={(id: string) => (
-								<Fab
-									color="primary"
-									aria-label="add"
-									size="small"
-									onClick={() => {
-										updateFormField("CREATE_DEVICE._id", id);
-										console.log("looking", discoveredDevices, id);
-										updateFormField(
-											"CREATE_DEVICE.info.name",
-											discoveredDevices.find((dev) => dev._id === id)?.name || ""
-										);
-										setOpenAddDialog(true);
-									}}
-								>
-									<AddIcon />
-								</Fab>
-							)}
-							rowsPerPage={2}
-							onChange={onChange}
-							value={value}
-						/>
-					)}
-				/>
-			)}
-			<Dialog
-				open={openAddDialog}
-				title="Přidání zařízení"
-				cancelText="Zrušit"
-				agreeText="Přidat"
-				onAgree={onAgree}
-				onClose={closeDialog}
-				content={
-					<Grid container spacing={2}>
-						<DeviceForm formName="CREATE_DEVICE" onEnter={onAgree} />
-					</Grid>
-				}
-			/>
-		</Fragment>
-	);
+    async function onAgree() {
+        const result = await addDiscoveryAction();
+        if (result) closeDialog();
+    }
+    console.log("discovered", discoveredDevices);
+    return (
+        <Fragment>
+            {discoveredDevices && discoveredDevices?.length > 0 && (
+                <FieldConnector
+                    deepPath="DISCOVERY_DEVICES.selected"
+                    component={({ onChange, value }) => (
+                        <EnchancedTable
+                            // @ts-ignore
+                            dataProps={[
+                                { path: "name", label: "Název" },
+                                { path: "deviceId", label: "ID zařízení" },
+                                {
+                                    path: "things",
+                                    label: "Věcí",
+                                    convertor: (things: { [nodeId: string]: IDiscoveryThing }) =>
+                                        Object.values(things)
+                                            .map((obj) => obj.config.name)
+                                            .join(", "),
+                                },
+                                {
+                                    path: "createdAt",
+                                    label: "Vytvořeno",
+                                    convertor: (date: string) => new Date(date).toLocaleDateString(),
+                                },
+                                {
+                                    path: "state.status",
+                                    label: "Status",
+                                    convertor: (status: { value: DeviceStatus; timestamp: Date }) => (
+                                        <OnlineCircle status={status} inTransition={false} />
+                                    ),
+                                },
+                            ]}
+                            data={discoveredDevices.map((device: any) => assoc("id", prop("_id", device), device))}
+                            toolbarHead="Přidání zařízení"
+                            onDelete={deleteDiscoveryAction}
+                            orderBy="Název"
+                            // enableCreation={isAdmin}
+                            //onAdd={() => this.updateCreateForm({ open: true })}
+                            enableEdit
+                            customEditButton={(id: string) => (
+                                <Fab
+                                    color="primary"
+                                    aria-label="add"
+                                    size="small"
+                                    onClick={() => {
+                                        updateFormField("CREATE_DEVICE._id", id);
+                                        console.log("looking", discoveredDevices, id);
+                                        updateFormField(
+                                            "CREATE_DEVICE.info.name",
+                                            discoveredDevices.find((dev) => dev._id === id)?.name || ""
+                                        );
+                                        setOpenAddDialog(true);
+                                    }}
+                                >
+                                    <AddIcon />
+                                </Fab>
+                            )}
+                            rowsPerPage={2}
+                            onChange={onChange}
+                            value={value}
+                        />
+                    )}
+                />
+            )}
+            <Dialog
+                open={openAddDialog}
+                title="Přidání zařízení"
+                cancelText="Zrušit"
+                agreeText="Přidat"
+                onAgree={onAgree}
+                onClose={closeDialog}
+                content={
+                    <Grid container spacing={2}>
+                        <DeviceForm formName="CREATE_DEVICE" onEnter={onAgree} />
+                    </Grid>
+                }
+            />
+        </Fragment>
+    );
 }
 
 const _mapStateToProps = (state: any) => {
-	return {
-		openAddDialog: isUrlHash("#addDevice")(state),
-	};
+    return {
+        openAddDialog: isUrlHash("#addDevice")(state),
+    };
 };
 
 const _mapDispatchToProps = (dispatch: any) =>
-	bindActionCreators(
-		{
-			deleteDiscoveryAction: discoveredActions.deleteDevices,
-			addDiscoveryAction: discoveredActions.addDevice,
-			resetCreateDeviceAction: formsActions.removeForm("CREATE_DEVICE"),
-			updateFormField: formsActions.updateFormField,
-		},
-		dispatch
-	);
+    bindActionCreators(
+        {
+            deleteDiscoveryAction: discoveredActions.deleteDevices,
+            addDiscoveryAction: discoveredActions.addDevice,
+            resetCreateDeviceAction: formsActions.removeForm("CREATE_DEVICE"),
+            updateFormField: formsActions.updateFormField,
+        },
+        dispatch
+    );
 
 export default connect(_mapStateToProps, _mapDispatchToProps)(DiscoverySection);

@@ -52,7 +52,7 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
     return device.things.map((thing) => {
         const { _id, config, state } = thing;
         const Comp = compMapper[config.componentType];
-        console.log("classs", classes)
+
         if (Comp) {
             const createComponent = () => (
                 <Grid

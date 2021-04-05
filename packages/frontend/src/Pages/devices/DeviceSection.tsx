@@ -69,7 +69,6 @@ function DiscoverySection({
 
     async function onAgree() {
         const result = await updateDeviceAction(selectedDevice?._id);
-        console.log("result", result);
         if (result) closeDialog();
     }
 
@@ -77,7 +76,6 @@ function DiscoverySection({
         setCommandField(DeviceCommand.reset)
         await sendDeviceCommandA(menuForId)
         const result = await deleteDeviceAction(menuForId);
-        console.log("result", result);
         if (result) {
             setOpenAlertDialog(false);
             history.push({ hash: "" });

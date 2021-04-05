@@ -76,9 +76,11 @@ router.post("/topic", async function (req, res) {
 
     if (isDevice(username) && name === "amq.topic" && vhost === "/") {
         // const { ownerId, topic } = await Device.getOwnerAndTopic(username);
+        const [realm, deviceId] = splitUserName(username)
+        if (routing_key.startsWith("v2." + realm + "."))
+            return res.send("allow");
 
-        console.log("should check access to topic");
-        return res.send("allow");
+        return sendDeny("/topic " + routing_key + ", user=" + username, res);
     }
 
     const matchedConf = routing_key.match(/^prefix\.([^\.]+)\.([^\.]+)(.*)/);
@@ -86,8 +88,9 @@ router.post("/topic", async function (req, res) {
 
     /* Allow only write */
     //console.log("cmp", matchedConf[2], username.replace("guest=", ""));
-    if (matchedConf && matchedConf[1] === username.replace(/^guest=/, "")) res.send("allow");
-    else sendDeny("/topic " + routing_key + ", user=" + username, res);
+    if (matchedConf && matchedConf[1] === username.replace(/^guest=/, "")) return res.send("allow");
+
+    sendDeny("/topic " + routing_key + ", user=" + username, res);
 });
 
 export default router;
