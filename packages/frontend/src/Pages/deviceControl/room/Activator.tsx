@@ -82,6 +82,7 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled 
                                 <Select
                                     className={classes.select}
                                     value={value}
+                                    disabled={disabled}
                                     // className={}
                                     onChange={(e) => {
                                         onClick({ [property.propertyId]: e.target.value as string });

@@ -1,32 +1,18 @@
-import React, { useEffect } from "react";
-import { withStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
-import { filter, isEmpty } from "ramda";
-import { bindActionCreators } from "redux";
-import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import FullScreenDialog from "framework-ui/lib/Components/FullScreenDialog";
-import isBefore from "date-fns/isBefore";
-import subSeconds from "date-fns/subSeconds";
-
-import io from "../../webSocket";
-import { ControlTypesFormNames } from "../../constants";
-import { isUrlHash, getUserPresence } from "framework-ui/lib/utils/getters";
-import { getQueryID, getQueryField, getDevicesLastUpdate } from "../../utils/getters";
-import * as deviceActions from "../../store/actions/application/devices";
-import Switch from "./room/Swich";
-import Generic from "./room/Generic";
-import { getDevices } from "../../utils/getters";
-import { errorLog } from "framework-ui/lib/logger";
-import EditNotifyForm from "../../components/EditNotifyForm";
-import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import * as controlActions from "../../store/actions/application/devices/control";
-import MusicCast from "./room/MusicCast";
-import Sensor from "./room/Sensor";
-import Activator from "./room/Activator";
-import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
+import { Grid, makeStyles } from "@material-ui/core";
 import { IDevice } from "common/lib/models/interface/device";
+import { ComponentType } from "common/lib/models/interface/thing";
+import { errorLog } from "framework-ui/lib/logger";
 import { LocationTypography } from "frontend/src/components/LocationTypography";
-import { grey } from "@material-ui/core/colors";
+import React from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as deviceActions from "../../store/actions/application/devices";
+import Activator from "./room/Activator";
+import Generic from "./room/Generic";
+import Sensor from "./room/Sensor";
+import Switch from "./room/Swich";
+import isAfk from "frontend/src/utils/isAfk";
+
 
 const compMapper = {
     [ComponentType.switch]: Switch,
@@ -65,7 +51,7 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
                         thing={thing}
                         onClick={(state: any) => updateState(device._id, thing.config.nodeId, state)}
                         lastChange={state?.timestamp}
-                        // className={classes.item}
+                        disabled={isAfk(device.state?.status?.value)}
                         deviceStatus={device?.state?.status}
                         deviceId={device._id}
                         room={device.info.location.room}

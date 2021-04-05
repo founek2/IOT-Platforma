@@ -68,6 +68,7 @@ export interface GeneralBoxProps {
     deviceId: IDevice["_id"];
     room: string;
     property?: IThingProperty;
+    disabled?: boolean;
 }
 
 export interface BorderBoxProps extends GeneralBoxProps {
