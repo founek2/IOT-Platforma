@@ -119,7 +119,7 @@ function BorderBox({
                     },
                 },
             });
-        }, 2000);
+        }, 3000);
     }
 
     function handleContext(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
