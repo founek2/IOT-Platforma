@@ -1,68 +1,70 @@
-import io from "socket.io-client";
-import { devLog } from "framework-ui/lib/logger";
-import { T } from "ramda";
+import io from 'socket.io-client';
+import { devLog } from 'framework-ui/lib/logger';
+import { T } from 'ramda';
 
 class MySocket {
-	constructor() {
-		this._on = [];
-		this.socket = { on: T, off: T, close: T };
-	}
+    constructor() {
+        this._on = [];
+        this.socket = { on: T, off: T, close: T, connected: false, disconnected: true };
+    }
 
-	init = (token) => {
-		const newCon = io({
-			path: "/socket.io",
-			query: {
-				token,
-			},
-		});
-		newCon.open();
-		mySocket.applyListeners(newCon);
-		// newCon.on("connect", function() {
-		//     console.log("connected")
+    init = (token) => {
+        const newCon = io({
+            path: '/socket.io',
+            query: {
+                token
+            }
+        });
+        newCon.open();
+        mySocket.applyListeners(newCon);
+        // newCon.on("connect", function() {
+        //     console.log("connected")
 
-		//     newCon.on("disconnect", function() {
-		//         console.log("DC")
-		//     })
-		// })
-		this.socket = newCon;
-	};
+        //     newCon.on("disconnect", function() {
+        //         console.log("DC")
+        //     })
+        // })
+        this.socket = newCon;
+    };
 
-	on = (action, fn) => {
-		this.socket.on(action, fn);
-		this._on.push([action, fn]);
-	};
+    on = (action, fn) => {
+        this.socket.on(action, fn);
+        this._on.push([ action, fn ]);
+    };
 
-	off = (action, fn) => {
-		this.socket.off(action, fn);
-		this._on.filter(([a, f]) => action !== a && f !== fn);
-	};
-	applyListeners = (socket) => {
-		this._on.forEach(([action, fn]) => {
-			socket.on(action, fn);
-		});
-	};
+    off = (action, fn) => {
+        this.socket.off(action, fn);
+        this._on.filter(([ a, f ]) => action !== a && f !== fn);
+    };
+    applyListeners = (socket) => {
+        this._on.forEach(([ action, fn ]) => {
+            socket.on(action, fn);
+        });
+    };
 
-	close = () => {
-		// if (this.socket.connected)
-		this.socket.close();
-	};
+    close = () => {
+        // if (this.socket.connected)
+        this.socket.close();
+    };
 
-	emit = (...other) => this.socket.emit(...other);
+    emit = (...other) => this.socket.emit(...other);
+
+    isConnected = () => this.socket.connected;
 }
 
 const mySocket = new MySocket();
 
-function init(token = "") {
-	devLog("connecting to socket");
-	mySocket.close();
-	mySocket.init(token);
+function init(token = '') {
+    devLog('connecting to socket');
+    mySocket.close();
+    mySocket.init(token);
 }
 
 function getSocket() {
-	return mySocket;
+    return mySocket;
 }
 
 export default {
-	init,
-	getSocket,
+    init,
+    getSocket
 };

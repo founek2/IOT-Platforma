@@ -2,7 +2,7 @@ import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { IDevice } from "common/lib/models/interface/device";
 import { SocketUpdateThingState } from "common/lib/types";
 import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import { getUserPresence, isUrlHash } from "framework-ui/lib/utils/getters";
+import { getUserPresence, isUrlHash, getApplication } from "framework-ui/lib/utils/getters";
 import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -15,6 +15,8 @@ import { getDevicesLastUpdate, getQueryField } from "../utils/getters";
 import io from "../webSocket";
 import Room from "./deviceControl/Room";
 import RoomWidget from "./deviceControl/RoomWidget";
+import { path } from "ramda";
+import { IState } from "../types";
 
 function isControllable(device: IDevice) {
     return Boolean(device.permissions && device.permissions.control);
@@ -59,6 +61,7 @@ interface DeviceControlProps {
     updateThingA: any;
     buildings: Buildings;
     selectedLocation: IDevice["info"]["location"];
+    devicesLastFetch?: Date
 }
 function DeviceControl({
     fetchDevicesAction,
@@ -67,6 +70,7 @@ function DeviceControl({
     devicesLastUpdate,
     buildings,
     selectedLocation,
+    devicesLastFetch,
 }: DeviceControlProps) {
     const classes = useStyles();
     useEffect(() => {
@@ -85,6 +89,20 @@ function DeviceControl({
             io.getSocket().off("device", updateDeviceAction);
         };
     }, [fetchDevicesAction, updateDeviceAction, updateThingA]);
+
+    useEffect(() => {
+        function handler() {
+            console.log("focus")
+            const isOld = !devicesLastFetch || Date.now() - devicesLastFetch.getTime() > 20 * 60 * 1000
+            if (!io.getSocket().isConnected() || isOld) {
+                fetchDevicesAction()
+                console.log("downloading devices")
+            }
+        }
+        window.addEventListener("focus", handler)
+
+        return () => window.removeEventListener("focus", handler)
+    }, [fetchDevicesAction, devicesLastFetch])
 
     useEffect(() => {
         const listenConnect = () => {
@@ -131,13 +149,11 @@ function DeviceControl({
                                                 />
                                                 <Grid container spacing={2}>
                                                     {[...rooms.entries()].map(([room, devices]) => (
-                                                        <Grid item xs={12} md={6} lg={6}>
+                                                        <Grid item xs={12} md={6} lg={6} key={building + "/" + room}>
                                                             <Link
                                                                 to={{
                                                                     search: `?building=${building}&room=${room}`,
                                                                 }}
-                                                                // className={classes.widget}
-                                                                key={building + "/" + room}
                                                             >
                                                                 <RoomWidget devices={devices} className={classes.widget} />
                                                             </Link>
@@ -174,7 +190,7 @@ const buildingsSelector = createSelector<any, { data: IDevice[]; lastUpdate: Dat
     }
 );
 
-const _mapStateToProps = (state: any) => {
+const _mapStateToProps = (state: IState) => {
     const JSONkey = getQueryField("JSONkey", state);
 
     return {
@@ -184,6 +200,7 @@ const _mapStateToProps = (state: any) => {
         isUserPresent: getUserPresence(state),
         devicesLastUpdate: getDevicesLastUpdate(state),
         JSONkey,
+        devicesLastFetch: path(["devices", "lastFetch"], getApplication(state)) as IState["application"]["devices"]["lastFetch"],
         selectedLocation: {
             building: getQueryField("building", state),
             room: getQueryField("room", state),

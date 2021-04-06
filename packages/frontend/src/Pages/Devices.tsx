@@ -6,8 +6,8 @@ import CardHeader from "@material-ui/core/CardHeader";
 import { IDevice } from "common/lib/models/interface/device";
 import { IDiscovery } from "common/lib/models/interface/discovery";
 import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import { isUrlHash } from "framework-ui/lib/utils/getters";
-import { equals, filter, o, prop } from "ramda";
+import { isUrlHash, getApplication } from "framework-ui/lib/utils/getters";
+import { equals, filter, o, prop, path } from "ramda";
 import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -23,35 +23,6 @@ function isWritable(device: IDevice) {
     return device.permissions && device.permissions.write && Boolean(~device.permissions.write.length);
 }
 
-const useStyles = makeStyles((theme) => ({
-    cardPlus: {
-        width: "25%",
-        height: 200,
-        display: "flex",
-        float: "left",
-        [theme.breakpoints.down("sm")]: {
-            width: "100%",
-        },
-    },
-    wraper: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        width: "100%",
-    },
-    addButton: {
-        // @ts-ignore
-        color: theme.grey,
-        fontSize: 60,
-        display: "block",
-        height: 87,
-        margin: "0 auto",
-    },
-    addIcon: {
-        fontSize: 60,
-    },
-}));
-
 interface DevicesProps {
     history: any;
     devices: IDevice[];
@@ -65,24 +36,37 @@ interface DevicesProps {
     addDiscoveredDeviceAction: any;
     fetchDevicesAction: any;
     fetchDiscoveredDevicesAction: any;
+    devicesLastFetch?: Date;
 }
 
-function Devices(props: DevicesProps) {
-    const classes = useStyles();
-    useEffect(() => {
-        props.fetchDevicesAction();
-        props.fetchDiscoveredDevicesAction();
 
-        io.getSocket().on("device", props.updateDeviceAction);
-        io.getSocket().on("deviceDiscovered", props.addDiscoveredDeviceAction);
+function Devices({ devices, discoveredDevices, updateDeviceAction, addDiscoveredDeviceAction, fetchDiscoveredDevicesAction, fetchDevicesAction, devicesLastFetch }: DevicesProps) {
+    useEffect(() => {
+        fetchDevicesAction();
+        fetchDiscoveredDevicesAction();
+
+        io.getSocket().on("device", updateDeviceAction);
+        io.getSocket().on("deviceDiscovered", addDiscoveredDeviceAction);
 
         return () => {
-            io.getSocket().off("device", props.updateDeviceAction);
-            io.getSocket().off("deviceDiscovered", props.addDiscoveredDeviceAction);
+            io.getSocket().off("device", updateDeviceAction);
+            io.getSocket().off("deviceDiscovered", addDiscoveredDeviceAction);
         };
-    }, [props.updateDeviceAction, props.addDiscoveredDeviceAction]);
+    }, [updateDeviceAction, addDiscoveredDeviceAction, fetchDevicesAction, fetchDiscoveredDevicesAction]);
 
-    const { devices, discoveredDevices } = props;
+    useEffect(() => {
+        function handler() {
+            console.log("focus")
+            const isOld = !devicesLastFetch || Date.now() - devicesLastFetch.getTime() > 20 * 60 * 1000
+            if (!io.getSocket().isConnected() || isOld) {
+                fetchDevicesAction()
+                console.log("downloading devices")
+            }
+        }
+        window.addEventListener("focus", handler)
+
+        return () => window.removeEventListener("focus", handler)
+    }, [fetchDevicesAction, devicesLastFetch])
 
     return (
         <Fragment>
@@ -113,6 +97,7 @@ const _mapStateToProps = (state: IState) => {
         openPermissionsDialog: isUrlHash("#editPermissions")(state),
         openControlDialog: isUrlHash("#editControl")(state),
         devices,
+        devicesLastFetch: path(["devices", "lastFetch"], getApplication(state)) as IState["application"]["devices"]["lastFetch"],
         discoveredDevices: discoveredDevices,
         toAddDevice,
         selectedDevice: devices.find((dev) => dev._id === id),
