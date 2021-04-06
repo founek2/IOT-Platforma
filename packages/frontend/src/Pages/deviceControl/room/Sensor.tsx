@@ -1,23 +1,20 @@
-import React, { useEffect, useMemo } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import boxHoc from "./components/boxHoc";
-import ControlContextMenu from "./components/ControlContextMenu";
-import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import { PropertyClass, IThing, IThingProperty } from "common/lib/models/interface/thing";
-import { SensorIcons } from "../../../components/SensorIcons";
-import { SimpleDialog } from "./components/Dialog";
-import ChartSimple from "frontend/src/components/ChartSimple";
-import { useSelector } from "react-redux";
-import { getThingHistory } from "../../../utils/getters";
-import { IState } from "frontend/src/types";
-import { BoxWidgetProps } from "./components/BorderBox";
-import { HistoricalSensor } from "common/lib/models/interface/history";
 import clsx from "clsx";
+import { HistoricalSensor } from "common/lib/models/interface/history";
+import { IThingProperty } from "common/lib/models/interface/thing";
 import UpdatedBefore from "framework-ui/lib/Components/UpdatedBefore";
-import PropertyRow from "./components/PropertyRow";
+import ChartSimple from "frontend/src/components/ChartSimple";
+import { IState } from "frontend/src/types";
 import { drop, head } from "ramda";
+import React, { useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
+import { SensorIcons } from "../../../components/SensorIcons";
+import { getThingHistory } from "../../../utils/getters";
+import { BoxWidgetProps } from "./components/BorderBox";
+import boxHoc from "./components/boxHoc";
+import { SimpleDialog } from "./components/Dialog";
+import PropertyRow from "./components/PropertyRow";
 
 const useStyles = makeStyles({
     root: {
@@ -79,67 +76,59 @@ function Sensor({
     const value = thing.state?.value && thing.state.value[property.propertyId];
 
     return (
-        <ControlContextMenu
-            name={thing.config.name}
-            // JSONkey={JSONkey}
-            render={({ handleOpen }: any) => {
-                return (
-                    <div className={classes.root}>
-                        <Typography
-                            className={classes.header}
-                            onContextMenu={handleOpen}
-                            onClick={() => setOpenDialog(true)}
-                        >
-                            {thing.config.name}
-                        </Typography>
+        <div className={classes.root}>
+            <Typography
+                className={classes.header}
+                onClick={() => setOpenDialog(true)}
+            >
+                {thing.config.name}
+            </Typography>
 
-                        <div className={classes.container}>
-                            {Icon ? <Icon className={classes.icon} /> : null}
-                            <Typography component="span">
-                                {value || "??"}&nbsp;{property.unitOfMeasurement || ""}
-                            </Typography>
-                        </div>
-                        <SimpleDialog
-                            open={openDialog}
-                            onClose={() => setOpenDialog(false)}
-                            title={title}
-                            deviceId={deviceId}
-                            thing={thing}
-                        >
-                            <div className={clsx(classes.container, classes.graphTitle)}>
-                                {Icon ? <Icon className={classes.icon} /> : null}
-                                <Typography>
-                                    {room + " " + thing.config.name + " " + (value || "??")}&nbsp;{property.unitOfMeasurement || ""}
-                                </Typography>
-                            </div>
-                            {thing.state?.timestamp ? (
-                                <UpdatedBefore
-                                    time={new Date(thing.state.timestamp)}
-                                    variant="body2"
-                                    prefix="Aktualizováno před"
-                                    className={classes.updatedBefore}
-                                />
-                            ) : null}
-                            {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 2 ? (
-                                <ChartSimple data={[[{ type: "date", label: "Čas" }, title], ...chartData]} />
-                            ) : null}
+            <div className={classes.container}>
+                {Icon ? <Icon className={classes.icon} /> : null}
+                <Typography component="span">
+                    {value || "??"}&nbsp;{property.unitOfMeasurement || ""}
+                </Typography>
+            </div>
+            <SimpleDialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                title={title}
+                deviceId={deviceId}
+                thing={thing}
+            >
+                <div className={clsx(classes.container, classes.graphTitle)}>
+                    {Icon ? <Icon className={classes.icon} /> : null}
+                    <Typography>
+                        {room + " " + thing.config.name + " " + (value || "??")}&nbsp;{property.unitOfMeasurement || ""}
+                    </Typography>
+                </div>
+                {thing.state?.timestamp ? (
+                    <UpdatedBefore
+                        time={new Date(thing.state.timestamp)}
+                        variant="body2"
+                        prefix="Aktualizováno před"
+                        className={classes.updatedBefore}
+                    />
+                ) : null}
+                {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 2 ? (
+                    <ChartSimple data={[[{ type: "date", label: "Čas" }, title], ...chartData]} />
+                ) : null}
 
-                            <div>
-                                {drop(1, thing.config.properties).map((property) => (
-                                    <PropertyRow
-                                        key={property.propertyId}
-                                        property={property}
-                                        value={thing.state?.value[property.propertyId]}
-                                        onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
-                                    />
-                                ))}
-                            </div>
-                        </SimpleDialog>
-                    </div>
-                );
-            }}
-        />
+                <div>
+                    {drop(1, thing.config.properties).map((property) => (
+                        <PropertyRow
+                            key={property.propertyId}
+                            property={property}
+                            value={thing.state?.value[property.propertyId]}
+                            onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
+                        />
+                    ))}
+                </div>
+            </SimpleDialog>
+        </div>
     );
+
 }
 
 export default boxHoc(Sensor);

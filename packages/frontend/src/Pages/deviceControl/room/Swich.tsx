@@ -1,15 +1,14 @@
-import React from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import switchCss from "./components/switch/css";
-import boxHoc from "./components/boxHoc";
-import ControlContextMenu from "./components/ControlContextMenu";
+import clsx from "clsx";
+import { drop, head } from "ramda";
+import React from "react";
 import { BoxWidgetProps } from "./components/BorderBox";
-import Switch from "./components/Switch"
-import { head, drop } from "ramda";
+import boxHoc from "./components/boxHoc";
 import { SimpleDialog } from "./components/Dialog";
 import PropertyRow from "./components/PropertyRow";
-import clsx from "clsx";
+import Switch from "./components/Switch";
+import switchCss from "./components/switch/css";
 
 const useStyles = makeStyles((theme) => ({
     ...switchCss(theme),
@@ -46,51 +45,44 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled 
     const [openDialog, setOpenDialog] = React.useState(false);
 
     return (
-        <ControlContextMenu
-            name={thing.config.name}
-            render={({ handleOpen }: any) => {
-                return (
-                    <div
-                        className={clsx(className, classes.root)}
-                    >
-                        <div className={classes.header} onContextMenu={handleOpen} onClick={() => setOpenDialog(true)}>
-                            <Typography component="span">{thing.config.name}</Typography>
-                        </div>
-                        <div className={classes.verticalAlign}>
-                            <div
-                                className={classes.switchContainer}
-                                onClick={(e) => !disabled && onClick({
-                                    [property.propertyId]: value === "true" ? "false" : "true"
-                                })}>
-                                <Switch
-                                    disabled={disabled}
-                                    checked={value === "true"}
-                                />
-                            </div>
-                        </div>
+        <div
+            className={clsx(className, classes.root)}
+        >
+            <div className={classes.header} onClick={() => setOpenDialog(true)}>
+                <Typography component="span">{thing.config.name}</Typography>
+            </div>
+            <div className={classes.verticalAlign}>
+                <div
+                    className={classes.switchContainer}
+                    onClick={(e) => !disabled && onClick({
+                        [property.propertyId]: value === "true" ? "false" : "true"
+                    })}>
+                    <Switch
+                        disabled={disabled}
+                        checked={value === "true"}
+                    />
+                </div>
+            </div>
 
-                        <SimpleDialog
-                            open={openDialog}
-                            onClose={() => setOpenDialog(false)}
-                            title={thing.config.name}
-                            deviceId={deviceId}
-                            thing={thing}
-                        >
-                            <div>
-                                {drop(1, thing.config.properties).map((property) => (
-                                    <PropertyRow
-                                        key={property.propertyId}
-                                        property={property}
-                                        value={thing.state?.value[property.propertyId]}
-                                        onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
-                                    />
-                                ))}
-                            </div>
-                        </SimpleDialog>
-                    </div>
-                );
-            }}
-        />
+            <SimpleDialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                title={thing.config.name}
+                deviceId={deviceId}
+                thing={thing}
+            >
+                <div>
+                    {drop(1, thing.config.properties).map((property) => (
+                        <PropertyRow
+                            key={property.propertyId}
+                            property={property}
+                            value={thing.state?.value[property.propertyId]}
+                            onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
+                        />
+                    ))}
+                </div>
+            </SimpleDialog>
+        </div>
     );
 }
 
