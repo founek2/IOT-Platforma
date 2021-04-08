@@ -57,7 +57,6 @@ export default () =>
                 const doc = await DiscoveryModel.findOne({ _id: ObjectId(form._id), pairing: { $ne: true } });
                 if (!doc) return res.status(208).send({ error: "deviceNotFound" });
 
-                console.log("user is", user);
                 function convertProperty(property: IDiscoveryProperty): IThingProperty {
                     // TODO validace + konverze
                     if (!property.format) return property as IThingProperty;

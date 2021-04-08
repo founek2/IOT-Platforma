@@ -30,80 +30,72 @@ export default ({ config, db }) =>
             deleteId: [ tokenAuthMIddleware(), checkWritePerm() ]
         },
         /** GET / - List all entities */
-        index({ user, root, query: { type } }, res) {
+        async index({ user, root, query: { type } }, res) {
             // console.log(user)
             if (user && type === 'userName') {
                 // tested
                 console.log('retrieving userNames');
-                UserModel.findAllUserNames().then((docs) => {
-                    res.send({ data: docs.map(({ _id, info: { userName } }) => ({ _id, userName })) });
-                });
+                const docs = await UserModel.findAllUserNames();
+                res.send({ data: docs.map(({ _id, info: { userName } }) => ({ _id, userName })) });
             } else if (root) {
-                UserModel.findAll().then((docs) => {
-                    res.send({ users: docs.filter(removeUser(user.id)).map((obj) => obj.toObject()) });
-                });
+                const docs = await UserModel.findAll();
+                res.send({ users: docs.filter(removeUser(user.id)).map((obj) => obj.toObject()) });
             } else if (user && user.admin) {
                 // tested
-                UserModel.findAllNotRoot().then((docs) => {
-                    res.send({ users: docs.filter(removeUser(user.id)).map((obj) => obj.toObject()) });
-                });
+                const docs = await UserModel.findAllNotRoot();
+                res.send({ users: docs.filter(removeUser(user.id)).map((obj) => obj.toObject()) });
             } else res.sendStatus(500);
         },
 
         /** POST / - Create a new entity */
-        create(req, res) {
+        async create(req, res) {
             const { formData } = req.body;
 
             if (formData.LOGIN) {
                 // tested 2
+                const { doc, token } = await UserService.checkCreditals(formData.LOGIN);
+                const { groups, id, allowedSensors, allowedControlls, info, auth, deviceUser } = doc;
+                res.send({
+                    user: {
+                        groups,
+                        id,
+                        allowedSensors,
+                        allowedControlls,
+                        info,
+                        auth: { type: auth.type },
+                        deviceUser
+                    },
+                    token
+                });
+                eventEmitter.emit('user_login');
 
-                UserService.checkCreditals(formData.LOGIN)
-                    .then(({ doc, token }) => {
-                        const { groups, id, allowedSensors, allowedControlls, info, auth, deviceUser } = doc;
-                        res.send({
-                            user: {
-                                groups,
-                                id,
-                                allowedSensors,
-                                allowedControlls,
-                                info,
-                                auth: { type: auth.type },
-                                deviceUser
-                            },
-                            token
-                        });
-                        eventEmitter.emit('user_login');
-                    })
-                    .catch(processError(res));
+                // .catch(processError(res));
             } else if (formData.REGISTRATION) {
                 // tested
-                UserService.create(formData.REGISTRATION)
-                    .then(({ doc, token }) => {
-                        res.send({
-                            user: doc,
-                            token
-                        });
-                        eventEmitter.emit('user_signup', { id, info, groups });
-                    })
-                    .catch(processError(res));
+                const { doc, token } = await UserService.create(formData.REGISTRATION);
+                res.send({
+                    user: doc,
+                    token
+                });
+                eventEmitter.emit('user_signup', { id: doc._id, info, groups });
+
+                // .catch(processError(res));
             } else {
                 res.sendStatus(400);
             }
         },
 
         /** GET /:id - Return a given entity */
-        read({ params, query }, res) {
+        async read({ params, query }, res) {
             const { id } = params;
             const { attribute } = query;
 
             if (attribute === 'authType' && id) {
                 // tested
-                UserModel.findByUserName(id)
-                    .then((doc) => {
-                        if (doc) res.send({ authType: doc.auth.type });
-                        else res.status(208).send({ error: 'unknownUser' });
-                    })
-                    .catch(processError(res));
+                const doc = await UserModel.findByUserName(id);
+
+                if (doc) res.send({ authType: doc.auth.type });
+                else res.status(208).send({ error: 'unknownUser' });
             } else {
                 res.sendStatus(400);
             }

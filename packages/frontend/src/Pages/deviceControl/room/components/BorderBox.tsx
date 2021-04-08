@@ -1,18 +1,13 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import OnlineCircle from "../../../../components/OnlineCircle";
-import isAfk from "../../../../utils/isAfk";
-import forceUpdateHoc from "framework-ui/lib/Components/forceUpdateHoc";
-import ControlDetail from "./borderBox/ControlDetail";
-import Loader from "framework-ui/lib/Components/Loader";
+import { makeStyles } from "@material-ui/core/styles";
+import { DeviceStatus, IDevice, IDeviceStatus } from "common/lib/models/interface/device";
 import { IThing, IThingProperty } from "common/lib/models/interface/thing";
-import { IDevice, DeviceStatus, IDeviceStatus } from "common/lib/models/interface/device";
-import { bindActionCreators } from "redux";
+import React, { FunctionComponent, useEffect, useRef } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import OnlineCircle from "../../../../components/OnlineCircle";
 import * as deviceActions from "../../../../store/actions/application/devices";
 import * as thingHistoryActions from "../../../../store/actions/application/thingHistory";
-import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles({
     circle: {
@@ -96,8 +91,6 @@ function BorderBox({
     ...other
 }: BorderBoxProps) {
     const classes = useStyles();
-    const [detailOpen, setOpen] = useState(false);
-    const [pending, setPending] = useState(false);
     const ref: React.MutableRefObject<NodeJS.Timeout | null> = useRef(null);
 
     useEffect(() => {
@@ -106,9 +99,7 @@ function BorderBox({
     }, [lastChange]);
 
     async function handleClick(newState: any) {
-        setPending(true);
         await onClick(newState);
-        setPending(false);
         ref.current = setTimeout(() => {
             updateDeviceAction({
                 _id: deviceId,
@@ -122,12 +113,6 @@ function BorderBox({
         }, 3000);
     }
 
-    function handleContext(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-        e.preventDefault();
-        setOpen(true);
-    }
-
-    const afk = deviceStatus && isAfk(deviceStatus.value);
     const Component = component;
     return (
         <Paper
