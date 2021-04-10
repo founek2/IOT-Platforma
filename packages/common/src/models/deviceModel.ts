@@ -65,7 +65,6 @@ const aggregationFields = {
 };
 
 deviceSchema.statics.findForUser = async function (userID) {
-    console.log("finding for userID", userID);
     const userObjID = ObjectId(userID);
     return this.aggregate([
         {
