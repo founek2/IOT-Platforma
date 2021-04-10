@@ -3,7 +3,7 @@
     "scripts": {
         "bootstrap": "lerna bootstrap",
         "build": "lerna run --parallel --scope backend --scope frontend build && lerna run --scope backend-mqtt build",
-        "clean": "rimraf packages/frontend/build packages/common/lib packages/framework-ui/lib packages/backend/dist packages/backend-mqtt/dist",
+        "clean": "lerna run --parallel clean",
         "test": "lerna run test",
         "watch": "lerna run --parallel --scope common --scope framework-ui dev",
         "pre": "lerna run --scope framework-ui build && lerna run  --scope common  build"
@@ -20,9 +20,7 @@
         "rimraf": "^3.0.2",
         "typescript": "^3.9.6"
     },
-    "workspaces": [
-        "packages/*"
-    ],
+    "workspaces": [ "packages/*" ],
     "name": "monorepo",
     "dependencies": {
         "eslint-config-airbnb-typescript": "^12.0.0"

@@ -12,9 +12,10 @@
     "main": "lib/index.js",
     "typings": "index.d.ts",
     "scripts": {
-        "build": "rimraf tsconfig.tsbuildinfo lib && tsc -p . && yarn copyFiles",
+        "build": "yarn clean && tsc -p . && yarn copyFiles",
         "copyFiles": "copyfiles -u 1 src/**/*.html src/**/*.css lib/",
-        "dev": "tsc -w",
+        "clean": "rimraf tsconfig.tsbuildinfo lib",
+        "dev": "yarn copyFiles && tsc -w",
         "test": "jest",
         "coverage": "yarn test --collectCoverage"
     },
