@@ -21,16 +21,15 @@ export const actionTypes = keymirror({
     SET_FORM_DATA: null,
     UPDATE_USERS: null,
     RESET_TO_DEFAULT: null,
-    ADD_POSITIONS: null,
     DEHYDRATE_STATE: null,
     HYDRATE_STATE: null,
     UPDATE_HISTORY: null,
     SET_HISTORY: null,
     UPDATE_TMP_DATA: null,
     SET_TMP_DATA: null,
-    REMOVE_FORM: null,
+    REMOVE_FORM: null
 });
 
-export const STATE_DEHYDRATED = 'STATE_DEHYDRATED'
+export const STATE_DEHYDRATED = 'STATE_DEHYDRATED';
 
 export const POSITION_UPDATE_INTERVAL = 1000 * 60 * 5; // 5min

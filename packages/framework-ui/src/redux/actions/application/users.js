@@ -1,12 +1,17 @@
 import { actionTypes } from '../../../constants/redux';
 import { getFormData, getToken } from '../../../utils/getters';
-import { create as createUserApi, getUsers as fetchUsers, deletedUsers, updateUser as updateUserApi } from '../../../api/userApi';
+import {
+    create as createUserApi,
+    getUsers as fetchUsers,
+    deleteUser as deleteUserApi,
+    updateUser as updateUserApi
+} from '../../../api/userApi';
 import { validateForm, resetForm } from '../formsData';
-import { baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger';
 
 export function remove(data) {
     return {
-        type: actionTypes.REMOVE_USERS,
+        type: actionTypes.REMOVE_USER,
         payload: data
     };
 }
@@ -26,11 +31,11 @@ export function add(data) {
 }
 
 export function fetchAll() {
-    return function (dispatch, getState) {
+    return function(dispatch, getState) {
         return fetchUsers(
             {
                 token: getToken(getState()),
-                onSuccess: json => dispatch(set(json.users))
+                onSuccess: (json) => dispatch(set(json.users))
             },
             dispatch
         );
@@ -38,7 +43,7 @@ export function fetchAll() {
 }
 
 export function create() {
-    return async function (dispatch, getState) {
+    return async function(dispatch, getState) {
         const USER = 'USER';
         const result = dispatch(validateForm(USER)());
         if (result.valid) {
@@ -48,8 +53,8 @@ export function create() {
                 {
                     body: { formsData: { [USER]: formData } },
                     token: getToken(state),
-                    onSuccess: json => {
-                        dispatch(add(json.user))
+                    onSuccess: (json) => {
+                        dispatch(add(json.user));
                         dispatch(resetForm(USER)());
                     }
                 },
@@ -67,39 +72,44 @@ export function updateUsers(arrayWithUsers) {
 }
 
 export function updateUser(id) {
-    return async function (dispatch, getState) {
-        const EDIT_USER = 'EDIT_USER'
-        baseLogger(EDIT_USER)
+    return async function(dispatch, getState) {
+        const EDIT_USER = 'EDIT_USER';
+        baseLogger(EDIT_USER);
 
-        const result = dispatch(validateForm(EDIT_USER)())
-        const formData = getFormData(EDIT_USER)(getState())
+        const result = dispatch(validateForm(EDIT_USER)());
+        const formData = getFormData(EDIT_USER)(getState());
         if (result.valid) {
-            return updateUserApi({
-                token: getToken(getState()),
-                body: { formData: { [EDIT_USER]: formData } },
-                id,
-                onSuccess: () => {
-                    dispatch(updateUsers([formData]))
-                }
-            }, dispatch)
+            return updateUserApi(
+                {
+                    token: getToken(getState()),
+                    body: { formData: { [EDIT_USER]: formData } },
+                    id,
+                    onSuccess: () => {
+                        dispatch(updateUsers([ formData ]));
+                    }
+                },
+                dispatch
+            );
         }
     };
 }
 
 export function deleteUsers() {
-    return async function (dispatch, getState) {
+    return async function(dispatch, getState) {
         const USER_MANAGEMENT = 'USER_MANAGEMENT';
         const result = dispatch(validateForm(USER_MANAGEMENT)());
         if (result.valid) {
             const formData = getFormData(USER_MANAGEMENT)(getState());
-            return deletedUsers(
-                {
-                    token: getToken(getState()),
-                    body: { formData: { [USER_MANAGEMENT]: formData } },
-                    onSuccess: json => dispatch(remove(formData.selected))
-                },
-                dispatch
-            );
+            formData.selected.map((id) => {
+                return deleteUserApi(
+                    {
+                        token: getToken(getState()),
+                        id,
+                        onSuccess: () => dispatch(remove(id))
+                    },
+                    dispatch
+                );
+            });
         }
     };
 }
@@ -108,6 +118,5 @@ export default {
     remove,
     set,
     fetchAll,
-    create,
-    deletedUsers
-}
+    create
+};
