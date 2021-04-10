@@ -17,7 +17,7 @@ export default ({ config, db }: any) =>
             read: [tokenAuthMIddleware(), checkControlPerm({ paramKey: "deviceId" })],
         },
 
-        async patch({ params, body }: any, res: express.Response) {
+        async modify({ params, body }, res) {
             const { deviceId, thingId } = params;
 
             const doc: IDevice = await DeviceModel.findById(deviceId).lean();

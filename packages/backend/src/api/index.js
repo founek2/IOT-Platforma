@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import user from './user';
 import device from './device';
-import auth from './auth';
+// import auth from './auth';
 import notify from './notify';
 import discovery from './discovery';
 import history from './history';
@@ -22,7 +22,7 @@ export default ({ config }) => {
 
     api.use('/discovery', discovery({ config }));
 
-    api.use('/auth', auth({ config }));
+    // api.use('/auth', auth({ config }));
 
     // perhaps expose some API metadata at the root
     api.get('/', (req, res) => {

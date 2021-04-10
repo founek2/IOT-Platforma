@@ -5,21 +5,21 @@ import tokenAuthMIddleware from "../middlewares/tokenAuth";
 import checkReadPerm from "../middlewares/device/checkReadPerm";
 
 export default ({ config, db }: any) =>
-	resource({
-		mergeParams: true,
-		middlewares: {
-			read: [tokenAuthMIddleware(), checkReadPerm({ paramKey: "deviceId" })],
-		},
-		/** GET /:param - List all entities */
-		async index({ params, query: { from, to }, user }: any, res: express.Response) {
-			const { deviceId, thingId } = params;
-			console.log("par", params);
-			const docs = await HistoricalModel.getData(
-				deviceId,
-				thingId,
-				new Date(Number(from)),
-				new Date(to ? Number(to) : new Date())
-			);
-			res.send({ docs });
-		},
-	});
+    resource({
+        mergeParams: true,
+        middlewares: {
+            read: [tokenAuthMIddleware(), checkReadPerm({ paramKey: "deviceId" })],
+        },
+        /** GET /:param - List all entities */
+        async index({ params, query: { from, to } }, res) {
+            const { deviceId, thingId } = params;
+            console.log("par", params);
+            const docs = await HistoricalModel.getData(
+                deviceId,
+                thingId,
+                new Date(Number(from)),
+                new Date(to ? Number(to) : new Date())
+            );
+            res.send({ docs });
+        },
+    });
