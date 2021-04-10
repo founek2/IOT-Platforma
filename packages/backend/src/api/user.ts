@@ -12,6 +12,7 @@ import eventEmitter from '../services/eventEmitter';
 import { UserService } from 'common/lib/services/userService';
 import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
 import { IUser } from 'common/lib/models/interface/userInterface';
+import checkUser from '../middlewares/user/checkUser';
 
 function removeUserItself(id: IUser["_id"]) {
     return function (doc: IUser) {
@@ -23,6 +24,7 @@ export default () =>
     resource({
         middlewares: {
             index: [tokenAuthMIddleware()],
+            read: [checkUser()],
             create: [
                 rateLimiterMiddleware,
                 formDataChecker(fieldDescriptors, { allowedForms: ["LOGIN", "REGISTRATION"] })
@@ -57,12 +59,10 @@ export default () =>
             const { id } = params;
             const { attribute } = query;
 
-            if (attribute === 'authType' && id) {
-                // tested
-                const doc = await UserModel.findByUserName(id);
+            if (attribute === 'authType') {
 
-                if (doc) res.send({ authType: doc.auth.type });
-                else res.status(208).send({ error: 'unknownUser' });
+                const doc = await UserModel.findByUserName(id);
+                res.send({ authType: doc.auth.type });
             } else {
                 res.sendStatus(400);
             }
@@ -81,6 +81,8 @@ export default () =>
                 });
                 eventEmitter.emit('user_login', doc);
             } else if (formData.REGISTRATION) {
+                if (UserModel.exists({ "info.userName": formData.REGISTRATION.info.userName }))
+                    return res.status(400).send({ error: "userNameAlreadyExist" })
                 const { doc, token } = await UserService.create(formData.REGISTRATION);
 
                 res.send({
@@ -94,7 +96,7 @@ export default () =>
         },
 
 
-        async deleteId({ body, params }, res) {
+        async deleteId({ params }, res) {
             await UserService.deleteById(params.id);
             res.sendStatus(204);
         },

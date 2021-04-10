@@ -30,7 +30,7 @@ export interface IUserModel extends Model<IUserDocument> {
     addNotifyToken(userId: IUser["_id"], token: string): Promise<void>;
     removeNotifyTokens(tokens: string[]): Promise<void>;
     getNotifyTokens(userId: IUser["_id"]): Promise<{ notifyTokens: string[] }>;
-    checkExist(userId?: string): Promise<boolean>;
+    checkExists(userId?: string): Promise<boolean>;
 }
 
 userSchema.statics.findByUserName = function (userName) {
@@ -96,7 +96,7 @@ userSchema.statics.getNotifyTokens = function (userID: IUser["_id"]) {
         .lean();
 };
 
-userSchema.statics.checkExist = async function (userID: IUser["_id"]) {
+userSchema.statics.checkExists = async function (userID: IUser["_id"]) {
     return await this.exists({
         _id: mongoose.Types.ObjectId(userID),
     });

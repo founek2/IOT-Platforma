@@ -25,11 +25,11 @@ export default function formDataChecker(fieldDescriptors: any, { ingoreRequired,
                 next();
             } else {
                 warningLog('Validation Failed> ' + JSON.stringify(errors));
-                res.status(208).send({ error: 'validationFailed' });
+                res.status(400).send({ error: 'validationFailed' });
             }
         } else {
             warningLog('Missing formData');
-            res.status(208).send({ error: 'missingFormData' });
+            res.status(400).send({ error: 'missingFormData' });
         }
     };
 }

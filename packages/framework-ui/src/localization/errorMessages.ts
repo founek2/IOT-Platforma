@@ -2,10 +2,10 @@ import { messageFactory } from "./index";
 import * as types from "../types";
 
 export const messages: types.messages = {
-    userAlreadyExist: "Uživatel již existuje",
+    userNameAlreadyExist: "Uživ. jméno je obsazeno",
     passwordMissmatch: "Nesprávné heslo",
     unknownUser: "Neznámý uživatel",
-    userDoesNotExist: "Uživatel neexistuje",
+    userNotExist: "Uživatel neexistuje",
     invalidToken: "Neplatný token",
     tokenNotProvided: "Token nebyl v hlavičce",
     lowPermissionsForThatGroups: "Nízké oprávnění pro nastavení těchto skupin",
@@ -22,6 +22,7 @@ export const messages: types.messages = {
     InvalidParam: "Špatný request",
     notImplemented: "Funkce není implementována",
     entityNotFound: "Požadovaný zdroj nebyl nalezen",
+    deviceNotExits: "Zařízení neexistuje"
 };
 
 export default messageFactory(messages);
