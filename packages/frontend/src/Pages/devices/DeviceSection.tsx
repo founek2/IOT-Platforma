@@ -53,7 +53,7 @@ function DiscoverySection({
 
     useEffect(() => {
         if (selectedDevice) prefillEditForm(pick(["info", "permissions"], selectedDevice));
-    }, [selectedDevice]);
+    }, [selectedDevice, prefillEditForm]);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>, deviceId: string) => {
         setAnchorEl(event.currentTarget);
@@ -123,7 +123,7 @@ function DiscoverySection({
                     toolbarHead="Seznam"
                     orderBy="name"
                     enableEdit
-                    customEditButton={(id: string) => (
+                    customEditButton={(id: string, device: IDevice) => device.permissions.write?.length > 0 ? (
                         <IconButton
                             aria-label="add"
                             size="small"
@@ -131,7 +131,7 @@ function DiscoverySection({
                         >
                             <MoreVertIcon />
                         </IconButton>
-                    )}
+                    ) : null}
                     rowsPerPage={10}
                 />
             )}

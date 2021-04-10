@@ -18,6 +18,7 @@ import { Actions } from "../services/actionsService";
 import eventEmitter from "../services/eventEmitter";
 import checkDiscovery from "../middlewares/discovery/checkDiscovery";
 import { convertDiscoveryThing } from "../utils/convertDiscoveryThing";
+import { DeviceStatus } from "common/lib/models/interface/device";
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -32,7 +33,13 @@ export default () =>
         /** GET / - List all entities */
         async index({ user }: any, res) {
             console.log("user - ", user.info.userName);
-            const docs = await DiscoveryModel.find({ realm: user.realm, pairing: { $ne: true } });
+            const docs = await DiscoveryModel.find({
+                "state.status.value": {
+                    $exists: true
+                },
+                realm: user.realm,
+                pairing: { $ne: true }
+            });
 
             res.send({ docs });
         },
@@ -49,13 +56,18 @@ export default () =>
         },
 
         /** POST / - Create a new entity */
-        async createId({ body, user, params }: any, res): Promise<void> {
+        async createId({ body, user, params }: any, res) {
             // TODO permission check
             const { formData } = body;
             const _id = params.id;
             const form = formData.CREATE_DEVICE;
 
-            const doc = await DiscoveryModel.findOne({ _id: ObjectId(_id), pairing: { $ne: true } }) as IDiscoveryDocument;
+            const doc = await DiscoveryModel.findOne({
+                _id: ObjectId(_id),
+                pairing: { $ne: true },
+                "state.status.value": DeviceStatus.ready,
+            }) as IDiscoveryDocument;
+            if (!doc) return res.status(400).send({ error: "deviceNotReady" })
 
             const convertThings = map(convertDiscoveryThing);
             const newDevice = await DeviceModel.createNew(

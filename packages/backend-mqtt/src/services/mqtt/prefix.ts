@@ -112,12 +112,17 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
         const doc = await DiscoveryModel.findOneAndUpdate(
             { deviceId },
             { "state.status.value": status, "state.status.timestamp": new Date() },
-            { upsert: status !== DeviceStatus.disconnected, setDefaultsOnInsert: true, new: true }
+            {
+                upsert: status !== DeviceStatus.disconnected,
+                setDefaultsOnInsert: true,
+                new: true
+            }
         )
             .lean()
             .exec();
 
         const user = await UserModel.findOne({ realm: doc?.realm }).select("_id").lean();
-        if (user?._id && !doc?.pairing) io.to(user._id.toString()).emit("deviceDiscovered", doc);
+        if (user?._id && !doc?.pairing)
+            io.to(user._id.toString()).emit("deviceDiscovered", doc);
     });
 }

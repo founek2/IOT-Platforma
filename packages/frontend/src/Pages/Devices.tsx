@@ -27,10 +27,6 @@ interface DevicesProps {
     history: any;
     devices: IDevice[];
     discoveredDevices: IDiscovery[];
-    openEditDialog: boolean;
-    resetEditDeviceA: any;
-    selectedDevice?: IDevice;
-    deleteDeviceAction: any;
     updateDeviceAction: any;
     addDiscoveredDeviceAction: any;
     fetchDevicesAction: any;
@@ -82,24 +78,17 @@ function Devices({ devices, discoveredDevices, updateDeviceAction, addDiscovered
 }
 
 const _mapStateToProps = (state: IState) => {
-    const id = getQueryID(state);
     const deviceId = getQueryField("deviceId")(state);
     // @ts-ignore
     const discoveredDevices = prop("data", getDiscovery(state)) as IState["application"]["discovery"]["data"];
     // @ts-ignore
     const toAddDevice = discoveredDevices.find(o(equals(deviceId), prop("deviceId")));
-    const devices = filter(isWritable, getDevices(state));
+    const devices = getDevices(state);
     return {
-        openCreateDialog: isUrlHash("#createDevice")(state),
-        openEditDialog: isUrlHash("#editDevice")(state),
-        openSensorsDialog: isUrlHash("#editSensors")(state),
-        openPermissionsDialog: isUrlHash("#editPermissions")(state),
-        openControlDialog: isUrlHash("#editControl")(state),
         devices,
         devicesLastFetch: path(["devices", "lastFetch"], getApplication(state)) as IState["application"]["devices"]["lastFetch"],
         discoveredDevices: discoveredDevices,
         toAddDevice,
-        selectedDevice: devices.find((dev) => dev._id === id),
     };
 };
 
@@ -108,8 +97,6 @@ const _mapDispatchToProps = (dispatch: any) =>
         {
             fetchDevicesAction: deviceActions.fetch,
             fetchDiscoveredDevicesAction: discoveredActions.fetch,
-            resetEditDeviceA: formsActions.removeForm("EDIT_DEVICE"),
-            deleteDeviceAction: deviceActions.deleteDevice,
             updateDeviceAction: deviceActions.update,
             addDiscoveredDeviceAction: discoveredActions.add,
         },

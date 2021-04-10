@@ -32,7 +32,7 @@ export interface IDiscovery {
     things: { [nodeId: string]: IDiscoveryThing };
     createdAt: Date;
     updatedAt: Date;
-    state: {
+    state?: {
         status: {
             value: string;
             timestamp: Date;

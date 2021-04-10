@@ -1,6 +1,6 @@
 import { Fab, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import type { DeviceStatus } from "common/lib/models/interface/device";
+import { DeviceStatus } from "common/lib/models/interface/device";
 import { IDiscovery, IDiscoveryThing } from "common/lib/models/interface/discovery";
 import Dialog from "framework-ui/lib/Components/Dialog";
 import FieldConnector from "framework-ui/lib/Components/FieldConnector";
@@ -43,7 +43,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
         const result = await addDiscoveryAction(selectedId);
         if (result) closeDialog();
     }
-    console.log("discovered", discoveredDevices);
+
     return (
         <Fragment>
             {discoveredDevices && discoveredDevices?.length > 0 && (
@@ -85,24 +85,26 @@ function DiscoverySection(props: DiscoverySectionProps) {
                             // enableCreation={isAdmin}
                             //onAdd={() => this.updateCreateForm({ open: true })}
                             enableEdit
-                            customEditButton={(id: string) => (
-                                <Fab
-                                    color="primary"
-                                    aria-label="add"
-                                    size="small"
-                                    onClick={() => {
-                                        setSelectedId(id);
-                                        console.log("looking", discoveredDevices, id);
-                                        updateFormField(
-                                            "CREATE_DEVICE.info.name",
-                                            discoveredDevices.find((dev) => dev._id === id)?.name || ""
-                                        );
-                                        setOpenAddDialog(true);
-                                    }}
-                                >
-                                    <AddIcon />
-                                </Fab>
-                            )}
+                            customEditButton={(id: string, item: IDiscovery) =>
+                                (
+                                    <Fab
+                                        color="primary"
+                                        aria-label="add"
+                                        size="small"
+                                        disabled={item.state?.status.value !== DeviceStatus.ready}
+                                        onClick={() => {
+                                            setSelectedId(id);
+                                            console.log("looking", discoveredDevices, id);
+                                            updateFormField(
+                                                "CREATE_DEVICE.info.name",
+                                                discoveredDevices.find((dev) => dev._id === id)?.name || ""
+                                            );
+                                            setOpenAddDialog(true);
+                                        }}
+                                    >
+                                        <AddIcon />
+                                    </Fab>
+                                )}
                             onChange={onChange}
                             value={value}
                         />

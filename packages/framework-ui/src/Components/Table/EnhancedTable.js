@@ -232,7 +232,7 @@ class EnhancedTable extends React.Component {
                                                             <EditIcon />
                                                         </IconButton>
                                                     ) : (
-                                                        customEditButton(n.id)
+                                                        customEditButton(n.id, n)
                                                     ))}
                                             </TableCell>
                                         </TableRow>
