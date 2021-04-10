@@ -27,6 +27,7 @@ const deviceDiscoverySchema = new Schema<IDiscoveryDocument, IDiscoveryModel>(
 
 export interface IDiscoveryModel extends Model<IDiscoveryDocument> {
     checkExists(id: IDiscovery["_id"]): Promise<boolean>;
+    checkExistsNotPairing(id: IDiscovery["_id"]): Promise<boolean>;
     checkPermissions(id: IDiscovery["_id"], realm: IUser["realm"]): Promise<boolean>;
 }
 
@@ -36,7 +37,14 @@ deviceDiscoverySchema.statics.checkExists = function (id: IDiscovery["_id"]) {
     });
 };
 
-deviceDiscoverySchema.statics.checkExists = function (id: IDiscovery["_id"], realm: IUser["realm"]) {
+deviceDiscoverySchema.statics.checkExistsNotPairing = function (id: IDiscovery["_id"]) {
+    return this.exists({
+        _id: ObjectId(id),
+        pairing: { $ne: true },
+    });
+};
+
+deviceDiscoverySchema.statics.checkPermissions = function (id: IDiscovery["_id"], realm: IUser["realm"]) {
     return this.exists({
         _id: ObjectId(id),
         realm,

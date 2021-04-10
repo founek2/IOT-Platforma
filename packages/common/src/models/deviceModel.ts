@@ -28,6 +28,7 @@ export interface IDeviceModel extends Model<IDeviceDocument> {
     checkExists(id: IDevice["_id"]): Promise<boolean>;
     checkWritePerm(id: IDevice["_id"], userId: IUser["_id"]): Promise<boolean>;
     checkReadPerm(id: IDevice["_id"], userId: IUser["_id"]): Promise<boolean>;
+    checkControlPerm(id: IDevice["_id"], userId: IUser["_id"]): Promise<boolean>;
     updateByFormData(id: IDevice["_id"], object: Partial<IDevice>): Promise<void>;
 }
 
@@ -138,10 +139,7 @@ deviceSchema.statics.checkWritePerm = function (id: IDevice["_id"], userId: IUse
     const userID = ObjectId(userId);
     return this.exists({
         _id: ObjectId(id),
-        $or: [
-            // @ts-ignore
-            { "permissions.write": userID },
-        ],
+        "permissions.write": userID
     });
 };
 
@@ -149,10 +147,15 @@ deviceSchema.statics.checkReadPerm = function (id: IDevice["_id"], userId: IUser
     const userID = ObjectId(userId);
     return this.exists({
         _id: ObjectId(id),
-        $or: [
-            // @ts-ignore
-            { "permissions.read": userID },
-        ],
+        "permissions.read": userID,
+    });
+};
+
+deviceSchema.statics.checkControlPerm = function (id: IDevice["_id"], userId: IUser["_id"]) {
+    const userID = ObjectId(userId);
+    return this.exists({
+        _id: ObjectId(id),
+        "permissions.control": userID,
     });
 };
 
