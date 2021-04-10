@@ -16,6 +16,7 @@ export const deviceSchema = new Schema<IDeviceDocument, IDeviceModel>(deviceSche
     },
     timestamps: true
 });
+deviceSchema.index({ "metadata.realm": 1, "metadata.deviceId": 1 }, { unique: true });
 
 export interface IDeviceModel extends Model<IDeviceDocument> {
     createNew(
@@ -55,13 +56,12 @@ deviceSchema.statics.createNew = async function ({ info, things, metadata }, use
 
 const aggregationFields = {
     _id: 1,
-    "gps.coordinates": 1,
-    // "gps.type": 0,
     info: 1,
+    things: 1,
     createdAt: 1,
     createdBy: 1,
-    publicRead: 1,
     state: 1,
+    metadata: 1,
 };
 
 deviceSchema.statics.findForUser = async function (userID) {
@@ -80,18 +80,6 @@ deviceSchema.statics.findForUser = async function (userID) {
         {
             $project: {
                 ...aggregationFields,
-                things: {
-                    $cond: {
-                        if: {
-                            $or: [
-                                { $in: [userObjID, "$permissions.control"] },
-                                { $in: [userObjID, "$permissions.read"] },
-                            ],
-                        },
-                        then: "$things",
-                        else: "$$REMOVE",
-                    },
-                },
                 permissions: {
                     read: {
                         $cond: {
