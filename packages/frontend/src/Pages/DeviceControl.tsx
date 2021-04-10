@@ -10,7 +10,6 @@ import { bindActionCreators } from "redux";
 import { createSelector } from "reselect";
 import { LocationTypography } from "../components/LocationTypography";
 import * as deviceActions from "../store/actions/application/devices";
-import * as controlActions from "../store/actions/application/devices/control";
 import { getDevicesLastUpdate, getQueryField } from "../utils/getters";
 import io from "../webSocket";
 import Room from "./deviceControl/Room";
@@ -93,7 +92,8 @@ function DeviceControl({
     useEffect(() => {
         function handler() {
             console.log("focus")
-            const isOld = !devicesLastFetch || Date.now() - devicesLastFetch.getTime() > 20 * 60 * 1000
+            console.log(devicesLastFetch)
+            const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000
             if (!io.getSocket().isConnected() || isOld) {
                 fetchDevicesAction()
                 console.log("downloading devices")
@@ -216,8 +216,6 @@ const _mapDispatchToProps = (dispatch: any) =>
             updateThingA: deviceActions.updateThing,
             updateDeviceAction: deviceActions.update,
             resetEditNotifyControlA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),
-            updateNotifyControlA: controlActions.updateNotify,
-            prefillNotifyControlA: controlActions.prefillNotify,
         },
         dispatch
     );

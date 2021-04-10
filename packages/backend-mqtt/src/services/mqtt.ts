@@ -138,7 +138,7 @@ export default (io: serverIO, config: Config): MqttClient => {
     });
 
     client.on("error", function (err) {
-        console.log("mqtt connection error");
+        console.log("mqtt connection error", err);
         // client.reconnect()
     });
 

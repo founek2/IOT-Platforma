@@ -31,7 +31,6 @@ interface DevicesProps {
     resetEditDeviceA: any;
     selectedDevice?: IDevice;
     deleteDeviceAction: any;
-    deleteDevicesAction: any;
     updateDeviceAction: any;
     addDiscoveredDeviceAction: any;
     fetchDevicesAction: any;
@@ -57,7 +56,7 @@ function Devices({ devices, discoveredDevices, updateDeviceAction, addDiscovered
     useEffect(() => {
         function handler() {
             console.log("focus")
-            const isOld = !devicesLastFetch || Date.now() - devicesLastFetch.getTime() > 20 * 60 * 1000
+            const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000
             if (!io.getSocket().isConnected() || isOld) {
                 fetchDevicesAction()
                 console.log("downloading devices")
@@ -111,7 +110,6 @@ const _mapDispatchToProps = (dispatch: any) =>
             fetchDiscoveredDevicesAction: discoveredActions.fetch,
             resetEditDeviceA: formsActions.removeForm("EDIT_DEVICE"),
             deleteDeviceAction: deviceActions.deleteDevice,
-            deleteDevicesAction: deviceActions.deleteDevices,
             updateDeviceAction: deviceActions.update,
             addDiscoveredDeviceAction: discoveredActions.add,
         },

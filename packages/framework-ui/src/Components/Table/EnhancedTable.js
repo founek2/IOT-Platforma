@@ -43,8 +43,8 @@ function mustContain(searchText, dataProps) {
 
 const styles = (theme) => ({
     root: {
-        width: '100%',
-        marginTop: theme.spacing(3)
+        width: '100%'
+        // marginTop: theme.spacing(3)
     },
     table: {
         // minWidth: 1020
@@ -156,7 +156,8 @@ class EnhancedTable extends React.Component {
             onEdit,
             enableSearch,
             customEditButton,
-            onDelete
+            onDelete,
+            rowsPerPageOptions
         } = this.props;
         const enableSelection = Boolean(onDelete);
         const selected = this.props.value;
@@ -249,6 +250,7 @@ class EnhancedTable extends React.Component {
                     component="div"
                     count={data.length}
                     rowsPerPage={rowsPerPage}
+                    rowsPerPageOptions={rowsPerPageOptions}
                     page={page}
                     backIconButtonProps={{
                         'aria-label': 'Předchozí stránka'
@@ -269,7 +271,8 @@ class EnhancedTable extends React.Component {
 EnhancedTable.defaultProps = {
     rowsPerPage: 5,
     value: [],
-    order: 'asc'
+    order: 'asc',
+    rowsPerPageOptions: [ 10, 25, 50 ]
 };
 
 EnhancedTable.propTypes = {

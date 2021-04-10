@@ -8,7 +8,6 @@ import {
 function MyDateTimePicker({ onChange, value, fieldProps, ...props }: any) {
     return (
         <DateTimePicker value={value} onChange={(date) => {
-            console.log("data", date)
             onChange({ target: { value: date } })
         }} {...fieldProps} {...props} ampm={false} />
     );

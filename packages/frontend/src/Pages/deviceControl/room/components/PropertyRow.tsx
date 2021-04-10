@@ -1,21 +1,19 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import Slider from "@material-ui/core/Slider";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 import {
     IThingProperty,
-    PropertyDataType,
+
     IThingPropertyEnum,
-    IThingPropertyNumeric,
+    IThingPropertyNumeric, PropertyDataType
 } from "common/lib/models/interface/thing";
-import { SensorIcons } from "frontend/src/components/SensorIcons";
-import clsx from "clsx";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Slider from "@material-ui/core/Slider";
 import { isNumericDataType } from "common/lib/utils/isNumericDataType";
-import TextField from "@material-ui/core/TextField";
 import { onEnterRun } from "framework-ui/lib/utils/onEnter";
+import { SensorIcons } from "frontend/src/components/SensorIcons";
+import React, { useState } from "react";
 import SwitchMy from "./Switch";
 
 const useStyles = makeStyles({

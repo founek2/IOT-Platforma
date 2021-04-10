@@ -1,21 +1,19 @@
 import { Fab, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import type { DeviceStatus } from "common/lib/models/interface/device";
+import { IDiscovery, IDiscoveryThing } from "common/lib/models/interface/discovery";
 import Dialog from "framework-ui/lib/Components/Dialog";
 import FieldConnector from "framework-ui/lib/Components/FieldConnector";
 import EnchancedTable from "framework-ui/lib/Components/Table";
 import * as formsActions from "framework-ui/lib/redux/actions/formsData";
 import { isUrlHash } from "framework-ui/lib/utils/getters";
+import { DeviceForm } from "frontend/src/components/DeviceForm";
 import { assoc, prop } from "ramda";
 import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as discoveredActions from "../../store/actions/application/discovery";
-import { getDiscovery } from "../../utils/getters";
 import OnlineCircle from "../../components/OnlineCircle";
-import type { DeviceStatus } from "common/lib/models/interface/device";
-import { IDiscovery, IDiscoveryThing } from "common/lib/models/interface/discovery";
-import DeviceSection from "./DeviceSection";
-import { DeviceForm } from "frontend/src/components/DeviceForm";
+import * as discoveredActions from "../../store/actions/application/discovery";
 
 interface DiscoverySectionProps {
     discoveredDevices?: IDiscovery[];
@@ -27,6 +25,7 @@ interface DiscoverySectionProps {
 
 function DiscoverySection(props: DiscoverySectionProps) {
     const [openAddDialog, setOpenAddDialog] = useState(false);
+    const [selectedId, setSelectedId] = useState<null | string>(null);
     const {
         discoveredDevices,
         resetCreateDeviceAction,
@@ -41,7 +40,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
     }
 
     async function onAgree() {
-        const result = await addDiscoveryAction();
+        const result = await addDiscoveryAction(selectedId);
         if (result) closeDialog();
     }
     console.log("discovered", discoveredDevices);
@@ -52,6 +51,8 @@ function DiscoverySection(props: DiscoverySectionProps) {
                     deepPath="DISCOVERY_DEVICES.selected"
                     component={({ onChange, value }) => (
                         <EnchancedTable
+                            rowsPerPageOptions={[2, 5, 10, 25]}
+                            rowsPerPage={2}
                             // @ts-ignore
                             dataProps={[
                                 { path: "name", label: "Název" },
@@ -90,7 +91,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
                                     aria-label="add"
                                     size="small"
                                     onClick={() => {
-                                        updateFormField("CREATE_DEVICE._id", id);
+                                        setSelectedId(id);
                                         console.log("looking", discoveredDevices, id);
                                         updateFormField(
                                             "CREATE_DEVICE.info.name",
@@ -102,7 +103,6 @@ function DiscoverySection(props: DiscoverySectionProps) {
                                     <AddIcon />
                                 </Fab>
                             )}
-                            rowsPerPage={2}
                             onChange={onChange}
                             value={value}
                         />

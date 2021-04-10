@@ -91,6 +91,7 @@ function DiscoverySection({
                     // @ts-ignore
                     dataProps={[
                         { path: "info.name", label: "Název" },
+                        { path: "metadata.deviceId", label: "ID zařízení" },
                         {
                             path: "info.location",
                             label: "Umístění",

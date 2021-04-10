@@ -17,42 +17,42 @@ import eventEmitter from "./services/eventEmitter";
 import initSubscribers from "./subscribers";
 
 interface customApp extends Application {
-	server: http.Server;
-	io: serverIO;
+    server: http.Server;
+    io: serverIO;
 }
 
 async function startServer(config: Config) {
-	JwtService.init(config.jwt);
-	FireBase.init(config);
-	initSubscribers(eventEmitter);
+    JwtService.init(config.jwt);
+    FireBase.init(config);
+    initSubscribers(eventEmitter);
 
-	await mongoose.connect(createMongoUri(config.db), {
-		useNewUrlParser: true,
-		useCreateIndex: true,
-		useFindAndModify: false,
-		useUnifiedTopology: true,
-	});
-	mongoose.set("debug", process.env.NODE_ENV === "development");
+    await mongoose.connect(createMongoUri(config.db), {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        useUnifiedTopology: true,
+    });
+    mongoose.set("debug", process.env.NODE_ENV === "development");
 
-	const appInstance = express();
-	const server = http.createServer(appInstance);
-	const app: customApp = Object.assign(appInstance, { server, io: new serverIO(server, { path: "/socket.io" }) });
+    const appInstance = express();
+    const server = http.createServer(appInstance);
+    const app: customApp = Object.assign(appInstance, { server, io: new serverIO(server, { path: "/socket.io" }) });
 
-	app.use(express.urlencoded({ extended: true }));
-	app.use(morgan("dev"));
+    app.use(express.urlencoded({ extended: true }));
+    app.use(morgan("dev"));
 
-	app.use("/api", (req, res, next) =>
-		bodyParser.json({
-			limit: "100kb",
-		})(req, res, next)
-	);
+    app.use("/api", (req, res, next) =>
+        bodyParser.json({
+            limit: "100kb",
+        })(req, res, next)
+    );
 
-	app.use("/api", api({ io: app.io }));
+    app.use("/api", api({ io: app.io }));
 
-	app.server.listen(config.portAuth, () => {
-		console.log(`Started on port ${(app.server?.address() as any).port}`);
-		if (app.io) setTimeout(() => mqttService(app.io, config), 1000); //init
-	});
+    app.server.listen(config.portAuth, () => {
+        console.log(`Started on port ${(app.server?.address() as any).port}`);
+        if (app.io) setTimeout(() => mqttService(app.io, config), 1000); //init
+    });
 }
 
 startServer(config);

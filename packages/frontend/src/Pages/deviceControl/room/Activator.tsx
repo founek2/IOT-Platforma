@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { IThingPropertyEnum } from "common/lib/models/interface/thing";
 import { drop, head } from "ramda";
 import React from "react";
-import { BoxWidgetProps } from "./components/BorderBox";
+import type { BoxWidgetProps } from "./components/BorderBox";
 import boxHoc from "./components/boxHoc";
 import { SimpleDialog } from "./components/Dialog";
 import PropertyRow from "./components/PropertyRow";

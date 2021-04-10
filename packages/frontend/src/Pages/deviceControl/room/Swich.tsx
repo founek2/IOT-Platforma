@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import { drop, head } from "ramda";
 import React from "react";
-import { BoxWidgetProps } from "./components/BorderBox";
+import type { BoxWidgetProps } from "./components/BorderBox";
 import boxHoc from "./components/boxHoc";
 import { SimpleDialog } from "./components/Dialog";
 import PropertyRow from "./components/PropertyRow";

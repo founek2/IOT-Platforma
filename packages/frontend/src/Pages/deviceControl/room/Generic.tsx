@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import UpdatedBefore from "framework-ui/lib/Components/UpdatedBefore";
 import React, { useEffect } from "react";
-import { BoxWidgetProps } from "./components/BorderBox";
+import type { BoxWidgetProps } from "./components/BorderBox";
 import boxHoc from "./components/boxHoc";
 import { SimpleDialog } from "./components/Dialog";
 import PropertyRow from "./components/PropertyRow";

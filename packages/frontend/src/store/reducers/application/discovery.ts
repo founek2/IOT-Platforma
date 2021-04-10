@@ -1,9 +1,9 @@
-import { append, assoc, contains, equals, filter, includes, not, o, path, prop, propEq } from "ramda";
+import { IDiscovery } from "common/lib/models/interface/discovery";
+import { append, equals, filter, not, o, prop, propEq } from "ramda";
 import { compose } from "redux";
-import { handleActions, ActionMeta, Action } from "redux-actions";
+import { Action, handleActions } from "redux-actions";
 import { ActionTypes } from "../../../constants/redux";
 
-import { IDiscovery } from "common/lib/models/interface/discovery";
 
 export interface State {
     data: (IDiscovery & { _id: string })[];
