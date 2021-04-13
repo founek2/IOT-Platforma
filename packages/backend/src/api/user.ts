@@ -24,7 +24,6 @@ export default () =>
     resource({
         middlewares: {
             index: [tokenAuthMIddleware()],
-            read: [checkUser()],
             create: [
                 rateLimiterMiddleware,
                 formDataChecker(fieldDescriptors, { allowedForms: ["LOGIN", "REGISTRATION"] })
@@ -60,9 +59,10 @@ export default () =>
             const { attribute } = query;
 
             if (attribute === 'authType') {
-
                 const doc = await UserModel.findByUserName(id);
-                res.send({ authType: doc.auth.type });
+
+                if (!doc) res.status(404).send({ error: "unknownUser" })
+                else res.send({ authType: doc.auth.type });
             } else {
                 res.sendStatus(400);
             }
@@ -73,13 +73,16 @@ export default () =>
             const { formData } = req.body;
 
             if (formData.LOGIN) {
-                const { doc, token } = await UserService.checkCreditals(formData.LOGIN);
+
+                const { doc, token, error } = await UserService.checkCreditals(formData.LOGIN);
+                if (error) return res.status(500).send({ error })
 
                 res.send({
                     user: doc,
                     token
                 });
                 eventEmitter.emit('user_login', doc);
+
             } else if (formData.REGISTRATION) {
                 if (UserModel.exists({ "info.userName": formData.REGISTRATION.info.userName }))
                     return res.status(400).send({ error: "userNameAlreadyExist" })

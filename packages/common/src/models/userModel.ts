@@ -22,7 +22,7 @@ export const userSchema = new Schema<IUserDocument, IUserModel>(userSchemaPlain,
 });
 
 export interface IUserModel extends Model<IUserDocument> {
-    findByUserName(userName: string): Promise<IUserDocument>;
+    findByUserName(userName: string): Promise<IUserDocument | null>;
     findAllNotRoot(): Promise<IUserDocument[]>;
     findAll(): Promise<IUserDocument[]>;
     removeUsers(ids: Array<IUser["_id"]>): Promise<{ deletedCount?: number }>;

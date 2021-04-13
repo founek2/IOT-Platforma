@@ -40,12 +40,12 @@ export default function(options = { restricted: true }) {
                     }
                 } catch (err) {
                     console.log('token problem', err);
-                    res.status(208).send({ error: 'invalidToken' });
+                    res.status(400).send({ error: 'invalidToken' });
                 }
             } else if (!restricted) {
                 next();
             } else {
-                res.status(208).send({ error: 'tokenNotProvided' });
+                res.status(400).send({ error: 'tokenNotProvided' });
             }
         } else next();
     };
