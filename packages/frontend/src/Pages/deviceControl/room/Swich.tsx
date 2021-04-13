@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
         height: "100%",
         alignItems: "flex-end",
         justifyContent: "center"
+    },
+    dialogContent: {
+        minHeight: 150
     }
 }));
 
@@ -62,7 +65,6 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
         historyData.thingId === thing._id,
     ]);
 
-    console.log("chart data", chartData)
     return (
         <div
             className={clsx(className, classes.root)}
@@ -89,10 +91,12 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
                 title={thing.config.name}
                 deviceId={deviceId}
                 thing={thing}
+                classContent={classes.dialogContent}
             >
                 {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 2 ? (
                     <ChartSimple
                         type="Timeline"
+                        height="100px"
                         data={[[
                             { type: 'string', id: 'Room' },
                             { type: 'string', id: 'Name' },

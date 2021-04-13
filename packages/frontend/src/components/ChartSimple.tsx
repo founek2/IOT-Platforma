@@ -6,10 +6,9 @@ import { ReactGoogleChartEvent, GoogleChartWrapperChartType } from "react-google
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        paddingBottom: 15,
+        // paddingBottom: 15,
         // marginLeft: "10%"
-        marginLeft: 10,
-        marginRight: 10,
+
         [theme.breakpoints.up("sm")]: {
             width: "90%",
             margin: "0 auto",
@@ -56,13 +55,15 @@ interface ChartSimpleProps {
         column: number;
         type: "ArrowFormat" | "BarFormat" | "ColorFormat" | "DateFormat" | "NumberFormat" | "PatternFormat";
         options?: {};
-    }[]
+    }[],
+    height?: string
 }
 
 function ChartSimple({
     data,
     type = "Line",
-    formatters
+    formatters,
+    height = "auto"
 }: //	vAxisTitle, hAxisTitle, minValue
     ChartSimpleProps) {
     const classes = useStyles();
@@ -83,7 +84,7 @@ function ChartSimple({
         <div className={classes.root}>
             <Chart
                 width="100%"
-                // height="400px"
+                height={height}
                 chartType={type}
                 legendToggle
                 loader={

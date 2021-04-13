@@ -41,8 +41,8 @@ const useStyles = makeStyles({
     icon: {
         marginRight: 5,
     },
-    graphTitle: {
-        marginBottom: 10,
+    graph: {
+        marginBottom: 25,
     },
     updatedBefore: {
         textAlign: "center",
@@ -97,7 +97,7 @@ function Sensor({
                 deviceId={deviceId}
                 thing={thing}
             >
-                <div className={clsx(classes.container, classes.graphTitle)}>
+                <div className={clsx(classes.container, classes.graph)}>
                     {Icon ? <Icon className={classes.icon} /> : null}
                     <Typography>
                         {room + " " + thing.config.name + " " + (value || "??")}&nbsp;{property.unitOfMeasurement || ""}

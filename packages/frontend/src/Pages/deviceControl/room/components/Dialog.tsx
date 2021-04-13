@@ -13,6 +13,7 @@ import { IDevice } from "common/lib/models/interface/device";
 import { IThing } from "common/lib/models/interface/thing";
 import React from "react";
 import { Link } from "react-router-dom";
+import clsx from "clsx";
 
 const useStyles = makeStyles({
     avatar: {
@@ -37,13 +38,14 @@ export interface SimpleDialogProps {
     deviceId: IDevice["_id"];
     thing: IThing;
     children: (JSX.Element | null)[] | JSX.Element | null;
+    classContent?: string
 }
 
-export function SimpleDialog({ onClose, open, title, children, deviceId, thing }: SimpleDialogProps) {
+export function SimpleDialog({ onClose, open, title, children, deviceId, thing, classContent }: SimpleDialogProps) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down("md"));
+    const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
     const handleMoreClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -63,7 +65,7 @@ export function SimpleDialog({ onClose, open, title, children, deviceId, thing }
                     <MoreVertIcon />
                 </IconButton>
             </DialogTitle>
-            <DialogContent className={classes.content}>{children}</DialogContent>
+            <DialogContent className={clsx(classContent, classes.content)}>{children}</DialogContent>
             <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleMoreClose}>
                 <Link to={"/device/" + deviceId + "/thing/" + thing.config.nodeId + "/notify"}>
                     <MenuItem onClick={handleMoreClose}>Notifikace</MenuItem>
