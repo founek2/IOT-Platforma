@@ -39,14 +39,14 @@ export const UserService = {
         return { doc: plainUser, token };
     },
 
-    async checkCreditals({ userName, authType, password }: CredentialData): Promise<UserWithToken> {
+    async checkCreditals({ userName, authType, password }: CredentialData): Promise<{ doc?: IUser; token?: string, error?: string }> {
         if (authType !== AuthTypes.PASSWD) throw new Error("notImplemented");
 
         const doc = await UserModel.findOne({ "info.userName": userName, "auth.type": authType });
-        if (!doc) throw Error("unknownUser");
+        if (!doc) return { error: "unknownUser" };
 
         const matched = await comparePasswd(password, doc.auth.password);
-        if (!matched) throw Error("passwordMissmatch");
+        if (!matched) return { error: "passwordMissmatch" };
 
         const token = await JwtService.sign({ id: doc._id });
 
