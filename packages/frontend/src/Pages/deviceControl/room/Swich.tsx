@@ -125,36 +125,34 @@ function mergeData(data: HistoricalGeneric[], propertyId: IThingProperty["proper
     if (!propertyId) return [];
 
     let result: Array<[string, string | null, Date, Date]> = [];
+    let lastTrue: { value: string; timestamp: Date } | null = null;
 
-    data.forEach((doc, idx) => {
+    data.forEach((doc: HistoricalGeneric) => {
         const samples = doc.properties[propertyId]?.samples
         if (samples) {
             for (let i = 0; i < samples.length; i++) {
                 const rec = samples[i]
-                if (samples[i].value === "true") {
-                    while ((i + 1) < samples.length) {
-                        i += 1;
-                        if (samples[i].value === "false") {
-                            result.push([
-                                "Zapnuto", "",
-                                new Date(rec.timestamp),
-                                new Date(samples[i].timestamp)
-                            ])
-                            break;
-                        }
-                    }
-                    if (idx === data.length - 1 && samples[i].value !== "false") {
-                        result.push([
-                            "Zapnuto", "",
-                            new Date(rec.timestamp),
-                            new Date()
-                        ])
-                    }
+                if (rec.value === "true") {
+                    lastTrue = rec
+                } else if (lastTrue) {
+                    result.push([
+                        "Zapnuto", "",
+                        new Date(lastTrue.timestamp),
+                        new Date(rec.timestamp)
+                    ])
+                    lastTrue = null;
                 }
             }
         }
-
     })
+
+    if (lastTrue) {
+        result.push([
+            "Zapnuto", "",
+            new Date((lastTrue as any).timestamp),
+            new Date()
+        ])
+    }
 
     return result;
 }
