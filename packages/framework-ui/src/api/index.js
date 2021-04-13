@@ -79,7 +79,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
                     duration: 3000
                 })
             );
-    } else if (status !== 200 && status !== 208) {
+    } else if (status !== 200) {
         // 208 - my error code
         dispatch(
             addNotification({
@@ -103,9 +103,10 @@ const processResponse = (dispatch, successMessage) => async (response) => {
     }
 };
 
-const checkError = (Fn) => (error) => {
+const checkError = (Fn, error) => {
     warningLog('API catch> ' + error);
-    if (error.message !== 'breakChain' && Fn) Fn(error);
+    // if (error.message !== 'breakChain' && Fn)
+    if (Fn) Fn(error);
 };
 
 function buildParams(params) {
@@ -144,7 +145,7 @@ export const jsonSender = async ({
         const json = await processResponse(dispatch, successMessage)(response);
         if (onSuccess) onSuccess(json);
     } catch (e) {
-        checkError(onError)(e);
+        checkError(onError, e);
         catched = true;
     }
     onFinish && onFinish();
@@ -175,7 +176,7 @@ export const paramSender = async ({
         onSuccess(json);
     } catch (e) {
         catched = true;
-        checkError(onError)(e);
+        checkError(onError, e);
     }
     onFinish && onFinish();
     return !catched;
