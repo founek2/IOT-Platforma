@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Chart } from "react-google-charts";
 import Loader from "framework-ui/lib/Components/Loader";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { ReactGoogleChartEvent } from "react-google-charts/dist/types";
+import { ReactGoogleChartEvent, GoogleChartWrapperChartType } from "react-google-charts/dist/types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
     },
+    // timeline: { showRowLabels: false },
+    // avoidOverlappingGridLines: false,
 }));
 
 const options = {
@@ -35,6 +37,9 @@ const options = {
         // baseline: 0
     },
     legend: { position: "none" },
+
+    timeline: { showRowLabels: false },
+    avoidOverlappingGridLines: false,
 };
 
 function getConvertOptionsFunc(chartType: any) {
@@ -46,10 +51,18 @@ function getConvertOptionsFunc(chartType: any) {
 
 interface ChartSimpleProps {
     data: any;
+    type?: GoogleChartWrapperChartType,
+    formatters?: {
+        column: number;
+        type: "ArrowFormat" | "BarFormat" | "ColorFormat" | "DateFormat" | "NumberFormat" | "PatternFormat";
+        options?: {};
+    }[]
 }
 
 function ChartSimple({
     data,
+    type = "Line",
+    formatters
 }: //	vAxisTitle, hAxisTitle, minValue
     ChartSimpleProps) {
     const classes = useStyles();
@@ -71,7 +84,7 @@ function ChartSimple({
             <Chart
                 width="100%"
                 // height="400px"
-                chartType="Line"
+                chartType={type}
                 legendToggle
                 loader={
                     <span className={classes.loading}>
@@ -80,6 +93,7 @@ function ChartSimple({
                     </span>
                 }
                 data={data}
+                formatters={formatters}
                 // options={finalOptions}
                 options={finalOptions}
                 chartEvents={convertFunc ? undefined : chartEvents}

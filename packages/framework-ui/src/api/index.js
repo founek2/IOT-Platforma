@@ -10,11 +10,11 @@ const processResponse = (dispatch, successMessage) => async (response) => {
     const { status } = response;
     // set new jwt token, when provided from backend
 
-    const bodyLen = response.headers.get('content-length');
+    // const bodyLen = response.headers.get('content-length');
     const contentType = response.headers.get('content-type');
     const isJson = ~contentType.indexOf('application/json');
-
-    const jsonBody = isJson && bodyLen > 0 ? await response.json() : undefined;
+    // console.log('bodyLen', bodyLen, contentType);
+    const jsonBody = isJson ? await response.json() : undefined;
     const errorMessage = jsonBody ? jsonBody.error : undefined;
 
     const newToken = response.headers.get('authorization-jwt-new');

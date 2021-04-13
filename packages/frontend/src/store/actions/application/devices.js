@@ -102,6 +102,7 @@ export function fetch() {
             {
                 token: getToken(getState()),
                 onSuccess: (json) => {
+                    console.log('docs', json);
                     dispatch(set(json.docs.sort(sortDevices)));
                     dispatch(dehydrateState());
                 }

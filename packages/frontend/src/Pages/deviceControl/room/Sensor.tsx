@@ -67,7 +67,7 @@ function Sensor({
     useEffect(() => {
         if (openDialog) fetchHistory();
     }, [openDialog]);
-    const chartData = useMemo(() => mergeData(historyData.data, property.propertyId), [
+    const chartData = useMemo(() => mergeData(historyData.data as HistoricalSensor[], property.propertyId), [
         historyData.data.length > 0 && historyData.data[0].first,
         historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
         historyData.thingId === thing._id,
