@@ -1,57 +1,95 @@
-import { makeStyles } from "@material-ui/core";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { IDevice } from "common/lib/models/interface/device";
-import { IDiscovery } from "common/lib/models/interface/discovery";
+import { SocketUpdateThingState } from "common/lib/types";
 import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import { isUrlHash, getApplication } from "framework-ui/lib/utils/getters";
-import { equals, filter, o, prop, path } from "ramda";
+import { getUserPresence, isUrlHash, getApplication } from "framework-ui/lib/utils/getters";
 import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { bindActionCreators } from "redux";
+import { createSelector } from "reselect";
+import { LocationTypography } from "../components/LocationTypography";
 import * as deviceActions from "../store/actions/application/devices";
-import * as discoveredActions from "../store/actions/application/discovery";
-import { IState } from "../types";
-import { getDevices, getDiscovery, getQueryField, getQueryID } from "../utils/getters";
+import { getDevicesLastUpdate, getQueryField } from "../utils/getters";
 import io from "../webSocket";
-import DeviceSection from "./devices/DeviceSection";
-import DiscoverySection from "./devices/DiscoverySection";
+import Room from "./devices/Room";
+import RoomWidget from "./devices/RoomWidget";
+import { path } from "ramda";
+import { IState } from "../types";
 
-function isWritable(device: IDevice) {
-    return device.permissions && device.permissions.write && Boolean(~device.permissions.write.length);
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        // display: "flex",
+        // flexWrap: "wrap",
+        padding: theme.spacing(2),
+    },
+    item: {
+        width: 150,
+        [theme.breakpoints.down("sm")]: {
+            width: `calc(50% - ${theme.spacing(1.5)}px)`, // to add spacing to right
+            margin: `${theme.spacing(1)}px 0 0 ${theme.spacing(1)}px`,
+        },
+    },
+    widgetContainer: {
+        display: "flex",
+        flexWrap: "wrap",
+    },
+    widget: {
+        height: "100%"
+    },
+}));
+
+function updateDevice(updateThingA: any) {
+    return ({ _id, thing }: SocketUpdateThingState) => {
+        console.log("web socket GOT", _id, thing);
+        thing.state!.timestamp = new Date();
+        updateThingA({ _id, thing });
+    };
 }
 
-interface DevicesProps {
-    history: any;
-    devices: IDevice[];
-    discoveredDevices: IDiscovery[];
-    updateDeviceAction: any;
-    addDiscoveredDeviceAction: any;
+type Buildings = Map<string, Map<string, IDevice[]>>;
+
+interface DeviceControlProps {
     fetchDevicesAction: any;
-    fetchDiscoveredDevicesAction: any;
-    devicesLastFetch?: Date;
+    updateDeviceAction: any;
+    devicesLastUpdate: any;
+    updateThingA: any;
+    buildings: Buildings;
+    selectedLocation: { building?: string, room?: string };
+    devicesLastFetch?: Date
 }
-
-
-function Devices({ devices, discoveredDevices, updateDeviceAction, addDiscoveredDeviceAction, fetchDiscoveredDevicesAction, fetchDevicesAction, devicesLastFetch }: DevicesProps) {
+function Devices({
+    fetchDevicesAction,
+    updateDeviceAction,
+    updateThingA,
+    devicesLastUpdate,
+    buildings,
+    selectedLocation,
+    devicesLastFetch,
+}: DeviceControlProps) {
+    const classes = useStyles();
     useEffect(() => {
         fetchDevicesAction();
-        fetchDiscoveredDevicesAction();
 
+        const listener = updateDevice(updateThingA);
+        io.getSocket().on("control", listener);
         io.getSocket().on("device", updateDeviceAction);
-        io.getSocket().on("deviceDiscovered", addDiscoveredDeviceAction);
+
+        const listenerAck = updateDevice(updateDeviceAction);
+        io.getSocket().on("ack", listenerAck);
 
         return () => {
+            io.getSocket().off("control", listener);
+            io.getSocket().off("ack", listenerAck);
             io.getSocket().off("device", updateDeviceAction);
-            io.getSocket().off("deviceDiscovered", addDiscoveredDeviceAction);
         };
-    }, [updateDeviceAction, addDiscoveredDeviceAction, fetchDevicesAction, fetchDiscoveredDevicesAction]);
+    }, [fetchDevicesAction, updateDeviceAction, updateThingA]);
 
     useEffect(() => {
         function handler() {
             console.log("focus")
+            console.log(devicesLastFetch)
             const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000
             if (!io.getSocket().isConnected() || isOld) {
                 fetchDevicesAction()
@@ -63,32 +101,109 @@ function Devices({ devices, discoveredDevices, updateDeviceAction, addDiscovered
         return () => window.removeEventListener("focus", handler)
     }, [fetchDevicesAction, devicesLastFetch])
 
+    useEffect(() => {
+        const listenConnect = () => {
+            console.log("connect");
+            // window.removeEventListener("focus", handler);
+        };
+        const listenDisconnect = () => {
+            console.log("disconnected");
+            // window.addEventListener("focus", handler);
+        };
+
+        io.getSocket().on("disconnect", listenDisconnect);
+        io.getSocket().on("connect", listenConnect);
+
+        return () => {
+            io.getSocket().off("disconnect", listenDisconnect);
+            io.getSocket().off("connect", listenConnect);
+        };
+    }, [devicesLastUpdate]);
+
+    const selectedBuilding = selectedLocation.building ? buildings.get(selectedLocation.building) : null;
+    const selectedRoom = selectedLocation.room ? selectedBuilding?.get(selectedLocation.room) : null;
+
     return (
-        <Fragment>
-            <Card>
-                <CardHeader title="Správa zařízení" />
-                <CardContent>
-                    <DiscoverySection discoveredDevices={discoveredDevices} />
-                    <DeviceSection devices={devices} />
-                </CardContent>
-                <CardActions />
-            </Card>
-        </Fragment>
+        <div className={classes.root}>
+
+            <Grid container justify="center">
+                <Grid xs={12} md={10} lg={8} item>
+                    {!selectedRoom ? (
+                        buildings.size === 0 ? (
+                            <Typography>Nebyla nalezena žádná zařízení</Typography>
+                        ) : (
+                                <div className={classes.widgetContainer}>
+                                    {(selectedBuilding
+                                        ? ([[selectedLocation.building, selectedBuilding]] as Array<
+                                            [string, Map<string, IDevice[]>]
+                                        >)
+                                        : [...buildings.entries()]
+                                    ).map(([building, rooms]) => {
+                                        return (
+                                            <Fragment key={building}>
+                                                <LocationTypography
+                                                    location={{ building }}
+                                                    linkBuilding={Boolean(!selectedBuilding)}
+                                                />
+                                                <Grid container spacing={2}>
+                                                    {[...rooms.entries()].map(([room, devices]) => (
+                                                        <Grid item xs={12} md={6} lg={6} key={building + "/" + room}>
+                                                            <Link
+                                                                to={`/devices/${building}/${room}`}
+                                                            >
+                                                                <RoomWidget devices={devices} className={classes.widget} />
+                                                            </Link>
+                                                        </Grid>
+                                                    ))}
+                                                </Grid>
+                                            </Fragment>
+                                        );
+                                    })}
+                                </div>
+                            )
+                    ) : (
+                            <Room
+                                location={selectedLocation as { building: string, room: string }}
+                                devices={selectedRoom}
+                            />
+                        )}
+                </Grid>
+            </Grid>
+        </div >
     );
 }
 
-const _mapStateToProps = (state: IState) => {
-    const deviceId = getQueryField("deviceId")(state);
-    // @ts-ignore
-    const discoveredDevices = prop("data", getDiscovery(state)) as IState["application"]["discovery"]["data"];
-    // @ts-ignore
-    const toAddDevice = discoveredDevices.find(o(equals(deviceId), prop("deviceId")));
-    const devices = getDevices(state);
+const buildingsSelector = createSelector<any, { data: IDevice[]; lastUpdate: Date }, Buildings>(
+    // (o(filter(isControllable), getDevices) as unknown) as any,
+    (state: any) => state.application.devices,
+    ({ data: devices, lastUpdate }: { data: IDevice[]; lastUpdate: Date }) => {
+        const buildings = new Map<string, Map<string, IDevice[]>>();
+        devices.forEach((device) => {
+            const { building, room } = device.info.location;
+            if (!buildings.has(building)) buildings.set(building, new Map());
+            const roomMap = buildings.get(building)!;
+            roomMap.set(room, [...(roomMap.get(room) || []), device]);
+        });
+
+        return buildings;
+    }
+);
+
+const _mapStateToProps = (state: IState, { match }: { match: { params: { building?: string, room?: string } } }) => {
+    const JSONkey = getQueryField("JSONkey", state);
+    console.log("match", match)
     return {
-        devices,
+        buildings: buildingsSelector(state),
+        // buildings,
+        openNotifyDialog: isUrlHash("#editNotify")(state),
+        isUserPresent: getUserPresence(state),
+        devicesLastUpdate: getDevicesLastUpdate(state),
+        JSONkey,
         devicesLastFetch: path(["devices", "lastFetch"], getApplication(state)) as IState["application"]["devices"]["lastFetch"],
-        discoveredDevices: discoveredDevices,
-        toAddDevice,
+        selectedLocation: {
+            building: match.params.building,
+            room: match.params.room,
+        },
     };
 };
 
@@ -96,9 +211,10 @@ const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
             fetchDevicesAction: deviceActions.fetch,
-            fetchDiscoveredDevicesAction: discoveredActions.fetch,
+            updateDeviceStateA: deviceActions.updateState,
+            updateThingA: deviceActions.updateThing,
             updateDeviceAction: deviceActions.update,
-            addDiscoveredDeviceAction: discoveredActions.add,
+            resetEditNotifyControlA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),
         },
         dispatch
     );

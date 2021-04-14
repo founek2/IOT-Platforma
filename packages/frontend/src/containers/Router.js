@@ -26,7 +26,7 @@ function createRoute({ path, Component }) {
     return <Route path={path} key={path} render={(props) => <Component {...props} />} />;
 }
 
-const EditNotifyFormLazy = lazy(() => import('../Pages/EditNotifyForm'));
+// const EditNotifyFormLazy = lazy(() => import('../Pages/EditNotifyForm'));
 
 class Router extends Component {
     constructor(props) {
@@ -75,7 +75,11 @@ class Router extends Component {
                         <Route path="/registerUser" component={RegisterUser} />
 
                         {/* <Route path="/sensor/:deviceId" component={SensorHistoryLazy} /> */}
-                        <Route path="/device/:deviceId/thing/:nodeId/notify" component={EditNotifyFormLazy} />
+                        {/* <Route path="/device/:deviceId/thing/:nodeId/notify" component={EditNotifyFormLazy} /> */}
+                        {/* <Route
+                            path={[ '/devices/:building/:room', '/devices/:building', '/devices' ]}
+                            component={Devices}
+                        /> */}
                         <Route path="/" component={Main} />
                     </Switch>
                 </Suspense>

@@ -65,7 +65,7 @@ function Layout({
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Link className={`${classes.flex} ${classes.noLinkStyles}`} to="/">
+                    <Link className={`${classes.flex} ${classes.noLinkStyles}`} to="/devices">
                         <Typography variant="h5" color="inherit">
                             IOT Platforma
                         </Typography>

@@ -30,18 +30,14 @@ export function LocationTypography({ location, linkBuilding, className }: Locati
     const classes = useStyles();
     const linkToRoot = (
         <Link
-            to={{
-                search: "",
-            }}
+            to="/devices"
         >
             /
         </Link>
     );
     const linkToBuilding = (
         <Link
-            to={{
-                search: `?building=${location.building}`,
-            }}
+            to={`/devices/${location.building}`}
         >
             {location?.building}
         </Link>

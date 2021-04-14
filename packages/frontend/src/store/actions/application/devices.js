@@ -14,6 +14,53 @@ import {
 import { updateState as updateStateThingApi } from '../../../api/thingApi';
 import { ActionTypes } from '../../../constants/redux';
 
+export function update(device) {
+    return {
+        type: ActionTypes.UPDATE_DEVICE,
+        payload: device
+    };
+}
+
+export function remove(id) {
+    return {
+        type: ActionTypes.REMOVE_DEVICE,
+        payload: id
+    };
+}
+
+export function add(data) {
+    return {
+        type: ActionTypes.ADD_DEVICE,
+        payload: data
+    };
+}
+
+export function updateThing(data) {
+    return {
+        type: ActionTypes.UPDATE_THING,
+        payload: data
+    };
+}
+
+export function set(data) {
+    return {
+        type: ActionTypes.SET_DEVICES,
+        payload: data
+    };
+}
+
+function getBuilding(device) {
+    return device.info.location.building;
+}
+function getRoom(device) {
+    return device.info.location.room;
+}
+function sortDevices(a, b) {
+    const comp1 = getBuilding(a).localeCompare(getBuilding(b));
+    if (comp1 !== 0) return 0;
+    return getRoom(a).localeCompare(getRoom(b));
+}
+
 export function updateDevice(id) {
     return async function(dispatch, getState) {
         const EDIT_DEVICE = 'EDIT_DEVICE';
@@ -55,46 +102,6 @@ export function deleteDevice(id) {
     };
 }
 
-export function update(device) {
-    return {
-        type: ActionTypes.UPDATE_DEVICE,
-        payload: device
-    };
-}
-
-export function remove(id) {
-    return {
-        type: ActionTypes.REMOVE_DEVICE,
-        payload: id
-    };
-}
-
-export function add(data) {
-    return {
-        type: ActionTypes.ADD_DEVICE,
-        payload: data
-    };
-}
-
-export function updateThing(data) {
-    return {
-        type: ActionTypes.UPDATE_THING,
-        payload: data
-    };
-}
-
-function getBuilding(device) {
-    return device.info.location.building;
-}
-function getRoom(device) {
-    return device.info.location.room;
-}
-function sortDevices(a, b) {
-    const comp1 = getBuilding(a).localeCompare(getBuilding(b));
-    if (comp1 !== 0) return 0;
-    return getRoom(a).localeCompare(getRoom(b));
-}
-
 export function fetch() {
     return function(dispatch, getState) {
         baseLogger('FETCH_DEVICES');
@@ -109,13 +116,6 @@ export function fetch() {
             },
             dispatch
         );
-    };
-}
-
-export function set(data) {
-    return {
-        type: ActionTypes.SET_DEVICES,
-        payload: data
     };
 }
 

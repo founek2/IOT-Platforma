@@ -18,55 +18,53 @@ import { getUserPresence, getGroups } from 'framework-ui/lib/utils/getters';
 import uiMessages from '../../localization/ui';
 
 const styles = {
-	list: {
-		width: 250
-	},
-	fullList: {
-		width: 'auto'
-	}
+    list: {
+        width: 250
+    },
+    fullList: {
+        width: 'auto'
+    }
 };
 
 function createMenuListItem({ path, name, Icon }, index) {
-	return (
-		<Link to={path} key={path}>
-			<ListItem button>
-				<ListItemIcon>
-					<Icon />
-				</ListItemIcon>
-				<ListItemText primary={uiMessages.getMessage(name)} />
-			</ListItem>
-		</Link>
-	);
+    return (
+        <Link to={path} key={path}>
+            <ListItem button>
+                <ListItemIcon>
+                    <Icon />
+                </ListItemIcon>
+                <ListItemText primary={uiMessages.getMessage(name)} />
+            </ListItem>
+        </Link>
+    );
 }
 
 function SideMenu({ classes, open, onClose, onOpen, userPresence, userGroups }) {
-	const userRoutes = userPresence
-		? [ { path: '/', name: 'deviceControl', Icon: Cloud }, ...getPaths(userGroups) ]
-		: [];
+    const userRoutes = getPaths(userGroups);
 
-	return (
-		<SwipeableDrawer open={open} onClose={onClose} onOpen={onOpen}>
-			<div tabIndex={0} role="button" onClick={onClose} onKeyDown={onClose}>
-				<div className={classes.list}>
-					<List>
-						<ListSubheader>Menu</ListSubheader>
-						{[ ...userRoutes ].map(createMenuListItem)}
-					</List>
-					<Divider />
-					<List>
-						{[ { path: '/registerUser', name: 'registration', Icon: AccountCircle } ].map(
-							createMenuListItem
-						)}
-					</List>
-				</div>
-			</div>
-		</SwipeableDrawer>
-	);
+    return (
+        <SwipeableDrawer open={open} onClose={onClose} onOpen={onOpen}>
+            <div tabIndex={0} role="button" onClick={onClose} onKeyDown={onClose}>
+                <div className={classes.list}>
+                    <List>
+                        <ListSubheader>Menu</ListSubheader>
+                        {[ ...userRoutes ].map(createMenuListItem)}
+                    </List>
+                    <Divider />
+                    <List>
+                        {[ { path: '/registerUser', name: 'registration', Icon: AccountCircle } ].map(
+                            createMenuListItem
+                        )}
+                    </List>
+                </div>
+            </div>
+        </SwipeableDrawer>
+    );
 }
 
 const _mapStateToProps = (state) => ({
-	userPresence: getUserPresence(state),
-	userGroups: getGroups(state)
+    userPresence: getUserPresence(state),
+    userGroups: getGroups(state) || []
 });
 
 const _mapActionsToProps = (dispatch) => bindActionCreators({}, dispatch);
