@@ -31,16 +31,10 @@ const options = (isTimeLine: boolean) => ({
     hAxis: {
         gridlines: { color: "transparent", count: 3 },
         format: "HH:mm",
-        ...(isTimeLine ? {
-            // minValue: subHours(new Date(), 24),
-            maxValue: new Date()
-        } :
-            {
-                viewWindow: {
-                    // min: subHours(new Date(), 24),
-                    max: new Date()
-                }
-            })
+        viewWindow: {
+            max: new Date()
+        }
+
     },
     vAxis: {
         gridlines: { count: 3 },
