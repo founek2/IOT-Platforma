@@ -43,7 +43,9 @@ router.post("/user", async function (req, res) {
         return success ? res.send("allow") : sendDeny("/user device", res);
     } else if (isUser(username)) {
         UserService.checkCreditals({ userName: username, password, authType: AuthTypes.PASSWD })
-            .then(({ doc }) => {
+            .then(({ error, doc }) => {
+                if (error || !doc) return;
+
                 if (doc.groups.some((group) => group === "root" || group === "admin"))
                     return res.send("allow administrator");
                 throw new Error();
