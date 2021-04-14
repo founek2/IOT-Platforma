@@ -3,6 +3,7 @@ import { Chart } from "react-google-charts";
 import Loader from "framework-ui/lib/Components/Loader";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { ReactGoogleChartEvent, GoogleChartWrapperChartType } from "react-google-charts/dist/types";
+import subHours from "date-fns/subHours";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,20 +27,30 @@ const useStyles = makeStyles((theme) => ({
     // avoidOverlappingGridLines: false,
 }));
 
-const options = {
+const options = (isTimeLine: boolean) => ({
     hAxis: {
         gridlines: { color: "transparent", count: 3 },
         format: "HH:mm",
+        ...(isTimeLine ? {
+            // minValue: subHours(new Date(), 24),
+            maxValue: new Date()
+        } :
+            {
+                viewWindow: {
+                    // min: subHours(new Date(), 24),
+                    max: new Date()
+                }
+            })
     },
     vAxis: {
         gridlines: { count: 3 },
-        // baseline: 0
+
     },
     legend: { position: "none" },
 
     timeline: { showRowLabels: false },
     avoidOverlappingGridLines: false,
-};
+});
 
 function getConvertOptionsFunc(chartType: any) {
     // @ts-ignore
@@ -67,7 +78,7 @@ function ChartSimple({
 }: //	vAxisTitle, hAxisTitle, minValue
     ChartSimpleProps) {
     const classes = useStyles();
-
+    console.log("chartSimple", data)
     const [convertFunc, setConvertFunc] = useState<any>(null);
 
     const chartEvents: ReactGoogleChartEvent[] = [
@@ -79,7 +90,7 @@ function ChartSimple({
             },
         },
     ];
-    const finalOptions = convertFunc ? convertFunc(options) : options;
+    const finalOptions = convertFunc ? convertFunc(options(type === "Timeline")) : options(type === "Timeline");
     return (
         <div className={classes.root}>
             <Chart
