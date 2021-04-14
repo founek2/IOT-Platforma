@@ -84,8 +84,8 @@ export default () =>
                 eventEmitter.emit('user_login', doc);
 
             } else if (formData.REGISTRATION) {
-                if (UserModel.exists({ "info.userName": formData.REGISTRATION.info.userName }))
-                    return res.status(400).send({ error: "userNameAlreadyExist" })
+                if (await UserModel.exists({ "info.userName": formData.REGISTRATION.info.userName }))
+                    return res.status(409).send({ error: "userNameAlreadyExist" })
                 const { doc, token } = await UserService.create(formData.REGISTRATION);
 
                 res.send({
