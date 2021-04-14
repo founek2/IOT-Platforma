@@ -128,10 +128,7 @@ function Sensor({
             </SimpleDialog>
         </div>
     );
-
 }
-
-export default boxHoc(Sensor);
 
 function mergeData(data: HistoricalSensor[], propertyId: IThingProperty["propertyId"]) {
     if (!propertyId) return [];
@@ -146,3 +143,5 @@ function mergeData(data: HistoricalSensor[], propertyId: IThingProperty["propert
 
     return result;
 }
+
+export default boxHoc(Sensor);

@@ -1,4 +1,4 @@
-import { Fab, Grid } from "@material-ui/core";
+import { Fab, Grid, useTheme, useMediaQuery } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { DeviceStatus } from "common/lib/models/interface/device";
 import { IDiscovery, IDiscoveryThing } from "common/lib/models/interface/discovery";
@@ -33,6 +33,8 @@ function DiscoverySection(props: DiscoverySectionProps) {
         updateFormField,
         addDiscoveryAction,
     } = props;
+    const theme = useTheme();
+    const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
 
     function closeDialog() {
         resetCreateDeviceAction();
@@ -118,6 +120,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
                 agreeText="Přidat"
                 onAgree={onAgree}
                 onClose={closeDialog}
+                fullScreen={isSmall}
                 content={
                     <Grid container spacing={2}>
                         <DeviceForm formName="CREATE_DEVICE" onEnter={onAgree} />

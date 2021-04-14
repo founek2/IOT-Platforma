@@ -190,15 +190,11 @@ const buildingsSelector = createSelector<any, { data: IDevice[]; lastUpdate: Dat
 );
 
 const _mapStateToProps = (state: IState, { match }: { match: { params: { building?: string, room?: string } } }) => {
-    const JSONkey = getQueryField("JSONkey", state);
-    console.log("match", match)
     return {
         buildings: buildingsSelector(state),
-        // buildings,
         openNotifyDialog: isUrlHash("#editNotify")(state),
         isUserPresent: getUserPresence(state),
         devicesLastUpdate: getDevicesLastUpdate(state),
-        JSONkey,
         devicesLastFetch: path(["devices", "lastFetch"], getApplication(state)) as IState["application"]["devices"]["lastFetch"],
         selectedLocation: {
             building: match.params.building,

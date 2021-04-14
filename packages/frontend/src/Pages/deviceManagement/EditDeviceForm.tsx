@@ -30,7 +30,7 @@ function EditDeviceForm({ userNames, fetchUserNames }: DiscoverySectionProps) {
             <DeviceForm formName="EDIT_DEVICE" />
             {userNames.data.length && (
                 <>
-                    <Grid item md={6}>
+                    <Grid item xs={12} sm={6}>
                         <FieldConnector
                             deepPath="EDIT_DEVICE.permissions.read"
                             component="ChipArray"
@@ -38,7 +38,7 @@ function EditDeviceForm({ userNames, fetchUserNames }: DiscoverySectionProps) {
                         // className={classes.chipArray}
                         />
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item xs={12} sm={6}>
                         <FieldConnector
                             deepPath="EDIT_DEVICE.permissions.control"
                             component="ChipArray"
@@ -46,7 +46,7 @@ function EditDeviceForm({ userNames, fetchUserNames }: DiscoverySectionProps) {
                         // className={classes.chipArray}
                         />
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item xs={12} sm={6}>
                         <FieldConnector
                             deepPath="EDIT_DEVICE.permissions.write"
                             component="ChipArray"

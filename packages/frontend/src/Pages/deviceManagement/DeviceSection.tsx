@@ -20,6 +20,7 @@ import { bindActionCreators } from "redux";
 import OnlineCircle from "../../components/OnlineCircle";
 import * as deviceActions from "../../store/actions/application/devices";
 import EditDeviceForm from "./EditDeviceForm";
+import FullScreenForm from "frontend/src/components/FullScreenForm";
 
 interface DiscoverySectionProps {
     devices?: IDevice[];
@@ -50,6 +51,7 @@ function DiscoverySection({
     const history = useHistory();
     const theme = useTheme();
     const isWide = useMediaQuery(theme.breakpoints.up("md"));
+    const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
 
     useEffect(() => {
         if (selectedDevice) prefillEditForm(pick(["info", "permissions"], selectedDevice));
@@ -71,6 +73,7 @@ function DiscoverySection({
 
     async function onAgree() {
         const result = await updateDeviceAction(selectedDevice?._id);
+        console.log("RESULT", result)
         if (result) closeDialog();
     }
 
@@ -159,6 +162,14 @@ function DiscoverySection({
                     Smazat
 				</MenuItem>
             </Menu>
+            {/* <FullScreenForm
+                open={openEditDialog}
+                heading="Editace zařízení"
+                onAgree={onAgree}
+                onClose={closeDialog}
+            >
+                <EditDeviceForm />
+            </FullScreenForm> */}
             <Dialog
                 open={openEditDialog}
                 title="Editace zařízení"
@@ -166,6 +177,7 @@ function DiscoverySection({
                 agreeText="Uložit"
                 onAgree={onAgree}
                 onClose={closeDialog}
+                fullScreen={isSmall}
                 content={
                     <Grid container spacing={2}>
                         <EditDeviceForm />
