@@ -12,7 +12,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
 
     // const bodyLen = response.headers.get('content-length');
     const contentType = response.headers.get('content-type');
-    const isJson = ~contentType.indexOf('application/json');
+    const isJson = contentType ? ~contentType.indexOf('application/json') : false;
     // console.log('bodyLen', bodyLen, contentType);
     const jsonBody = isJson ? await response.json() : undefined;
     const errorMessage = jsonBody ? jsonBody.error : undefined;
@@ -104,7 +104,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
 };
 
 const checkError = (Fn, error) => {
-    warningLog('API catch> ' + error);
+    warningLog('API catch> ' + error, error.stack);
     // if (error.message !== 'breakChain' && Fn)
     if (Fn) Fn(error);
 };
