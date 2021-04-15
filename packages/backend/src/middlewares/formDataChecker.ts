@@ -1,7 +1,6 @@
 import { infoLog, errorLog, warningLog } from 'framework-ui/lib/logger';
-import { checkValidFormData } from '../utils/validation';
-import { trimFields } from 'framework-ui/lib/validations';
-import { keys } from 'ramda';
+import { checkValidFormData } from 'common/lib/utils/validation';
+import { trimData } from 'framework-ui/lib/utils/trimData';
 import express from "express"
 
 // TODO probably array validations do not work properly
@@ -18,7 +17,7 @@ export default function formDataChecker(fieldDescriptors: any, { ingoreRequired,
             res.status(400).send({ error: 'notAllowedFormName' });
 
         if (formData) {
-            const trimedData = trimFields(formData);
+            const trimedData = trimData(formData);
             const { valid, errors } = checkValidFormData(trimedData, fieldDescriptors, ingoreRequired);
 
             if (valid) {
