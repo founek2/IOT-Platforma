@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "react-app-rewired start",
-        "build": "CREATE_REACT_APP=true react-app-rewired build",
+        "build": "GENERATE_SOURCEMAP=false CREATE_REACT_APP=true react-app-rewired build",
         "clean": "rimraf build",
         "test": "react-app-rewired test",
         "eject": "react-scripts eject",
