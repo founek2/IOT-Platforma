@@ -137,7 +137,7 @@ pipeline {
 
                         rm -rf "$IOT_DEPLOY_PATH"/backend/*
                         rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
-                        cp package.json "$IOT_DEPLOY_PATH"/backend
+                        cp package.json yarn.lock "$IOT_DEPLOY_PATH"/backend
 
                         cd "$IOT_DEPLOY_PATH"/backend
                         yarn install --production
