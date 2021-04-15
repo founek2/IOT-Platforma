@@ -8,7 +8,6 @@ export enum PropertyClass {
 export enum ComponentType {
     sensor = "sensor",
     activator = "activator",
-    // BinarySensor = "binary_sensor",
     switch = "switch",
     generic = "generic",
 }
@@ -20,24 +19,6 @@ export enum PropertyDataType {
     integer = "integer",
     enum = "enum",
 }
-
-// export enum PredefinedComponentType {
-// 	switch = ComponentType.switch,
-// }
-
-// export const ThingProperties: {
-// 	[componentType in PredefinedComponentType]: Array<IThingProperty>;
-// } = {
-// 	[PredefinedComponentType.switch]: [
-// 		{
-// 			propertyId: "power",
-// 			name: "Zapnuto",
-// 			dataType: PropertyDataType.enum,
-// 			format: ["on", "off"],
-// 			settable: true,
-// 		} as IThingPropertyEnum,
-// 	],
-// };
 
 export interface IThing {
     _id?: any;
@@ -74,17 +55,3 @@ export interface IThingPropertyEnum extends IThingPropertyBase {
     dataType: PropertyDataType.enum;
     format: string[];
 }
-
-// export interface IThingSensor {
-// 	_id?: any;
-// 	config: {
-// 		name: string;
-// 		nodeId: string;
-// 		componentType: ComponentType.sensor;
-// 		properties: [IThingProperty];
-// 	};
-// 	state?: {
-// 		timeStamp: Date;
-// 		value: any;
-// 	};
-// }

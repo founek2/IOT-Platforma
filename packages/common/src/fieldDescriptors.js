@@ -1,47 +1,9 @@
 import validationFactory from 'framework-ui/lib/validations/validationFactory';
-import {
-    AuthTypes,
-    ControlTypes,
-    SampleIntervals,
-    RgbTypes,
-    LINEAR_TYPE,
-    NotifyTypes,
-    NOTIFY_TYPES,
-    NotifyIntervals,
-    CONTROL_STATE_KEYS,
-    CONTROL_TYPES
-} from './constants';
-import { assocPath, is, forEachObjIndexed } from 'ramda';
-import setInPath from 'framework-ui/lib/utils/setInPath';
-import { NotifyType } from './models/interface/notifyInterface';
+import { assocPath } from 'ramda';
+import { AuthTypes, NotifyIntervals } from './constants';
 import { DeviceCommand } from './models/interface/device';
-
-function recursive(transform, predicate, object) {
-    const func = (accum = '') => (value, key) => {
-        if (predicate(value)) return rec(value, accum + key + '.');
-        transform(value, accum + key);
-    };
-
-    function rec(obj, accum) {
-        forEachObjIndexed(func(accum), obj);
-    }
-    rec(object);
-}
-
-function transformToForm(formName, fields) {
-    // TODO doesnt work for nested fields
-    let result = {};
-    recursive(
-        (val, deepPath) => {
-            const newVal = { ...val, deepPath: val.deepPath.replace(/[^.]*/, formName) };
-            result = setInPath(deepPath, newVal, result);
-        },
-        (val) => is(Object, val) && !val.deepPath,
-        fields
-    );
-
-    return result;
-}
+import { NotifyType } from './models/interface/notifyInterface';
+import { transformToForm } from 'framework-ui/lib/utils/transformToForm';
 
 const LOGIN = {
     userName: {

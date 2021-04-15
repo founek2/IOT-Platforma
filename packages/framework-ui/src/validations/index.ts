@@ -1,4 +1,4 @@
-import { forEach, is, clone, forEachObjIndexed, uniq, F } from 'ramda';
+import { forEach, is, clone, forEachObjIndexed, uniq, F, isNil, ifElse, identity, mapObjIndexed } from 'ramda';
 import getInPath from '../utils/getInPath';
 import {
     getFieldDescriptor,
@@ -8,13 +8,15 @@ import {
     getFormData,
     getRegisteredFields
 } from '../utils/getters';
-import validationFactory from './validationFactory';
 import isObject from '../utils/isObject';
 import * as types from '../types'
 import isNotEmpty from '../utils/isNotEmpty';
 import setInPath from '../utils/setInPath';
 
-const requiredFn = validationFactory('isRequired');
+
+const requiredFn = (value: any) => {
+    return (!isNil(value) && isNotEmpty(value)) || 'isRequired'
+}
 const notEmptyVal = (val: any) => requiredFn(val) === true
 
 const getWhenOpt = (deepPath: string) => {
@@ -33,50 +35,40 @@ export const validateField = (deepPath: string, state: object, ignorePristine = 
             valid: false,
             errorMessages: ["missingDescriptor"]
         }
-        const { required, when, validations } = descriptor;
+        const { validations } = descriptor;
         const formName = deepPath.split('.')[0];
 
         const value = getInPath(deepPath, formsData);
-        console.log("validace", formsData, formName, deepPath)
-        if (isRequired(descriptor, formsData[formName], deepPath)) {
-            if (required) {
-                if (notEmptyVal(value)) {
-                    const result = createValidationsResult(value, validations);
-                    return createFieldState(result);
-                } else {
-                    if (ignoreRequired) {
-                        return createFieldState([]);
-                    } else {
-                        // console.log(deepPath, value, required, notEmptyVal(value))
-                        const result = createValidationsResult(value, [requiredFn]);
-                        return createFieldState(result);
-                    }
-                }
-            } else {
-                if (value) {
-                    const result = createValidationsResult(value, validations);
-                    return createFieldState(result);
-                } else {
-                    return createFieldState([])
-                }
 
+
+        console.log("validace", deepPath)
+
+        if (isRequired(descriptor, formsData[formName], deepPath) && !ignoreRequired) {
+            console.log("deepPath requred", deepPath, value, notEmptyVal(value))
+            if (notEmptyVal(value)) {
+                const result = createValidationsResult(value, validations);
+                console.log(result)
+                return createFieldState(result);
+            }
+            else {
+                // console.log(deepPath, value, required, notEmptyVal(value))
+                const result = createValidationsResult(value, [requiredFn]);
+                return createFieldState(result);
             }
         } else {
-            return {
-                valid: true,
-                errorMessages: []
-            };
+            if (notEmptyVal(value)) {
+                const result = createValidationsResult(value, validations);
+                return createFieldState(result);
+            } else
+                return createFieldState([])
         }
-    } else return {
-        valid: true,
-        errorMessages: []
-    };
+    } else return createFieldState([])
 };
 
-function recursive(transform: (value: any, pathAccum: string) => void, predicate: (val: any) => boolean, arrayPredicate: (value: any, pathAccum: string) => boolean, object: object) {
+function recursive(transform: (value: any, pathAccum: string) => void, predicate: (val: any, deepPath: string) => boolean, arrayPredicate: (value: any, pathAccum: string) => boolean, object: object) {
     const func = (accum = '') => (value: any, key: string | number): any => {
         if (arrayPredicate(value, accum + key)) return recArray(value, accum + key + ".") // pouze pokud existuje descriptor pro array
-        if (predicate(value)) return recObj(value, accum + key + ".")
+        if (predicate(value, accum + key)) return recObj(value, accum + key + ".")
         transform(value, accum + key)
     }
 
@@ -117,8 +109,14 @@ export function validateForm(formName: string, state: object, ignoreRequiredFiel
         return isObject(val) && !val.deepPath
     }, F, { [formName]: formDescriptors })
 
+    // generate deePaths from FormData
+    recursive((val, deepPath) => {
+        arraOfPaths.push(deepPath)
+    }, (val, deepPath) => {
+        return isObject(val) && !/\.[0-9]+$/.test(deepPath) // check if object and validate if deepPath ends with number, then its for array descriptor
+    }, (val) => Array.isArray(val), { [formName]: formData })
+
     const uniqArray = uniq(arraOfPaths)
-    console.log("uniq deepPaths", uniqArray)
     forEach((deepPath) => {
         const out = validateField(deepPath, state, true, ignoreRequiredFields)
         out.pristine = false
@@ -127,10 +125,10 @@ export function validateForm(formName: string, state: object, ignoreRequiredFiel
     return result;
 };
 
-export const validateFormBE = (formName: string, state: object, ignoreRequiredFields = false) => {
-    // TODO check why it adds formName itself
-    return checkValid(validateForm(formName, state, ignoreRequiredFields))
-};
+// export const validateFormBE = (formName: string, state: object, ignoreRequiredFields = false) => {
+//     // TODO check why it adds formName itself
+//     return checkValid(validateForm(formName, state, ignoreRequiredFields))
+// };
 
 /**
  * just for FrontEnd validations - validates all registered fields
@@ -146,21 +144,23 @@ export const validateRegisteredFields = (formName: string, state: object, ignore
     let result = {}
 
     // find all deePaths of - fields and array of fields
-    const arrayRegex = /\[\]$/;
-    recursive((val, deepPath) => {
-        /* Look for array fields */
-        if (arrayRegex.test(deepPath)) arrayOfArrayFields.push(deepPath.replace(arrayRegex, ""))
-        // else arraOfPaths.push(deepPath)
-    }, (val) => {
-        return isObject(val) && !val.deepPath
-    }, F, { [formName]: formDescriptors })
+    // const arrayRegex = /\[\]$/;
+    // recursive((val, deepPath) => {
+    //     /* Look for array fields */
+    //     if (arrayRegex.test(deepPath)) arrayOfArrayFields.push(deepPath.replace(arrayRegex, ""))
+    //     // else arraOfPaths.push(deepPath)
+    // }, (val) => {
+    //     return isObject(val) && !val.deepPath
+    // }, F, { [formName]: formDescriptors })
 
     const regFields = getRegisteredFields(state)
     recursive((val, deepPath) => {
         arraOfPaths.push(deepPath)
-    }, val => isObject(val) && val.valid === undefined,
+    },
+        val => isObject(val) && val.valid === undefined,
         (val, deepPath) =>
-            is(Array, val) && arrayOfArrayFields.some(p => p === deepPath)  // Test if array is array of fields or just value
+            // Test if array is array of fields or just value
+            is(Array, val) && arrayOfArrayFields.some(p => p === deepPath)
         , { [formName]: regFields[formName] })
 
 
@@ -240,12 +240,6 @@ export function createFieldState(validationResult: validationResult) {
     }
 }
 
-// TODO rewrite to recursive
-export function trimFields(formData: any) {
-    const newData = clone(formData);
-    for (const field in formData) {
-        if (is(String, formData[field]))
-            newData[field] = formData[field].trim();
-    }
-    return newData;
-}
+export const validateFormBE = (formName: string, state: object, ignoreRequiredFields = false) => {
+    return checkValid(validateForm(formName, state, ignoreRequiredFields))
+};

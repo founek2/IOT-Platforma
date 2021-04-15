@@ -1,5 +1,56 @@
-import fieldDescriptors from 'fieldDescriptors'
-import setInPath from 'framework-ui/lib/utils/setInPath'
+import setInPath from '../../utils/setInPath';
+import validationFactory from "../../validations/validationFactory"
+
+const fieldDescriptors = {
+    REGISTRATION: {
+        info: {
+            userName: {
+                deepPath: 'REGISTRATION.info.userName',
+                required: true,
+                label: 'Uživatelské jméno',
+                name: 'username',
+                validations: [validationFactory('isString', { min: 4, max: 30 })]
+            },
+            firstName: {
+                deepPath: 'REGISTRATION.info.firstName',
+                required: true,
+                label: 'Jméno',
+                name: 'firstname',
+                validations: [validationFactory('isString', { min: 2, max: 20 })]
+            },
+            lastName: {
+                deepPath: 'REGISTRATION.info.lastName',
+                required: true,
+                label: 'Příjmení',
+                name: 'lastname',
+                validations: [validationFactory('isString', { min: 2, max: 20 })]
+            },
+            email: {
+                deepPath: 'REGISTRATION.info.email',
+                label: 'Email',
+                name: 'email',
+                required: true,
+                validations: [validationFactory('isEmail')]
+            }
+        },
+        auth: {
+            type: {
+                deepPath: 'REGISTRATION.auth.type',
+                // required: true,
+                label: 'Pokročilá autentizace',
+                name: 'authtype',
+                validations: [validationFactory('isString', { min: 4, max: 20 })]
+            },
+            password: {
+                deepPath: 'REGISTRATION.auth.password',
+                required: true,
+                label: 'Heslo',
+                name: 'password',
+                validations: [validationFactory('isString', { min: 4, max: 20 })]
+            }
+        }
+    }
+}
 
 export const stateValid = {
     application: {
@@ -51,7 +102,8 @@ export const stateValid = {
             info: {
                 firstName: 'Martin',
                 lastName: 'Skalický',
-                userName: 'skalima'
+                userName: 'skalima',
+                email: "skalicky@iotplatforma.cloud"
             },
             auth: {
                 password: '123456'
@@ -68,7 +120,7 @@ export const stateValid = {
         search: '',
         query: {}
     }
-}
+};
 
 export const stateInvalidPassword = {
     application: {
@@ -106,7 +158,7 @@ export const stateInvalidPassword = {
                 auth: {
                     password: {
                         valid: true,
-                        pristine: false,
+                        pristine: false
                     },
                     type: {
                         valid: true,
@@ -119,7 +171,8 @@ export const stateInvalidPassword = {
             info: {
                 firstName: 'Martin',
                 lastName: 'Skalický',
-                userName: 'skalima'
+                userName: 'skalima',
+                email: "skalicky@iotplatforma.cloud"
             },
             auth: {
                 password: '123'
@@ -136,6 +189,6 @@ export const stateInvalidPassword = {
         search: '',
         query: {}
     }
-}
+};
 
-export const stateEmptyUserName = setInPath("formsData.REGISTRATION.info.userName", "", stateValid)
+export const stateEmptyUserName = setInPath('formsData.REGISTRATION.info.userName', '', stateValid);

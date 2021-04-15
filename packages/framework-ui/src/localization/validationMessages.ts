@@ -20,6 +20,8 @@ export const messages: types.messages = {
     isNotIpAddress: "Hodnota není IP adresa",
     isNotOneOf: ({ values }) => "Hodnota musí být jedna z " + values.map((obj: any) => obj.label).join(", "),
     notMatchPattern: ({ pattern }) => `Text musí být ve tvaru '${pattern}'`,
+    isNotObject: "Hodnota musí být Objekt",
+    isNotValidObject: "Objekt není ve správném formátu",
 };
 
 export default messageFactory(messages);

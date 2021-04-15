@@ -89,7 +89,6 @@ function Devices({
     useEffect(() => {
         function handler() {
             console.log("focus")
-            console.log(devicesLastFetch)
             const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000
             if (!io.getSocket().isConnected() || isOld) {
                 fetchDevicesAction()

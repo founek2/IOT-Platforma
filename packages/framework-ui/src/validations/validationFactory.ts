@@ -22,7 +22,7 @@ export default function <K extends keyof ModuleType>(functionName: K, arg?: obje
                 return true; // Validation passed
             }
         } else {
-            console.error("Missing validation Fn named: " + functionName);
+            if (process.env.JEST_WORKER_ID === undefined) console.error("Missing validation Fn named: " + functionName);
             throw new Error("Missing validation Fn named: " + functionName)
         }
     }

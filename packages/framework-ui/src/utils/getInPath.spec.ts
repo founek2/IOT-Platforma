@@ -1,4 +1,4 @@
-import getInPath from '../getInPath'
+import getInPath from './getInPath'
 
 describe("getInPath", () => {
     test("simple", () => {
