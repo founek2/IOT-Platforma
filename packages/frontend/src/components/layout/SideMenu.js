@@ -9,7 +9,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
 import { Link } from 'react-router-dom';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import Cloud from '@material-ui/icons/Cloud';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 

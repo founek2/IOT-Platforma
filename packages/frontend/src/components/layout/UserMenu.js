@@ -26,7 +26,7 @@ const styles = (theme) => ({
 });
 // const isNotMobile = document.body.clientWidth > 600;
 
-function UserMenu({ classes, logOutAction, user, fetchDevicesAction }) {
+function UserMenu({ classes, logOutAction, user }) {
     const [ ancholEl, setAnchorEl ] = useState(null);
     // const curriedSetOpen = bool => () => setOpen(bool)
 
@@ -54,7 +54,7 @@ function UserMenu({ classes, logOutAction, user, fetchDevicesAction }) {
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        logOutAction().then(fetchDevicesAction);
+                        logOutAction();
                     }}
                 >
                     Odhlásit
@@ -71,8 +71,7 @@ const _mapStateToProps = (state) => ({
 const _mapDispatchToProps = (dispatch) =>
     bindActionCreators(
         {
-            logOutAction: userLogOut,
-            fetchDevicesAction: deviceActions.fetch
+            logOutAction: userLogOut
         },
         dispatch
     );
