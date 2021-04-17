@@ -13,6 +13,7 @@ import { equals } from 'ramda';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import getInPath from '../../utils/getInPath';
+import clsx from 'clsx';
 
 function desc(a, b, orderBy) {
     if (getInPath(orderBy, b) < getInPath(orderBy, a)) {
@@ -44,7 +45,6 @@ function mustContain(searchText, dataProps) {
 const styles = (theme) => ({
     root: {
         width: '100%'
-        // marginTop: theme.spacing(3)
     },
     table: {
         // minWidth: 1020
@@ -157,7 +157,8 @@ class EnhancedTable extends React.Component {
             enableSearch,
             customEditButton,
             onDelete,
-            rowsPerPageOptions
+            rowsPerPageOptions,
+            customClasses = {}
         } = this.props;
         const enableSelection = Boolean(onDelete);
         const selected = this.props.value;
@@ -174,8 +175,9 @@ class EnhancedTable extends React.Component {
                     enableCreation={enableCreation}
                     enableSearch={enableSearch}
                     onSearchChange={this.handleSearchChange}
+                    className={customClasses.toolbar}
                 />
-                <div className={classes.tableWrapper}>
+                <div className={clsx(classes.tableWrapper, customClasses.tableWrapper)}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -247,6 +249,7 @@ class EnhancedTable extends React.Component {
                     </Table>
                 </div>
                 <TablePagination
+                    className={customClasses.pagination}
                     component="div"
                     count={data.length}
                     rowsPerPage={rowsPerPage}
@@ -276,7 +279,13 @@ EnhancedTable.defaultProps = {
 };
 
 EnhancedTable.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    toolbarHead: PropTypes.string,
+    customClasses: PropTypes.shape({
+        toolbar: PropTypes.string,
+        tableWrapper: PropTypes.string,
+        pagination: PropTypes.string
+    })
 };
 
 export default withStyles(styles)(EnhancedTable);

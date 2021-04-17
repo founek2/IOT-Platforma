@@ -14,6 +14,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import OnlineCircle from "../../components/OnlineCircle";
 import * as discoveredActions from "../../store/actions/application/discovery";
+import { useManagementStyles } from "frontend/src/hooks/useManagementStyles";
+
 
 interface DiscoverySectionProps {
     discoveredDevices?: IDiscovery[];
@@ -24,6 +26,7 @@ interface DiscoverySectionProps {
 }
 
 function DiscoverySection(props: DiscoverySectionProps) {
+    const classes = useManagementStyles()
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [selectedId, setSelectedId] = useState<null | string>(null);
     const {
@@ -47,12 +50,17 @@ function DiscoverySection(props: DiscoverySectionProps) {
     }
 
     return (
-        <Fragment>
+        <Fragment >
             {discoveredDevices && discoveredDevices?.length > 0 && (
                 <FieldConnector
                     deepPath="DISCOVERY_DEVICES.selected"
                     component={({ onChange, value }) => (
                         <EnchancedTable
+                            customClasses={{
+                                tableWrapper: classes.tableWrapper,
+                                toolbar: classes.toolbar,
+                                pagination: classes.pagination,
+                            }}
                             rowsPerPageOptions={[2, 5, 10, 25]}
                             rowsPerPage={2}
                             // @ts-ignore

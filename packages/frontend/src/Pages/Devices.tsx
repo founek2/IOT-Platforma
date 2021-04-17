@@ -16,6 +16,7 @@ import Room from "./devices/Room";
 import RoomWidget from "./devices/RoomWidget";
 import { path } from "ramda";
 import { IState } from "../types";
+import { useEffectFetchDevices } from "../hooks/useEffectFetchDevices";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function updateDevice(updateThingA: any) {
+function updateControl(updateThingA: any) {
     return ({ _id, thing }: SocketUpdateThingState) => {
         console.log("web socket GOT", _id, thing);
         thing.state!.timestamp = new Date();
@@ -51,73 +52,22 @@ function updateDevice(updateThingA: any) {
 type Buildings = Map<string, Map<string, IDevice[]>>;
 
 interface DeviceControlProps {
-    fetchDevicesAction: any;
-    updateDeviceAction: any;
-    devicesLastUpdate: any;
-    updateThingA: any;
     buildings: Buildings;
     selectedLocation: { building?: string, room?: string };
-    devicesLastFetch?: Date
+    updateThingA: any,
 }
 function Devices({
-    fetchDevicesAction,
-    updateDeviceAction,
-    updateThingA,
-    devicesLastUpdate,
     buildings,
     selectedLocation,
-    devicesLastFetch,
+    updateThingA,
 }: DeviceControlProps) {
     const classes = useStyles();
+    useEffectFetchDevices();
     useEffect(() => {
-        fetchDevicesAction();
-
-        const listener = updateDevice(updateThingA);
+        const listener = updateControl(updateThingA);
         io.getSocket().on("control", listener);
-        io.getSocket().on("device", updateDeviceAction);
-
-        const listenerAck = updateDevice(updateDeviceAction);
-        io.getSocket().on("ack", listenerAck);
-
-        return () => {
-            io.getSocket().off("control", listener);
-            io.getSocket().off("ack", listenerAck);
-            io.getSocket().off("device", updateDeviceAction);
-        };
-    }, [fetchDevicesAction, updateDeviceAction, updateThingA]);
-
-    useEffect(() => {
-        function handler() {
-            console.log("focus")
-            const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000
-            if (!io.getSocket().isConnected() || isOld) {
-                fetchDevicesAction()
-                console.log("downloading devices")
-            }
-        }
-        window.addEventListener("focus", handler)
-
-        return () => window.removeEventListener("focus", handler)
-    }, [fetchDevicesAction, devicesLastFetch])
-
-    useEffect(() => {
-        const listenConnect = () => {
-            console.log("connect");
-            // window.removeEventListener("focus", handler);
-        };
-        const listenDisconnect = () => {
-            console.log("disconnected");
-            // window.addEventListener("focus", handler);
-        };
-
-        io.getSocket().on("disconnect", listenDisconnect);
-        io.getSocket().on("connect", listenConnect);
-
-        return () => {
-            io.getSocket().off("disconnect", listenDisconnect);
-            io.getSocket().off("connect", listenConnect);
-        };
-    }, [devicesLastUpdate]);
+        return () => io.getSocket().off("control", listener);
+    }, [updateThingA])
 
     const selectedBuilding = selectedLocation.building ? buildings.get(selectedLocation.building) : null;
     const selectedRoom = selectedLocation.room ? selectedBuilding?.get(selectedLocation.room) : null;
@@ -191,10 +141,6 @@ const buildingsSelector = createSelector<any, { data: IDevice[]; lastUpdate: Dat
 const _mapStateToProps = (state: IState, { match }: { match: { params: { building?: string, room?: string } } }) => {
     return {
         buildings: buildingsSelector(state),
-        openNotifyDialog: isUrlHash("#editNotify")(state),
-        isUserPresent: getUserPresence(state),
-        devicesLastUpdate: getDevicesLastUpdate(state),
-        devicesLastFetch: path(["devices", "lastFetch"], getApplication(state)) as IState["application"]["devices"]["lastFetch"],
         selectedLocation: {
             building: match.params.building,
             room: match.params.room,
@@ -205,13 +151,11 @@ const _mapStateToProps = (state: IState, { match }: { match: { params: { buildin
 const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            fetchDevicesAction: deviceActions.fetch,
-            updateDeviceStateA: deviceActions.updateState,
             updateThingA: deviceActions.updateThing,
-            updateDeviceAction: deviceActions.update,
-            resetEditNotifyControlA: formsActions.removeForm("EDIT_NOTIFY_SENSORS"),
         },
         dispatch
     );
+
+
 
 export default connect(_mapStateToProps, _mapDispatchToProps)(Devices);

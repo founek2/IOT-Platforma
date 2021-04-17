@@ -20,7 +20,8 @@ import { bindActionCreators } from "redux";
 import OnlineCircle from "../../components/OnlineCircle";
 import * as deviceActions from "../../store/actions/application/devices";
 import EditDeviceForm from "./EditDeviceForm";
-import FullScreenForm from "frontend/src/components/FullScreenForm";
+import { useManagementStyles } from "frontend/src/hooks/useManagementStyles";
+
 
 interface DiscoverySectionProps {
     devices?: IDevice[];
@@ -45,6 +46,7 @@ function DiscoverySection({
     setCommandField,
     sendDeviceCommandA,
 }: DiscoverySectionProps) {
+    const classes = useManagementStyles()
     const [menuForId, setMenuForId] = useState("");
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [openAlertDialog, setOpenAlertDialog] = useState(false);
@@ -88,9 +90,14 @@ function DiscoverySection({
     }
 
     return (
-        <Fragment>
+        <Fragment >
             {devices && devices?.length > 0 && (
                 <EnchancedTable
+                    customClasses={{
+                        tableWrapper: classes.tableWrapper,
+                        toolbar: classes.toolbar,
+                        pagination: classes.pagination,
+                    }}
                     // @ts-ignore
                     dataProps={[
                         { path: "info.name", label: "Název" },
@@ -123,7 +130,7 @@ function DiscoverySection({
                     ]}
                     enableSearch={isWide}
                     data={devices.map((device) => assoc("id", prop("_id", device), device))}
-                    toolbarHead="Seznam"
+                    toolbarHead="Správa zařízení"
                     orderBy="name"
                     enableEdit
                     customEditButton={(id: string, device: IDevice) => device.permissions.write?.length > 0 ? (

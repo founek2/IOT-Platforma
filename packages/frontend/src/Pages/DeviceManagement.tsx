@@ -18,59 +18,46 @@ import { getDevices, getDiscovery, getQueryField, getQueryID } from "../utils/ge
 import io from "../webSocket";
 import DeviceSection from "./deviceManagement/DeviceSection";
 import DiscoverySection from "./deviceManagement/DiscoverySection";
+import { useEffectFetchDevices } from "../hooks/useEffectFetchDevices";
 
-function isWritable(device: IDevice) {
-    return device.permissions && device.permissions.write && Boolean(~device.permissions.write.length);
-}
+const useStyles = makeStyles(theme => ({
+    cardContent: {
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
+    }
+}))
 
 interface DevicesProps {
     history: any;
     devices: IDevice[];
     discoveredDevices: IDiscovery[];
-    updateDeviceAction: any;
     addDiscoveredDeviceAction: any;
-    fetchDevicesAction: any;
     fetchDiscoveredDevicesAction: any;
-    devicesLastFetch?: Date;
 }
 
 
-function Devices({ devices, discoveredDevices, updateDeviceAction, addDiscoveredDeviceAction, fetchDiscoveredDevicesAction, fetchDevicesAction, devicesLastFetch }: DevicesProps) {
+function Devices({ devices, discoveredDevices, addDiscoveredDeviceAction, fetchDiscoveredDevicesAction }: DevicesProps) {
+    const classes = useStyles();
+    useEffectFetchDevices();
+
     useEffect(() => {
-        fetchDevicesAction();
         fetchDiscoveredDevicesAction();
 
-        io.getSocket().on("device", updateDeviceAction);
         io.getSocket().on("deviceDiscovered", addDiscoveredDeviceAction);
 
         return () => {
-            io.getSocket().off("device", updateDeviceAction);
             io.getSocket().off("deviceDiscovered", addDiscoveredDeviceAction);
         };
-    }, [updateDeviceAction, addDiscoveredDeviceAction, fetchDevicesAction, fetchDiscoveredDevicesAction]);
-
-    useEffect(() => {
-        function handler() {
-            console.log("focus")
-            const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000
-            if (!io.getSocket().isConnected() || isOld) {
-                fetchDevicesAction()
-                console.log("downloading devices")
-            }
-        }
-        window.addEventListener("focus", handler)
-
-        return () => window.removeEventListener("focus", handler)
-    }, [fetchDevicesAction, devicesLastFetch])
+    }, [addDiscoveredDeviceAction, fetchDiscoveredDevicesAction]);
 
     return (
         <Fragment>
             <Card>
-                <CardHeader title="Správa zařízení" />
-                <CardContent>
+                {/* <CardHeader title="Správa zařízení" /> */}
+                <div className={classes.cardContent}>
                     <DiscoverySection discoveredDevices={discoveredDevices} />
                     <DeviceSection devices={devices} />
-                </CardContent>
+                </div>
                 <CardActions />
             </Card>
         </Fragment>
@@ -86,7 +73,6 @@ const _mapStateToProps = (state: IState) => {
     const devices = getDevices(state);
     return {
         devices,
-        devicesLastFetch: path(["devices", "lastFetch"], getApplication(state)) as IState["application"]["devices"]["lastFetch"],
         discoveredDevices: discoveredDevices,
         toAddDevice,
     };
@@ -95,9 +81,7 @@ const _mapStateToProps = (state: IState) => {
 const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            fetchDevicesAction: deviceActions.fetch,
             fetchDiscoveredDevicesAction: discoveredActions.fetch,
-            updateDeviceAction: deviceActions.update,
             addDiscoveredDeviceAction: discoveredActions.add,
         },
         dispatch

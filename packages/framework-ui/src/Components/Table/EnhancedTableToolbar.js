@@ -17,7 +17,8 @@ import SearchField from './SearchField';
 
 const toolbarStyles = (theme) => ({
     root: {
-        paddingRight: 24
+        paddingRight: theme.spacing(2),
+        paddingLeft: theme.spacing(2)
     },
     highlight:
         theme.palette.type === 'light'
@@ -67,15 +68,20 @@ class EnhancedTableToolbar extends React.Component {
             onAdd,
             enableCreation,
             onSearchChange,
-            enableSearch
+            enableSearch,
+            className
         } = this.props;
 
         return (
             <Fragment>
                 <Toolbar
-                    className={clsx(classes.root, {
-                        [classes.highlight]: numSelected > 0
-                    })}
+                    className={clsx(
+                        classes.root,
+                        {
+                            [classes.highlight]: numSelected > 0
+                        },
+                        className
+                    )}
                 >
                     <div className={classes.title}>
                         {numSelected > 0 ? (
@@ -97,7 +103,7 @@ class EnhancedTableToolbar extends React.Component {
                             </Fragment>
                         )}
                     </div>
-                    <div className={classes.spacer} />
+                    {numSelected > 0 ? <div className={classes.spacer} /> : null}
                     <div className={classes.actions}>
                         {numSelected > 0 ? (
                             <Tooltip title="Delete">
