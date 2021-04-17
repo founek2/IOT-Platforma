@@ -1,5 +1,6 @@
 import BuildIcon from '@material-ui/icons/Build';
 import DevicesIcon from '@material-ui/icons/DevicesOther';
+import CloudIcon from '@material-ui/icons/Cloud';
 import initPrivileges from 'framework-ui/lib/privileges';
 import { lazy } from 'react';
 
@@ -20,7 +21,7 @@ export const routes = {
                 path: [ '/devices/:building/:room', '/devices/:building', '/devices' ],
                 Component: DevicesLazy
             },
-            { path: '/devices', name: 'deviceControl', Icon: BuildIcon },
+            { path: '/devices', name: 'deviceControl', Icon: CloudIcon },
             { path: '/deviceManagement', Component: DeviceManagement, name: 'devices', Icon: DevicesIcon },
             { path: '/device/:deviceId/thing/:nodeId/notify', Component: EditNotifyFormLazy }
         ]
