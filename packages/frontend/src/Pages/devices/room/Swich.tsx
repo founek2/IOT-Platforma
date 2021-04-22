@@ -64,7 +64,7 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
         historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
         historyData.thingId === thing._id,
     ]);
-
+    console.log(historyData.deviceId === deviceId, historyData.thingId === thing._id, chartData.length > 2)
     return (
         <div
             className={clsx(className, classes.root)}

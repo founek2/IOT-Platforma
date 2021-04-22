@@ -1,22 +1,19 @@
 import { Grid, makeStyles, Typography } from "@material-ui/core";
+import clsx from "clsx";
 import { IDevice } from "common/lib/models/interface/device";
 import { SocketUpdateThingState } from "common/lib/types";
-import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import { getUserPresence, isUrlHash, getApplication } from "framework-ui/lib/utils/getters";
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { createSelector } from "reselect";
 import { LocationTypography } from "../components/LocationTypography";
+import { useEffectFetchDevices } from "../hooks/useEffectFetchDevices";
 import * as deviceActions from "../store/actions/application/devices";
-import { getDevicesLastUpdate, getQueryField } from "../utils/getters";
+import { IState } from "../types";
 import io from "../webSocket";
 import Room from "./devices/Room";
 import RoomWidget from "./devices/RoomWidget";
-import { path } from "ramda";
-import { IState } from "../types";
-import { useEffectFetchDevices } from "../hooks/useEffectFetchDevices";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -39,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
     widget: {
         height: "100%"
     },
+    buildingContainer: {
+        marginTop: theme.spacing(2)
+    }
 }));
 
 function updateControl(updateThingA: any) {
@@ -87,12 +87,13 @@ function Devices({
                                             [string, Map<string, IDevice[]>]
                                         >)
                                         : [...buildings.entries()]
-                                    ).map(([building, rooms]) => {
+                                    ).map(([building, rooms], idx) => {
                                         return (
-                                            <Fragment key={building}>
+                                            <Fragment key={building} >
                                                 <LocationTypography
                                                     location={{ building }}
                                                     linkBuilding={Boolean(!selectedBuilding)}
+                                                    className={clsx(idx > 0 && classes.buildingContainer)}
                                                 />
                                                 <Grid container spacing={2}>
                                                     {[...rooms.entries()].map(([room, devices]) => (
