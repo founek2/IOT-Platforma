@@ -153,7 +153,7 @@ pipeline {
                         yarn install --production
 
                         echo "Starting service iot-backend-test"
-                        sudo systemctl start iot-backend-test
+                        sudo systemctl start iot-backend-test 
                         echo "Starting service iot-backend-mqtt-test"
                         sudo systemctl start iot-backend-mqtt-test
                         '''    
