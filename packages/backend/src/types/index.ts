@@ -1,10 +1,11 @@
 import { ControlRecipe } from "common/lib/types";
-import type { Request } from "express"
+import type { Request } from "express";
 import { IUser } from "common/lib/models/interface/userInterface";
 
 export interface EmitterEvents {
     user_login: any;
     user_signup: UserBasic;
+    user_forgot: { email: IUser["info"]["email"] };
     device_control_recipe_change: { recipes: ControlRecipe[]; deviceId: string };
     device_delete: string;
     device_create: string;
@@ -15,7 +16,7 @@ export interface UserBasic {
     id: string;
     info: {
         firstName: string;
-        email?: string;
+        email: string;
         lastName: string;
         userName: string;
     };
@@ -49,15 +50,11 @@ export interface Config {
         password: string;
     };
     agenda: {
-        url: string;
-        port: number;
-        dbName: string;
-        userName: string;
-        password: string;
+        collection: string;
         jobs?: string;
     };
 }
 
 export type RequestWithAuth = Request & {
-    user: IUser
-}
+    user: IUser;
+};
