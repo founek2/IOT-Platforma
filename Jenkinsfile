@@ -18,33 +18,20 @@ pipeline {
                 checkout scm
             }
         }
-        // stage ('Clone') {
-        //     steps {
-        // 	    checkout scm
-        //     }
-        // }
 
-
-        // stage ('setup Env') {
-        //     script {
-        //         env.ENV_CONFIG_PATH = "/home/delegi/test.env"
-        //     }
-        // }  
         stage ('Install dependencies') {
             steps {
-                script {
-                    currentBuild.result = 'ABORTED'
-                    error("Aborting the job.")
-                }
                 sh "yarn"
                 sh "yarn lerna init"
             }
         }
-          stage ('Pre build') {
+        
+        stage ('Pre build') {
             steps {
                 sh "yarn pre"
             }
         }
+
         stage ('Build') {
             steps {
                 sh "yarn build"
@@ -157,18 +144,4 @@ pipeline {
             }
       	}
     }
-
-    // post {
-    //     success {
-    //         setBuildStatus("Build successed", "SUCCESS");
-    //     }
-    //     failure {
-    //         //  setBuildStatus("Build failed", "FAILURE");
-    //          setBuildStatus("Build failed", "SUCCESS");
-    //     }
-    //     aborted {
-    //         // setBuildStatus("Build failed", "FAILURE");
-    //         setBuildStatus("Build aborted", "SUCCESS");
-    //     }
-    // }
 }
