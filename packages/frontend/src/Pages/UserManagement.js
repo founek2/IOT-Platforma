@@ -21,7 +21,7 @@ import EditUser from './userManagement/EditUser';
 import { getQueryID } from '../utils/getters';
 
 function convertGroupIDsToName(groups) {
-    return function(arr) {
+    return function (arr) {
         return arrToString(
             arr.map((id) => {
                 if (isEmpty(groups)) return id;
@@ -39,17 +39,17 @@ const userProps = (groups) => [
     { path: 'info.email', label: 'Email' },
     { path: 'info.phoneNumber', label: 'Telefon' },
     { path: 'groups', label: 'Uživ. skupiny', convertor: convertGroupIDsToName(groups) },
-    { path: 'createdAt', label: 'Vytvořen', convertor: (val) => new Date(val).toLocaleDateString() }
+    { path: 'createdAt', label: 'Vytvořen', convertor: (val) => new Date(val).toLocaleDateString() },
 ];
 
 const styles = (theme) => ({
     errorColor: {
-        color: theme.errorColor
+        color: theme.errorColor,
     },
     cardContent: {
         paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(2)
-    }
+        paddingBottom: theme.spacing(2),
+    },
 });
 
 class UserManagement extends Component {
@@ -57,11 +57,11 @@ class UserManagement extends Component {
         super(props);
         this.state = {
             createForm: {
-                open: false
+                open: false,
             },
             editForm: {
-                open: false
-            }
+                open: false,
+            },
         };
     }
     componentWillMount() {
@@ -72,17 +72,17 @@ class UserManagement extends Component {
     };
     updateCreateForm = (obj) => {
         this.setState((state) => ({
-            createForm: merge(state.createForm, obj)
+            createForm: merge(state.createForm, obj),
         }));
     };
     updateEditForm = (obj) => {
         const { fillUserForm, users } = this.props;
         if (obj.open === true) {
             const userTarget = users.find((user) => user.id === obj.userID);
-            fillUserForm(pick([ 'userName', 'firstName', 'lastName', 'email', 'phoneNumber', 'groups' ], userTarget));
+            fillUserForm(pick(['userName', 'firstName', 'lastName', 'email', 'phoneNumber', 'groups'], userTarget));
         }
         this.setState((state) => ({
-            editForm: merge(state.createForm, obj)
+            editForm: merge(state.createForm, obj),
         }));
     };
     render() {
@@ -120,13 +120,20 @@ class UserManagement extends Component {
                     >
                           <UserForm onButtonClick={createUser} buttonLabel="Vytvořit" />
                     </FullScreenDialog> */}
-                <FullScreenDialog
+                {/* <FullScreenDialog
                     open={!!selectedUser && this.props.openEditDialog}
-                    onClose={() => history.push({ hash: '', search: '' })}
+                    onClose={() => history.push({ hash: "", search: "" })}
                     heading="Editace uživatele"
                 >
-                    <EditUser onButtonClick={() => updateUserAction(userID)} buttonLabel="Uložit" user={selectedUser} />
-                </FullScreenDialog>
+                    <EditUser
+                        onButtonClick={() => {
+                            updateUserAction(userID);
+                            history.push({ hash: "", search: "" });
+                        }}
+                        buttonLabel="Uložit" 
+                        user={selectedUser}
+                    />
+                </FullScreenDialog> */}
             </div>
         );
     }
@@ -139,7 +146,7 @@ const _mapStateToProps = (state) => {
         groups: getGroups(state),
         users: getUsers(state),
         openEditDialog: isUrlHash('#editUser')(state),
-        selectedUser: getUsers(state).find((user) => user.id === id)
+        selectedUser: getUsers(state).find((user) => user.id === id),
     };
 };
 
@@ -151,7 +158,7 @@ const _mapDispatchToProps = (dispatch) =>
             deleteUsers: usersActions.deleteUsers,
             createUser: usersActions.create,
             fillUserForm: formsDataActions.fillForm('USER'),
-            resetUserForm: formsDataActions.resetForm('USER')
+            resetUserForm: formsDataActions.resetForm('USER'),
         },
         dispatch
     );

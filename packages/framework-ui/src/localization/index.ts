@@ -1,10 +1,9 @@
-
-import * as types from '../types'
+import * as types from '../types';
 import isFn from '../utils/isFn';
 
 export function messageFactory(messages: types.messages) {
     return {
-        getMessage: (messageKey: string, fieldValue: any, arg: any) => {
+        getMessage: (messageKey: string, fieldValue: any, arg?: any) => {
             const message = messages[messageKey];
             if (message) {
                 if (isFn(message)) {
@@ -15,11 +14,11 @@ export function messageFactory(messages: types.messages) {
                 }
             } else {
                 console.error('missing Message: ' + messageKey);
-                return "$" + messageKey;
+                return '$' + messageKey;
             }
         },
         registerMessages: (moreMessages: types.messages) => {
             messages = { ...messages, ...moreMessages };
-        }
-    }
+        },
+    };
 }

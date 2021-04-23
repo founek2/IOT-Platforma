@@ -21,22 +21,22 @@ import UserMenu from './layout/UserMenu';
 
 const styles = {
     root: {
-        flexGrow: 1
+        flexGrow: 1,
     },
     flex: {
-        flex: 1
+        flex: 1,
     },
     menuButton: {
         marginLeft: -12,
-        marginRight: 20
+        marginRight: 20,
     },
     loginButton: {
-        color: 'white'
+        color: 'white',
     },
     noLinkStyles: {
         color: 'inherit',
-        textDecoration: 'none'
-    }
+        textDecoration: 'none',
+    },
 };
 
 function Layout({
@@ -48,9 +48,9 @@ function Layout({
     removeLoginFormAction,
     editUserOpen,
     userToEdit,
-    updateUserAction
+    updateUserAction,
 }) {
-    const [ mainMenuOpen, setMainMenuO ] = useState(false);
+    const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool) => () => setMainMenuO(bool);
 
     return (
@@ -95,7 +95,11 @@ function Layout({
                 heading="Editace uživatele"
             >
                 <EditUser
-                    onButtonClick={() => updateUserAction(userToEdit.id)}
+                    onButtonClick={async () => {
+                        const result = await updateUserAction(userToEdit.id);
+                        console.log(result);
+                        if (result) history.push({ hash: '', search: '' });
+                    }}
                     buttonLabel="Uložit"
                     user={userToEdit}
                 />
@@ -111,7 +115,7 @@ const _mapStateToProps = (state) => {
         userPresence: getUserPresence(state),
         loginOpen: isUrlHash('#login')(state),
         editUserOpen: isUrlHash('#editUser')(state),
-        userToEdit: getUser(state)
+        userToEdit: getUser(state),
     };
 };
 
@@ -120,7 +124,7 @@ const _mapDispatchToProps = (dispatch) =>
         {
             logOut: userLogOut,
             removeLoginFormAction: formsDataActions.removeForm('LOGIN'),
-            updateUserAction: userActions.updateUser
+            updateUserAction: userActions.updateUser,
         },
         dispatch
     );

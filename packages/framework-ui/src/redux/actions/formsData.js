@@ -2,7 +2,7 @@ import { actionTypes } from '../../constants/redux';
 import {
     validateField as ValidateField,
     validateForm as ValidateForm,
-    validateRegisteredFields as ValidateRegisteredFields
+    validateRegisteredFields as ValidateRegisteredFields,
 } from '../../validations';
 import { getFormData, getRegisteredFields } from '../../utils/getters';
 import { checkValid } from '../../validations';
@@ -12,18 +12,18 @@ import { curry, forEachObjIndexed, is } from 'ramda';
 import { addNotification } from './application/notifications';
 import ErrorMessages from '../../localization/errorMessages';
 
-export const updateFormField = curry(function(deepPath, data) {
+export const updateFormField = curry(function (deepPath, data) {
     return {
         type: actionTypes.UPDATE_FORM_FIELD,
-        payload: { deepPath, data }
+        payload: { deepPath, data },
     };
 });
 
 export function fillForm(formName) {
-    return function(data) {
+    return function (data) {
         return {
             type: actionTypes.SET_FORM_DATA,
-            payload: { formName, data }
+            payload: { formName, data },
         };
     };
 }
@@ -31,14 +31,14 @@ export function fillForm(formName) {
 export function setFormsData(data) {
     return {
         type: actionTypes.SET_FORMS_DATA,
-        payload: data
+        payload: data,
     };
 }
 
 export const setFormData = (formName, data) => (dispatch) => {
     dispatch({
         type: actionTypes.SET_FORM_DATA,
-        payload: { formName, data }
+        payload: { formName, data },
     });
 };
 
@@ -46,7 +46,7 @@ export function registerField(deepPath) {
     baseLogger(actionTypes.REGISTER_FIELD, deepPath);
     return {
         type: actionTypes.REGISTER_FIELD,
-        payload: deepPath
+        payload: deepPath,
     };
 }
 
@@ -54,7 +54,7 @@ export function unregisterField(deepPath) {
     baseLogger(actionTypes.UNREGISTER_FIELD, deepPath);
     return {
         type: actionTypes.UNREGISTER_FIELD,
-        payload: deepPath
+        payload: deepPath,
     };
 }
 
@@ -62,12 +62,12 @@ export function updateRegisteredField(deepPath, data) {
     baseLogger(actionTypes.UPDATE_REGISTERED_FIELD, deepPath);
     return {
         type: actionTypes.UPDATE_REGISTERED_FIELD,
-        payload: { deepPath, data }
+        payload: { deepPath, data },
     };
 }
 
 export function validateField(deepPath, ignorePristine) {
-    return function(dispatch, getState) {
+    return function (dispatch, getState) {
         baseLogger('VALIDATE_FIELD:', deepPath);
         const fieldState = ValidateField(deepPath, getState(), ignorePristine);
         dispatch(updateRegisteredField(deepPath, fieldState));
@@ -76,52 +76,56 @@ export function validateField(deepPath, ignorePristine) {
 }
 
 export function validateForm(formName, ignoreRequired = false) {
-    return function() {
-        return function(dispatch, getState) {
+    return function () {
+        return function (dispatch, getState) {
             baseLogger('VALIDATE_FORM:', formName);
             dispatch(setFormData(formName, getFormData(formName)(getState())));
             const fieldStates = ValidateForm(formName, getState(), ignoreRequired);
 
             dispatch({
                 type: actionTypes.UPDATE_REGISTERED_FIELDS,
-                payload: fieldStates
+                payload: fieldStates,
             });
 
             const result = checkValid(fieldStates[formName]);
-            if (!result.valid)
+            if (!result.valid) {
+                console.log('validationResult', result);
                 dispatch(
                     addNotification({
                         message: ErrorMessages.getMessage('validationFailed'),
                         variant: 'error',
-                        duration: 3000
+                        duration: 3000,
                     })
                 );
+            }
             return result;
         };
     };
 }
 
 export function validateRegisteredFields(formName, ignoreRequired = false) {
-    return function() {
-        return function(dispatch, getState) {
-            baseLogger('VALIDATE_FORM:', formName);
+    return function () {
+        return function (dispatch, getState) {
+            baseLogger('VALIDATE_REGISTERED_FIELDS:', formName);
             dispatch(setFormData(formName, getFormData(formName)(getState())));
             const fieldStates = ValidateRegisteredFields(formName, getState(), ignoreRequired);
 
             dispatch({
                 type: actionTypes.UPDATE_REGISTERED_FIELDS,
-                payload: fieldStates
+                payload: fieldStates,
             });
 
             const result = checkValid(fieldStates[formName]);
-            if (!result.valid)
+            if (!result.valid) {
+                console.log('validationResult', result);
                 dispatch(
                     addNotification({
                         message: ErrorMessages.getMessage('validationFailed'),
                         variant: 'error',
-                        duration: 3000
+                        duration: 3000,
                     })
                 );
+            }
             return result;
         };
     };
@@ -140,17 +144,17 @@ function recursive(transform, predicate, object) {
 }
 
 export function removeForm(formName) {
-    return function() {
+    return function () {
         return {
             type: actionTypes.REMOVE_FORM,
-            payload: formName
+            payload: formName,
         };
     };
 }
 
 export function resetForm(formName) {
-    return function() {
-        return function(dispatch, getState) {
+    return function () {
+        return function (dispatch, getState) {
             baseLogger('RESET_FORM:', formName);
             const state = getState();
             const origRegisteredFields = getRegisteredFields(state)[formName];
@@ -183,11 +187,11 @@ export function resetForm(formName) {
 
             dispatch({
                 type: actionTypes.UPDATE_REGISTERED_FIELDS,
-                payload: { [formName]: registeredFields }
+                payload: { [formName]: registeredFields },
             });
             dispatch({
                 type: actionTypes.UPDATE_FORM,
-                payload: { path: formName, data: formData }
+                payload: { path: formName, data: formData },
             });
         };
     };
