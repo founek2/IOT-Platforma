@@ -32,6 +32,10 @@ pipeline {
         // }  
         stage ('Install dependencies') {
             steps {
+                script {
+                    currentBuild.result = 'ABORTED'
+                    error("Aborting the job.")
+                }
                 sh "yarn"
                 sh "yarn lerna init"
             }
@@ -143,7 +147,7 @@ pipeline {
                         yarn install --production
 
                         echo "Starting service iot-backend-test"
-                        sudo systemctl start iot-backend-test
+                        sudo systemctl start iot-backend-test 
                         echo "Starting service iot-backend-mqtt-test"
                         sudo systemctl start iot-backend-mqtt-test
                         '''    
@@ -153,4 +157,18 @@ pipeline {
             }
       	}
     }
+
+    // post {
+    //     success {
+    //         setBuildStatus("Build successed", "SUCCESS");
+    //     }
+    //     failure {
+    //         //  setBuildStatus("Build failed", "FAILURE");
+    //          setBuildStatus("Build failed", "SUCCESS");
+    //     }
+    //     aborted {
+    //         // setBuildStatus("Build failed", "FAILURE");
+    //         setBuildStatus("Build aborted", "SUCCESS");
+    //     }
+    // }
 }
