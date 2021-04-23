@@ -14,7 +14,7 @@ import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
 import { IUser } from 'common/lib/models/interface/userInterface';
 import checkUser from '../middlewares/user/checkUser';
 
-function removeUserItself(id: IUser["_id"]) {
+function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
         return doc._id != id; // dont change to !==
     };
@@ -26,14 +26,14 @@ export default () =>
             index: [tokenAuthMIddleware()],
             create: [
                 rateLimiterMiddleware,
-                formDataChecker(fieldDescriptors, { allowedForms: ["LOGIN", "REGISTRATION"] })
+                formDataChecker(fieldDescriptors, { allowedForms: ['LOGIN', 'REGISTRATION'] }),
             ],
             replaceId: [
                 tokenAuthMIddleware(),
                 checkWritePerm(),
-                formDataChecker(fieldDescriptors, { allowedForms: ["EDIT_USER", "FIREBASE_ADD"] })
+                formDataChecker(fieldDescriptors, { allowedForms: ['EDIT_USER', 'FIREBASE_ADD', 'FORGOT_PASSWORD'] }),
             ],
-            deleteId: [tokenAuthMIddleware(), checkWritePerm()]
+            deleteId: [tokenAuthMIddleware(), checkWritePerm()],
         },
         /** GET / - List all entities */
         async index({ user, root, query: { type } }: any, res) {
@@ -61,7 +61,7 @@ export default () =>
             if (attribute === 'authType') {
                 const doc = await UserModel.findByUserName(id);
 
-                if (!doc) res.status(404).send({ error: "unknownUser" })
+                if (!doc) res.status(404).send({ error: 'unknownUser' });
                 else res.send({ authType: doc.auth.type });
             } else {
                 res.sendStatus(400);
@@ -73,31 +73,31 @@ export default () =>
             const { formData } = req.body;
 
             if (formData.LOGIN) {
-
                 const { doc, token, error } = await UserService.checkCreditals(formData.LOGIN);
-                if (error) return res.status(500).send({ error })
+                if (error) return res.status(500).send({ error });
 
                 res.send({
                     user: doc,
-                    token
+                    token,
                 });
                 eventEmitter.emit('user_login', doc);
-
             } else if (formData.REGISTRATION) {
-                if (await UserModel.exists({ "info.userName": formData.REGISTRATION.info.userName }))
-                    return res.status(409).send({ error: "userNameAlreadyExist" })
+                if (await UserModel.exists({ 'info.userName': formData.REGISTRATION.info.userName }))
+                    return res.status(409).send({ error: 'userNameAlreadyExist' });
                 const { doc, token } = await UserService.create(formData.REGISTRATION);
 
                 res.send({
                     user: doc,
-                    token
+                    token,
                 });
                 eventEmitter.emit('user_signup', { id: doc._id, info: doc.info });
+            } else if (formData.FORGOT_PASSWORD) {
+                eventEmitter.emit('user_forgot', { email: formData.FORGOT_PASSWORD.email });
+                res.sendStatus(204);
             } else {
                 res.sendStatus(400);
             }
         },
-
 
         async deleteId({ params }, res) {
             await UserService.deleteById(params.id);
@@ -118,5 +118,5 @@ export default () =>
                 await UserModel.addNotifyToken(id, body.formData.FIREBASE_ADD.token);
                 res.sendStatus(204);
             } else res.sendStatus(400);
-        }
+        },
     });

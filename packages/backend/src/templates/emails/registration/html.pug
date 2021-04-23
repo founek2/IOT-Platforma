@@ -28,7 +28,10 @@ html
                           span.font-avenir Dobrý den,
                         p.size-15(style='Margin-top: 20px;Margin-bottom: 20px;font-family: avenir,sans-serif;font-size: 15px;line-height: 23px;text-align: left;', lang='x-size-15')
                           span.font-avenir
-                            | vítáme Vás na IOT Platforma. Vaše registrace byla úspěšně dokončena a nyní můžete naplnu využívat všech funkcí zcela zdarma.
+                            | vítáme Vás na 
+                            a(style='text-decoration: underline;transition: opacity 0.1s ease-in;color: #18527c;', href=`${homepage}`)
+                              | IOT Platforma
+                            |. Vaše registrace byla úspěšně dokončena a nyní můžete naplnu využívat všech funkcí zcela zdarma.
                     //- div(style='Margin-left: 20px;Margin-right: 20px;')
                     //-   .btn.btn--flat.fullwidth.btn--large(style='Margin-bottom: 20px;text-align: center;')
                     //-     a(style='border-radius: 4px;display: block;font-size: 14px;font-weight: bold;line-height: 24px;padding: 12px 24px;text-align: center;text-decoration: none !important;transition: opacity 0.1s ease-in;color: #ffffff !important;background-color: #e31212;font-family: Avenir, sans-serif;', href= url + '/forgot?type=PASSWORD&token=' + token) ZMĚNIT HESLO
