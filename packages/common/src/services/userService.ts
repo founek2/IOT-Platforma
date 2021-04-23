@@ -8,6 +8,9 @@ import mongoose from "mongoose";
 import { AuthTypes } from "../constants";
 import { NotifyModel } from "../models/notifyModel";
 import { DeviceModel } from "../models/deviceModel";
+import TokenModel, { TokenType, IToken } from "../models/TokenModel";
+import { Security } from "./SecurityService";
+import addHours from "date-fns/addHours";
 
 async function createHash(plainText: string) {
     return argon2.hash(plainText);
@@ -39,7 +42,11 @@ export const UserService = {
         return { doc: plainUser, token };
     },
 
-    async checkCreditals({ userName, authType, password }: CredentialData): Promise<{ doc?: IUser; token?: string, error?: string }> {
+    async checkCreditals({
+        userName,
+        authType,
+        password,
+    }: CredentialData): Promise<{ doc?: IUser; token?: string; error?: string }> {
         if (authType !== AuthTypes.PASSWD) throw new Error("notImplemented");
 
         const doc = await UserModel.findOne({ "info.userName": userName, "auth.type": authType });
@@ -70,15 +77,15 @@ export const UserService = {
     },
 
     async deleteById(id: IUser["_id"]): Promise<boolean> {
-        const userId = mongoose.Types.ObjectId(id)
+        const userId = mongoose.Types.ObjectId(id);
 
         const result = await UserModel.deleteOne({
-            _id: userId
+            _id: userId,
         });
 
         if (result.deletedCount !== 1) return false;
         NotifyModel.deleteMany({
-            userId: userId
+            userId: userId,
         }).exec();
 
         DeviceModel.updateMany({
@@ -86,9 +93,20 @@ export const UserService = {
                 "permissions.read": userId,
                 "permissions.control": userId,
                 "permissions.write": userId,
-            }
+            },
         }).exec();
 
         return true;
+    },
+    async forgotPassword(userName: IUser["info"]["userName"]): Promise<null | { token: IToken; user: IUser }> {
+        const user = await UserModel.findByUserName(userName);
+        if (!user) return null;
+
+        const token = await TokenModel.create({
+            type: TokenType.forgot_password,
+            data: Security.getRandomToken(64),
+            validTo: addHours(new Date(), 5),
+        });
+        return { token: token, user };
     },
 };

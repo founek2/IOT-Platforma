@@ -17,6 +17,13 @@ export const NotfyTypeForDataType: { [dataType in PropertyDataType]: NotifyType[
     [PropertyDataType.enum]: [NotifyType.equal, NotifyType.always],
 };
 
+export const NotifyTypeText: { [dataType in NotifyType]: string } = {
+    [NotifyType.always]: "vždy",
+    [NotifyType.below]: "pod",
+    [NotifyType.equal]: "rovno",
+    [NotifyType.over]: "nad",
+};
+
 export interface INotifyThingProperty {
     _id?: any;
     propertyId: IThingProperty["propertyId"];

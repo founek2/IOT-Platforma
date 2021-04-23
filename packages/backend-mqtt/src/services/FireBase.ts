@@ -1,22 +1,24 @@
-import { IDevice } from "common/lib/models/interface/device";
-import { INotifyThingProperty } from "common/lib/models/interface/notifyInterface";
-import { IThing, IThingProperty } from "common/lib/models/interface/thing";
-import { IUser } from "common/lib/models/interface/userInterface";
-import { NotifyModel } from "common/lib/models/notifyModel";
-import { UserModel } from "common/lib/models/userModel";
-import * as admin from "firebase-admin";
-import { Config } from "../types";
-import { getProperty } from "common/lib/utils/getProperty";
-import { getThing } from "common/lib/utils/getThing";
-import functions from "./fireBase/notifications/functions";
-import { devLog } from "framework-ui/lib/logger";
+import { IDevice } from 'common/lib/models/interface/device';
+import { INotifyThingProperty, INotify } from 'common/lib/models/interface/notifyInterface';
+import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
+import { IUser } from 'common/lib/models/interface/userInterface';
+import { NotifyModel } from 'common/lib/models/notifyModel';
+import { UserModel } from 'common/lib/models/userModel';
+import * as admin from 'firebase-admin';
+import { Config } from '../types';
+import { getProperty } from 'common/lib/utils/getProperty';
+import { getThing } from 'common/lib/utils/getThing';
+import functions from './fireBase/notifications/functions';
+import { devLog } from 'framework-ui/lib/logger';
+import { map, prop, uniq, o } from 'ramda';
+import { NotifyService } from './notifyService';
 
-const defaultAdvanced = {
-    interval: -1,
-    from: "00:00",
-    to: "23:59",
-    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-};
+// const defaultAdvanced = {
+//     interval: -1,
+//     from: "00:00",
+//     to: "23:59",
+//     daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+// };
 
 let messaging: admin.messaging.Messaging;
 let homepageUrl: string;
@@ -32,14 +34,6 @@ export function init(config: Config) {
     homepageUrl = config.homepage;
 }
 
-// TODO nelze překládat state do textu bez návaznosti na typu....
-// ACTIVATOR pro 1 není Zapnuto, ale aktivován
-// Udělat jeden objekt, kterému se předá typ a vrátí instanci objektu s veškerými metodami pro transformace/výstupy
-// function translateStateToText(value, STATEkey, recipe) {
-// 	const { name } = recipe;
-// 	return `${name} je ${ControlStateValuesToText[STATEkey](value)}`;
-// }
-
 interface CreateNotificationsOptions {
     value: number | string;
     homepageUrl: string;
@@ -51,19 +45,20 @@ function createNotification(options: CreateNotificationsOptions) {
         value,
         homepageUrl,
     } = options;
-    const units = unitOfMeasurement ? " " + unitOfMeasurement : "";
+    const units = unitOfMeasurement ? ' ' + unitOfMeasurement : '';
     return {
         title,
         body: `${name} je ${value}${units}`,
-        icon: "/favicon.png",
+        icon: '/favicon.png',
         click_action: homepageUrl,
     };
 }
+type Output = { [userId: string]: { title: string; body: string; icon: string; click_action: string }[] };
 
 export async function processData(
     device: IDevice,
-    nodeId: IThing["config"]["nodeId"],
-    propertyId: IThingProperty["propertyId"],
+    nodeId: IThing['config']['nodeId'],
+    propertyId: IThingProperty['propertyId'],
     value: string | number
 ) {
     const deviceThing = getThing(device, nodeId);
@@ -71,14 +66,18 @@ export async function processData(
 
     const docs = await NotifyModel.getForProperty(device._id, nodeId, propertyId);
 
-    const output = {};
-    const sended = { items: [], users: new Set() };
-    const notSended = { unSatisfiedItems: [], satisfiedItems: [], users: new Set() };
-    docs.forEach(({ userId, things }) => {
+    const output: Output = {};
+    const sended: { _id: INotify['_id']; userId: IUser['_id']; prop_id: IThingProperty['_id'] }[] = [];
+    const notSended: {
+        unSatisfiedItems: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }[];
+        satisfiedItems: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }[];
+    } = { unSatisfiedItems: [], satisfiedItems: [] };
+
+    docs.forEach(({ _id, userId, things }) => {
         // per USER
         things.forEach((thing) =>
             thing.properties.forEach(
-                processNotifications(userId, value, output, sended, notSended, {
+                processNotifications(_id, userId, value, output, sended, notSended, {
                     title: deviceThing.config.name,
                     name: property.name,
                     unitOfMeasurement: property.unitOfMeasurement,
@@ -88,6 +87,8 @@ export async function processData(
     });
 
     // Notify.refreshControlItems(deviceId, sended, notSended);
+    NotifyService.refreshSendedItems(sended, nodeId);
+    NotifyService.refreshNotSendedItems(notSended, nodeId);
 
     processOutput(output, sended);
 }
@@ -104,15 +105,23 @@ async function getTokensPerUser(IDs: string[]) {
     return arr.map((obj, i) => ({ notifyTokens: obj.notifyTokens, userId: userIds[i] }));
 }
 
+function isLastSatisfied(tmp: INotifyThingProperty['tmp']) {
+    return tmp && tmp.lastSatisfied === true;
+}
+
 function processNotifications(
-    userID: IUser["_id"],
+    _id: INotify['_id'],
+    userID: IUser['_id'],
     value: number | string,
-    output: any,
-    sended: any,
-    notSended: any,
-    data: CreateNotificationsOptions["data"]
+    output: Output,
+    sended: { _id: IThingProperty['_id']; userId: IUser['_id']; prop_id: IThingProperty['_id'] }[],
+    notSended: {
+        unSatisfiedItems: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }[];
+        satisfiedItems: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }[];
+    },
+    data: CreateNotificationsOptions['data']
 ) {
-    return ({ type, value: limit, advanced = defaultAdvanced, _id, tmp }: INotifyThingProperty) => {
+    return ({ type, value: limit, advanced, _id: prop_id, tmp }: INotifyThingProperty) => {
         /* Check validity */
         const result = functions[type](value, limit, advanced, tmp);
         if (result.ruleSatisfied) {
@@ -120,26 +129,25 @@ function processNotifications(
                 if (!output[userID]) output[userID] = [];
 
                 output[userID].push(createNotification({ data, value, homepageUrl }));
-                sended.items.push(_id);
-                sended.users.add(userID);
+                sended.push({ _id, userId: userID, prop_id });
             } else {
-                notSended.satisfiedItems.push(_id);
+                if (isLastSatisfied(tmp)) notSended.satisfiedItems.push({ _id, prop_id });
             }
         } else {
-            notSended.unSatisfiedItems.push(_id);
-            notSended.users.add(userID);
+            if (!isLastSatisfied(tmp)) notSended.unSatisfiedItems.push({ _id, prop_id });
         }
     };
 }
-async function processOutput(output: any, sended: any) {
-    if (sended.items.length > 0) {
-        const arrOfTokensPerUser = await getTokensPerUser(sended.users);
+async function processOutput(output: Output, sended: { _id: IThingProperty['_id']; userId: IUser['_id'] }[]) {
+    if (sended.length > 0) {
+        const uniqIds = o(uniq, map(prop('userId')), sended);
+        const arrOfTokensPerUser = await getTokensPerUser(uniqIds);
 
         const invalidTokens = await sendAllNotifications(arrOfTokensPerUser, output);
 
         if (invalidTokens.length) {
             UserModel.removeNotifyTokens(invalidTokens);
-            console.log("Deleting notify Tokens>", invalidTokens.length);
+            console.log('Deleting notify Tokens>', invalidTokens.length);
         }
     }
 }
@@ -167,16 +175,16 @@ async function sendAllNotifications(arrOfTokens: { userId: string; notifyTokens:
     });
 
     const response = await messaging.sendAll(messages);
-    console.log(response.successCount + " of " + messages.length + " messages were sent successfully");
+    console.log(response.successCount + ' of ' + messages.length + ' messages were sent successfully');
 
     const invalidTokens: string[] = [];
     if (response.successCount !== messages.length) {
         response.responses.forEach(({ error }, idx) => {
             if (error) {
-                if (error.code === "messaging/registration-token-not-registered") {
+                if (error.code === 'messaging/registration-token-not-registered') {
                     // console.log(Object.keys(error))
                     invalidTokens.push(messages[idx].token);
-                } else devLog(error)
+                } else devLog(error);
             }
         });
     }

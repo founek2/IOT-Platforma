@@ -22,11 +22,11 @@ export const userSchema = new Schema<IUserDocument, IUserModel>(userSchemaPlain,
 });
 
 export interface IUserModel extends Model<IUserDocument> {
-    findByUserName(userName: string): Promise<IUserDocument | null>;
+    findByUserName(userName: string): Promise<IUser | null>;
     findAllNotRoot(): Promise<IUserDocument[]>;
     findAll(): Promise<IUserDocument[]>;
     removeUsers(ids: Array<IUser["_id"]>): Promise<{ deletedCount?: number }>;
-    findAllUserNames(): Promise<Array<{ _id: IUserDocument["_id"], info: { userName: string } }>>;
+    findAllUserNames(): Promise<Array<{ _id: IUserDocument["_id"]; info: { userName: string } }>>;
     addNotifyToken(userId: IUser["_id"], token: string): Promise<void>;
     removeNotifyTokens(tokens: string[]): Promise<void>;
     getNotifyTokens(userId: IUser["_id"]): Promise<{ notifyTokens: string[] }>;
@@ -34,7 +34,7 @@ export interface IUserModel extends Model<IUserDocument> {
 }
 
 userSchema.statics.findByUserName = function (userName) {
-    return this.findOne({ "info.userName": userName });
+    return this.findOne({ "info.userName": userName }).lean();
 };
 
 userSchema.statics.findAll = function () {
