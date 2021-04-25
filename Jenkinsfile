@@ -28,29 +28,20 @@ pipeline {
                 checkout scm
             }
         }
-        // stage ('Clone') {
-        //     steps {
-        // 	    checkout scm
-        //     }
-        // }
 
-
-        // stage ('setup Env') {
-        //     script {
-        //         env.ENV_CONFIG_PATH = "/home/delegi/test.env"
-        //     }
-        // }  
         stage ('Install dependencies') {
             steps {
                 sh "yarn"
                 sh "yarn lerna init"
             }
         }
-          stage ('Pre build') {
+        
+        stage ('Pre build') {
             steps {
                 sh "yarn pre"
             }
         }
+
         stage ('Build') {
             steps {
                 sh "yarn build"
