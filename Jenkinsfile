@@ -1,13 +1,3 @@
-void setBuildStatus(String message, String state) {
-  step([
-      $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/founek2/IOT-Platforma"],
-      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
-      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
-  ]);
-}
-
 pipeline {
  	// Clean workspace before doing anything
     // deleteDir()
@@ -127,6 +117,7 @@ pipeline {
                     } else {
                         sh "echo 'shell scripts to deploy to server...'"
                         sh'''
+                        ssh proxy "rm -rf /home/websites/v2iotplatformaDev/www/*"
                         scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatformaDev/www
                         scp -r docs proxy:/home/websites/v2iotplatformaDev/www
 
@@ -154,14 +145,5 @@ pipeline {
 
             }
       	}
-    }
-
-    post {
-        success {
-            setBuildStatus("Build succeeded", "SUCCESS");
-        }
-        failure {
-            setBuildStatus("Build failed", "FAILURE");
-        }
     }
 }
