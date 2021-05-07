@@ -1,5 +1,7 @@
 {
-    "private": true,
+    "name": "iot-platforma",
+    "license": "GPL-3.0-only",
+    "author": "Martin Skalický",
     "scripts": {
         "bootstrap": "lerna bootstrap",
         "build": "lerna run --parallel --scope backend --scope frontend build && lerna run --scope backend-mqtt build",
@@ -18,11 +20,10 @@
         "eslint-plugin-react-hooks": "^4.0.8",
         "lerna": "^3.22.1",
         "rimraf": "^3.0.2",
-        "typescript": "^3.9.6"
-    },
-    "workspaces": [ "packages/*" ],
-    "name": "monorepo",
-    "dependencies": {
+        "typescript": "^3.9.6",
         "eslint-config-airbnb-typescript": "^12.0.0"
-    }
+    },
+    "workspaces": [
+        "packages/*"
+    ]
 }

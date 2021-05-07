@@ -1,0 +1,16 @@
+[Unit]
+Description=IOT platform backend API service
+After=network.target mongod.service
+
+[Service]
+Type=simple
+EnvironmentFile=<PATH_TO_ENV_FILE>
+ExecStart=/usr/bin/node <PATH_TO_SERVICE>/dist/index.js
+Restart=on-failure
+RemainAfterExit=yes
+User=deployer-test
+StandardOutput=file:/var/log/iot-platform/backend.log
+StandardError=file:/var/log/iot-platform/backend.error.log
+
+[Install]
+WantedBy=multi-user.target

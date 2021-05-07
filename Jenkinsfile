@@ -128,6 +128,7 @@ pipeline {
                         sh "echo 'shell scripts to deploy to server...'"
                         sh'''
                         scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatformaDev/www
+                        scp -r docs proxy:/home/websites/v2iotplatformaDev/www
 
                         sudo -u deployer-test bash << EOF
                         set -u -e 
