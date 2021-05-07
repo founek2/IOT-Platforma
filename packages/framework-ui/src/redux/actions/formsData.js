@@ -87,6 +87,8 @@ export function validateForm(formName, ignoreRequired = false) {
                 payload: fieldStates,
             });
 
+            console.log('states', fieldStates);
+
             const result = checkValid(fieldStates[formName]);
             if (!result.valid) {
                 console.log('validationResult', result);

@@ -6,22 +6,22 @@ html
       tbody
         tr
           td
-            div(role='banner')
-              .preheader(style='Margin: 0 auto;max-width: 560px;min-width: 280px; width: 280px;width: calc(28000% - 167440px);')
-                div(style='border-collapse: collapse;display: table;width: 100%;')
-                  .snippet(style='display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 140px; width: 140px;width: calc(14000% - 78120px);padding: 10px 0 5px 0;color: #adb3b9;font-family: sans-serif;')
-                  .webversion(style='display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 139px; width: 139px;width: calc(14100% - 78680px);padding: 10px 0 5px 0;text-align: right;color: #adb3b9;font-family: sans-serif;')
-              #emb-email-header-container.header(style='Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);')
-                .logo.emb-logo-margin-box(style='font-size: 26px;line-height: 32px;Margin-top: 0px;Margin-bottom: 0px;color: #c3ced9;font-family: Roboto,Tahoma,sans-serif;Margin-left: 20px;Margin-right: 20px;', align='center')
-                  #emb-email-header.logo-center(align='center')
-                    a(style='text-decoration: none;transition: opacity 0.1s ease-in;color: #c3ced9;', href=url)
-                      img(style='display: block;height: auto;width: 100%;border: 0;max-width: 560px;', src='cid:banner', alt='', width='560')
+            //- div(role='banner')
+            //-   .preheader(style='Margin: 0 auto;max-width: 560px;min-width: 280px; width: 280px;width: calc(28000% - 167440px);')
+            //-     div(style='border-collapse: collapse;display: table;width: 100%;')
+            //-       .snippet(style='display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 140px; width: 140px;width: calc(14000% - 78120px);padding: 10px 0 5px 0;color: #adb3b9;font-family: sans-serif;')
+            //-       .webversion(style='display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 139px; width: 139px;width: calc(14100% - 78680px);padding: 10px 0 5px 0;text-align: right;color: #adb3b9;font-family: sans-serif;')
+            //-   #emb-email-header-container.header(style='Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);')
+            //-     .logo.emb-logo-margin-box(style='font-size: 26px;line-height: 32px;Margin-top: 0px;Margin-bottom: 0px;color: #c3ced9;font-family: Roboto,Tahoma,sans-serif;Margin-left: 20px;Margin-right: 20px;', align='center')
+            //-       #emb-email-header.logo-center(align='center')
+            //-         a(style='text-decoration: none;transition: opacity 0.1s ease-in;color: #c3ced9;', href=url)
+            //-           img(style='display: block;height: auto;width: 100%;border: 0;max-width: 560px;', src='cid:banner', alt='', width='560')
             div
               .layout.one-col.fixed-width.stack(style='Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;')
                 .layout__inner(style='border-collapse: collapse;display: table;width: 100%;background-color: #ffffff;')
                   .column(style='text-align: left;color: #838c95;font-size: 14px;line-height: 21px;font-family: sans-serif;')
                     div(style='Margin-left: 20px;Margin-right: 20px;Margin-top: 12px;')
-                      div(style='mso-line-height-rule: exactly;line-height: 50px;font-size: 1px;')  
+                      div(style='mso-line-height-rule: exactly;line-height: 50px;font-size: 1px;')   
                     div(style='Margin-left: 20px;Margin-right: 20px;')
                       div(style='mso-line-height-rule: exactly;mso-text-raise: 11px;vertical-align: middle;')
                         p.size-15(style='Margin-top: 0;Margin-bottom: 0;font-family: avenir,sans-serif;font-size: 15px;line-height: 23px;text-align: left;', lang='x-size-15')
@@ -31,7 +31,7 @@ html
                             | dostali jsme žádost o změnu hesla, kliknutím na tlačítko budete přesměrováni na stránku, kde budete vyzváni k zadání nového hesla.
                     div(style='Margin-left: 20px;Margin-right: 20px;')
                       .btn.btn--flat.fullwidth.btn--large(style='Margin-bottom: 20px;text-align: center;')
-                        a(style='border-radius: 4px;display: block;font-size: 14px;font-weight: bold;line-height: 24px;padding: 12px 24px;text-align: center;text-decoration: none !important;transition: opacity 0.1s ease-in;color: #ffffff !important;background-color: #e31212;font-family: Avenir, sans-serif;', href= url + '/forgot?type=PASSWORD&token=' + token) ZMĚNIT HESLO
+                        a(style='border-radius: 4px;display: block;font-size: 14px;font-weight: bold;line-height: 24px;padding: 12px 24px;text-align: center;text-decoration: none !important;transition: opacity 0.1s ease-in;color: #ffffff !important;background-color: #e31212;font-family: Avenir, sans-serif;', href= url + '/devices?type=PASSWORD&token=' + token+"#forgot") ZMĚNIT HESLO
                       div(style='Margin-left: 20px;Margin-right: 20px;Margin-bottom: 12px;')
                         div(style='mso-line-height-rule: exactly;mso-text-raise: 11px;vertical-align: middle;')
                           p(style='Margin-top: 0;Margin-bottom: 0;')

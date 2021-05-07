@@ -1,20 +1,19 @@
-import { DeviceModel } from "common/lib/models/deviceModel";
-import { IDevice } from "common/lib/models/interface/device";
-import { getProperty } from "common/lib/utils/getProperty";
-import { getThing } from "common/lib/utils/getThing";
-import { validateValue } from "common/lib/utils/validateValue";
-import express from "express";
-import { all, equals } from "ramda";
-import checkControlPerm from "../middlewares/device/checkControlPerm";
-import resource from "../middlewares/resource-router-middleware";
-import tokenAuthMIddleware from "../middlewares/tokenAuth";
-import { Actions } from "../services/actionsService";
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import { IDevice } from 'common/lib/models/interface/device';
+import { getProperty } from 'common/lib/utils/getProperty';
+import { getThing } from 'common/lib/utils/getThing';
+import { validateValue } from 'common/lib/utils/validateValue';
+import { all, equals } from 'ramda';
+import checkControlPerm from '../middlewares/device/checkControlPerm';
+import resource from '../middlewares/resource-router-middleware';
+import tokenAuthMIddleware from '../middlewares/tokenAuth';
+import { Actions } from '../services/actionsService';
 
-export default ({ config, db }: any) =>
+export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            read: [tokenAuthMIddleware(), checkControlPerm({ paramKey: "deviceId" })],
+            read: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
         },
 
         async modify({ params, body }, res) {

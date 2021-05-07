@@ -18,6 +18,7 @@ import EditUser from '../Pages/userManagement/EditUser';
 import LoginDialog from './layout/LoginDialog';
 import SideMenu from './layout/SideMenu';
 import UserMenu from './layout/UserMenu';
+import ForgotDialog from './layout/ForgotDialog';
 
 const styles = {
     root: {
@@ -49,6 +50,8 @@ function Layout({
     editUserOpen,
     userToEdit,
     updateUserAction,
+    forgotOpen,
+    removeForgotFormAction,
 }) {
     const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool) => () => setMainMenuO(bool);
@@ -75,20 +78,27 @@ function Layout({
                     ) : (
                         <Link to={{ hash: 'login' }}>
                             <Button variant="text" className={classes.loginButton}>
-                                Login
+                                Přihlášení
                             </Button>
                         </Link>
                     )}
-                    <LoginDialog
-                        open={loginOpen}
-                        onClose={() => {
-                            history.push({ hash: '' });
-                            removeLoginFormAction();
-                        }}
-                    />
                 </Toolbar>
                 <SideMenu open={mainMenuOpen} onClose={setMainMenuOpen(false)} onOpen={setMainMenuOpen(true)} />
             </AppBar>
+            <LoginDialog
+                open={loginOpen}
+                onClose={() => {
+                    history.push({ hash: '' });
+                    removeLoginFormAction();
+                }}
+            />
+            <ForgotDialog
+                open={forgotOpen}
+                onClose={() => {
+                    history.push({ hash: '' });
+                    removeForgotFormAction();
+                }}
+            />
             <FullScreenDialog
                 open={Boolean(editUserOpen && userToEdit)}
                 onClose={() => history.push({ hash: '', search: '' })}
@@ -114,6 +124,7 @@ const _mapStateToProps = (state) => {
         groups: getGroups(state),
         userPresence: getUserPresence(state),
         loginOpen: isUrlHash('#login')(state),
+        forgotOpen: isUrlHash('#forgot')(state),
         editUserOpen: isUrlHash('#editUser')(state),
         userToEdit: getUser(state),
     };
@@ -125,6 +136,7 @@ const _mapDispatchToProps = (dispatch) =>
             logOut: userLogOut,
             removeLoginFormAction: formsDataActions.removeForm('LOGIN'),
             updateUserAction: userActions.updateUser,
+            removeForgotFormAction: formsDataActions.removeForm('FORGOT_PASSWORD'),
         },
         dispatch
     );

@@ -6,27 +6,28 @@ import notify from './notify';
 import discovery from './discovery';
 import history from './history';
 import thing from './thing';
+import { version } from '../../package.json';
 
 export default ({ config }) => {
     let api = Router();
     // mount the user resource
-    api.use('/user', user({ config }));
+    api.use('/user', user());
 
-    api.use('/device/:deviceId/thing/:nodeId/notify', notify({ config }));
+    api.use('/device/:deviceId/thing/:nodeId/notify', notify());
 
-    api.use('/device', device({ config }));
+    api.use('/device', device());
 
-    api.use('/device/:deviceId/thing/:thingId/history', history({ config }));
+    api.use('/device/:deviceId/thing/:thingId/history', history());
 
-    api.use('/device/:deviceId/thing/:thingId', thing({ config }));
+    api.use('/device/:deviceId/thing/:thingId', thing());
 
-    api.use('/discovery', discovery({ config }));
+    api.use('/discovery', discovery());
 
     // api.use('/auth', auth({ config }));
 
     // perhaps expose some API metadata at the root
     api.get('/', (req, res) => {
-        res.json({ version: 0.1 });
+        res.json({ version });
     });
 
     return api;

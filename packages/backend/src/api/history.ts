@@ -1,19 +1,19 @@
-import { HistoricalModel } from "common/lib/models/historyModel";
-import express from "express";
-import resource from "../middlewares/resource-router-middleware";
-import tokenAuthMIddleware from "../middlewares/tokenAuth";
-import checkReadPerm from "../middlewares/device/checkReadPerm";
+import { HistoricalModel } from 'common/lib/models/historyModel';
+import express from 'express';
+import resource from '../middlewares/resource-router-middleware';
+import tokenAuthMIddleware from '../middlewares/tokenAuth';
+import checkReadPerm from '../middlewares/device/checkReadPerm';
 
-export default ({ config, db }: any) =>
+export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            read: [tokenAuthMIddleware(), checkReadPerm({ paramKey: "deviceId" })],
+            read: [tokenAuthMIddleware(), checkReadPerm({ paramKey: 'deviceId' })],
         },
         /** GET /:param - List all entities */
         async index({ params, query: { from, to } }, res) {
             const { deviceId, thingId } = params;
-            console.log("par", params);
+            console.log('par', params);
             const docs = await HistoricalModel.getData(
                 deviceId,
                 thingId,

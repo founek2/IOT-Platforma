@@ -19,7 +19,7 @@ export default function (agenda: Agenda) {
     });
 
     agenda.define(AGENDA_JOB_TYPE.FORGOT_PASSWORD_EMAIL, async (job) => {
-        logger.info('Runnning forgot password email JOB', job.attrs.data);
-        return mailer.sendForgotPassword(job.attrs.data.token, job.attrs.data.user);
+        logger.info('Runnning forgot password email JOB', job.attrs.data.token);
+        return mailer.sendForgotPassword(job.attrs.data.token.data, job.attrs.data.user);
     });
 }

@@ -64,13 +64,13 @@ class Mailer {
                 template: path.join(__dirname, '../templates/emails/password_reset'),
                 message: {
                     to: user.info.email,
-                    attachments: [
-                        {
-                            filename: 'email_banner.png',
-                            path: path.join(__dirname, '../templates/emails/password_reset/email_banner.png'),
-                            cid: 'banner',
-                        },
-                    ],
+                    // attachments: [
+                    //     {
+                    //         filename: 'email_banner.png',
+                    //         path: path.join(__dirname, '../templates/emails/password_reset/email_banner.png'),
+                    //         cid: 'banner',
+                    //     },
+                    // ],
                 },
                 locals: {
                     url: config.homepage,

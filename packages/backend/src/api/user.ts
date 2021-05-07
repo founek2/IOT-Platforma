@@ -1,18 +1,16 @@
-import resource from '../middlewares/resource-router-middleware';
-import { UserModel } from 'common/lib/models/userModel';
-import processError from '../utils/processError';
-import tokenAuthMIddleware from '../middlewares/tokenAuth';
-import formDataChecker from '../middlewares/formDataChecker';
-import groupRestriction from '../middlewares/groupRestriction';
-import { getAllowedGroups } from 'framework-ui/lib/privileges';
-
+import { AuthTypes } from 'common/lib/constants';
 import fieldDescriptors from 'common/lib/fieldDescriptors';
+import { IUser } from 'common/lib/models/interface/userInterface';
+import { TokenModel } from 'common/lib/models/tokenModel';
+import { UserModel } from 'common/lib/models/userModel';
+import { UserService } from 'common/lib/services/userService';
+import { getAllowedGroups } from 'framework-ui/lib/privileges';
+import formDataChecker from '../middlewares/formDataChecker';
+import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
+import resource from '../middlewares/resource-router-middleware';
+import tokenAuthMIddleware from '../middlewares/tokenAuth';
 import checkWritePerm from '../middlewares/user/checkWritePerm';
 import eventEmitter from '../services/eventEmitter';
-import { UserService } from 'common/lib/services/userService';
-import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import checkUser from '../middlewares/user/checkUser';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
@@ -26,18 +24,19 @@ export default () =>
             index: [tokenAuthMIddleware()],
             create: [
                 rateLimiterMiddleware,
-                formDataChecker(fieldDescriptors, { allowedForms: ['LOGIN', 'REGISTRATION'] }),
+                formDataChecker(fieldDescriptors, {
+                    allowedForms: ['LOGIN', 'REGISTRATION', 'FORGOT', 'FORGOT_PASSWORD'],
+                }),
             ],
             replaceId: [
                 tokenAuthMIddleware(),
                 checkWritePerm(),
-                formDataChecker(fieldDescriptors, { allowedForms: ['EDIT_USER', 'FIREBASE_ADD', 'FORGOT_PASSWORD'] }),
+                formDataChecker(fieldDescriptors, { allowedForms: ['EDIT_USER', 'FIREBASE_ADD'] }),
             ],
             deleteId: [tokenAuthMIddleware(), checkWritePerm()],
         },
         /** GET / - List all entities */
         async index({ user, root, query: { type } }: any, res) {
-            // console.log(user)
             if (user && type === 'userName') {
                 // tested
                 console.log('retrieving userNames');
@@ -91,8 +90,17 @@ export default () =>
                     token,
                 });
                 eventEmitter.emit('user_signup', { id: doc._id, info: doc.info });
+            } else if (formData.FORGOT) {
+                eventEmitter.emit('user_forgot', { email: formData.FORGOT.email });
+                res.sendStatus(204);
             } else if (formData.FORGOT_PASSWORD) {
-                eventEmitter.emit('user_forgot', { email: formData.FORGOT_PASSWORD.email });
+                console.log('forgot', formData.FORGOT_PASSWORD);
+                const token = await TokenModel.retrieve(formData.FORGOT_PASSWORD.token);
+                if (!token) return res.sendStatus(400);
+
+                UserService.updateUser(token.userId, {
+                    auth: { password: formData.FORGOT_PASSWORD.password, type: AuthTypes.PASSWD },
+                });
                 res.sendStatus(204);
             } else {
                 res.sendStatus(400);

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -14,13 +14,15 @@ import { Link } from 'react-router-dom';
 import Loader from 'framework-ui/lib/Components/Loader';
 import { login, fetchAuthType } from 'framework-ui/lib/redux/actions/application/user';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import { getFieldVal, getUserPresence } from 'framework-ui/lib/utils/getters';
+import { getQueryField } from '../../utils/getters';
 import { AuthTypes } from 'common/lib/constants';
 import * as deviceActions from '../../store/actions/application/devices';
 import { grey } from '@material-ui/core/colors';
-import { forgotPassword } from 'frontend/src/store/actions/application/user';
+import * as userActions from 'frontend/src/store/actions/application/user';
+import { IState } from 'frontend/src/types';
+import { formsDataActions } from 'framework-ui/lib/redux/actions';
 
-const styles = (theme) => ({
+const useClasses = makeStyles((theme) => ({
     loginTitle: {
         margin: '0 auto',
         paddingBottom: 20,
@@ -55,64 +57,65 @@ const styles = (theme) => ({
         cursor: 'pointer',
         color: grey[500],
     },
-});
+}));
 
-let timer = null;
-function onStopTyping(callback) {
-    return (e) => {
-        clearTimeout(timer);
-        timer = setTimeout(callback, 800);
-    };
+interface LoginDialogProps {
+    token?: string;
+    open: boolean;
+    onClose: any;
+    forgotAction: any;
+    setFormFieldAction: any;
 }
-
-function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthTypeAction }) {
+function ForgotDialog({ open, onClose, forgotAction, token, setFormFieldAction }: LoginDialogProps) {
+    const classes = useClasses();
     const [pending, setPending] = useState(false);
 
-    async function fetchAuthType() {
-        if (pending) return;
-        clearTimeout(timer);
+    useEffect(() => {
+        if (token) setFormFieldAction('FORGOT_PASSWORD.token', token);
+    }, [token]);
+
+    const forgotHandler = async () => {
         setPending(true);
-        await fetchAuthTypeAction();
+        await forgotAction('FORGOT');
         setPending(false);
-    }
-    const loginMyAction = async () => {
-        setPending(true);
-        const success = await loginAction();
-        setPending(false);
-        if (success) onClose();
     };
 
-    const actionHandler = (!authType && fetchAuthType) || loginMyAction;
+    const passwordHandler = async () => {
+        setPending(true);
+        await forgotAction('FORGOT_PASSWORD');
+        setPending(false);
+    };
+
+    const actionHandler = token ? passwordHandler : forgotHandler;
 
     return (
         <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title" maxWidth="xs" fullWidth>
             <DialogTitle id="form-dialog-title" className={classes.loginTitle}>
-                Přihlášení
+                Zapomenuté heslo
             </DialogTitle>
             <DialogContent className={classes.content}>
                 <Grid container justify="center" spacing={2}>
-                    <Grid item md={10} xs={12}>
-                        <FieldConnector
-                            deepPath="LOGIN.userName"
-                            autoFocus
-                            onEnter={actionHandler}
-                            onChange={onStopTyping(fetchAuthType)}
-                            fieldProps={{
-                                autoComplete: 'off',
-                                fullWidth: true,
-                            }}
-                        />
-                    </Grid>
-                    {authType === AuthTypes.PASSWD && (
+                    {token ? (
                         <Grid item md={10} xs={12}>
                             <FieldConnector
-                                deepPath="LOGIN.password"
-                                component="PasswordField"
+                                deepPath="FORGOT_PASSWORD.password"
                                 autoFocus
+                                onEnter={actionHandler}
+                                component="PasswordField"
                                 fieldProps={{
                                     fullWidth: true,
                                 }}
+                            />
+                        </Grid>
+                    ) : (
+                        <Grid item md={10} xs={12}>
+                            <FieldConnector
+                                deepPath="FORGOT.email"
+                                autoFocus
                                 onEnter={actionHandler}
+                                fieldProps={{
+                                    fullWidth: true,
+                                }}
                             />
                         </Grid>
                     )}
@@ -120,16 +123,15 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
             </DialogContent>
             <DialogActions className={classes.loginActions}>
                 <Button color="primary" onClick={actionHandler} disabled={pending}>
-                    {!authType ? 'Další' : 'Přihlásit'}
+                    {token ? 'Nastavit' : 'Resetovat'}
                 </Button>
                 <Loader open={pending} />
             </DialogActions>
             <DialogContent className={classes.loginFooter}>
                 <Typography component="div">
-                    {/* Nemáte účet?{' '} */}
-                    <Link to={{ hash: 'forgot' }}>
+                    <Link to={{ hash: 'login' }}>
                         <Typography display="inline" className={classes.registerButton}>
-                            Zapomenuté heslo?
+                            Přihlášení
                         </Typography>
                     </Link>
                 </Typography>
@@ -138,19 +140,17 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
     );
 }
 
-const _mapStateToProps = (state) => ({
-    authType: getFieldVal('LOGIN.authType')(state),
-    userPresence: getUserPresence(state),
+const _mapStateToProps = (state: IState) => ({
+    token: getQueryField('token', state),
 });
 
-const _mapDispatchToProps = (dispatch) =>
+const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            loginAction: login,
-            fetchAuthTypeAction: fetchAuthType,
-            // fetchDevicesAction: deviceActions.fetch,
+            forgotAction: userActions.forgot,
+            setFormFieldAction: formsDataActions.updateFormField,
         },
         dispatch
     );
 
-export default connect(_mapStateToProps, _mapDispatchToProps)(withStyles(styles)(LoginDialog));
+export default connect(_mapStateToProps, _mapDispatchToProps)(ForgotDialog);

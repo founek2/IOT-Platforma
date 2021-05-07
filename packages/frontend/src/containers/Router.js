@@ -37,11 +37,12 @@ class Router extends Component {
             pathname: defLocation.pathname,
             hash: defLocation.hash,
             search: defLocation.search,
-            query: parseQuery(defLocation.search)
+            query: parseQuery(defLocation.search),
         });
 
         const lastHistory = localStorage.getItem('history');
-        if (lastHistory) history.push(JSON.parse(lastHistory));
+
+        if (lastHistory && history.location.pathname === '/') history.push(JSON.parse(lastHistory));
 
         history.listen(({ key, state, ...rest }, action) => {
             const { updateHistoryAction, updateTmpDataAction } = this.props;
@@ -89,7 +90,7 @@ class Router extends Component {
 }
 const _mapStateToProps = (state) => ({
     userPresence: getUserPresence(state),
-    userGroups: getGroups(state)
+    userGroups: getGroups(state),
 });
 
 const _mapActionsToProps = (dispatch) => ({
@@ -98,10 +99,10 @@ const _mapActionsToProps = (dispatch) => ({
             updateHistoryAction: updateHistory,
             setHistoryAction: setHistory,
             updateTmpDataAction: updateTmpData,
-            hydrateStateAction: hydrateState
+            hydrateStateAction: hydrateState,
         },
         dispatch
-    )
+    ),
 });
 
 export default connect(_mapStateToProps, _mapActionsToProps)(Router);

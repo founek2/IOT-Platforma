@@ -121,11 +121,13 @@ export function validateForm(formName: string, state: object, ignoreRequiredFiel
         F,
         { [formName]: formDescriptors }
     );
+    console.log('paths', arraOfPaths);
 
     // generate deePaths from FormData
     recursive(
         (val, deepPath) => {
-            arraOfPaths.push(deepPath);
+            // ignore deepPath, which is only form_name
+            if (deepPath.includes('.')) arraOfPaths.push(deepPath);
         },
         (val, deepPath) => {
             return isObject(val) && !/\.[0-9]+$/.test(deepPath); // check if object and validate if deepPath ends with number, then its for array descriptor
