@@ -44,20 +44,20 @@ function mustContain(searchText, dataProps) {
 
 const styles = (theme) => ({
     root: {
-        width: '100%'
+        width: '100%',
     },
     table: {
         // minWidth: 1020
     },
     tableWrapper: {
-        overflowX: 'auto'
+        overflowX: 'auto',
     },
     editCell: {
-        width: 50
+        width: 50,
     },
     createdCell: {
-        width: 200
-    }
+        width: 200,
+    },
 });
 
 class EnhancedTable extends React.Component {
@@ -66,16 +66,16 @@ class EnhancedTable extends React.Component {
         this.state = {
             order: props.order,
             orderBy: props.orderBy,
-            data: [ ...props.data ],
+            data: [...props.data],
             page: 0,
             rowsPerPage: props.rowsPerPage,
-            searchText: ''
+            searchText: '',
         };
     }
 
     componentWillReceiveProps(nextProps) {
         if (!equals(this.state.data, nextProps.data)) {
-            this.setState({ data: [ ...nextProps.data ] });
+            this.setState({ data: [...nextProps.data] });
         }
     }
 
@@ -141,7 +141,7 @@ class EnhancedTable extends React.Component {
     handleSearchChange = (e) => {
         console.log(e.target.value);
         this.setState({
-            searchText: e.target.value
+            searchText: e.target.value,
         });
     };
 
@@ -158,7 +158,7 @@ class EnhancedTable extends React.Component {
             customEditButton,
             onDelete,
             rowsPerPageOptions,
-            customClasses = {}
+            customClasses = {},
         } = this.props;
         const enableSelection = Boolean(onDelete);
         const selected = this.props.value;
@@ -256,10 +256,10 @@ class EnhancedTable extends React.Component {
                     rowsPerPageOptions={rowsPerPageOptions}
                     page={page}
                     backIconButtonProps={{
-                        'aria-label': 'Předchozí stránka'
+                        'aria-label': 'Předchozí stránka',
                     }}
                     nextIconButtonProps={{
-                        'aria-label': 'Další stránka'
+                        'aria-label': 'Další stránka',
                     }}
                     labelRowsPerPage="Položek na stránku"
                     onChangePage={this.handleChangePage}
@@ -275,7 +275,7 @@ EnhancedTable.defaultProps = {
     rowsPerPage: 5,
     value: [],
     order: 'asc',
-    rowsPerPageOptions: [ 10, 25, 50 ]
+    rowsPerPageOptions: [10, 25, 50],
 };
 
 EnhancedTable.propTypes = {
@@ -284,8 +284,24 @@ EnhancedTable.propTypes = {
     customClasses: PropTypes.shape({
         toolbar: PropTypes.string,
         tableWrapper: PropTypes.string,
-        pagination: PropTypes.string
-    })
+        pagination: PropTypes.string,
+    }),
+    dataProps: PropTypes.arrayOf(
+        PropTypes.shape({
+            path: PropTypes.string.isRequired,
+            label: PropTypes.string.isRequired,
+            convertor: PropTypes.func,
+        })
+    ).isRequired,
+    data: PropTypes.array.isRequired,
+    enableSearch: PropTypes.Boolean,
+    orderBy: PropTypes.string,
+    enableEdit: PropTypes.boolean,
+    customEditButton: PropTypes.func,
+    onDelete: PropTypes.func,
+    onChange: PropTypes.func,
+    onAdd: PropTypes.func,
+    onEdit: PropTypes.func,
 };
 
 export default withStyles(styles)(EnhancedTable);

@@ -1,7 +1,8 @@
-import { IDevice } from "common/lib/models/interface/device";
-import { IDiscovery } from "common/lib/models/interface/discovery";
-import { HistoricalSensor, HistoricalGeneric } from "common/lib/models/interface/history";
-import { IThing } from "common/lib/models/interface/thing";
+import { IDevice } from 'common/lib/models/interface/device';
+import { IDiscovery } from 'common/lib/models/interface/discovery';
+import { HistoricalSensor, HistoricalGeneric } from 'common/lib/models/interface/history';
+import { IThing } from 'common/lib/models/interface/thing';
+import { IUser } from 'common/lib/models/interface/userInterface';
 
 export interface ControlProps {
     name: string;
@@ -16,15 +17,15 @@ export interface ControlProps {
 
 export interface IState {
     application: {
-        user: any;
+        user?: IUser;
         notifications: any[];
         users: any[];
         devices: { data: IDevice[]; lastFetch?: Date; lastUpdate?: Date };
         discovery: { data: IDiscovery[]; lastFetch?: Date; lastUpdate?: Date };
         thingHistory: {
             data: HistoricalSensor[] | HistoricalGeneric[];
-            deviceId: IDevice["_id"];
-            thingId: IThing["_id"];
+            deviceId: IDevice['_id'];
+            thingId: IThing['_id'];
             lastFetch?: Date;
         };
         userNames: { data: Array<{ _id: string; userName: string }>; lastFetch?: Date; lastUpdate?: Date };
