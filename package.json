@@ -2,6 +2,7 @@
     "name": "iot-platforma",
     "license": "GPL-3.0-only",
     "author": "Martin Skalický",
+    "private": true,
     "scripts": {
         "bootstrap": "lerna bootstrap",
         "build": "lerna run --parallel --scope backend --scope frontend build && lerna run --scope backend-mqtt build",
