@@ -59,7 +59,7 @@ function Layout({
     const setMainMenuOpen = (bool) => () => setMainMenuO(bool);
     const theme = useTheme();
     const isWide = useMediaQuery(theme.breakpoints.up('sm'));
-    console.log('isWide', isWide);
+
     return (
         <Fragment>
             <AppBar position="static">

@@ -1,45 +1,44 @@
-import { useEffect } from "react";
-import io from "../webSocket";
-import * as deviceActions from "../store/actions/application/devices";
-import { useDispatch, useSelector } from "react-redux";
-import { IDevice } from "common/lib/models/interface/device";
-import { IState } from "../types";
-import { path } from "ramda";
-import { getApplication } from "framework-ui/lib/utils/getters";
-import { useActions } from "./useActions";
-import { SocketUpdateThingState } from "common/lib/types";
-
+import { useEffect } from 'react';
+import io from '../webSocket';
+import * as deviceActions from '../store/actions/application/devices';
+import { useDispatch, useSelector } from 'react-redux';
+import { IDevice } from 'common/lib/models/interface/device';
+import { IState } from '../types';
+import { path } from 'ramda';
+import { getApplication } from 'framework-ui/lib/utils/getters';
+import { useActions } from './useActions';
+import { SocketUpdateThingState } from 'common/lib/types';
 
 export function useEffectFetchDevices() {
     const actions = useActions({
         fetchDevicesA: deviceActions.fetch,
         updateDeviceA: deviceActions.update,
-    })
+    });
 
-    const devicesLastFetch = useSelector<IState>(state => path(["devices", "lastFetch"], getApplication(state))) as Date | undefined
+    const devicesLastFetch = useSelector<IState>((state) => path(['devices', 'lastFetch'], getApplication(state))) as
+        | Date
+        | undefined;
 
     useEffect(() => {
-        console.log("blabla")
-        actions.fetchDevicesA()
+        actions.fetchDevicesA();
 
-        io.getSocket().on("device", actions.updateDeviceA);
+        io.getSocket().on('device', actions.updateDeviceA);
 
         return () => {
-            io.getSocket().off("device", actions.updateDeviceA);
+            io.getSocket().off('device', actions.updateDeviceA);
         };
     }, [actions]);
 
     useEffect(() => {
         function handler() {
-            console.log("focus")
-            const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000
+            const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000;
             if (!io.getSocket().isConnected() || isOld) {
-                actions.fetchDevicesA()
-                console.log("downloading devices")
+                actions.fetchDevicesA();
+                console.log('downloading devices');
             }
         }
-        window.addEventListener("focus", handler)
+        window.addEventListener('focus', handler);
 
-        return () => window.removeEventListener("focus", handler)
-    }, [actions, devicesLastFetch])
-}  
+        return () => window.removeEventListener('focus', handler);
+    }, [actions, devicesLastFetch]);
+}
