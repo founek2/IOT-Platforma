@@ -65,7 +65,7 @@ function onStopTyping(callback) {
     };
 }
 
-function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthTypeAction }) {
+function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthTypeAction, onSuccess }) {
     const [pending, setPending] = useState(false);
 
     async function fetchAuthType() {
@@ -79,7 +79,7 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
         setPending(true);
         const success = await loginAction();
         setPending(false);
-        if (success) onClose();
+        if (success) onSuccess && onSuccess();
     };
 
     const actionHandler = (!authType && fetchAuthType) || loginMyAction;

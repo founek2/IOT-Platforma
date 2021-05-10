@@ -101,6 +101,7 @@ function Layout({
                     history.push({ hash: '' });
                     removeLoginFormAction();
                 }}
+                onSuccess={() => history.push('/devices')}
             />
             <ForgotDialog
                 open={forgotOpen}

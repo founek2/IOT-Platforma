@@ -7,7 +7,8 @@ const mainMenu = {
     userManagement: 'Správce uživatelů',
     registration: 'Registrovat',
     deviceControl: 'Zařízení',
-    devices: 'Správa zařízení'
+    devices: 'Správa zařízení',
+    about: 'Informace',
 };
 
 export default messageFactory(mainMenu);
