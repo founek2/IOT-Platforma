@@ -2,6 +2,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
+import SendIcon from '@material-ui/icons/Send';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -19,6 +20,7 @@ import LoginDialog from './layout/LoginDialog';
 import SideMenu from './layout/SideMenu';
 import UserMenu from './layout/UserMenu';
 import ForgotDialog from './layout/ForgotDialog';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 
 const styles = {
     root: {
@@ -55,7 +57,9 @@ function Layout({
 }) {
     const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool) => () => setMainMenuO(bool);
-
+    const theme = useTheme();
+    const isWide = useMediaQuery(theme.breakpoints.up('sm'));
+    console.log('isWide', isWide);
     return (
         <Fragment>
             <AppBar position="static">
@@ -70,16 +74,22 @@ function Layout({
                     </IconButton>
                     <Link className={`${classes.flex} ${classes.noLinkStyles}`} to="/devices">
                         <Typography variant="h5" color="inherit">
-                            IOT Platforma
+                            Platform
                         </Typography>
                     </Link>
                     {userPresence ? (
                         <UserMenu />
                     ) : (
                         <Link to={{ hash: 'login' }}>
-                            <Button variant="text" className={classes.loginButton}>
-                                Přihlášení
-                            </Button>
+                            {isWide ? (
+                                <Button variant="text" className={classes.loginButton}>
+                                    Přihlášení
+                                </Button>
+                            ) : (
+                                <IconButton className={classes.loginButton}>
+                                    <SendIcon />
+                                </IconButton>
+                            )}
                         </Link>
                     )}
                 </Toolbar>
