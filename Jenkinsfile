@@ -32,43 +32,48 @@ pipeline {
             }
         }
 
+        stage ('Tests') {
+            steps {
+                // parallel 'static': {
+                //     sh "yarn lerna run --scope backend --scope common coverage"
+                // },
+                // 'unit': {
+                //     sh "echo 'shell scripts to run unit tests...'"
+                // },
+                // 'integration': {
+                //     sh "echo 'shell scripts to run integration tests...'"
+                // }
+                script {
+                    sh "yarn test"
+                }
+            }
+        }
+
         stage ('Build') {
             steps {
                 sh "yarn build"
             }
         }
-        // stage ('Tests') {
-        //     steps {
-        //         parallel 'static': {
-        //             sh "yarn lerna run --scope backend --scope common coverage"
-        //         },
-        //         'unit': {
-        //             sh "echo 'shell scripts to run unit tests...'"
-        //         },
-        //         'integration': {
-        //             sh "echo 'shell scripts to run integration tests...'"
-        //         }
-        //     }
-        // }
 
-        // stage('SonarQube analysis') {
-        //     environment {
-        //         SCANNER_HOME = tool 'SonarQubeScanner'
-        //     }
-        //     steps {
-        //         withSonarQubeEnv('Sonar qube') {
-        //             sh '''
-        //             $SCANNER_HOME/bin/sonar-scanner \
-        //             -D sonar.projectKey=delegi \
-        //             -D sonar.projectName="Delegy system" \
-        //             -D sonar.projectVersion=0.1.0 \
-        //             -D sonar.sources=packages/backend/src \
-        //             -D sonar.language=ts \
-        //             -D sonar.javascript.lcov.reportPaths=packages/backend/coverage/lcov.info
-        //             '''
-        //         }
-        //     }
-        // }
+
+        stage('SonarQube analysis') {
+            environment {
+                SCANNER_HOME = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('Sonar qube') {
+                    sh '''
+                    $SCANNER_HOME/bin/sonar-scanner \
+                    -D sonar.projectKey=delegi \
+                    -D sonar.projectName="Delegy system" \
+                    -D sonar.projectVersion=0.1.0 \
+                    -D sonar.sources=packages/backend/src \
+                    -D sonar.language=ts \
+                    -D sonar.javascript.lcov.reportPaths=packages/backend/coverage/lcov.info
+                    '''
+                }
+            }
+        }
 
         // stage("Quality Gate") {
         //     steps {
