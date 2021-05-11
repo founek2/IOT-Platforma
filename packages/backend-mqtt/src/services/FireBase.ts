@@ -13,16 +13,14 @@ import { devLog } from 'framework-ui/lib/logger';
 import { map, prop, uniq, o } from 'ramda';
 import { NotifyService } from './notifyService';
 
-// const defaultAdvanced = {
-//     interval: -1,
-//     from: "00:00",
-//     to: "23:59",
-//     daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-// };
+/**
+ * Funcional implementation sending notifications
+ */
 
 let messaging: admin.messaging.Messaging;
 let homepageUrl: string;
 
+/* Initialize firebase SDK for later usage */
 export function init(config: Config) {
     var serviceAccount = require(config.firebaseAdminPath);
 
@@ -55,6 +53,13 @@ function createNotification(options: CreateNotificationsOptions) {
 }
 type Output = { [userId: string]: { title: string; body: string; icon: string; click_action: string }[] };
 
+/**
+ * Process all notification set by all users on provided property with current value
+ * @param {IDevice} device
+ * @param {IThing['config']['nodeId']} nodeId
+ * @param {IThingProperty['propertyId']} propertyId
+ * @param {string | number} value
+ */
 export async function processData(
     device: IDevice,
     nodeId: IThing['config']['nodeId'],

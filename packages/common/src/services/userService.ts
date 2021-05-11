@@ -27,7 +27,13 @@ export type CredentialData = {
     authType: IUser['auth']['type'];
 };
 
+/**
+ * User service handles complicated data manipulation with user
+ */
 export const UserService = {
+    /**
+     * Create new user
+     */
     async create(object: IUser): Promise<UserWithToken> {
         const { password, type } = object.auth;
         if (type && type !== AuthTypes.PASSWD) throw new Error('notImplemented');
@@ -42,6 +48,9 @@ export const UserService = {
         return { doc: plainUser, token };
     },
 
+    /**
+     * Compare credentials with one saved in DB
+     */
     async checkCreditals({
         userName,
         authType,
@@ -63,6 +72,9 @@ export const UserService = {
         };
     },
 
+    /**
+     * Update user
+     */
     async updateUser(userID: IUser['_id'], data: Partial<IUser>): Promise<IUserDocument> {
         if (data.auth && data.auth.password) {
             const { password } = data.auth;
@@ -76,6 +88,9 @@ export const UserService = {
         return doc;
     },
 
+    /**
+     * Delete user from DB and all his permissions from devices + his notification rules
+     */
     async deleteById(id: IUser['_id']): Promise<boolean> {
         const userId = mongoose.Types.ObjectId(id);
 
@@ -98,6 +113,10 @@ export const UserService = {
 
         return true;
     },
+
+    /**
+     * Generate forgot token for user
+     */
     async forgotPassword(email: IUser['info']['email']): Promise<null | { token: IToken; user: IUser }> {
         const user = await UserModel.findOne({ 'info.email': email }).lean();
         if (!user) return null;

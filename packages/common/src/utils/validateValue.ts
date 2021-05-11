@@ -1,5 +1,8 @@
-import { IThingProperty, PropertyDataType, IThingPropertyEnum, IThingPropertyNumeric } from "../models/interface/thing";
+import { IThingProperty, PropertyDataType, IThingPropertyEnum, IThingPropertyNumeric } from '../models/interface/thing';
 
+/**
+ * Check whether value is valid as state of property
+ */
 export function validateValue(
     property: IThingProperty,
     value: string
@@ -24,16 +27,16 @@ export function validateValue(
             : { valid: false };
     }
     if (property.dataType === PropertyDataType.boolean) {
-        return value === "true" || value === "false" ? { valid: true, value: value } : { valid: false };
+        return value === 'true' || value === 'false' ? { valid: true, value: value } : { valid: false };
     }
     if (property.dataType === PropertyDataType.string) {
-        return { valid: true, value: value }
+        return { valid: true, value: value };
     }
 
     return { valid: false };
 }
 
-function isInRange(value: number, format: IThingPropertyNumeric["format"]): boolean {
+function isInRange(value: number, format: IThingPropertyNumeric['format']): boolean {
     if (!format) return true;
 
     return value >= format.min && value <= format.max;

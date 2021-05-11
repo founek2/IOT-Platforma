@@ -1,48 +1,51 @@
-import { UserModel } from "common/lib/models/userModel";
-import { DiscoveryModel } from "common/lib/models/deviceDiscoveryModel";
-import { DeviceModel } from "common/lib/models/deviceModel";
-import { DeviceStatus } from "common/lib/models/interface/device";
-import { ComponentType, PropertyClass, PropertyDataType } from "common/lib/models/interface/thing";
-import { Server as serverIO } from "socket.io";
-import eventEmitter from "../eventEmitter";
+import { UserModel } from 'common/lib/models/userModel';
+import { DiscoveryModel } from 'common/lib/models/deviceDiscoveryModel';
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import { DeviceStatus } from 'common/lib/models/interface/device';
+import { ComponentType, PropertyClass, PropertyDataType } from 'common/lib/models/interface/thing';
+import { Server as serverIO } from 'socket.io';
+import eventEmitter from '../eventEmitter';
 
 type cbFn = (topic: string, message: any, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO) {
-    handle("prefix/+/$name", async function (topic, data, [deviceId]) {
+    handle('prefix/+/$name', async function (topic, data, [deviceId]) {
         DiscoveryModel.updateOne({ deviceId }, { name: data.toString() }, { upsert: true }).exec();
     });
 
-    handle("prefix/+/$realm", async function (topic, data, [deviceId]) {
+    handle('prefix/+/$realm', async function (topic, data, [deviceId]) {
         DiscoveryModel.updateOne({ deviceId }, { realm: data.toString() }, { upsert: true }).exec();
     });
 
-    handle("prefix/+/$nodes", async function (topic, data, [deviceId]) {
-        DiscoveryModel.updateOne({ deviceId }, { [`nodeIds`]: data.toString().split(",") }).exec();
+    handle('prefix/+/$nodes', async function (topic, data, [deviceId]) {
+        DiscoveryModel.updateOne({ deviceId }, { [`nodeIds`]: data.toString().split(',') }).exec();
     });
 
-    handle("prefix/+/+/$name", async function (topic, data, [deviceId, nodeId]) {
+    handle('prefix/+/+/$name', async function (topic, data, [deviceId, nodeId]) {
         DiscoveryModel.updateOne({ deviceId }, { [`things.${nodeId}.config.name`]: data.toString() }).exec();
     });
 
-    handle("prefix/+/+/$type", async function (topic, data, [deviceId, nodeId, propertyId]) {
+    handle('prefix/+/+/$type', async function (topic, data, [deviceId, nodeId, propertyId]) {
         const componentType = data.toString();
         if (!(componentType in ComponentType)) return;
 
         DiscoveryModel.updateOne({ deviceId }, { [`things.${nodeId}.config.componentType`]: componentType }).exec();
     });
 
-    handle("prefix/+/+/$properties", async function (topic, data, [deviceId, nodeId]) {
-        DiscoveryModel.updateOne({ deviceId }, { [`things.${nodeId}.config.propertyIds`]: data.toString().split(",") }).exec();
+    handle('prefix/+/+/$properties', async function (topic, data, [deviceId, nodeId]) {
+        DiscoveryModel.updateOne(
+            { deviceId },
+            { [`things.${nodeId}.config.propertyIds`]: data.toString().split(',') }
+        ).exec();
     });
 
-    handle("prefix/+/+/+/$name", async function (topic, data, [deviceId, nodeId, propertyId]) {
+    handle('prefix/+/+/+/$name', async function (topic, data, [deviceId, nodeId, propertyId]) {
         DiscoveryModel.updateOne(
             { deviceId },
             { [`things.${nodeId}.config.properties.${propertyId}.name`]: data.toString() }
         ).exec();
     });
 
-    handle("prefix/+/+/+/$class", async function (topic, data, [deviceId, nodeId, propertyId]) {
+    handle('prefix/+/+/+/$class', async function (topic, data, [deviceId, nodeId, propertyId]) {
         const propertyClass = data.toString();
         if (!(propertyClass in PropertyClass)) return;
 
@@ -52,7 +55,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
         ).exec();
     });
 
-    handle("prefix/+/+/+/$datatype", async function (topic, data, [deviceId, nodeId, propertyId]) {
+    handle('prefix/+/+/+/$datatype', async function (topic, data, [deviceId, nodeId, propertyId]) {
         const dataType = data.toString();
         if (!(dataType in PropertyDataType)) return;
 
@@ -62,23 +65,23 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
         ).exec();
     });
 
-    handle("prefix/+/+/+/$unit", async function (topic, data, [deviceId, nodeId, propertyId]) {
+    handle('prefix/+/+/+/$unit', async function (topic, data, [deviceId, nodeId, propertyId]) {
         DiscoveryModel.updateOne(
             { deviceId },
             { [`things.${nodeId}.config.properties.${propertyId}.unitOfMeasurement`]: data.toString() }
         ).exec();
     });
 
-    handle("prefix/+/+/+/$format", async function (topic, data, [deviceId, nodeId, propertyId]) {
+    handle('prefix/+/+/+/$format', async function (topic, data, [deviceId, nodeId, propertyId]) {
         DiscoveryModel.updateOne(
             { deviceId },
             { [`things.${nodeId}.config.properties.${propertyId}.format`]: data.toString() }
         ).exec();
     });
 
-    handle("prefix/+/+/+/$settable", async function (topic, data, [deviceId, nodeId, propertyId]) {
+    handle('prefix/+/+/+/$settable', async function (topic, data, [deviceId, nodeId, propertyId]) {
         const settable = data.toString();
-        if (!(settable === "true" || settable === "false")) return;
+        if (!(settable === 'true' || settable === 'false')) return;
 
         DiscoveryModel.updateOne(
             { deviceId },
@@ -86,10 +89,10 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
         ).exec();
     });
 
-    handle("prefix/+/$state", async function (topic, data, [deviceId]) {
+    handle('prefix/+/$state', async function (topic, data, [deviceId]) {
         const status: DeviceStatus = data.toString();
         if (!(status in DeviceStatus)) {
-            console.log("invalid state");
+            console.log('invalid state');
             return;
         }
 
@@ -99,30 +102,31 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 
         if (status === DeviceStatus.ready) {
             const doc = await DiscoveryModel.findOne({ deviceId, pairing: true }).exec();
+            // if device is already in pairing process, then send it apiKey
             if (doc) {
                 const device = await DeviceModel.findOne({
-                    "metadata.deviceId": deviceId,
-                    "metadata.topicPrefix": doc?.realm,
+                    'metadata.deviceId': deviceId,
+                    'metadata.topicPrefix': doc?.realm,
                 });
-                if (device) return eventEmitter.emit("device_pairing_init", { deviceId, apiKey: device.apiKey });
+                if (device) return eventEmitter.emit('device_pairing_init', { deviceId, apiKey: device.apiKey });
                 else DiscoveryModel.updateOne({ deviceId }, { pairing: false }).exec(); // if user deleted his device, but wasnt paired yet
             }
         }
 
         const doc = await DiscoveryModel.findOneAndUpdate(
             { deviceId },
-            { "state.status.value": status, "state.status.timestamp": new Date() },
+            { 'state.status.value': status, 'state.status.timestamp': new Date() },
             {
                 upsert: status !== DeviceStatus.disconnected,
                 setDefaultsOnInsert: true,
-                new: true
+                new: true,
             }
         )
             .lean()
             .exec();
 
-        const user = await UserModel.findOne({ realm: doc?.realm }).select("_id").lean();
-        if (user?._id && !doc?.pairing)
-            io.to(user._id.toString()).emit("deviceDiscovered", doc);
+        const user = await UserModel.findOne({ realm: doc?.realm }).select('_id').lean();
+        // notify user about newly discovered device
+        if (user?._id && !doc?.pairing) io.to(user._id.toString()).emit('deviceDiscovered', doc);
     });
 }

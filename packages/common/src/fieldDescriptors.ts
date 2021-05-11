@@ -239,13 +239,6 @@ const USER_MANAGEMENT: fieldDescriptors = {
         validations: [validationFactory('isNotEmptyArray')],
     },
 };
-const DEVICE_MANAGEMENT: fieldDescriptors = {
-    selected: {
-        deepPath: 'DEVICE_MANAGEMENT.selected',
-        required: true,
-        validations: [validationFactory('isNotEmptyArray')],
-    },
-};
 
 const DISCOVERY_DEVICES: fieldDescriptors = {
     selected: {
@@ -313,7 +306,6 @@ const descriptors: fieldDescriptors = {
     EDIT_PERMISSIONS,
     EDIT_NOTIFY,
     FIREBASE_ADD,
-    DEVICE_MANAGEMENT,
     DISCOVERY_DEVICES,
     DEVICE_SEND,
     FORGOT,
