@@ -54,11 +54,11 @@ export default () =>
                 res.send({ data: docs.map(({ _id, info: { userName } }) => ({ _id, userName })) });
             } else if (root) {
                 const docs = await UserModel.findAll();
-                res.send({ users: docs.filter(removeUserItself(user.id)).map((obj) => obj.toObject()) });
+                res.send({ docs: docs.filter(removeUserItself(user.id)).map((obj) => obj.toObject()) });
             } else if (user && user.admin) {
                 // tested
                 const docs = await UserModel.findAllNotRoot();
-                res.send({ users: docs.filter(removeUserItself(user.id)).map((obj) => obj.toObject()) });
+                res.send({ docs: docs.filter(removeUserItself(user.id)).map((obj) => obj.toObject()) });
             } else res.sendStatus(500);
         },
 

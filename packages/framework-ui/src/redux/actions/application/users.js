@@ -4,7 +4,7 @@ import {
     create as createUserApi,
     getUsers as fetchUsers,
     deleteUser as deleteUserApi,
-    updateUser as updateUserApi
+    updateUser as updateUserApi,
 } from '../../../api/userApi';
 import { validateForm, resetForm } from '../formsData';
 import { baseLogger } from '../../../logger';
@@ -12,30 +12,30 @@ import { baseLogger } from '../../../logger';
 export function remove(data) {
     return {
         type: actionTypes.REMOVE_USER,
-        payload: data
+        payload: data,
     };
 }
 
 export function set(data) {
     return {
         type: actionTypes.SET_USERS,
-        payload: data
+        payload: data,
     };
 }
 
 export function add(data) {
     return {
         type: actionTypes.ADD_USER,
-        payload: data
+        payload: data,
     };
 }
 
 export function fetchAll() {
-    return function(dispatch, getState) {
+    return function (dispatch, getState) {
         return fetchUsers(
             {
                 token: getToken(getState()),
-                onSuccess: (json) => dispatch(set(json.users))
+                onSuccess: (json) => dispatch(set(json.docs)),
             },
             dispatch
         );
@@ -43,7 +43,7 @@ export function fetchAll() {
 }
 
 export function create() {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const USER = 'USER';
         const result = dispatch(validateForm(USER)());
         if (result.valid) {
@@ -56,7 +56,7 @@ export function create() {
                     onSuccess: (json) => {
                         dispatch(add(json.user));
                         dispatch(resetForm(USER)());
-                    }
+                    },
                 },
                 dispatch
             );
@@ -67,12 +67,12 @@ export function create() {
 export function updateUsers(arrayWithUsers) {
     return {
         type: actionTypes.UPDATE_USERS,
-        payload: arrayWithUsers
+        payload: arrayWithUsers,
     };
 }
 
 export function updateUser(id) {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const EDIT_USER = 'EDIT_USER';
         baseLogger(EDIT_USER);
 
@@ -85,8 +85,8 @@ export function updateUser(id) {
                     body: { formData: { [EDIT_USER]: formData } },
                     id,
                     onSuccess: () => {
-                        dispatch(updateUsers([ formData ]));
-                    }
+                        dispatch(updateUsers([formData]));
+                    },
                 },
                 dispatch
             );
@@ -95,7 +95,7 @@ export function updateUser(id) {
 }
 
 export function deleteUsers() {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const USER_MANAGEMENT = 'USER_MANAGEMENT';
         const result = dispatch(validateForm(USER_MANAGEMENT)());
         if (result.valid) {
@@ -105,7 +105,7 @@ export function deleteUsers() {
                     {
                         token: getToken(getState()),
                         id,
-                        onSuccess: () => dispatch(remove(id))
+                        onSuccess: () => dispatch(remove(id)),
                     },
                     dispatch
                 );
@@ -118,5 +118,5 @@ export default {
     remove,
     set,
     fetchAll,
-    create
+    create,
 };
