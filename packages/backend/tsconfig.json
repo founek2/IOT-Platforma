@@ -8,6 +8,7 @@
         "composite": true,
         "moduleResolution": "node",
         "strictNullChecks": true,
+        "resolveJsonModule": true,
         "lib": [
             "esnext.asynciterable",
             "DOM", // were problems with @testing-library
@@ -26,11 +27,6 @@
         "src/**/*.spec.ts"
     ],
     "include": [
-        "src/**/*"
-    ],
-    // "references": [
-    //     {
-    //         "path": "../common"
-    //     }
-    // ],
+        "src/**/*",
+    ]
 }

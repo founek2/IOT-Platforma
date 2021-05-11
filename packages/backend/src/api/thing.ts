@@ -9,6 +9,9 @@ import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 
+/**
+ * URL prefix /device/:deviceId/thing/:thingId
+ */
 export default () =>
     resource({
         mergeParams: true,
@@ -16,6 +19,11 @@ export default () =>
             read: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
         },
 
+        /** PATCH / - Update state of properites of the thing
+         * @restriction user needs control permission
+         * @header Authorization-JWT
+         * @body json { state: {[propertyId: string]: number | string } }
+         */
         async modify({ params, body }, res) {
             const { deviceId, thingId } = params;
 

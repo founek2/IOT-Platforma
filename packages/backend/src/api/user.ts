@@ -18,6 +18,9 @@ function removeUserItself(id: IUser['_id']) {
     };
 }
 
+/**
+ * URL prefix /user
+ */
 export default () =>
     resource({
         middlewares: {
@@ -35,7 +38,14 @@ export default () =>
             ],
             deleteId: [tokenAuthMIddleware(), checkWritePerm()],
         },
-        /** GET / - List all entities */
+        /** GET / - List all users in system
+         * @restriction regular user - list only userNames, admin - list all users
+         * @header Authorization-JWT
+         * @param type optional, specify property of user, supported: userName
+         * @return json
+         *              - type == userName { data: { _id: string, userName: string }[] }
+         *              - default { users: IUser[] }
+         */
         async index({ user, root, query: { type } }: any, res) {
             if (user && type === 'userName') {
                 // tested
@@ -52,7 +62,10 @@ export default () =>
             } else res.sendStatus(500);
         },
 
-        /** GET /:id - Return a given entity */
+        /** GET /:id - Return an user attribute
+         * @param attribute specify an user atribute, supported: authType
+         * @return json { authType: AuthTypes }
+         */
         async read({ params, query }, res) {
             const { id } = params;
             const { attribute } = query;
@@ -67,13 +80,21 @@ export default () =>
             }
         },
 
-        /** POST / - Create a new entity */
+        /** POST / - Do something based on body content
+         * @body form
+         * - LOGIN check provided credentials
+         * - REGISTRATION register new user
+         * - FORGOT send email with link to change password
+         * - FORGOT_PASSWORD - change password to user determined by one time use token
+         * @return json
+         * - LOGIN | REGISTRATION { user: IUser, token: JwtToken }
+         */
         async create(req, res) {
             const { formData } = req.body;
 
             if (formData.LOGIN) {
                 const { doc, token, error } = await UserService.checkCreditals(formData.LOGIN);
-                if (error) return res.status(500).send({ error });
+                if (error) return res.status(401).send({ error });
 
                 res.send({
                     user: doc,
@@ -107,6 +128,10 @@ export default () =>
             }
         },
 
+        /** DELETE /:id - Delete provided user
+         * @restriction user is admin or is deleting himself
+         * @header Authorization-JWT
+         */
         async deleteId({ params }, res) {
             await UserService.deleteById(params.id);
             res.sendStatus(204);
