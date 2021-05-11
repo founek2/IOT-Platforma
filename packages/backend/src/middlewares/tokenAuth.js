@@ -5,7 +5,10 @@ import { infoLog, warningLog } from 'framework-ui/lib/logger';
 
 import { enrichGroups } from 'framework-ui/lib/privileges';
 
-export default function(options = { restricted: true }) {
+/**
+ * Middleware validating JWT token in headers and binding User object to request
+ */
+export default function (options = { restricted: true }) {
     return async (req, res, next) => {
         const { restricted, methods } = options;
         // if (req.url !== '/login') {

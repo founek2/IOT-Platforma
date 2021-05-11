@@ -3,10 +3,13 @@ import { checkValidFormData } from 'common/lib/utils/validation';
 import { trimData } from 'framework-ui/lib/utils/trimData';
 import express from 'express';
 
-// TODO probably array validations do not work properly
 type Options = { ingoreRequired?: boolean; allowedForms?: string[] } | undefined;
 type FormData = { [key: string]: any };
 
+/**
+ * Middleware to check if formData in body are valid
+ * @param {Options} options - allowedForms restrict forms only to those specified, ingoreRequired can disable checking require for fields
+ */
 export default function formDataChecker(fieldDescriptors: any, { ingoreRequired, allowedForms }: Options = {}) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
         console.log('formData', req.body.formData);

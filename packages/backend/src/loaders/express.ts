@@ -29,7 +29,7 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     // decoder
     app.use(express.urlencoded({ extended: true }));
 
-    // JSON parser
+    // JSON parser with limited body size
     app.use((req, res, next) =>
         bodyParser.json({
             limit: getMaxSize(req),
@@ -39,9 +39,6 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     // mongo sanitizer (removes $ from keys)
     app.use(mongoSanitize());
 
-    // 3rd party middleware
-    // app.options("*", cors() as any);
-
     // const corsOptions = {
     //      origin: 'https://tracker.iotplatforma.cloud'
     // }
@@ -50,6 +47,7 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     // api router
     app.use('/api', api());
 
+    // fallback
     app.use('/api/*', (req, res) => res.sendStatus(404));
 
     return app;

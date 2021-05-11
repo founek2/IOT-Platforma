@@ -1,9 +1,11 @@
-import { UserModel } from "common/lib/models/userModel";
-import express from "express";
-import mongoose from "mongoose";
-import checkUser from "./checkUser";
+import express from 'express';
+import checkUser from './checkUser';
 
-export default function (options: { paramKey: string } = { paramKey: "id" }) {
+/**
+ * Middleware to check if user exists and initiator of request has permission to write
+ * @param options - params[paramKey] -> IUser["_id"]
+ */
+export default function (options: { paramKey: string } = { paramKey: 'id' }) {
     return async (req: any, res: express.Response, next: express.NextFunction) => {
         checkUser(options)(req, res, async () => {
             const { params, user = {} } = req;
@@ -11,7 +13,7 @@ export default function (options: { paramKey: string } = { paramKey: "id" }) {
 
             if (user.admin || userId == user.id) return next();
 
-            res.status(403).send({ error: "InvalidPermissions" });
+            res.status(403).send({ error: 'InvalidPermissions' });
         });
     };
 }

@@ -1,14 +1,14 @@
-import http from "http";
-import express, { Application } from "express";
-import config from "common/lib/config";
-import checkAndCreateRoot from "common/lib/services/checkAndCreateRoot";
-import { JwtService } from "common/lib/services/jwtService";
-import { devLog } from "framework-ui/lib/logger";
-import { Config } from "./types";
-import loadersInit from "./loaders";
-import mongoose from "mongoose";
-import initPrivileges from "framework-ui/lib/privileges";
-import { groupsHeritage, allowedGroups } from "common/lib/constants/privileges";
+import http from 'http';
+import express, { Application } from 'express';
+import config from 'common/lib/config';
+import checkAndCreateRoot from 'common/lib/services/checkAndCreateRoot';
+import { JwtService } from 'common/lib/services/jwtService';
+import { devLog } from 'framework-ui/lib/logger';
+import { Config } from './types';
+import loadersInit from './loaders';
+import mongoose from 'mongoose';
+import initPrivileges from 'framework-ui/lib/privileges';
+import { groupsHeritage, allowedGroups } from 'common/lib/constants/privileges';
 
 export const routes = {
     user: {
@@ -29,48 +29,54 @@ interface customApp extends Application {
 }
 
 async function startServer(config: Config) {
+    /* INITIALIZE */
     JwtService.init(config.jwt);
 
     const app: customApp = express();
 
     app.server = http.createServer(app);
-    if (!app.server) throw Error("Unable to create server");
+    if (!app.server) throw Error('Unable to create server');
 
     await loadersInit({ app, config });
+    /* --------- */
 
-    if (process.env.NODE_ENV_TEST !== "true") checkAndCreateRoot(); // check for roor existence, if not, then ask for password in terminal
+    /* check existence of root otherwise prompt to create one */
+    if (process.env.NODE_ENV_TEST !== 'true') checkAndCreateRoot(); // check for roor existence, if not, then ask for password in terminal
 
-    if (process.env.NODE_ENV === "development") {
-        console.log("Socket redirect enabled");
-        const proxy = require("http-proxy-middleware");
-        var wsProxy = proxy("/socket.io", {
-            target: "ws://localhost:8084",
+    /* SocketIO proxy just for development */
+    if (process.env.NODE_ENV === 'development') {
+        console.log('Socket redirect enabled');
+        const proxy = require('http-proxy-middleware');
+        var wsProxy = proxy('/socket.io', {
+            target: 'ws://localhost:8084',
             changeOrigin: true, // for vhosted sites, changes host header to match to target's host
             ws: true, // enable websocket proxy
-            logLevel: "error",
+            logLevel: 'error',
         });
 
         app.use(wsProxy);
-        app.server.on("upgrade", wsProxy.upgrade);
-        devLog("Proxy enabled");
+        app.server.on('upgrade', wsProxy.upgrade);
+        devLog('Proxy enabled');
     }
 
+    /* Start server */
     app.server.listen(config.port, () => {
         console.log(`Started on port ${(app.server?.address() as any).port}`);
     });
 
-    process.once("SIGINT", shutDown(app, mongoose.connection));
-    process.once("SIGTERM", shutDown(app, mongoose.connection));
-    process.once("SIGHUP", shutDown(app, mongoose.connection));
+    // handle appropriately server shutdown
+    process.once('SIGINT', shutDown(app, mongoose.connection));
+    process.once('SIGTERM', shutDown(app, mongoose.connection));
+    process.once('SIGHUP', shutDown(app, mongoose.connection));
 }
-
-startServer(config);
 
 function shutDown(app: customApp, connection: mongoose.Connection) {
     return async (code: NodeJS.Signals) => {
-        console.log(code, "received...");
+        console.log(code, 'received...');
         app.server?.close();
         await connection.close();
         process.exit(0);
     };
 }
+
+startServer(config);

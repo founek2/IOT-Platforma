@@ -8,6 +8,9 @@ const pathToBin = path.resolve(__dirname, '../node_modules/.bin/agendash');
 let child: any;
 const argv = [`--db=${createMongoUri(config.db)}`, '--collection=agendaJobs', '--port=8089'];
 
+/**
+ * StartUp AgendaDash server - webUI dashboard for agenda jobs
+ */
 function startChild() {
     console.log('STARTING', process.execPath, 'child.js', argv);
     child = spawn(pathToBin, argv, {

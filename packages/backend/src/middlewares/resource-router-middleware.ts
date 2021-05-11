@@ -1,12 +1,20 @@
 import asyncHandler from 'express-async-handler';
-import Express from "express"
-var Router = require('express').Router;
+import Express from 'express';
+import { Router } from 'express';
 
-type keyes = "index" | 'read' | "create" | "createId" | 'replace' | "replaceId" | 'modify' | "modifyId" | 'delete' | "deleteId"
+type keyes =
+    | 'index'
+    | 'read'
+    | 'create'
+    | 'createId'
+    | 'replace'
+    | 'replaceId'
+    | 'modify'
+    | 'modifyId'
+    | 'delete'
+    | 'deleteId';
 
-
-
-const map: { [key in keyes]: "get" | "post" | "put" | "delete" | "patch" } = {
+const map: { [key in keyes]: 'get' | 'post' | 'put' | 'delete' | 'patch' } = {
     index: 'get',
     read: 'get',
     create: 'post',
@@ -19,19 +27,22 @@ const map: { [key in keyes]: "get" | "post" | "put" | "delete" | "patch" } = {
     deleteId: 'delete',
 };
 
-type middleware = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => any
+type middleware = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => any;
 type IRouteBase = {
-    [key in keyes]?: middleware
-}
+    [key in keyes]?: middleware;
+};
 type IRoute = IRouteBase & {
-    mergeParams?: boolean,
-    middleware?: middleware
+    mergeParams?: boolean;
+    middleware?: middleware;
     middlewares?: {
-        [key in keyes]?: middleware[]
-    },
-}
+        [key in keyes]?: middleware[];
+    };
+};
 
-// TODO add middleware for ID checking (24 lenght) -> then remove from Models
+/**
+ * Improved interface for native ExpressJS Router
+ * @param route
+ */
 export default function ResourceRouter(route: IRoute) {
     const router = Router({ mergeParams: !!route.mergeParams });
 
@@ -44,22 +55,12 @@ export default function ResourceRouter(route: IRoute) {
 }
 
 type combinedRoute = {
-    [key in keyes]?: middleware | middleware[]
-}
+    [key in keyes]?: middleware | middleware[];
+};
 
 export function mapper(route: combinedRoute, router: Express.Router) {
     let key: keyes;
     for (key in route) {
-        // fn = map[key] || key;
-        // if (typeof router[fn]==='function') {
-        // 	if (key === "read" || key === "updateId" || key === "patchId" || key === "deleteId"){
-        // 		url = "/:id"
-        // 	} else {
-        // 		url = ~keyed.indexOf(key) && route.load ? ('/:'+route.id) : '/';
-        // 	}
-
-        // 	router[fn](url, route[key]);
-        // }
         const routeHandler = route[key as keyes];
         if (typeof routeHandler === 'function') {
             apply(key, routeHandler, router);

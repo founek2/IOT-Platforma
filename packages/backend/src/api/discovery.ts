@@ -1,24 +1,16 @@
 import fieldDescriptors from 'common/lib/fieldDescriptors';
 import { DiscoveryModel, IDiscoveryDocument } from 'common/lib/models/deviceDiscoveryModel';
 import { DeviceModel } from 'common/lib/models/deviceModel';
-import { IDiscoveryProperty, IDiscoveryThing, IDiscovery } from 'common/lib/models/interface/discovery';
-import {
-    IThing,
-    IThingProperty,
-    IThingPropertyEnum,
-    IThingPropertyNumeric,
-    PropertyDataType,
-} from 'common/lib/models/interface/thing';
+import { DeviceStatus } from 'common/lib/models/interface/device';
 import mongoose from 'mongoose';
-import { assoc, assocPath, map, o } from 'ramda';
+import { assocPath, map } from 'ramda';
+import checkDiscovery from '../middlewares/discovery/checkDiscovery';
 import formDataChecker from '../middlewares/formDataChecker';
 import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import eventEmitter from '../services/eventEmitter';
-import checkDiscovery from '../middlewares/discovery/checkDiscovery';
 import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
-import { DeviceStatus } from 'common/lib/models/interface/device';
 
 const ObjectId = mongoose.Types.ObjectId;
 

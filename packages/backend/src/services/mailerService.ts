@@ -28,6 +28,9 @@ const defaultEmail = new Email({
     preview: false,
 });
 
+/**
+ * Service for sending emails
+ */
 class Mailer {
     sendSignUp = async (user: UserBasic) => {
         const result = await defaultEmail.send({
