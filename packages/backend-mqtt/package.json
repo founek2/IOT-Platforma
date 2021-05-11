@@ -2,7 +2,7 @@
     "name": "backend-mqtt",
     "version": "0.0.1",
     "description": "",
-    "main": "lib/main.js",
+    "main": "dist/index.js",
     "scripts": {
         "dev": "ts-node-dev src/index.ts",
         "build": "yarn clean && tsc -p .",

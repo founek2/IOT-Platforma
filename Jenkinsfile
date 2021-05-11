@@ -32,22 +32,22 @@ pipeline {
             }
         }
 
-        stage ('Tests') {
-            steps {
-                // parallel 'static': {
-                //     sh "yarn lerna run --scope backend --scope common coverage"
-                // },
-                // 'unit': {
-                //     sh "echo 'shell scripts to run unit tests...'"
-                // },
-                // 'integration': {
-                //     sh "echo 'shell scripts to run integration tests...'"
-                // }
-                script {
-                    sh "yarn test"
-                }
-            }
-        }
+        // stage ('Tests') {
+        //     steps {
+        //         // parallel 'static': {
+        //         //     sh "yarn lerna run --scope backend --scope common coverage"
+        //         // },
+        //         // 'unit': {
+        //         //     sh "echo 'shell scripts to run unit tests...'"
+        //         // },
+        //         // 'integration': {
+        //         //     sh "echo 'shell scripts to run integration tests...'"
+        //         // }
+        //         script {
+        //             sh "yarn test"
+        //         }
+        //     }
+        // }
 
         stage ('Build') {
             steps {
