@@ -3,82 +3,86 @@ import { stateValid, stateInvalidPassword, stateEmptyUserName } from './resource
 
 describe('Validations test', function () {
     it('should create new fieldState - invalid', function () {
-        expect(validations
-            .createFieldState(['required', 'notString'])
-        ).toStrictEqual({ valid: false, errorMessages: ['required', 'notString'] });
-
+        expect(validations.createFieldState(['required', 'notString'])).toStrictEqual({
+            valid: false,
+            errorMessages: ['required', 'notString'],
+        });
     });
 
     it('should create new fieldState - valid', function () {
         expect(validations.createFieldState([])).toStrictEqual({ valid: true, errorMessages: [] });
-
     });
 
     it('should check fieldState - valid', function () {
-        expect(validations
-            .checkValid({
+        expect(
+            validations.checkValid({
                 REGISTRATION: {
                     info: {
-                        userName: { valid: true, errorMessages: [] }
+                        userName: { valid: true, errorMessages: [] },
                     },
                     auth: {
-                        type: { valid: true, errorMessages: [] }
-                    }
-                }
-            }))
-            .toStrictEqual({
-                valid: true,
-                errors: []
-            });
+                        type: { valid: true, errorMessages: [] },
+                    },
+                },
+            })
+        ).toStrictEqual({
+            valid: true,
+            errors: [],
+        });
     });
 
     it('should check fieldState - invalid', function () {
-        expect(validations
-            .checkValid({
+        expect(
+            validations.checkValid({
                 REGISTRATION: {
                     info: {
-                        userName: { valid: false, errorMessages: ['required'] }
-                    }
-                }
-            }))
-            .toStrictEqual({
-                valid: false,
-                errors: [
-                    {
-                        deepPath: 'REGISTRATION.info.userName',
-                        errorMessages: ['required']
-                    }
-                ]
-            });
+                        userName: { valid: false, errorMessages: ['required'] },
+                    },
+                },
+            })
+        ).toStrictEqual({
+            valid: false,
+            errors: [
+                {
+                    deepPath: 'REGISTRATION.info.userName',
+                    errorMessages: ['required'],
+                },
+            ],
+        });
     });
 
     it('should validate field - valid', function () {
-        expect(validations
-            .validateField('REGISTRATION.info.userName', stateEmptyUserName, true, true)
-        ).toStrictEqual({ valid: true, errorMessages: [] });
+        expect(validations.validateField('REGISTRATION.info.userName', stateEmptyUserName, true, true)).toStrictEqual({
+            valid: true,
+            errorMessages: [],
+        });
     });
 
     it('should validate field - invalid', function () {
-        expect(validations
-            .validateField('REGISTRATION.info.userName', stateEmptyUserName)
-        ).toStrictEqual({ valid: false, errorMessages: ['isRequired'] });
+        expect(validations.validateField('REGISTRATION.info.userName', stateEmptyUserName)).toStrictEqual({
+            valid: false,
+            errorMessages: ['Toto pole je povinné'],
+        });
     });
 
     it('should validate form - valid', function () {
-        expect(validations
-            .checkValid(validations.validateForm('REGISTRATION', stateValid))
-        ).toStrictEqual({ valid: true, errors: [] });
+        expect(validations.checkValid(validations.validateForm('REGISTRATION', stateValid))).toStrictEqual({
+            valid: true,
+            errors: [],
+        });
     });
 
     it('should validate form - invalid', function () {
-        expect(validations.checkValid(validations.validateRegisteredFields('REGISTRATION', stateInvalidPassword))).toStrictEqual({
+        expect(
+            validations.checkValid(validations.validateRegisteredFields('REGISTRATION', stateInvalidPassword))
+        ).toStrictEqual({
             valid: false,
             errors: [
                 {
                     deepPath: 'REGISTRATION.auth.password',
-                    errorMessages: ['Text nesmí být kratší než 4']
-                }
-            ]
+                    errorMessages: ['Text nesmí být kratší než 4'],
+                },
+            ],
         });
     });
 });

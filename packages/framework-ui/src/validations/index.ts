@@ -47,13 +47,9 @@ export const validateField = (
 
         const value = getInPath(deepPath, formsData);
 
-        console.log('validace', deepPath);
-
         if (isRequired(descriptor, formsData[formName], deepPath) && !ignoreRequired) {
-            console.log('deepPath requred', deepPath, value, notEmptyVal(value));
             if (notEmptyVal(value)) {
                 const result = createValidationsResult(value, validations);
-                console.log(result);
                 return createFieldState(result);
             } else {
                 // console.log(deepPath, value, required, notEmptyVal(value))
@@ -121,7 +117,6 @@ export function validateForm(formName: string, state: object, ignoreRequiredFiel
         F,
         { [formName]: formDescriptors }
     );
-    console.log('paths', arraOfPaths);
 
     // generate deePaths from FormData
     recursive(
@@ -137,7 +132,7 @@ export function validateForm(formName: string, state: object, ignoreRequiredFiel
     );
 
     const uniqArray = uniq(arraOfPaths);
-    console.log('uniq', uniqArray);
+    // console.log('uniq', uniqArray);
     forEach((deepPath) => {
         const out = validateField(deepPath, state, true, ignoreRequiredFields);
         out.pristine = false;
@@ -187,7 +182,6 @@ export const validateRegisteredFields = (formName: string, state: object, ignore
     );
 
     const uniqArray = uniq(arraOfPaths);
-    console.log('uniq2', uniqArray);
     forEach((deepPath) => {
         const out = validateField(deepPath, state, true, ignoreRequiredFields);
         out.pristine = false;
