@@ -42,6 +42,9 @@ Pro funkčnost aplikace je potřeba nastavit enviroment promněné, buď pomocí
 Pro spuštění aplikace pro lokální vývoj jsou potřeba tyto příkazy:
 
 ```
+# instalace potřebných závislostí (node_modules)
+yarn
+
 git clone https://github.com/founek2/IOT-Platforma.git iot-platforma
 cd iot-platforma
 
@@ -56,4 +59,7 @@ yarn --cwd packages/backend-mqtt dev
 
 # webový server pro uživatelské rozhraní
 yarn --cwd packages/frontend dev
+
+# spustí testy
+yarn test
 ```
