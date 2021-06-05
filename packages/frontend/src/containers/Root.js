@@ -13,7 +13,18 @@ import { SnackbarProvider } from 'notistack';
 import { init as initFirebase } from '../firebase';
 import '../privileges'; // init
 import Notifier from './Notifier';
+import { ErrorBoundary } from '../components/ErrorBoundary';
+import { getItem, removeItem } from 'framework-ui/lib/storage';
+import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
 registerFunctions(fns); // register custom validation functions
+
+function handleError() {
+    if (getItem(STATE_DEHYDRATED)) {
+        removeItem(STATE_DEHYDRATED);
+        removeItem('history');
+        document.location.reload(true);
+    }
+}
 
 let place_holder = () => console.log('nothing to install');
 function Root({ component }) {
@@ -37,7 +48,7 @@ function Root({ component }) {
 
     const Component = component;
     return (
-        <Fragment>
+        <ErrorBoundary onError={() => handleError()}>
             <Provider store={store}>
                 <SnackbarProvider
                     anchorOrigin={{
@@ -64,7 +75,7 @@ function Root({ component }) {
                     </Button>
                 }
             />
-        </Fragment>
+        </ErrorBoundary>
     );
 }
 
