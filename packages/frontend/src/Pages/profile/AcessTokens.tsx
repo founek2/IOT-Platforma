@@ -60,11 +60,11 @@ function Security() {
     }
     console.log('sel token', selectedToken);
     function createToken() {
-        dispatch(createAccessToken(user?._id));
+        return dispatch(createAccessToken(user?._id));
     }
 
     function editToken() {
-        dispatch(updateAccessToken(selectedId, user?._id));
+        return dispatch(updateAccessToken(selectedId, user?._id));
     }
 
     return (
@@ -145,7 +145,9 @@ function Security() {
                 title="Vytvoření tokenu"
                 cancelText="Zrušit"
                 agreeText="Uložit"
-                onAgree={createToken}
+                onAgree={async () => {
+                    if (await createToken()) history.push({ hash: '' });
+                }}
                 onClose={() => history.push({ hash: '' })}
                 fullScreen={isSmall}
                 content={<EditAccessToken formName="ADD_ACCESS_TOKEN" />}
@@ -155,7 +157,10 @@ function Security() {
                 title="Editace tokenu"
                 cancelText="Zrušit"
                 agreeText="Uložit"
-                onAgree={editToken}
+                onAgree={() => {
+                    editToken();
+                    history.push({ hash: '', search: '' });
+                }}
                 onClose={() => history.push({ hash: '', search: '' })}
                 fullScreen={isSmall}
                 content={<EditAccessToken formName="EDIT_ACCESS_TOKEN" accessToken={selectedToken} />}

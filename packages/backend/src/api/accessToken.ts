@@ -26,7 +26,7 @@ export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            index: [tokenAuthMIddleware()],
+            index: [tokenAuthMIddleware(), checkWritePerm({ paramKey: 'userId' })],
             create: [
                 tokenAuthMIddleware(),
                 checkWritePerm({ paramKey: 'userId' }),

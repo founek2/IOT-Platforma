@@ -47,6 +47,7 @@ export default () =>
          *              - default { users: IUser[] }
          */
         async index({ user, root, query: { type } }: any, res) {
+            console.log('index', user);
             if (user && type === 'userName') {
                 // tested
                 console.log('retrieving userNames');
@@ -59,6 +60,8 @@ export default () =>
                 // tested
                 const docs = await UserModel.findAllNotRoot();
                 res.send({ docs: docs.filter(removeUserItself(user.id)).map((obj) => obj.toObject()) });
+            } else if (user && !user.admin) {
+                res.status(403).send({ error: 'InvalidPermissions' });
             } else res.sendStatus(500);
         },
 
