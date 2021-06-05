@@ -1,4 +1,18 @@
-import { AuthTypes } from "../../constants";
+import { AuthTypes } from '../../constants';
+
+export enum Permission {
+    read = 'read',
+    write = 'write',
+    control = 'control',
+}
+export interface IAccessToken {
+    _id?: any;
+    token: String;
+    name: String;
+    permissions: Permission[];
+    createdAt: Date;
+    validTo?: Date;
+}
 
 export interface IUser {
     _id?: any;
@@ -16,6 +30,7 @@ export interface IUser {
     realm: string;
     groups: string[];
     notifyTokens: string[];
+    accessTokens?: IAccessToken[];
     createdAt: Date;
     updatedAt: Date;
 }

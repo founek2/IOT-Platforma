@@ -296,6 +296,25 @@ const FORGOT_PASSWORD: fieldDescriptors = {
     },
 };
 
+const ADD_ACCESS_TOKEN: fieldDescriptors = {
+    name: {
+        deepPath: 'ADD_ACCESS_TOKEN.name',
+        required: true,
+        label: 'Název',
+        name: 'name',
+        validations: [validationFactory('isString', { min: 1, max: 40 })],
+    },
+    permissions: {
+        deepPath: 'ADD_ACCESS_TOKEN.permissions',
+        required: true,
+        label: 'Oprávnění',
+        name: 'permissions',
+        validations: [validationFactory('isArray', { min: 1 })], // TODO oneOf
+    },
+};
+
+const EDIT_ACCESS_TOKEN = transformToForm('EDIT_ACCESS_TOKEN', ADD_ACCESS_TOKEN);
+
 const descriptors: fieldDescriptors = {
     LOGIN,
     REGISTRATION,
@@ -310,6 +329,8 @@ const descriptors: fieldDescriptors = {
     DEVICE_SEND,
     FORGOT,
     FORGOT_PASSWORD,
+    ADD_ACCESS_TOKEN,
+    EDIT_ACCESS_TOKEN,
 };
 
 export default descriptors;

@@ -1,5 +1,5 @@
 import argon2 from 'argon2';
-import { IUser } from '../models/interface/userInterface';
+import { IUser, Permission, IAccessToken } from '../models/interface/userInterface';
 import { devLog } from 'framework-ui/lib/logger';
 import { UserModel } from '../models/userModel';
 import { JwtService } from '../services/jwtService';
@@ -11,6 +11,8 @@ import { DeviceModel } from '../models/deviceModel';
 import { TokenModel, TokenType, IToken } from '../models/tokenModel';
 import { Security } from './SecurityService';
 import addHours from 'date-fns/addHours';
+
+const ObjectId = mongoose.Types.ObjectId;
 
 async function createHash(plainText: string) {
     return argon2.hash(plainText);
@@ -82,17 +84,70 @@ export const UserService = {
             data.auth.password = hash;
         } else delete data.auth;
 
-        const doc = await UserModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(userID) }, { $set: data });
+        const doc = await UserModel.findOneAndUpdate({ _id: ObjectId(userID) }, { $set: data });
         if (!doc) throw Error('unknownUser');
 
         return doc;
     },
 
     /**
+     * Update user
+     */
+    async updateAccessToken(
+        tokenId: IAccessToken['_id'],
+        userID: IUser['_id'],
+        accessToken: { name: string; permissions: Permission[]; validTo?: Date }
+    ): Promise<void> {
+        UserModel.updateOne(
+            { _id: ObjectId(userID), 'accessTokens._id': ObjectId(tokenId) },
+            {
+                $set: {
+                    'accessTokens.$.name': accessToken.name,
+                    'accessTokens.$.permissions': accessToken.permissions,
+                    'accessTokens.$.validTo': accessToken.validTo,
+                },
+            }
+        ).exec();
+    },
+
+    async createAccessToken(
+        data: { name: string; permissions: Permission[]; validTo?: Date },
+        userID: IUser['_id']
+    ): Promise<null | IAccessToken> {
+        const newToken = {
+            ...data,
+            token: Security.getRandomAsciToken(30),
+            createdAt: new Date(),
+        };
+        const doc = await UserModel.findOneAndUpdate(
+            {
+                _id: ObjectId(userID),
+            },
+            {
+                $push: { accessTokens: newToken },
+            },
+            { new: true, fields: 'accessTokens' }
+        ).lean();
+        if (!doc) return null;
+
+        return doc.accessTokens?.pop() || null;
+    },
+    async deleteAccessToken(tokenId: IAccessToken['_id'], userID: IUser['_id']) {
+        UserModel.updateOne(
+            { _id: ObjectId(userID) },
+            {
+                $pull: {
+                    accessTokens: { _id: ObjectId(tokenId) },
+                },
+            }
+        ).exec();
+    },
+
+    /**
      * Delete user from DB and all his permissions from devices + his notification rules
      */
     async deleteById(id: IUser['_id']): Promise<boolean> {
-        const userId = mongoose.Types.ObjectId(id);
+        const userId = ObjectId(id);
 
         const result = await UserModel.deleteOne({
             _id: userId,
