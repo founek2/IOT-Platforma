@@ -1,22 +1,20 @@
-import React, { Component, Suspense, lazy } from 'react';
-import { createBrowserHistory } from 'history';
-import { Router as RouterReact, Switch, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
-import Layout from '../components/Layout';
-import RegisterUser from '../Pages/RegisterUser';
-import { bindActionCreators } from 'redux';
-import { map } from 'ramda';
-import { getPathsWithComp } from 'framework-ui/lib/privileges';
-
-import { getUserPresence, getGroups } from 'framework-ui/lib/utils/getters';
-import { updateHistory, setHistory } from 'framework-ui/lib/redux/actions/history';
-import { updateTmpData } from 'framework-ui/lib/redux/actions/tmpData';
 import Loader from 'framework-ui/lib/Components/Loader';
-import parseQuery from 'framework-ui/lib/utils/parseQuery';
+import { getPathsWithComp } from 'framework-ui/lib/privileges';
 import { hydrateState } from 'framework-ui/lib/redux/actions';
-
+import { setHistory, updateHistory } from 'framework-ui/lib/redux/actions/history';
+import { updateTmpData } from 'framework-ui/lib/redux/actions/tmpData';
+import { getGroups, getUserPresence } from 'framework-ui/lib/utils/getters';
+import parseQuery from 'framework-ui/lib/utils/parseQuery';
+import { createBrowserHistory } from 'history';
+import { map } from 'ramda';
+import React, { Component, Suspense } from 'react';
+import { connect } from 'react-redux';
+import { Route, Router as RouterReact, Switch } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import Layout from '../components/Layout';
 import '../firebase'; // init
 import Main from '../Pages/Main';
+import RegisterUser from '../Pages/RegisterUser';
 
 const history = createBrowserHistory();
 

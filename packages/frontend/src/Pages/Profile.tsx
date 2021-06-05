@@ -3,13 +3,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SecurityIcon from '@material-ui/icons/Security';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import Account from './profile/Account';
 import Security from './profile/Security';
 import AccessTokens from './profile/AcessTokens';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAccessTokens } from '../store/actions/application/accessTokens';
+import { IState } from '../types';
+import { IUser } from 'common/lib/models/interface/userInterface';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,6 +41,12 @@ const menu = [
 
 function Profile({ location }: RouteComponentProps) {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const userId = useSelector<IState, IUser['_id'] | undefined>((state) => state.application.user?._id);
+
+    useEffect(() => {
+        if (userId) dispatch(fetchAccessTokens(userId));
+    }, [dispatch, userId]);
 
     return (
         <div className={classes.root}>

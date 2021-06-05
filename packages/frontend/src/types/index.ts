@@ -17,8 +17,8 @@ export interface ControlProps {
 }
 
 export interface IState {
+    accessTokens: { data: IAccessToken[]; lastFetch?: Date; lastUpdate?: Date };
     application: {
-        accessTokens?: IAccessToken[];
         user?: IUser;
         notifications: any[];
         users: any[];
@@ -26,8 +26,8 @@ export interface IState {
         discovery: { data: IDiscovery[]; lastFetch?: Date; lastUpdate?: Date };
         thingHistory: {
             data: HistoricalSensor[] | HistoricalGeneric[];
-            deviceId: IDevice['_id'];
-            thingId: IThing['_id'];
+            deviceId?: IDevice['_id'];
+            thingId?: IThing['_id'];
             lastFetch?: Date;
         };
         userNames: { data: Array<{ _id: string; userName: string }>; lastFetch?: Date; lastUpdate?: Date };

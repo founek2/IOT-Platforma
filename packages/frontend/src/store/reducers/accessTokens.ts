@@ -4,7 +4,7 @@ import { IState } from 'frontend/src/types';
 import { append, curry, filter, lensProp, map, mergeDeepLeft, over, pathEq, propEq, when } from 'ramda';
 import { compose } from 'redux';
 import { Action, handleActions } from 'redux-actions';
-import { ActionTypes } from '../../../constants/redux';
+import { ActionTypes } from '../../constants/redux';
 import { IAccessToken } from 'common/lib/models/interface/userInterface';
 
 type State = IState['application']['devices'];

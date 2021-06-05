@@ -51,3 +51,9 @@ export const daysInWeek = [
     { value: 6, label: 'So' },
     { value: 0, label: 'Ne' },
 ];
+
+export const TokenPermissions = [
+    { value: ['read'], label: 'čtení' },
+    { value: ['read', 'control'], label: 'čtení/ovládání' },
+    { value: ['read', 'write', 'control'], label: 'úplné' },
+];

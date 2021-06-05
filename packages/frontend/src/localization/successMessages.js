@@ -5,6 +5,7 @@ const messages = {
     deviceUpdated: 'Zařízení aktualizováno',
     deviceDeleted: 'Zařízení bylo odstraněno',
     commandSended: 'Požadavek odeslán',
+    tokenCreated: 'Token byl vytvořen',
 };
 
 messageFactory.registerMessages(messages);

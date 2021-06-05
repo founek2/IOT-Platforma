@@ -7,6 +7,8 @@ import { IState } from 'frontend/src/types';
 import {
     createAccessToken as createAccessTokenApi,
     updateAccessToken as updateAccessTokenApi,
+    fetchAccessToken as fetchAccessTokenApi,
+    deleteAccessToken as deleteAccessTokenApi,
 } from '../../../api/accessToken';
 
 export function set(data: IAccessToken[]) {
@@ -81,5 +83,40 @@ export function updateAccessToken(tokenId: IAccessToken['_id'], userId: IUser['_
                 dispatch
             );
         }
+    };
+}
+
+export function fetchAccessTokens(userId: IUser['_id']) {
+    return function (dispatch: any, getState: () => IState) {
+        baseLogger('FETCH_ACCIESS_TOKENS');
+
+        return fetchAccessTokenApi(
+            {
+                userId,
+                token: getToken(getState()),
+                onSuccess: (json: { docs: IAccessToken[] }) => {
+                    dispatch(set(json.docs));
+                },
+            },
+            dispatch
+        );
+    };
+}
+
+export function deleteAccessToken(tokenId: IAccessToken['_id'], userId: IUser['_id']) {
+    return function (dispatch: any, getState: () => IState) {
+        baseLogger('DELETE_ACCESS_TOKEN');
+
+        return deleteAccessTokenApi(
+            {
+                tokenId,
+                userId,
+                token: getToken(getState()),
+                onSuccess: () => {
+                    dispatch(remove(tokenId));
+                },
+            },
+            dispatch
+        );
     };
 }

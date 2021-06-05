@@ -49,7 +49,7 @@ export default () =>
                 .lean();
             if (!doc) return res.sendStatus(404);
 
-            res.send({ doc: doc.accessTokens });
+            res.send({ docs: doc.accessTokens || [] });
         },
 
         async create({ body, user }: any, res) {
@@ -58,8 +58,8 @@ export default () =>
         },
 
         async modifyId({ body, user, params }: any, res) {
-            const doc = await UserService.updateAccessToken(params.id, user._id, body.formData.EDIT_ACCESS_TOKEN);
-            res.send({ doc });
+            await UserService.updateAccessToken(params.id, user._id, body.formData.EDIT_ACCESS_TOKEN);
+            res.sendStatus(204);
         },
 
         async deleteId({ user, params }: any, res) {

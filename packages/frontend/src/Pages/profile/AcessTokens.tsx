@@ -25,8 +25,13 @@ import Dialog from 'framework-ui/lib/Components/Dialog';
 import { useHistory } from 'react-router';
 import { isUrlHash } from 'framework-ui/lib/utils/getters';
 import EditAccessToken from './accessTokens/EditAccessToken';
-import { createAccessToken, updateAccessToken } from 'frontend/src/store/actions/application/accessTokens';
+import {
+    createAccessToken,
+    updateAccessToken,
+    deleteAccessToken,
+} from 'frontend/src/store/actions/application/accessTokens';
 import { getQueryID } from 'frontend/src/utils/getters';
+import { TokenPermissions } from 'frontend/src/constants';
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -46,11 +51,12 @@ function Security() {
     const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
     const dispatch = useDispatch();
 
-    const accessTokens = user?.accessTokens || [];
-    const selectedToken = accessTokens.find((t) => t._id === selectedId);
+    const accessTokens = useSelector<IState, IState['accessTokens']>((state) => state.accessTokens);
+    const selectedToken = accessTokens.data.find((t) => t._id === selectedId);
 
-    function deleteTokens(tokens: Array<IAccessToken['token']>) {
-        console.log('delete tokens...', tokens);
+    function deleteTokens(tokenIDs: Array<IAccessToken['token']>) {
+        console.log('delete tokens...', tokenIDs);
+        tokenIDs.forEach((id) => dispatch(deleteAccessToken(id, user?._id)));
     }
     console.log('sel token', selectedToken);
     function createToken() {
@@ -85,7 +91,9 @@ function Security() {
                                             {
                                                 path: 'permissions',
                                                 label: 'Oprávnění',
-                                                convertor: (val: Array<any>) => val.toString(),
+                                                convertor: (val: Array<any>) =>
+                                                    TokenPermissions.find((el) => el.value.toString() === String(val))
+                                                        ?.label,
                                             },
                                             { path: 'token', label: 'Token' },
                                             {
@@ -100,7 +108,7 @@ function Security() {
                                                     date ? new Date(date).toLocaleDateString() : '',
                                             },
                                         ]}
-                                        data={accessTokens.map((device: any) =>
+                                        data={accessTokens.data.map((device: any) =>
                                             assoc('id', prop('_id', device), device)
                                         )}
                                         onDelete={deleteTokens}

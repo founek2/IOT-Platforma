@@ -134,7 +134,7 @@ class EnhancedTable extends React.Component {
     isSelected = (id) => this.props.value.indexOf(id) !== -1;
 
     handleDelete = (e) => {
-        this.props.onDelete(e);
+        this.props.onDelete(this.props.value);
         this.handleSelectAllClick();
     };
 

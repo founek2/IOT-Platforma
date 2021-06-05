@@ -10,8 +10,10 @@ import { warningLog } from 'framework-ui/lib/logger';
 import { STATE_DEHYDRATED, ActionTypes } from 'framework-ui/lib/constants/redux';
 import { removeItems } from 'framework-ui/lib/storage';
 import { merge } from 'ramda';
+import accessTokens from './accessTokens';
 
 const appReducer = combineReducers({
+    accessTokens,
     application,
     formsData,
     fieldDescriptors,

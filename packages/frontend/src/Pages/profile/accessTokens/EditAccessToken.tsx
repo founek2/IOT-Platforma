@@ -8,18 +8,13 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { IAccessToken } from 'common/lib/models/interface/userInterface';
+import { TokenPermissions } from 'frontend/src/constants';
 
 interface DiscoverySectionProps {
     formName: string;
     fillForm: any;
     accessToken?: IAccessToken;
 }
-
-const permissions = [
-    { value: ['read'], label: 'čtení' },
-    { value: ['read', 'control'], label: 'čtení/ovládání' },
-    { value: ['read', 'write', 'control'], label: 'úplné' },
-];
 
 const permToStr = over(lensProp('permissions'), (arr: Array<any>) => arr.toString());
 
@@ -28,7 +23,7 @@ function EditDeviceForm({ formName, fillForm, accessToken }: DiscoverySectionPro
         if (accessToken) {
             compose(fillForm, pick(['name', 'permissions']))(accessToken);
         }
-    }, []);
+    }, [accessToken]);
 
     return (
         <Grid container spacing={2}>
@@ -44,7 +39,7 @@ function EditDeviceForm({ formName, fillForm, accessToken }: DiscoverySectionPro
                     fieldProps={{ fullWidth: true }}
                     deepPath={`${formName}.permissions`}
                     component="Select"
-                    selectOptions={permissions.map(({ value, label }) => (
+                    selectOptions={TokenPermissions.map(({ value, label }) => (
                         <MenuItem value={value} key={label}>
                             {label}
                         </MenuItem>
