@@ -13,26 +13,32 @@ const DeviceManagement = lazy(() => import('../Pages/DeviceManagement'));
 const DevicesLazy = lazy(() => import('../Pages/Devices'));
 
 const EditNotifyFormLazy = lazy(() => import('../Pages/EditNotifyForm'));
+const ProfileLazy = lazy(() => import('../Pages/Profile'));
 
 export const routes = {
     user: {
         routes: [
             {
-                path: [ '/devices/:building/:room', '/devices/:building', '/devices' ],
-                Component: DevicesLazy
+                path: ['/devices/:building/:room', '/devices/:building', '/devices'],
+                Component: DevicesLazy,
+            },
+            {
+                path: '/profile',
+                Component: ProfileLazy,
             },
             { path: '/devices', name: 'deviceControl', Icon: CloudIcon },
             { path: '/deviceManagement', Component: DeviceManagement, name: 'devices', Icon: DevicesIcon },
-            { path: '/device/:deviceId/thing/:nodeId/notify', Component: EditNotifyFormLazy }
-        ]
+            { path: '/device/:deviceId/thing/:nodeId/notify', Component: EditNotifyFormLazy },
+        ],
     },
     admin: {
-        routes: [ { path: '/userManagement', Component: UserManagement, name: 'userManagement', Icon: BuildIcon } ],
-        allowedGroups: allowedGroups.admin
+        routes: [{ path: '/userManagement', Component: UserManagement, name: 'userManagement', Icon: BuildIcon }],
+        allowedGroups: allowedGroups.admin,
     },
     root: {
-        allowedGroups: allowedGroups.root
-    }
+        routes: [],
+        allowedGroups: allowedGroups.root,
+    },
 };
 
 initPrivileges(routes, groupsHeritage);

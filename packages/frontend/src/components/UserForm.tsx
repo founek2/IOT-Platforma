@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import MenuItem from '@material-ui/core/MenuItem';
-import { AuthTypes } from 'common/lib/constants'
+import { AuthTypes } from 'common/lib/constants';
 import Grid from '@material-ui/core/Grid';
 
-export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }]
+export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }];
 
 interface UserFormProps {
-    formName: string
-    onAuthChange: (event: React.ChangeEvent<{ value: any }>) => void
+    formName: string;
+    onAuthChange?: (event: React.ChangeEvent<{ value: any }>) => void;
 }
 function UserForm({ formName, onAuthChange }: UserFormProps) {
     return (
@@ -17,7 +17,7 @@ function UserForm({ formName, onAuthChange }: UserFormProps) {
                 <FieldConnector
                     deepPath={`${formName}.info.firstName`}
                     fieldProps={{
-                        fullWidth: true
+                        fullWidth: true,
                     }}
                 />
             </Grid>
@@ -25,7 +25,7 @@ function UserForm({ formName, onAuthChange }: UserFormProps) {
                 <FieldConnector
                     deepPath={`${formName}.info.lastName`}
                     fieldProps={{
-                        fullWidth: true
+                        fullWidth: true,
                     }}
                 />
             </Grid>
@@ -33,7 +33,7 @@ function UserForm({ formName, onAuthChange }: UserFormProps) {
                 <FieldConnector
                     deepPath={`${formName}.info.userName`}
                     fieldProps={{
-                        fullWidth: true
+                        fullWidth: true,
                     }}
                 />
             </Grid>
@@ -41,7 +41,7 @@ function UserForm({ formName, onAuthChange }: UserFormProps) {
                 <FieldConnector
                     fieldProps={{
                         type: 'email',
-                        fullWidth: true
+                        fullWidth: true,
                     }}
                     deepPath={`${formName}.info.email`}
                 />
@@ -51,7 +51,7 @@ function UserForm({ formName, onAuthChange }: UserFormProps) {
                     component="PasswordField"
                     deepPath={`${formName}.auth.password`}
                     fieldProps={{
-                        fullWidth: true
+                        fullWidth: true,
                     }}
                 />
             </Grid>
@@ -61,7 +61,7 @@ function UserForm({ formName, onAuthChange }: UserFormProps) {
                     deepPath={`${formName}.auth.type`}
                     onChange={onAuthChange}
                     fieldProps={{
-                        fullWidth: true
+                        fullWidth: true,
                     }}
                     selectOptions={[
                         <MenuItem value="" key="enum">
@@ -74,11 +74,12 @@ function UserForm({ formName, onAuthChange }: UserFormProps) {
                                         {text}
                                     </MenuItem>
                                 )
-                        )
+                        ),
                     ]}
                 />
             </Grid>
-        </Grid>)
+        </Grid>
+    );
 }
 
-export default UserForm
+export default UserForm;

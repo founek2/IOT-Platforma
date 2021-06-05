@@ -74,7 +74,6 @@ class Router extends Component {
 
                         {additionRoutes}
                         <Route path="/registerUser" component={RegisterUser} />
-
                         {/* <Route path="/sensor/:deviceId" component={SensorHistoryLazy} /> */}
                         {/* <Route path="/device/:deviceId/thing/:nodeId/notify" component={EditNotifyFormLazy} /> */}
                         {/* <Route

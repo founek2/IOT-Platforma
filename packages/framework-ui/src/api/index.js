@@ -24,12 +24,21 @@ const processResponse = (dispatch, successMessage) => async (response) => {
         dispatch(dehydrateState());
     }
 
-    if (status === 500) {
+    if (status === 502) {
+        dispatch(
+            addNotification({
+                message: ErrorMessages.getMessage(errorMessage || 'unavailableBackend'),
+                variant: 'error',
+                duration: 3000,
+            })
+        );
+        throw new Error('breakChain');
+    } else if (status === 500) {
         dispatch(
             addNotification({
                 message: ErrorMessages.getMessage(errorMessage || 'unexpectedError'),
                 variant: 'error',
-                duration: 3000
+                duration: 3000,
             })
         );
         throw new Error('breakChain');
@@ -43,7 +52,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
             addNotification({
                 message: ErrorMessages.getMessage(errorMessage || 'entityNotFound'),
                 variant: 'error',
-                duration: 3000
+                duration: 3000,
             })
         );
         throw new Error('breakChain');
@@ -57,7 +66,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
             addNotification({
                 message: ErrorMessages.getMessage('invalidPermissions'),
                 variant: 'error',
-                duration: 3000
+                duration: 3000,
             })
         );
         throw new Error('breakChain');
@@ -66,7 +75,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
             addNotification({
                 message: ErrorMessages.getMessage(errorMessage || 'InvalidParam'),
                 variant: 'error',
-                duration: 3000
+                duration: 3000,
             })
         );
         throw new Error('breakChain');
@@ -76,7 +85,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
                 addNotification({
                     message: SuccessMessages.getMessage(successMessage),
                     variant: 'success',
-                    duration: 3000
+                    duration: 3000,
                 })
             );
     } else if (status !== 200) {
@@ -85,7 +94,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
             addNotification({
                 message: ErrorMessages.getMessage(errorMessage || 'unexpectedError'),
                 variant: 'error',
-                duration: 3000
+                duration: 3000,
             })
         );
         throw new Error('breakChain');
@@ -95,7 +104,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
                 addNotification({
                     message: SuccessMessages.getMessage(successMessage),
                     variant: 'success',
-                    duration: 3000
+                    duration: 3000,
                 })
             );
 
@@ -112,7 +121,7 @@ const checkError = (Fn, error) => {
 function buildParams(params) {
     let result = '?';
     if (params) {
-        const toString = ([ key, value ]) => {
+        const toString = ([key, value]) => {
             result += key + '=' + value + '&';
         };
         forEach(toString, toPairs(params));
@@ -129,7 +138,7 @@ export const jsonSender = async ({
     method,
     body,
     dispatch,
-    successMessage
+    successMessage,
 }) => {
     let catched = false;
     try {
@@ -138,9 +147,9 @@ export const jsonSender = async ({
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization-JWT': token
+                'Authorization-JWT': token,
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
         });
         const json = await processResponse(dispatch, successMessage)(response);
         if (onSuccess) onSuccess(json);
@@ -160,7 +169,7 @@ export const paramSender = async ({
     onFinish,
     method = 'GET',
     dispatch,
-    params
+    params,
 }) => {
     let catched = false;
     try {
@@ -169,8 +178,8 @@ export const paramSender = async ({
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization-JWT': token
-            }
+                'Authorization-JWT': token,
+            },
         });
         const json = await processResponse(dispatch)(response);
         onSuccess(json);

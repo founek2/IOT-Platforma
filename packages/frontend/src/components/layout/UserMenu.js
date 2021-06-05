@@ -15,19 +15,19 @@ const styles = (theme) => ({
     rightIcon: {
         marginLeft: 0,
         [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1)
-        }
+            marginLeft: theme.spacing(1),
+        },
     },
     hideOnMobile: {
         [theme.breakpoints.down('xs')]: {
-            display: 'none'
-        }
-    }
+            display: 'none',
+        },
+    },
 });
 // const isNotMobile = document.body.clientWidth > 600;
 
 function UserMenu({ classes, logOutAction, user }) {
-    const [ ancholEl, setAnchorEl ] = useState(null);
+    const [ancholEl, setAnchorEl] = useState(null);
     // const curriedSetOpen = bool => () => setOpen(bool)
 
     return (
@@ -41,13 +41,7 @@ function UserMenu({ classes, logOutAction, user }) {
                 <AccountCircle className={classes.rightIcon} />
             </Button>
             <Menu id="menu-appbar" anchorEl={ancholEl} open={Boolean(ancholEl)} onClose={() => setAnchorEl(null)}>
-                <Link
-                    to={{
-                        hash: '#editUser',
-                        search: `?id=${user.id}`
-                    }}
-                >
-                    {' '}
+                <Link to="/profile" onClick={() => setAnchorEl(null)}>
                     <MenuItem>Můj účet</MenuItem>
                 </Link>
 
@@ -65,13 +59,13 @@ function UserMenu({ classes, logOutAction, user }) {
 }
 
 const _mapStateToProps = (state) => ({
-    user: getUser(state)
+    user: getUser(state),
 });
 
 const _mapDispatchToProps = (dispatch) =>
     bindActionCreators(
         {
-            logOutAction: userLogOut
+            logOutAction: userLogOut,
         },
         dispatch
     );
