@@ -3,7 +3,7 @@ import mqtt, { MqttClient } from 'mqtt';
 import { Server as serverIO } from 'socket.io';
 import { Config } from '../types';
 import handlePrefix from './mqtt/prefix';
-import handleV2 from './mqtt/prefix';
+import handleV2 from './mqtt/v2';
 
 const emitter = new EventEmitter();
 

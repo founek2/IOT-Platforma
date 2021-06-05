@@ -42,6 +42,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 
     handle('v2/+/+/+/+', async function (topic, message, [realm, deviceId, nodeId, propertyId]) {
         const timestamp = new Date();
+        console.log('time');
 
         const device = await DeviceModel.findOne({
             'metadata.deviceId': deviceId,
