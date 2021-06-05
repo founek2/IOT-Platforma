@@ -18,44 +18,44 @@ import SearchField from './SearchField';
 const toolbarStyles = (theme) => ({
     root: {
         paddingRight: theme.spacing(2),
-        paddingLeft: theme.spacing(2)
+        paddingLeft: theme.spacing(2),
     },
     highlight:
         theme.palette.type === 'light'
             ? {
                   color: theme.palette.secondary.main,
-                  backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+                  backgroundColor: lighten(theme.palette.secondary.light, 0.85),
               }
             : {
                   color: theme.palette.text.primary,
-                  backgroundColor: theme.palette.secondary.dark
+                  backgroundColor: theme.palette.secondary.dark,
               },
     spacer: {
-        flex: '1 1 80%'
+        flex: '1 1 80%',
     },
     actions: {
-        color: theme.palette.text.secondary
+        color: theme.palette.text.secondary,
     },
     title: {
-        display: 'flex'
+        display: 'flex',
     },
     search: {
-        marginLeft: '2em'
-    }
+        marginLeft: '2em',
+    },
 });
 
 class EnhancedTableToolbar extends React.Component {
     state = {
-        alert: { open: false }
+        alert: { open: false },
     };
     openAlert = () => {
         this.setState({
-            alert: { open: true }
+            alert: { open: true },
         });
     };
     closeAlert = () => {
         this.setState({
-            alert: { open: false }
+            alert: { open: false },
         });
     };
 
@@ -69,7 +69,7 @@ class EnhancedTableToolbar extends React.Component {
             enableCreation,
             onSearchChange,
             enableSearch,
-            className
+            className,
         } = this.props;
 
         return (
@@ -78,7 +78,7 @@ class EnhancedTableToolbar extends React.Component {
                     className={clsx(
                         classes.root,
                         {
-                            [classes.highlight]: numSelected > 0
+                            [classes.highlight]: numSelected > 0,
                         },
                         className
                     )}
@@ -114,9 +114,9 @@ class EnhancedTableToolbar extends React.Component {
                         ) : (
                             <Fragment>
                                 {enableCreation && (
-                                    <Fab color="primary" aria-label="Add" size="small" onClick={onAdd}>
+                                    <IconButton aria-label="Add" size="medium" onClick={onAdd}>
                                         <AddIcon />
-                                    </Fab>
+                                    </IconButton>
                                 )}
                                 {/* <Tooltip title="Filter list">
                                    <IconButton aria-label="Filter list">
@@ -145,7 +145,7 @@ class EnhancedTableToolbar extends React.Component {
 
 EnhancedTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
-    numSelected: PropTypes.number.isRequired
+    numSelected: PropTypes.number.isRequired,
 };
 
 export default withStyles(toolbarStyles)(EnhancedTableToolbar);

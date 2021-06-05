@@ -294,14 +294,15 @@ EnhancedTable.propTypes = {
         })
     ).isRequired,
     data: PropTypes.array.isRequired,
-    enableSearch: PropTypes.Boolean,
+    enableSearch: PropTypes.bool,
     orderBy: PropTypes.string,
-    enableEdit: PropTypes.boolean,
+    enableEdit: PropTypes.bool,
     customEditButton: PropTypes.func,
     onDelete: PropTypes.func,
     onChange: PropTypes.func,
     onAdd: PropTypes.func,
     onEdit: PropTypes.func,
+    enableCreation: PropTypes.bool,
 };
 
 export default withStyles(styles)(EnhancedTable);

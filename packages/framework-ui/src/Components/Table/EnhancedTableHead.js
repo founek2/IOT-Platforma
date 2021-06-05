@@ -22,7 +22,7 @@ class EnhancedTableHead extends React.Component {
                         <TableCell padding="checkbox">
                             <Checkbox
                                 indeterminate={numSelected > 0 && numSelected < rowCount}
-                                checked={numSelected === rowCount}
+                                checked={numSelected > 0 && numSelected === rowCount}
                                 onChange={onSelectAllClick}
                             />
                         </TableCell>
@@ -64,7 +64,7 @@ EnhancedTableHead.propTypes = {
     onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired
+    rowCount: PropTypes.number.isRequired,
 };
 
 export default EnhancedTableHead;
