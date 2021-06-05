@@ -7,6 +7,10 @@ import {
     updateUserNoMessage as updateUserNoMessageApi,
     forgotPassword as forgotPasswordApi,
 } from '../../../api/userApi';
+import {
+    updateAccessToken as updateAccessTokenApi,
+    createAccessToken as createAccessTokenApi,
+} from '../../../api/accessToken';
 import { validateForm, resetForm, removeForm } from 'framework-ui/lib/redux/actions/formsData';
 
 export function getAuthChallenge() {

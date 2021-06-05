@@ -1,7 +1,7 @@
 import { merge, dissocPath, dissoc } from 'ramda';
 import setInPath from '../../utils/setInPath';
 import getInPath from '../../utils/getInPath';
-import { actionTypes } from '../../constants/redux';
+import { ActionTypes } from '../../constants/redux';
 
 export const setFieldDescriptors = {
     next(state, action) {
@@ -85,13 +85,13 @@ const removeForm = {
 };
 
 export const formDataReducers = {
-    [actionTypes.SET_FORMS_DATA]: setFormsData,
-    [actionTypes.UPDATE_FORM_FIELD]: updateField,
-    [actionTypes.REGISTER_FIELD]: registerField,
-    [actionTypes.UNREGISTER_FIELD]: unregisterField,
-    [actionTypes.UPDATE_REGISTERED_FIELD]: updateRegisteredField,
-    [actionTypes.UPDATE_FORM]: updateForm,
-    [actionTypes.UPDATE_REGISTERED_FIELDS]: updateRegisteredFields,
-    [actionTypes.SET_FORM_DATA]: setFormData,
-    [actionTypes.REMOVE_FORM]: removeForm,
+    [ActionTypes.SET_FORMS_DATA]: setFormsData,
+    [ActionTypes.UPDATE_FORM_FIELD]: updateField,
+    [ActionTypes.REGISTER_FIELD]: registerField,
+    [ActionTypes.UNREGISTER_FIELD]: unregisterField,
+    [ActionTypes.UPDATE_REGISTERED_FIELD]: updateRegisteredField,
+    [ActionTypes.UPDATE_FORM]: updateForm,
+    [ActionTypes.UPDATE_REGISTERED_FIELDS]: updateRegisteredFields,
+    [ActionTypes.SET_FORM_DATA]: setFormData,
+    [ActionTypes.REMOVE_FORM]: removeForm,
 };

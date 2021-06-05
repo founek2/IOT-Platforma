@@ -1,10 +1,10 @@
-import { actionTypes } from '../../../constants/redux';
+import { ActionTypes } from '../../../constants/redux';
 import { getFormData, getToken } from '../../../utils/getters';
 import {
     create as createUserApi,
     login as loginApi,
     getUserAuthType as getUserAuthTypeApi,
-    updateUser as updateUserApi
+    updateUser as updateUserApi,
 } from '../../../api/userApi';
 import { resetForm, updateFormField, validateRegisteredFields, validateField, validateForm } from '../formsData';
 import { addNotification } from './notifications';
@@ -17,15 +17,15 @@ import logger from '../../../logger';
 
 export function update(data) {
     return {
-        type: actionTypes.UPDATE_USER,
-        payload: data
+        type: ActionTypes.UPDATE_USER,
+        payload: data,
     };
 }
 
 const LOGIN = 'LOGIN';
 
 export function login() {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const result = dispatch(validateRegisteredFields(LOGIN)());
         logger.log(LOGIN);
         if (result.valid) {
@@ -39,7 +39,7 @@ export function login() {
                         dispatch(dehydrateState());
                         LoginCallbacks.exec(json.token);
                         // dispatch(resetForm(LOGIN)())
-                    }
+                    },
                 },
                 dispatch
             );
@@ -48,7 +48,7 @@ export function login() {
 }
 
 export function register() {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const REGISTRATION = 'REGISTRATION';
         logger.log(REGISTRATION);
         const result = dispatch(validateRegisteredFields(REGISTRATION)());
@@ -60,7 +60,7 @@ export function register() {
 
                     onSuccess: (json) => {
                         dispatch(resetForm(REGISTRATION)());
-                    }
+                    },
                 },
                 dispatch
             );
@@ -69,7 +69,7 @@ export function register() {
 }
 
 export function registerAngLogin() {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const REGISTRATION = 'REGISTRATION';
         logger.log('REGISTER_AND_LOGIN');
         const result = dispatch(validateRegisteredFields(REGISTRATION)());
@@ -83,7 +83,7 @@ export function registerAngLogin() {
                         dispatch(resetForm(REGISTRATION)());
                         dispatch(dehydrateState());
                         LoginCallbacks.exec(json.token);
-                    }
+                    },
                 },
                 dispatch
             );
@@ -93,21 +93,21 @@ export function registerAngLogin() {
 
 export function setUser(data) {
     return {
-        type: actionTypes.SET_USER,
-        payload: data
+        type: ActionTypes.SET_USER,
+        payload: data,
     };
 }
 
 export function userLogOut() {
-    return async function(dispatch) {
+    return async function (dispatch) {
         dispatch({
-            type: actionTypes.RESET_TO_DEFAULT
+            type: ActionTypes.RESET_TO_DEFAULT,
         });
         dispatch(
             addNotification({
                 message: SuccessMessages.getMessage('successfullyLogOut'),
                 variant: 'success',
-                duration: 3000
+                duration: 3000,
             })
         );
         LogoutCallbacks.exec();
@@ -115,7 +115,7 @@ export function userLogOut() {
 }
 
 export function fetchAuthType() {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const result = dispatch(validateField('LOGIN.userName', true));
         logger.log('FETCH_AUTH_TYPE');
         if (result.valid) {
@@ -130,7 +130,7 @@ export function fetchAuthType() {
                     onError: () => {
                         console.log('onError');
                         dispatch(updateFormField(`${LOGIN}.authType`, ''));
-                    }
+                    },
                 },
                 dispatch
             );
@@ -139,7 +139,7 @@ export function fetchAuthType() {
 }
 
 export function updateUser(id) {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const EDIT_USER = 'EDIT_USER';
         logger.log('EDIT_USER_CURRENT');
 
@@ -154,7 +154,7 @@ export function updateUser(id) {
                     onSuccess: () => {
                         dispatch(update(formData));
                         dispatch(dehydrateState());
-                    }
+                    },
                 },
                 dispatch
             );
@@ -165,5 +165,5 @@ export function updateUser(id) {
 export default {
     setUser,
     login,
-    update
+    update,
 };

@@ -1,4 +1,4 @@
-import { actionTypes } from '../../constants/redux';
+import { ActionTypes } from '../../constants/redux';
 import {
     validateField as ValidateField,
     validateForm as ValidateForm,
@@ -14,7 +14,7 @@ import ErrorMessages from '../../localization/errorMessages';
 
 export const updateFormField = curry(function (deepPath, data) {
     return {
-        type: actionTypes.UPDATE_FORM_FIELD,
+        type: ActionTypes.UPDATE_FORM_FIELD,
         payload: { deepPath, data },
     };
 });
@@ -22,7 +22,7 @@ export const updateFormField = curry(function (deepPath, data) {
 export function fillForm(formName) {
     return function (data) {
         return {
-            type: actionTypes.SET_FORM_DATA,
+            type: ActionTypes.SET_FORM_DATA,
             payload: { formName, data },
         };
     };
@@ -30,38 +30,38 @@ export function fillForm(formName) {
 
 export function setFormsData(data) {
     return {
-        type: actionTypes.SET_FORMS_DATA,
+        type: ActionTypes.SET_FORMS_DATA,
         payload: data,
     };
 }
 
 export const setFormData = (formName, data) => (dispatch) => {
     dispatch({
-        type: actionTypes.SET_FORM_DATA,
+        type: ActionTypes.SET_FORM_DATA,
         payload: { formName, data },
     });
 };
 
 export function registerField(deepPath) {
-    baseLogger(actionTypes.REGISTER_FIELD, deepPath);
+    baseLogger(ActionTypes.REGISTER_FIELD, deepPath);
     return {
-        type: actionTypes.REGISTER_FIELD,
+        type: ActionTypes.REGISTER_FIELD,
         payload: deepPath,
     };
 }
 
 export function unregisterField(deepPath) {
-    baseLogger(actionTypes.UNREGISTER_FIELD, deepPath);
+    baseLogger(ActionTypes.UNREGISTER_FIELD, deepPath);
     return {
-        type: actionTypes.UNREGISTER_FIELD,
+        type: ActionTypes.UNREGISTER_FIELD,
         payload: deepPath,
     };
 }
 
 export function updateRegisteredField(deepPath, data) {
-    baseLogger(actionTypes.UPDATE_REGISTERED_FIELD, deepPath);
+    baseLogger(ActionTypes.UPDATE_REGISTERED_FIELD, deepPath);
     return {
-        type: actionTypes.UPDATE_REGISTERED_FIELD,
+        type: ActionTypes.UPDATE_REGISTERED_FIELD,
         payload: { deepPath, data },
     };
 }
@@ -83,7 +83,7 @@ export function validateForm(formName, ignoreRequired = false) {
             const fieldStates = ValidateForm(formName, getState(), ignoreRequired);
 
             dispatch({
-                type: actionTypes.UPDATE_REGISTERED_FIELDS,
+                type: ActionTypes.UPDATE_REGISTERED_FIELDS,
                 payload: fieldStates,
             });
 
@@ -113,7 +113,7 @@ export function validateRegisteredFields(formName, ignoreRequired = false) {
             const fieldStates = ValidateRegisteredFields(formName, getState(), ignoreRequired);
 
             dispatch({
-                type: actionTypes.UPDATE_REGISTERED_FIELDS,
+                type: ActionTypes.UPDATE_REGISTERED_FIELDS,
                 payload: fieldStates,
             });
 
@@ -134,10 +134,12 @@ export function validateRegisteredFields(formName, ignoreRequired = false) {
 }
 
 function recursive(transform, predicate, object) {
-    const func = (accum = '') => (value, key) => {
-        if (predicate(value)) return rec(value, accum + key + '.');
-        transform(value, accum + key);
-    };
+    const func =
+        (accum = '') =>
+        (value, key) => {
+            if (predicate(value)) return rec(value, accum + key + '.');
+            transform(value, accum + key);
+        };
 
     function rec(obj, accum) {
         forEachObjIndexed(func(accum), obj);
@@ -148,7 +150,7 @@ function recursive(transform, predicate, object) {
 export function removeForm(formName) {
     return function () {
         return {
-            type: actionTypes.REMOVE_FORM,
+            type: ActionTypes.REMOVE_FORM,
             payload: formName,
         };
     };
@@ -188,11 +190,11 @@ export function resetForm(formName) {
             );
 
             dispatch({
-                type: actionTypes.UPDATE_REGISTERED_FIELDS,
+                type: ActionTypes.UPDATE_REGISTERED_FIELDS,
                 payload: { [formName]: registeredFields },
             });
             dispatch({
-                type: actionTypes.UPDATE_FORM,
+                type: ActionTypes.UPDATE_FORM,
                 payload: { path: formName, data: formData },
             });
         };

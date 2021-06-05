@@ -1,20 +1,20 @@
-import { actionTypes } from '../../constants/redux';
-import { baseLogger } from '../../logger'
+import { ActionTypes } from '../../constants/redux';
+import { baseLogger } from '../../logger';
 
 export function setHistory(data) {
-    baseLogger(actionTypes.SET_HISTORY)
+    baseLogger(ActionTypes.SET_HISTORY);
 
     return {
-        type: actionTypes.SET_HISTORY,
-        payload: data
+        type: ActionTypes.SET_HISTORY,
+        payload: data,
     };
 }
 
 export function updateHistory(data) {
-    baseLogger(actionTypes.UPDATE_HISTORY)
+    baseLogger(ActionTypes.UPDATE_HISTORY);
 
     return {
-        type: actionTypes.UPDATE_HISTORY,
-        payload: data
+        type: ActionTypes.UPDATE_HISTORY,
+        payload: data,
     };
 }

@@ -1,4 +1,4 @@
-import { actionTypes } from '../../../constants/redux';
+import { ActionTypes } from '../../../constants/redux';
 import { getFormData, getToken } from '../../../utils/getters';
 import {
     create as createUserApi,
@@ -11,21 +11,21 @@ import { baseLogger } from '../../../logger';
 
 export function remove(data) {
     return {
-        type: actionTypes.REMOVE_USER,
+        type: ActionTypes.REMOVE_USER,
         payload: data,
     };
 }
 
 export function set(data) {
     return {
-        type: actionTypes.SET_USERS,
+        type: ActionTypes.SET_USERS,
         payload: data,
     };
 }
 
 export function add(data) {
     return {
-        type: actionTypes.ADD_USER,
+        type: ActionTypes.ADD_USER,
         payload: data,
     };
 }
@@ -66,7 +66,7 @@ export function create() {
 
 export function updateUsers(arrayWithUsers) {
     return {
-        type: actionTypes.UPDATE_USERS,
+        type: ActionTypes.UPDATE_USERS,
         payload: arrayWithUsers,
     };
 }

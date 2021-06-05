@@ -1,11 +1,11 @@
 import { handleActions } from 'redux-actions';
 import { append, filter, prop, not, map, merge, o, equals } from 'ramda';
-import { actionTypes } from '../../../constants/redux';
+import { ActionTypes } from '../../../constants/redux';
 
 const setUsers = {
     next(state, action) {
         return action.payload;
-    }
+    },
 };
 
 const filterById = (id) => (userObj) => o(not, equals(id))(prop('id', userObj));
@@ -14,14 +14,14 @@ const removeUser = {
     next(state, action) {
         const newState = filter(filterById(action.payload), state);
         return newState;
-    }
+    },
 };
 
 const add = {
     next(state, action) {
         const newState = append(action.payload, state);
         return newState;
-    }
+    },
 };
 
 const updateUsers = {
@@ -38,14 +38,14 @@ const updateUsers = {
         });
 
         return newState;
-    }
+    },
 };
 
 const userReducers = {
-    [actionTypes.SET_USERS]: setUsers,
-    [actionTypes.REMOVE_USER]: removeUser,
-    [actionTypes.ADD_USER]: add,
-    [actionTypes.UPDATE_USERS]: updateUsers
+    [ActionTypes.SET_USERS]: setUsers,
+    [ActionTypes.REMOVE_USER]: removeUser,
+    [ActionTypes.ADD_USER]: add,
+    [ActionTypes.UPDATE_USERS]: updateUsers,
 };
 
 export default handleActions(userReducers, []);

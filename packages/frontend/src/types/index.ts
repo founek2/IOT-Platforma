@@ -2,7 +2,8 @@ import { IDevice } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
 import { HistoricalSensor, HistoricalGeneric } from 'common/lib/models/interface/history';
 import { IThing } from 'common/lib/models/interface/thing';
-import { IUser } from 'common/lib/models/interface/userInterface';
+import { IUser, IAccessToken } from 'common/lib/models/interface/userInterface';
+import { fieldState } from 'framework-ui/lib/types';
 
 export interface ControlProps {
     name: string;
@@ -17,6 +18,7 @@ export interface ControlProps {
 
 export interface IState {
     application: {
+        accessTokens?: IAccessToken[];
         user?: IUser;
         notifications: any[];
         users: any[];
@@ -29,6 +31,10 @@ export interface IState {
             lastFetch?: Date;
         };
         userNames: { data: Array<{ _id: string; userName: string }>; lastFetch?: Date; lastUpdate?: Date };
+    };
+    formsData: {
+        registeredFields: { [deepPath: string]: fieldState };
+        [formName: string]: any;
     };
     fieldDescriptors: any;
     tmpData: {
