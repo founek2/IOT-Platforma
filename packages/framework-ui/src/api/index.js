@@ -147,7 +147,7 @@ export const jsonSender = async ({
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization-JWT': token,
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(body),
         });
@@ -178,7 +178,7 @@ export const paramSender = async ({
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization-JWT': token,
+                Authorization: `Bearer ${token}`,
             },
         });
         const json = await processResponse(dispatch)(response);

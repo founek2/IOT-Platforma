@@ -16,7 +16,27 @@ export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            read: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
+            index: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
+            modify: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
+        },
+
+        async index({ params, query }, res) {
+            const { deviceId, thingId } = params;
+
+            const doc: IDevice = await DeviceModel.findById(deviceId).lean();
+            const thing = getThing(doc, thingId);
+
+            const propertyId = query.property as string | undefined;
+            const value = query.value as string | undefined;
+            if (!propertyId || !value) return res.sendStatus(400);
+
+            const property = getProperty(thing, propertyId);
+            const result = validateValue(property, value.toString());
+            if (!result.valid) return res.sendStatus(400);
+
+            (await Actions.deviceSetProperty(deviceId, thingId, propertyId, value, doc))
+                ? res.sendStatus(204)
+                : res.sendStatus(400);
         },
 
         /** PATCH / - Update state of properites of the thing

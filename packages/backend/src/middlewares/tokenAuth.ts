@@ -18,8 +18,8 @@ export default function (options: { restricted: boolean; methods?: Array<'PUT'> 
         // if (req.url !== '/login') {
         if (not(methods === undefined || methods.some((method) => method === req.method))) next();
 
-        const jwtToken = req.get('Authorization-JWT');
-        const { token: accessToken } = req.query;
+        const [type, jwtToken] = (req.get('Authorization') || '').split(' ');
+        const accessToken = req.query.api_key || req.get('X-API-Key');
 
         console.log('jwt', jwtToken, 'token', accessToken);
         if (jwtToken) {
@@ -56,7 +56,13 @@ export default function (options: { restricted: boolean; methods?: Array<'PUT'> 
             }
             return;
         } else if (accessToken) {
-            const user = await UserModel.findOne({ 'accessTokens.token': accessToken }, 'accessTokens.$ groups').lean();
+            const user = await UserModel.findOne(
+                {
+                    'accessTokens.token': accessToken,
+                    $or: [{ 'accessTokens.validTo': { $lte: new Date() } }, { 'accessTokens.validTo': null }],
+                },
+                'accessTokens.$ groups'
+            ).lean();
             if (!user || !user.accessTokens?.length) return res.status(400).send({ error: 'invalidToken' });
 
             const req2 = req as RequestWithAuth;
