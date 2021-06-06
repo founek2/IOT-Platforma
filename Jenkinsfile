@@ -107,7 +107,7 @@ pipeline {
                         echo "Stoping service iot-backend-mqtt"
                         sudo systemctl stop iot-backend-mqtt
 
-                        rm -rf "$IOT_DEPLOY_PATH"/backend/*
+                        rm -rf "$IOT_DEPLOY_PATH"/backend/!(node_modules)
                         rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
                         cp package.json "$IOT_DEPLOY_PATH"/backend
 
@@ -133,7 +133,7 @@ pipeline {
                         echo "Stoping service iot-backend-mqtt-test"
                         sudo systemctl stop iot-backend-mqtt-test
 
-                        rm -rf "$IOT_DEPLOY_PATH"/backend/*
+                        rm -rf "$IOT_DEPLOY_PATH"/backend/!(node_modules)
                         rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
                         cp package.json yarn.lock "$IOT_DEPLOY_PATH"/backend
 
