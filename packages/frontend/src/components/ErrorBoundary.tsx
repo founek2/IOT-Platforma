@@ -22,7 +22,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
 
     render() {
         if (this.state.hasError) {
-            if (this.props.onError) this.props.onError();
+            // if (this.props.onError)
 
             // You can render any custom fallback UI
             return (
@@ -31,9 +31,17 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
                     <a style={{ color: 'blue' }} href="#" onClick={() => document.location.reload(true)}>
                         Kliknutím na tento odkaz rozhraní restartujete
                     </a>
+                    <br />
+                    <br />
+                    {this.props.onError && (
+                        <a href="#" style={{ color: 'red' }} onClick={this.props.onError}>
+                            Pokud restart nepomohl, tímto odkazem se provede pokročilejší akce
+                        </a>
+                    )}
                 </div>
             );
         }
+
         return this.props.children;
     }
 }
