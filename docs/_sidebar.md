@@ -11,8 +11,9 @@
 
 -   Guide
 
-    -   [Instalace služeb](installation.md)
-    -   [Nasazení](deploy.md)
+    -   [Ovládání hlasem](guides/voice.md)
+    -   [Instalace služeb](guides/installation.md)
+    -   [Nasazení](guides/deploy.md)
 
 -   [Todo](todo.md)
 -   [Changelog](CHANGELOG.md)
