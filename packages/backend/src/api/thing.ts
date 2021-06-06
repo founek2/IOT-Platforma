@@ -16,11 +16,15 @@ export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            index: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
+            create: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
             modify: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
         },
 
-        async index({ params, query }, res) {
+        async index(req, res) {
+            res.send('Z bezpečnostích důvodů není metoda GET podporována. Použijte matodu POST.');
+        },
+
+        async create({ params, query }, res) {
             const { deviceId, thingId } = params;
 
             const doc: IDevice = await DeviceModel.findById(deviceId).lean();

@@ -1,18 +1,19 @@
-import { Grid, makeStyles } from "@material-ui/core";
-import { IDevice } from "common/lib/models/interface/device";
-import { ComponentType } from "common/lib/models/interface/thing";
-import { errorLog } from "framework-ui/lib/logger";
-import { LocationTypography } from "frontend/src/components/LocationTypography";
-import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as deviceActions from "../../store/actions/application/devices";
-import Activator from "./room/Activator";
-import Generic from "./room/Generic";
-import Sensor from "./room/Sensor";
-import Switch from "./room/Swich";
-import isAfk from "frontend/src/utils/isAfk";
-
+import { Grid, makeStyles } from '@material-ui/core';
+import { IDevice } from 'common/lib/models/interface/device';
+import { ComponentType } from 'common/lib/models/interface/thing';
+import { errorLog } from 'framework-ui/lib/logger';
+import { LocationTypography } from 'frontend/src/components/LocationTypography';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as deviceActions from '../../store/actions/application/devices';
+import Activator from './room/Activator';
+import Generic from './room/Generic';
+import Sensor from './room/Sensor';
+import Switch from './room/Swich';
+import isAfk from 'frontend/src/utils/isAfk';
+import { DeviceContext } from 'frontend/src/hooks/useDevice';
+import { ThingContext } from 'frontend/src/hooks/useThing';
 
 const compMapper = {
     [ComponentType.switch]: Switch,
@@ -41,33 +42,32 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
 
         if (Comp) {
             const createComponent = () => (
-                <Grid
-                    item
-                    xs={6}
-                    md={3}
-                    key={_id}
-                >
-                    <Comp
-                        thing={thing}
-                        onClick={(state: any) => updateState(device._id, thing.config.nodeId, state)}
-                        lastChange={state?.timestamp}
-                        disabled={isAfk(device.state?.status?.value)}
-                        deviceStatus={device?.state?.status}
-                        deviceId={device._id}
-                        room={device.info.location.room}
-                    />
+                <Grid item xs={6} md={3} key={_id}>
+                    <DeviceContext.Provider value={{ _id: device._id, status: device.state?.status }}>
+                        <ThingContext.Provider value={thing}>
+                            <Comp
+                                thing={thing}
+                                onClick={(state: any) => updateState(device._id, thing.config.nodeId, state)}
+                                lastChange={state?.timestamp}
+                                disabled={isAfk(device.state?.status?.value)}
+                                deviceStatus={device?.state?.status}
+                                deviceId={device._id}
+                                room={device.info.location.room}
+                            />
+                        </ThingContext.Provider>
+                    </DeviceContext.Provider>
                 </Grid>
             );
 
             return createComponent();
-        } else errorLog("Invalid component type:", config.componentType, "of device:", device.info.name);
+        } else errorLog('Invalid component type:', config.componentType, 'of device:', device.info.name);
         return null;
     });
 }
 
 interface RoomProps {
     devices: IDevice[];
-    location: IDevice["info"]["location"];
+    location: IDevice['info']['location'];
     updateDeviceStateA: any;
 }
 function Room({ devices, updateDeviceStateA }: RoomProps) {

@@ -1,92 +1,98 @@
-import IconButton from "@material-ui/core/IconButton";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import clsx from "clsx";
-import { IThingPropertyEnum } from "common/lib/models/interface/thing";
-import { drop, head } from "ramda";
-import React from "react";
-import type { BoxWidgetProps } from "./components/BorderBox";
-import boxHoc from "./components/boxHoc";
-import { SimpleDialog } from "./components/Dialog";
-import PropertyRow from "./components/PropertyRow";
+import IconButton from '@material-ui/core/IconButton';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import clsx from 'clsx';
+import { IThingPropertyEnum } from 'common/lib/models/interface/thing';
+import { drop, head } from 'ramda';
+import React from 'react';
+import type { BoxWidgetProps } from './components/BorderBox';
+import boxHoc from './components/boxHoc';
+import { SimpleDialog } from './components/Dialog';
+import PropertyRow from './components/PropertyRow';
+import { CopyUrlContext } from './components/helpers/CopyUrl';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
     },
     header: {
-        paddingBottom: "0.4em",
-        overflow: "hidden",
-        textAlign: "center",
-        cursor: "pointer"
+        paddingBottom: '0.4em',
+        overflow: 'hidden',
+        textAlign: 'center',
+        cursor: 'pointer',
     },
     switchContainer: {
         // margin: "0 auto",
-        cursor: "pointer",
-        display: "inline-box"
+        cursor: 'pointer',
+        display: 'inline-box',
     },
     verticalAlign: {
-        display: "flex",
-        height: "100%",
-        alignItems: "flex-end",
-        justifyContent: "center"
+        display: 'flex',
+        height: '100%',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
     },
     button: {
-        padding: "6px 18px 6px 18px"
+        padding: '6px 18px 6px 18px',
     },
     select: {
-        paddingLeft: 5
-    }
+        paddingLeft: 5,
+    },
 }));
 
-function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled }: BoxWidgetProps) {
+function Activator({ onClick, deviceId, thing, className, fetchHistory, disabled }: BoxWidgetProps) {
     const classes = useStyles();
     const property = head(thing.config.properties)! as IThingPropertyEnum;
-    const value = (thing.state?.value || { [property.propertyId]: "false" })[property.propertyId];
+    const value = (thing.state?.value || { [property.propertyId]: 'false' })[property.propertyId];
     const [openDialog, setOpenDialog] = React.useState(false);
 
     return (
-        <div
-            className={clsx(className, classes.root)}
-        >
+        <div className={clsx(className, classes.root)}>
             <div className={classes.header} onClick={() => setOpenDialog(true)}>
                 <Typography component="span">{thing.config.name}</Typography>
             </div>
             <div className={classes.verticalAlign}>
-                {property.format.length === 1 ? <div
-                    className={classes.switchContainer}
-                >
-                    <IconButton
-                        aria-label="delete"
-                        className={classes.button}
-                        disabled={disabled}
-                        onClick={() => onClick({
-                            [property.propertyId]: head(property.format)
-                        })}
-                    >
-                        <PowerSettingsNewIcon fontSize="large" />
-                    </IconButton>
-                </div> :
-                    <Select
-                        className={classes.select}
-                        value={value}
-                        disabled={disabled}
-                        onChange={(e) => {
-                            onClick({ [property.propertyId]: e.target.value as string });
-                        }}
-                        disableUnderline
-                    >
-                        {property.format.map((label) => (
-                            <MenuItem value={label} key={label}>
-                                {label}
-                            </MenuItem>
-                        ))}
-                    </Select>}
+                {property.format.length === 1 ? (
+                    <div className={classes.switchContainer}>
+                        <CopyUrlContext propertyId={property.propertyId} value={head(property.format) as string}>
+                            <IconButton
+                                aria-label="delete"
+                                className={classes.button}
+                                disabled={disabled}
+                                onClick={() =>
+                                    onClick({
+                                        [property.propertyId]: head(property.format),
+                                    })
+                                }
+                            >
+                                <PowerSettingsNewIcon fontSize="large" />
+                            </IconButton>
+                        </CopyUrlContext>
+                    </div>
+                ) : (
+                    <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                        <Select
+                            className={classes.select}
+                            value={value}
+                            disabled={disabled}
+                            onChange={(e) => {
+                                onClick({ [property.propertyId]: e.target.value as string });
+                            }}
+                            disableUnderline
+                        >
+                            {property.format.map((label) => (
+                                <MenuItem value={label} key={label}>
+                                    {label}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </CopyUrlContext>
+                )}
             </div>
 
             <SimpleDialog
@@ -111,6 +117,4 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled 
     );
 }
 
-export const Content = MySwitch;
-
-export default boxHoc(Content);
+export default boxHoc(Activator);
