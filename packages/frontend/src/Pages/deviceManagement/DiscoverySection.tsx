@@ -1,21 +1,20 @@
-import { Fab, Grid, useTheme, useMediaQuery } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import { DeviceStatus } from "common/lib/models/interface/device";
-import { IDiscovery, IDiscoveryThing } from "common/lib/models/interface/discovery";
-import Dialog from "framework-ui/lib/Components/Dialog";
-import FieldConnector from "framework-ui/lib/Components/FieldConnector";
-import EnchancedTable from "framework-ui/lib/Components/Table";
-import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import { isUrlHash } from "framework-ui/lib/utils/getters";
-import { DeviceForm } from "frontend/src/components/DeviceForm";
-import { assoc, prop } from "ramda";
-import React, { Fragment, useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import OnlineCircle from "../../components/OnlineCircle";
-import * as discoveredActions from "../../store/actions/application/discovery";
-import { useManagementStyles } from "frontend/src/hooks/useManagementStyles";
-
+import { Fab, Grid, useTheme, useMediaQuery } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import { DeviceStatus } from 'common/lib/models/interface/device';
+import { IDiscovery, IDiscoveryThing } from 'common/lib/models/interface/discovery';
+import Dialog from 'framework-ui/lib/Components/Dialog';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import EnchancedTable from 'framework-ui/lib/Components/Table';
+import * as formsActions from 'framework-ui/lib/redux/actions/formsData';
+import { isUrlHash } from 'framework-ui/lib/utils/getters';
+import { DeviceForm } from 'frontend/src/components/DeviceForm';
+import { assoc, prop } from 'ramda';
+import React, { Fragment, useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import OnlineCircle from '../../components/OnlineCircle';
+import * as discoveredActions from '../../store/actions/application/discovery';
+import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 
 interface DiscoverySectionProps {
     discoveredDevices?: IDiscovery[];
@@ -26,18 +25,13 @@ interface DiscoverySectionProps {
 }
 
 function DiscoverySection(props: DiscoverySectionProps) {
-    const classes = useManagementStyles()
+    const classes = useManagementStyles();
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [selectedId, setSelectedId] = useState<null | string>(null);
-    const {
-        discoveredDevices,
-        resetCreateDeviceAction,
-        deleteDiscoveryAction,
-        updateFormField,
-        addDiscoveryAction,
-    } = props;
+    const { discoveredDevices, resetCreateDeviceAction, deleteDiscoveryAction, updateFormField, addDiscoveryAction } =
+        props;
     const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
+    const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
 
     function closeDialog() {
         resetCreateDeviceAction();
@@ -48,9 +42,12 @@ function DiscoverySection(props: DiscoverySectionProps) {
         const result = await addDiscoveryAction(selectedId);
         if (result) closeDialog();
     }
-
+    console.log(
+        'things',
+        discoveredDevices && discoveredDevices.map((device: any) => assoc('id', prop('_id', device), device))
+    );
     return (
-        <Fragment >
+        <Fragment>
             {discoveredDevices && discoveredDevices?.length > 0 && (
                 <FieldConnector
                     deepPath="DISCOVERY_DEVICES.selected"
@@ -65,56 +62,55 @@ function DiscoverySection(props: DiscoverySectionProps) {
                             rowsPerPage={2}
                             // @ts-ignore
                             dataProps={[
-                                { path: "name", label: "Název" },
-                                { path: "deviceId", label: "ID zařízení" },
+                                { path: 'name', label: 'Název' },
+                                { path: 'deviceId', label: 'ID zařízení' },
                                 {
-                                    path: "things",
-                                    label: "Věcí",
-                                    convertor: (things: { [nodeId: string]: IDiscoveryThing }) =>
+                                    path: 'things',
+                                    label: 'Věcí',
+                                    convertor: (things: { [nodeId: string]: IDiscoveryThing } = {}) =>
                                         Object.values(things)
                                             .map((obj) => obj.config.name)
-                                            .join(", "),
+                                            .join(', '),
                                 },
                                 {
-                                    path: "createdAt",
-                                    label: "Vytvořeno",
+                                    path: 'createdAt',
+                                    label: 'Vytvořeno',
                                     convertor: (date: string) => new Date(date).toLocaleDateString(),
                                 },
                                 {
-                                    path: "state.status",
-                                    label: "Status",
+                                    path: 'state.status',
+                                    label: 'Status',
                                     convertor: (status: { value: DeviceStatus; timestamp: Date }) => (
                                         <OnlineCircle status={status} inTransition={false} />
                                     ),
                                 },
                             ]}
-                            data={discoveredDevices.map((device: any) => assoc("id", prop("_id", device), device))}
+                            data={discoveredDevices.map((device: any) => assoc('id', prop('_id', device), device))}
                             toolbarHead="Přidání zařízení"
                             onDelete={deleteDiscoveryAction}
                             orderBy="Název"
                             // enableCreation={isAdmin}
                             //onAdd={() => this.updateCreateForm({ open: true })}
                             enableEdit
-                            customEditButton={(id: string, item: IDiscovery) =>
-                                (
-                                    <Fab
-                                        color="primary"
-                                        aria-label="add"
-                                        size="small"
-                                        disabled={item.state?.status.value !== DeviceStatus.ready}
-                                        onClick={() => {
-                                            setSelectedId(id);
-                                            console.log("looking", discoveredDevices, id);
-                                            updateFormField(
-                                                "CREATE_DEVICE.info.name",
-                                                discoveredDevices.find((dev) => dev._id === id)?.name || ""
-                                            );
-                                            setOpenAddDialog(true);
-                                        }}
-                                    >
-                                        <AddIcon />
-                                    </Fab>
-                                )}
+                            customEditButton={(id: string, item: IDiscovery) => (
+                                <Fab
+                                    color="primary"
+                                    aria-label="add"
+                                    size="small"
+                                    disabled={item.state?.status.value !== DeviceStatus.ready}
+                                    onClick={() => {
+                                        setSelectedId(id);
+                                        console.log('looking', discoveredDevices, id);
+                                        updateFormField(
+                                            'CREATE_DEVICE.info.name',
+                                            discoveredDevices.find((dev) => dev._id === id)?.name || ''
+                                        );
+                                        setOpenAddDialog(true);
+                                    }}
+                                >
+                                    <AddIcon />
+                                </Fab>
+                            )}
                             onChange={onChange}
                             value={value}
                         />
@@ -141,7 +137,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
 
 const _mapStateToProps = (state: any) => {
     return {
-        openAddDialog: isUrlHash("#addDevice")(state),
+        openAddDialog: isUrlHash('#addDevice')(state),
     };
 };
 
@@ -150,7 +146,7 @@ const _mapDispatchToProps = (dispatch: any) =>
         {
             deleteDiscoveryAction: discoveredActions.deleteDevices,
             addDiscoveryAction: discoveredActions.addDevice,
-            resetCreateDeviceAction: formsActions.removeForm("CREATE_DEVICE"),
+            resetCreateDeviceAction: formsActions.removeForm('CREATE_DEVICE'),
             updateFormField: formsActions.updateFormField,
         },
         dispatch

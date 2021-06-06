@@ -9,11 +9,12 @@ import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 import EnhancedTableHead from './EnhancedTableHead';
-import { equals } from 'ramda';
+import { equals, when } from 'ramda';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import getInPath from '../../utils/getInPath';
 import clsx from 'clsx';
+import isNotNil from 'framework-ui/src/utils/isNotNil';
 
 function desc(a, b, orderBy) {
     if (getInPath(orderBy, b) < getInPath(orderBy, a)) {
@@ -219,7 +220,8 @@ class EnhancedTable extends React.Component {
                                                     className={path === 'created' ? classes.createdCell : ''}
                                                     align={align}
                                                 >
-                                                    {convertor ? convertor(getInPath(path, n)) : getInPath(path, n)}
+                                                    {when(() => isNotNil(convertor), convertor)(getInPath(path, n))}
+                                                    {/* {convertor ? convertor(getInPath(path, n)) : getInPath(path, n)} */}
                                                 </TableCell>
                                             ))}
                                             <TableCell className={classes.editCell}>
