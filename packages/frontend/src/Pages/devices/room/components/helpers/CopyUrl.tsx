@@ -25,7 +25,7 @@ const empty = () => {};
 export function CopyUrlContext({ children, propertyId, value, className }: CopyUrlContextProps) {
     const { _id: deviceId } = useDevice();
     const { config } = useThing();
-    const bind = useLongPress(mouseClick, touchClick, 400);
+    const bind = useLongPress(mouseClick, touchClick, 700);
 
     const [state, setState] =
         React.useState<{
