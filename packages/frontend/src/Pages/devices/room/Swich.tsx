@@ -69,7 +69,7 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
             historyData.thingId === thing._id,
         ]
     );
-    console.log(historyData.deviceId === deviceId, historyData.thingId === thing._id, chartData.length > 2);
+
     return (
         <div className={clsx(className, classes.root)}>
             <div className={classes.header} onClick={() => setOpenDialog(true)}>

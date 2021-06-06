@@ -8,6 +8,7 @@ import { IDevice } from 'common/lib/models/interface/device';
 import { useDevice } from 'frontend/src/hooks/useDevice';
 import { useThing } from 'frontend/src/hooks/useThing';
 import clsx from 'clsx';
+import { useLongPress } from 'frontend/src/hooks/useLongPress';
 
 const initialState = {
     mouseX: null,
@@ -20,9 +21,11 @@ interface CopyUrlContextProps {
     value: string | number;
     className?: string;
 }
+const empty = () => {};
 export function CopyUrlContext({ children, propertyId, value, className }: CopyUrlContextProps) {
     const { _id: deviceId } = useDevice();
     const { config } = useThing();
+    const bind = useLongPress(mouseClick, touchClick, 400);
 
     const [state, setState] =
         React.useState<{
@@ -31,13 +34,23 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
         }>(initialState);
     const url = `${window.location.origin}/api/device/${deviceId}/thing/${config.nodeId}?property=${propertyId}&value=${value}`;
 
-    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    function mouseClick(event: React.MouseEvent<HTMLDivElement>) {
         event.preventDefault();
+
         setState({
             mouseX: event.clientX - 2,
             mouseY: event.clientY - 4,
         });
-    };
+    }
+
+    function touchClick(event: React.TouchEvent<HTMLDivElement>) {
+        event.preventDefault();
+
+        setState({
+            mouseX: event.touches[0].clientX - 2,
+            mouseY: event.touches[0].clientY - 4,
+        });
+    }
 
     const handleClose = (cp: boolean) => {
         return (e: React.MouseEvent) => {
@@ -48,7 +61,7 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
     };
 
     return (
-        <div onContextMenu={handleClick} className={clsx(className)}>
+        <div {...bind} onContextMenu={mouseClick} className={clsx(className)}>
             {children}
             <Menu
                 keepMounted
