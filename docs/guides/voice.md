@@ -24,7 +24,7 @@ Pojmenujte ho a nastavte příslušné oprávnění pro ovládání.
 Až budete token později potřebovat, tak ho najdete opět v této sekci.
 
 ## Získání URL ovládacího prvku
-Z každého ovládacího prvku (přepínač, spínač atd...) lze získat ovládací URL - pomocí pravého kliknutí na prvek nebo dlouhým podržením na telefonu. Tato URL se dá využít pro vytvoření zkratky pro `Siri` či ovládání zařízení ze skriptů např. pomocí utility `curl`.
+Z každého ovládacího prvku (přepínač, spínač atd...) lze získat ovládací URL. Tato URL se dá využít pro vytvoření zkratky pro `Siri` či ovládání zařízení ze skriptů např. pomocí utility `curl`. URL odpovídá stavu prvku, ve kterém se nachází při kopírování URL - tedy pokud je např. vypínač ve stavu zapnu, tak URL přepíná do stavu zapnuto.
 
 Přidržte prst (či klikněte pravým tlačítkem myši) nad cílovím ovládacím prvkem, pro který chcete získat URL a objeví se tlačíko `Kopírovat URL` - po kliknutí na něj, se zkopíruje URL do schránky.
 
