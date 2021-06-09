@@ -1,12 +1,11 @@
-import { CONTROL_TYPES } from "../constants";
-import { IDevice } from "../models/interface/device";
-import { IThing } from "../models/interface/thing";
+import { CONTROL_TYPES } from '../constants';
+import { IDevice } from '../models/interface/device';
+import { IThing } from '../models/interface/thing';
 
 export interface Config {
     port: number;
     bodyLimit: string;
     homepage: string;
-    imagesPath: string;
     portAuth: number;
     firebaseAdminPath: string;
     db: {
@@ -23,13 +22,15 @@ export interface Config {
     };
     testUser: string;
     testPassword: string;
-    email: {
-        host: string;
-        port: number;
-        secure: boolean;
-        userName: string;
-        password: string;
-    };
+    email:
+        | {
+              host: string;
+              port: number;
+              secure: boolean;
+              userName: string;
+              password: string;
+          }
+        | undefined;
     agenda: {
         collection: string;
         jobs?: string;
@@ -37,8 +38,6 @@ export interface Config {
     mqtt: {
         url: string;
         port: number;
-        userName: string;
-        password: string;
     };
 }
 
@@ -63,9 +62,9 @@ export type ChangeHandler<T = any> = (
 export type AckHandler = (recipe: ControlRecipe) => Promise<boolean>;
 
 export type SocketUpdateThingState = {
-    _id: IDevice["_id"];
+    _id: IDevice['_id'];
     thing: {
-        nodeId: IThing["config"]["nodeId"];
+        nodeId: IThing['config']['nodeId'];
         state: {
             value: { [propertyId: string]: string | number };
             timestamp: Date;

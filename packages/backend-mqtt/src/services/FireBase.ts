@@ -9,7 +9,7 @@ import { Config } from '../types';
 import { getProperty } from 'common/lib/utils/getProperty';
 import { getThing } from 'common/lib/utils/getThing';
 import functions from './fireBase/notifications/functions';
-import { devLog } from 'framework-ui/lib/logger';
+import { devLog, errorLog } from 'framework-ui/lib/logger';
 import { map, prop, uniq, o } from 'ramda';
 import { NotifyService } from './notifyService';
 
@@ -17,11 +17,13 @@ import { NotifyService } from './notifyService';
  * Funcional implementation sending notifications
  */
 
-let messaging: admin.messaging.Messaging;
+let messaging: admin.messaging.Messaging | undefined;
 let homepageUrl: string;
 
 /* Initialize firebase SDK for later usage */
 export function init(config: Config) {
+    if (!config.firebaseAdminPath) return
+
     var serviceAccount = require(config.firebaseAdminPath);
 
     admin.initializeApp({
@@ -179,6 +181,10 @@ async function sendAllNotifications(arrOfTokens: { userId: string; notifyTokens:
         });
     });
 
+    if (!messaging) {
+        errorLog("Unable to send messages -> FireBase not initialized")
+        return []
+    }
     const response = await messaging.sendAll(messages);
     console.log(response.successCount + ' of ' + messages.length + ' messages were sent successfully');
 

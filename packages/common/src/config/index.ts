@@ -13,7 +13,6 @@ const config: Config = {
     port: Number(process.env.PORT) || 8085,
     bodyLimit: process.env.BODY_LIMIT || "100kb",
     homepage: process.env.HOME_PAGE as string,
-    imagesPath: process.env.IMAGES_PATH as string,
     portAuth: Number(process.env.AUTH_PORT) || 8084,
     firebaseAdminPath: process.env.FIREBASE_ADMIN_PATH as string,
     db: {
@@ -38,14 +37,14 @@ const config: Config = {
         password: process.env.EMAIL_PASSWORD as string,
     },
     agenda: {
-        collection: process.env.AGENDA_COLLECTION as string,
+        collection: "agendaJobs",
         jobs: process.env.AGENDA_JOB_TYPES,
     },
     mqtt: {
         url: process.env.MQTT_URL as string,
         port: Number(process.env.MQTT_PORT) || 8883,
-        userName: process.env.MQTT_USERNAME as string,
-        password: process.env.MQTT_PASSWORD as string,
+        // userName: process.env.MQTT_USERNAME as string,
+        // password: process.env.MQTT_PASSWORD as string,
     },
 };
 

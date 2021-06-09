@@ -1,17 +1,12 @@
 import logger from 'framework-ui/lib/logger';
 import { Config } from '../types';
 import mongoose from 'mongoose';
-import createMongoUri from 'common/lib/utils/createMongoUri';
+import { connectMongoose } from 'common/lib/utils/connectMongoose';
 
 /* Initialize connection to mongoDB */
 export default async (config: Config['db']): Promise<mongoose.Connection | null> => {
     try {
-        const mong = await mongoose.connect(createMongoUri(config), {
-            useNewUrlParser: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-            useUnifiedTopology: true,
-        });
+        const mong = await connectMongoose(config)
 
         logger.info('Connection to DB has been established successfully.');
 

@@ -11,6 +11,7 @@ import { DeviceModel } from '../models/deviceModel';
 import { TokenModel, TokenType, IToken } from '../models/tokenModel';
 import { Security } from './SecurityService';
 import addHours from 'date-fns/addHours';
+import { not } from 'ramda';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -42,7 +43,14 @@ export const UserService = {
         devLog('user creating:', object);
         const hash = await createHash(password);
 
-        const user = new UserModel({ ...object, auth: { password: hash }, realm: object.info.userName });
+        const rootExists = await UserModel.exists({ groups: 'root' });
+
+        const user = new UserModel({
+            ...object,
+            auth: { password: hash },
+            realm: object.info.userName,
+            groups: rootExists ? ['user'] : ['root'],
+        });
         const obj = await user.save();
         const plainUser = obj.toObject();
 

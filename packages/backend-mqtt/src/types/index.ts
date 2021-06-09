@@ -1,7 +1,7 @@
 export interface Config {
     homepage: string;
     portAuth: number;
-    firebaseAdminPath: string;
+    firebaseAdminPath?: string;
     db: {
         userName: string;
         password: string;
@@ -17,8 +17,6 @@ export interface Config {
     mqtt: {
         url: string;
         port: number;
-        userName: string;
-        password: string;
     };
     testUser: string;
     testPassword: string;

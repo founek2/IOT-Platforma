@@ -8,6 +8,7 @@ import loadersInit from './loaders';
 import mongoose from 'mongoose';
 import initPrivileges from 'framework-ui/lib/privileges';
 import { groupsHeritage, allowedGroups } from 'common/lib/constants/privileges';
+import { MailerService } from './services/mailerService';
 
 export const routes = {
     user: {
@@ -29,7 +30,8 @@ interface customApp extends Application {
 
 async function startServer(config: Config) {
     /* INITIALIZE */
-    JwtService.init(config.jwt);
+    JwtService.init(config.jwt); // used in WebSocket middleware
+    MailerService.init(config.email);
 
     const app: customApp = express();
 
@@ -38,7 +40,6 @@ async function startServer(config: Config) {
 
     await loadersInit({ app, config });
     /* --------- */
-
 
     /* SocketIO proxy just for development */
     if (process.env.NODE_ENV === 'development') {

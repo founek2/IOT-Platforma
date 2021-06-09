@@ -26,7 +26,6 @@ export interface Config {
     port: number;
     bodyLimit: string;
     homepage: string;
-    imagesPath: string;
     portAuth: number;
     db: {
         userName: string;
@@ -42,7 +41,7 @@ export interface Config {
     };
     testUser: string;
     testPassword: string;
-    email: {
+    email?: {
         host: string;
         port: number;
         secure: boolean;

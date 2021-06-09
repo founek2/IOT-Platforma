@@ -12,9 +12,12 @@ import { Server as serverIO } from "socket.io";
 import createMongoUri from "common/lib/utils/createMongoUri";
 import mongoose from "mongoose";
 import config from "common/lib/config";
+import { connectMongoose } from 'common/lib/utils/connectMongoose';
 
 import eventEmitter from "./services/eventEmitter";
 import initSubscribers from "./subscribers";
+import { UserModel } from "common/lib/models/userModel";
+import { newPass } from "./services/TemporaryPass";
 
 interface customApp extends Application {
     server: http.Server;
@@ -26,12 +29,7 @@ async function startServer(config: Config) {
     FireBase.init(config);
     initSubscribers(eventEmitter);
 
-    await mongoose.connect(createMongoUri(config.db), {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        useUnifiedTopology: true,
-    });
+    await connectMongoose(config.db)
     mongoose.set("debug", process.env.NODE_ENV === "development");
 
     const appInstance = express();
@@ -51,7 +49,16 @@ async function startServer(config: Config) {
 
     app.server.listen(config.portAuth, () => {
         console.log(`Started on port ${(app.server?.address() as any).port}`);
-        if (app.io) setTimeout(() => mqttService(app.io, config), 1000); //init
+
+        async function getUser() {
+            const doc = await UserModel.findOne({ groups: "root" }).lean()
+            return {
+                userName: doc?.info.userName,
+                password: newPass()
+            }
+        }
+
+        if (app.io) setTimeout(() => mqttService(app.io, config.mqtt, getUser), 1000); //init
     });
 }
 

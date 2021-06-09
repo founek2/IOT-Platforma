@@ -4,35 +4,41 @@ import { createTransport } from 'nodemailer';
 import path from 'path';
 import config from 'common/lib/config';
 import { UserBasic } from '../types';
+import { Config } from 'common/lib/types';
 
-const emailConf = config.email;
-const transporter = createTransport({
-    host: emailConf.host,
-    port: emailConf.port,
-    secure: emailConf.secure,
-    auth: {
-        user: emailConf.userName,
-        pass: emailConf.password,
-    },
-});
-
-// transporter.verify((err, status) => {
-//     console.log("email verify:", err, status)
-// })
-const defaultEmail = new Email({
-    message: {
-        from: emailConf.userName,
-    },
-    transport: transporter,
-    send: process.env.NODE_ENV_TEST !== 'true',
-    preview: false,
-});
+let defaultEmail: Email;
 
 /**
  * Service for sending emails
  */
-class Mailer {
-    sendSignUp = async (user: UserBasic) => {
+export class MailerService {
+    static init = (emailConf?: Config['email']) => {
+        if (!emailConf) return;
+
+        const transporter = createTransport({
+            host: emailConf.host,
+            port: emailConf.port,
+            secure: emailConf.secure,
+            auth: {
+                user: emailConf.userName,
+                pass: emailConf.password,
+            },
+        });
+
+        // transporter.verify((err, status) => {
+        //     console.log("email verify:", err, status)
+        // })
+        defaultEmail = new Email({
+            message: {
+                from: emailConf.userName,
+            },
+            transport: transporter,
+            send: process.env.NODE_ENV_TEST !== 'true',
+            preview: false,
+        });
+    };
+
+    static sendSignUp = async (user: UserBasic) => {
         const result = await defaultEmail.send({
             template: path.join(__dirname, '../templates/emails/registration'),
             message: {
@@ -49,7 +55,7 @@ class Mailer {
         });
     };
 
-    sendLogin = async ({ email }: { email: string }) => {
+    static sendLogin = async ({ email }: { email: string }) => {
         await defaultEmail.send({
             template: path.join(__dirname, '../templates/emails/login'),
             message: {
@@ -61,7 +67,7 @@ class Mailer {
         });
     };
 
-    sendForgotPassword = async (token: string, user: UserBasic) => {
+    static sendForgotPassword = async (token: string, user: UserBasic) => {
         await defaultEmail
             .send({
                 template: path.join(__dirname, '../templates/emails/password_reset'),
@@ -87,4 +93,3 @@ class Mailer {
         logger.debug('sending forgot password email');
     };
 }
-export default Mailer;

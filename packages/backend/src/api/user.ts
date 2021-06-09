@@ -109,7 +109,6 @@ export default () =>
                 if (await UserModel.exists({ 'info.userName': formData.REGISTRATION.info.userName }))
                     return res.status(409).send({ error: 'userNameAlreadyExist' });
 
-                if (not(await UserModel.exists({ groups: "root" }))) formData.groups = [...formData.groups, "root"]
                 const { doc, token } = await UserService.create(formData.REGISTRATION);
 
                 res.send({

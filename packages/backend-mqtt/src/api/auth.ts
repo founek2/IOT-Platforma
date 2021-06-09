@@ -2,6 +2,8 @@ import { DeviceModel } from 'common/lib/models/deviceModel';
 import { UserService } from 'common/lib/services/userService';
 import express, { Response } from 'express';
 import { AuthTypes } from 'common/lib/constants';
+import { validatePass } from '../services/TemporaryPass';
+import { UserModel } from 'common/lib/models/userModel';
 
 const router = express.Router();
 
@@ -52,15 +54,15 @@ router.post('/user', async function (req, res) {
         const success = await DeviceModel.login(topicPrefix, deviceId, password);
         return success ? res.send('allow') : sendDeny('/user device', res);
     } else if (isUser(username)) {
-        UserService.checkCreditals({ userName: username, password, authType: AuthTypes.PASSWD })
-            .then(({ error, doc }) => {
-                if (error || !doc) return;
+        if (validatePass(password) && await UserModel.exists({ groups: "root", "info.userName": username })) return res.send('allow');
 
-                if (doc.groups.some((group) => group === 'root' || group === 'admin'))
-                    return res.send('allow administrator');
-                throw new Error();
-            })
-            .catch(() => sendDeny('/user user', res));
+        const { error, doc } = await UserService.checkCreditals({ userName: username, password, authType: AuthTypes.PASSWD })
+        if (error || !doc) return sendDeny('/user user', res);
+
+        if (doc.groups.some((group) => group === 'root' || group === 'admin'))
+            return res.send('allow administrator');
+
+
     } else if (isGuest(username)) {
         res.send('allow');
     } else sendDeny('/user other', res);
@@ -92,7 +94,7 @@ router.post('/resource', function (req, res) {
 router.post('/topic', async function (req, res) {
     // console.log("/topic", req.body)
     const { vhost, username, name, permission, routing_key } = req.body;
-    if (isUser(username)) return res.send('allow');
+    if (isUser(username)) return res.send('allow'); // TODO check if user has access
 
     if (isDevice(username) && name === 'amq.topic' && vhost === '/') {
         // const { ownerId, topic } = await Device.getOwnerAndTopic(username);
