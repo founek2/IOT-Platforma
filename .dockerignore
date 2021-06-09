@@ -1,0 +1,7 @@
+**/node_modules
+/docker
+packages/backend/dist
+packages/backend-mqtt/dist
+packages/common/lib
+packages/framework-ui/lib
+packages/frontend/build
