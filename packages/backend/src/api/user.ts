@@ -11,6 +11,7 @@ import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
 import checkWritePerm from '../middlewares/user/checkWritePerm';
 import eventEmitter from '../services/eventEmitter';
+import { not } from 'ramda';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
@@ -107,6 +108,8 @@ export default () =>
             } else if (formData.REGISTRATION) {
                 if (await UserModel.exists({ 'info.userName': formData.REGISTRATION.info.userName }))
                     return res.status(409).send({ error: 'userNameAlreadyExist' });
+
+                if (not(await UserModel.exists({ groups: "root" }))) formData.groups = [...formData.groups, "root"]
                 const { doc, token } = await UserService.create(formData.REGISTRATION);
 
                 res.send({

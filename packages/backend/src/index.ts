@@ -1,7 +1,6 @@
 import http from 'http';
 import express, { Application } from 'express';
 import config from 'common/lib/config';
-import checkAndCreateRoot from 'common/lib/services/checkAndCreateRoot';
 import { JwtService } from 'common/lib/services/jwtService';
 import { devLog } from 'framework-ui/lib/logger';
 import { Config } from './types';
@@ -40,8 +39,6 @@ async function startServer(config: Config) {
     await loadersInit({ app, config });
     /* --------- */
 
-    /* check existence of root otherwise prompt to create one */
-    if (process.env.NODE_ENV_TEST !== 'true') checkAndCreateRoot(); // check for roor existence, if not, then ask for password in terminal
 
     /* SocketIO proxy just for development */
     if (process.env.NODE_ENV === 'development') {
