@@ -1,35 +1,18 @@
 version: "3.8"
 services:
-    mongo:
-        build : ./mongo
-        environment:
-            - MONGO_INITDB_ROOT_USERNAME=root
-            - MONGO_INITDB_ROOT_PASSWORD=root
-            - MONGO_INITDB_DATABASE=IOTPlatform_v3
-        volumes:
-            - /Users/martas/Work/Docker/mongoDB:/data/db
-        ports:
-            - 27020:27017
-
     web:
-        build: ./nginx
+        build: ./
         volumes:
-            - ./nginx/templates:/etc/nginx/templates
+            - ./templates:/etc/nginx/templates
         ports:
             - "8079:80"
         environment:
             - NGINX_HOST=tjv.moje
             - NGINX_PORT=80
         depends_on:
-          - platform
-
-    rabbitmq:
-        build: ./rabbitmq
-        ports:
-            - 1889:1883
-
+            - platform
     platform:
-        build: ../
+        image: platform
         environment: 
             - PORT=8080
             - AUTH_PORT=8081
@@ -42,6 +25,17 @@ services:
             - MQTT_URL=mqtts://rabbitmq
             - MQTT_PORT=8883
             - NODE_ENV=production
-            - AGENDA_JOB_TYPES=
+            - AGENDA_JOB_TYPES=email
         depends_on:
           - mongo
+    
+    mongo:
+        build : ../mongo
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=root
+            - MONGO_INITDB_DATABASE=IOTPlatform_v3
+        volumes:
+            - /Users/martas/Work/Docker/mongoDB:/data/db
+        ports:
+            - 27020:27017

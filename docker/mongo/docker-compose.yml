@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+    mongo:
+        build : ./
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=root
+            - MONGO_INITDB_DATABASE=IOTPlatform_v3
+
+        ports:
+          - 27020:27017
