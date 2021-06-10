@@ -34,7 +34,7 @@
         "express-mongo-sanitize": "^2.0.2",
         "firebase-admin": "^9.0.0",
         "helmet": "^4.4.1",
-        "http-proxy-middleware": "^2.0.0",
+        "http-proxy-middleware": "^0.19.1",
         "key-mirror": "^1.0.1",
         "mongoose": "^5.11.8",
         "morgan": "^1.9.1",

@@ -43,5 +43,7 @@ services:
             - MQTT_PORT=8883
             - NODE_ENV=production
             - AGENDA_JOB_TYPES=
+            - JWT_PRIVATE_KEY=/keys/jwtRS256.key
+            - JWT_PUBLIC_KEY=/keys/jwtRS256.key.pub
         depends_on:
           - mongo

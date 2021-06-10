@@ -13,7 +13,7 @@ let defaultEmail: Email;
  */
 export class MailerService {
     static init = (emailConf?: Config['email']) => {
-        if (!emailConf) return;
+        if (!emailConf?.host) return;
 
         const transporter = createTransport({
             host: emailConf.host,
