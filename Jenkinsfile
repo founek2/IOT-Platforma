@@ -3,6 +3,10 @@ pipeline {
     // deleteDir()
     agent any
 
+    environment {
+        USER_CREDENTIALS = credentials('github-app-jenkins')
+    }
+
     stages {
         stage ('Install dependencies') {
             steps {
