@@ -8,7 +8,7 @@ import '../agenda'; // Agenda init
 
 /* Load appropriate loaders */
 export default async ({ app, config }: { app: Application; config: types.Config }) => {
-    const mongoConnection = await mongoLoader(config.db);
+    const mongoConnection = await mongoLoader(config);
     if (!mongoConnection) throw Error('Unable to connect to DB');
 
     subscribers();
