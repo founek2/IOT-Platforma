@@ -3,6 +3,12 @@ pipeline {
     // deleteDir()
     agent any
 
+    environment {
+        imagename = "founek2/iot-platform"
+        registryCredential = 'docker-hub'
+        dockerImage = ''
+    }
+
     stages {
         stage ('Install dependencies') {
             steps {
@@ -152,15 +158,31 @@ pipeline {
         }
 
 
-        stage("Build image") {
-            app = docker.build("founek2/iot-platform")
+         stage('Building image') {
+            steps{
+                script {
+                    dockerImage = docker.build imagename
+                }
+            }
         }
 
-        stage('Push image') {
-            docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {            
-                    app.push("${env.BUILD_NUMBER}")            
-                    app.push("latest")        
-            }    
+        stage('Deploy Image') {
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push('latest')
+
+                    }
+                }
+            }
         }
+
+        stage('Remove Unused docker image') {
+            steps{
+                sh "docker rmi $imagename:$BUILD_NUMBER"
+                sh "docker rmi $imagename:latest"
+            }
+        } 
     }
 }
