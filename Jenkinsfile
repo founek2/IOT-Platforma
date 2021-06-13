@@ -6,11 +6,13 @@ pipeline {
     environment {
         USER_CREDENTIALS = credentials('github-app-jenkins')
     }
+    // $USER_CREDENTIALS
 
     stages {
         stage ('Install dependencies') {
             steps {
                 sh "printenv"
+                sh "release.sh"
                 sh "exit 127"
                 sh "yarn"
                 sh "yarn lerna init"
