@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 yarn global add --silent pm2
 
 BUILD=false

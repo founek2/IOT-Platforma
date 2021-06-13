@@ -1,8 +1,8 @@
 #!/bin/bash
+set -e
 
-
-zip -r build.zip packages/backend/{distpackage.json} packages/backend-mqtt/{dist,package.json} packages/common/{lib,package.json} packages/framework-ui/{lib,package.json} packages/frontend/build
-
+# pack all release files
+zip -r build.zip packages/backend/{dist,package.json} packages/backend-mqtt/{dist,package.json} packages/common/{lib,package.json} packages/framework-ui/{lib,package.json} packages/frontend/build package.json
 
 # Build
 # Publish on github
@@ -16,7 +16,9 @@ message="$(git for-each-ref refs/tags/$tag --format='%(contents)')"
 name=$(echo "$message" | head -n1)
 description=$(echo "$message" | tail -n +3)
 description=$(echo "$description" | sed -z 's/\n/\\n/g') # Escape line breaks to prevent json parsing problems
+
 # Create a release
+echo "Creating releasing with tag_name=$tag"
 release=$(curl -XPOST -H "Authorization: token $token" --data "{\"tag_name\": \"$tag\", \"target_commitish\": \"master\", \"name\": \"$name\", \"body\": \"$description\", \"draft\": false, \"prerelease\": true}" https://api.github.com/repos/founek2/IOT-Platforma/releases)
 # Extract the id of the release from the creation response
 id=$(echo "$release" | sed -n -e 's/"id":\ \([0-9]\+\),/\1/p' | head -n 1 | sed 's/[[:blank:]]//g')
