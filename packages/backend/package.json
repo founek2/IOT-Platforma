@@ -1,6 +1,7 @@
 {
     "name": "backend",
     "version": "0.0.1",
+    "license": "GPL-3.0-only",
     "description": "",
     "main": "lib/main.js",
     "scripts": {

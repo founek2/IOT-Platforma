@@ -1,6 +1,7 @@
 {
     "name": "common",
     "version": "0.1.0",
+    "license": "GPL-3.0-only",
     "private": true,
     "dependencies": {
         "@types/hat": "^0.0.1",

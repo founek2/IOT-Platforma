@@ -7,10 +7,7 @@ WORKDIR  /var/www/platform
 COPY .  .
 # RUN yarn && yarn pre && yarn build
 # RUN yarn install --production
-RUN yarn && yarn global add pm2 && \
-    yarn clean && yarn pre && yarn build && \
-    mv packages/frontend/build /var/www/frontend-build && rm -rf packages/frontend && \
-    yarn install --production && yarn cache clean
+RUN ./docker-build.sh
 COPY ./docker-entrypoint.sh .
 
 CMD [ "./docker-entrypoint.sh" ]
