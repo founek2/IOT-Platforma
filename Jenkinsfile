@@ -3,17 +3,9 @@ pipeline {
     // deleteDir()
     agent any
 
-    environment {
-        USER_CREDENTIALS = credentials('github-app-jenkins')
-    }
-    // $USER_CREDENTIALS
-
     stages {
         stage ('Install dependencies') {
             steps {
-                sh "printenv"
-                sh "jenkins/release.sh"
-                sh "exit 127"
                 sh "yarn"
                 sh "yarn lerna init"
             }
@@ -83,6 +75,7 @@ pipeline {
 
             environment {
                 IOT_DEPLOY_PATH = "${env.BRANCH_NAME == 'master' ? '/var/www/iot-v3/deploy' : '/var/www/iot-test/deploy'}"
+              
             }
 
             steps {
@@ -142,5 +135,16 @@ pipeline {
 
             }
       	}
+
+          
+        stage('Release') {
+            when { tag "v1.*" }
+
+            environment {
+                USER_CREDENTIALS = credentials('github-app-jenkins')
+            }
+
+            sh "jenkins/release.sh"
+        }
     }
 }
