@@ -174,8 +174,13 @@ pipeline {
             when { branch "release*" }
             steps{
                 script {
+                    GIT_TAG = sh (
+                        script: 'git describe --tags',
+                        returnStdout: true
+                    ).trim()
+
                     docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push("$GIT_TAG")
                         dockerImage.push('latest')
 
                     }
@@ -186,7 +191,7 @@ pipeline {
         stage('Remove Unused docker image') {
             when { branch "release*" }
             steps{
-                sh "docker rmi $imagename:$BUILD_NUMBER"
+                sh "docker rmi $imagename:$GIT_TAG"
                 sh "docker rmi $imagename:latest"
             }
         } 
