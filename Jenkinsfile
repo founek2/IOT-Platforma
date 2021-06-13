@@ -48,9 +48,12 @@ pipeline {
 
 
         stage('SonarQube analysis') {
+            when { branch "develop" }
+
             environment {
                 SCANNER_HOME = tool 'SonarQubeScanner'
             }
+
             steps {
                 withSonarQubeEnv('Sonar qube') {
                     sh '''
@@ -144,7 +147,7 @@ pipeline {
 
           
         stage('Release') {
-            when { tag "v1.*" }
+            when { branch "release*" }
 
             environment {
                 USER_CREDENTIALS = credentials('github-app-jenkins')
@@ -158,7 +161,8 @@ pipeline {
         }
 
 
-         stage('Building image') {
+        stage('Building image') {
+            when { branch "release*" }
             steps{
                 script {
                     dockerImage = docker.build imagename
@@ -167,6 +171,7 @@ pipeline {
         }
 
         stage('Deploy Image') {
+            when { branch "release*" }
             steps{
                 script {
                     docker.withRegistry( '', registryCredential ) {
@@ -179,6 +184,7 @@ pipeline {
         }
 
         stage('Remove Unused docker image') {
+            when { branch "release*" }
             steps{
                 sh "docker rmi $imagename:$BUILD_NUMBER"
                 sh "docker rmi $imagename:latest"
