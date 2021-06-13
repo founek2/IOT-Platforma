@@ -1,20 +1,13 @@
 #!/bin/bash
 set -e
 
-if  [ -z "$JWT_PRIVATE_KEY" ] || [ -z "$JWT_PUBLIC_KEY" ]; then
-    echo "You have to specify JWT_PRIVATE_KEY and JWT_PUBLIC_KEY variable"
-    exit 1;
-fi
-
-KEY_PRIVATE="$JWT_PRIVATE_KEY"
-KEY_PUBLIC="$JWT_PUBLIC_KEY"
-
-
+export JWT_PRIVATE_KEY="${JWT_PRIVATE_KEY:-/keys/jwtRS256.key}"
+export JWT_PUBLIC_KEY="${JWT_PUBLIC_KEY:-/keys/jwtRS256.key.pub}"
 
 # Generate keys for JWT if not exists
-if [ ! -f "$KEY_PRIVATE" ]; then
-    ssh-keygen -t rsa -b 4096 -m PEM -f "$KEY_PRIVATE"
-    openssl rsa -in "$KEY_PRIVATE" -pubout -outform PEM -out "$KEY_PUBLIC"
+if [ ! -f "$JWT_PRIVATE_KEY" ]; then
+    ssh-keygen -t rsa -b 4096 -m PEM -f "$JWT_PRIVATE_KEY"
+    openssl rsa -in "$JWT_PRIVATE_KEY" -pubout -outform PEM -out "$JWT_PUBLIC_KEY"
 fi
 
 pm2-runtime process.json

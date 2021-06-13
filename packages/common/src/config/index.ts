@@ -17,8 +17,8 @@ const config: Config = {
     firebaseAdminPath: process.env.FIREBASE_ADMIN_PATH as string,
     dbUri: process.env.DATABASE_URI as string,
     jwt: {
-        privateKey: process.env.JWT_PRIVATE_KEY || '/keys/jwtRS256.key',
-        publicKey: process.env.JWT_PUBLIC_KEY || '/keys/jwtRS256.key.pub',
+        privateKey: process.env.JWT_PRIVATE_KEY as string,
+        publicKey: process.env.JWT_PUBLIC_KEY as string,
         expiresIn: process.env.JWT_EXPIRES_IN || '14d',
     },
     testUser: 'test1',

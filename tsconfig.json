@@ -1,9 +1,16 @@
 {
-    "extends": "./tsconfig.build.json",
     "compilerOptions": {
         "baseUrl": "./packages",
         "downlevelIteration": true,
         "allowJs": true,
+        "module": "commonjs",
+        "target": "es5",
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "strict": true,
+        // "composite": true,
+        "esModuleInterop": true
     },
     "exclude": [
         "**/dist/*",
