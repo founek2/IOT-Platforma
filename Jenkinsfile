@@ -3,24 +3,10 @@ pipeline {
     // deleteDir()
     agent any
 
-    options {
-        skipDefaultCheckout true
-    }
-    environment {
-        // ENV_CONFIG_PATH = "/home/martas/iot_test_env"
-        ENV_CONFIG_PATH = "${env.BRANCH_NAME == 'master' ? '/home/martas/iot_prod_env' : '/home/martas/iot_test_env'}"
-    }
-
     stages {
-        stage('clear and checkout') {
-            steps {
-                deleteDir()
-                checkout scm
-            }
-        }
-
         stage ('Install dependencies') {
             steps {
+                sh "printenv"
                 sh "yarn"
                 sh "yarn lerna init"
             }
@@ -84,13 +70,12 @@ pipeline {
         // }
 
       	stage ("Deploy") {
-            // when {
-            //     branch 'rebuild'
-            // }
+            when  {
+                 branch pattern: "develop|master", comparator: "REGEXP"
+            }
 
             environment {
-                // IOT_DEPLOY_PATH = '/var/www/iot-test/deploy'
-                IOT_DEPLOY_PATH = "${env.BRANCH_NAME == 'master' ? '/var/www/iot-platforma/deploy' : '/var/www/iot-test/deploy'}"
+                IOT_DEPLOY_PATH = "${env.BRANCH_NAME == 'master' ? '/var/www/iot-v3/deploy' : '/var/www/iot-test/deploy'}"
             }
 
             steps {
@@ -98,14 +83,14 @@ pipeline {
                     if (env.BRANCH_NAME == 'master') {
                         sh "echo 'shell scripts to deploy to server...'"
                         sh'''
-                        scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatforma/www
+                        scp -r packages/frontend/build/* proxy:/home/websites/iot-v3/www
 
                         sudo -u deployer bash << EOF
                         set -u -e 
-                        echo "Stoping service iot-backend"
-                        sudo systemctl stop iot-backend
-                        echo "Stoping service iot-backend-mqtt"
-                        sudo systemctl stop iot-backend-mqtt
+                        echo "Stoping service iot-v3"
+                        sudo systemctl stop iot-v3
+                        echo "Stoping service iot-v3-mqtt"
+                        sudo systemctl stop iot-v3-mqtt
 
                         rm -rf "$IOT_DEPLOY_PATH"/backend/*
                         rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
@@ -114,10 +99,10 @@ pipeline {
                         cd "$IOT_DEPLOY_PATH"/backend
                         yarn install --production
 
-                        echo "Starting service iot-backend"
-                        sudo systemctl start iot-backend
-                        echo "Starting service iot-backend-mqtt"
-                        sudo systemctl start iot-backend-mqtt
+                        echo "Starting service iot-v3"
+                        sudo systemctl start iot-v3
+                        echo "Starting service iot-v3-mqtt"
+                        sudo systemctl start iot-v3-mqtt
                         '''   
                     } else {
                         sh "echo 'shell scripts to deploy to server...'"
