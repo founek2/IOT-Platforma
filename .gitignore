@@ -57,3 +57,4 @@ typings/
 #**/yarn.lock
 .history
 .VSCodeCounter
+build.zip
