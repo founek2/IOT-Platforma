@@ -175,7 +175,7 @@ pipeline {
             steps{
                 script {
                     GIT_TAG = sh (
-                        script: 'git describe --tags',
+                        script: 'git describe --abbrev=0',
                         returnStdout: true
                     ).trim()
 

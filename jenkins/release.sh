@@ -2,14 +2,14 @@
 set -e
 
 # pack all release files
-zip -r build.zip packages/backend/{dist,package.json} packages/backend-mqtt/{dist,package.json} packages/common/{lib,package.json} packages/framework-ui/{lib,package.json} packages/frontend/build package.json
+zip -r build.zip packages/backend/{dist,package.json} packages/backend-mqtt/{dist,package.json} packages/common/{lib,package.json} packages/framework-ui/{lib,package.json} packages/frontend/build package.json license.md process.json
 
 # Build
 # Publish on github
 echo "Publishing on Github..."
 token="$USER_CREDENTIALS"
 # Get the last tag name
-tag=$(git describe --tags)
+tag=$(git describe --abbrev=0)
 # Get the full message associated with this tag
 message="$(git for-each-ref refs/tags/$tag --format='%(contents)')"
 # Get the title and the description as separated variables
