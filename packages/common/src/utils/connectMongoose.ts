@@ -1,14 +1,7 @@
-import mongoose from "mongoose"
-import createMongoUri from "./createMongoUri";
+import mongoose from 'mongoose';
 
-export function connectMongoose(config: {
-    userName: string;
-    password: string;
-    dbName: string;
-    url: string;
-    port: number;
-}) {
-    return mongoose.connect(createMongoUri(config), {
+export function connectMongoose(dbUri: string) {
+    return mongoose.connect(dbUri, {
         useNewUrlParser: true,
         useCreateIndex: true,
         useFindAndModify: false,

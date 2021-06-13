@@ -38,20 +38,12 @@ services:
     platform:
         build: ../
         environment:
-            - PORT=8080
-            - AUTH_PORT=8081
             - HOME_PAGE=http://localhost:3000
-            - DATABASE_USERNAME=admin
-            - DATABASE_PASSWORD=admin
-            - DATABASE_NAME=IOTPlatform_v3
-            - DATABASE_URL=mongo
-            - DATABASE_PORT=27017
+            - DATABASE_URI=mongodb://admin:admin@mongo:27017/IOTPlatform_v3
             - MQTT_URL=mqtts://rabbitmq
             - MQTT_PORT=8883
             - NODE_ENV=production
             - AGENDA_JOB_TYPES=
-            - JWT_PRIVATE_KEY=/keys/jwtRS256.key
-            - JWT_PUBLIC_KEY=/keys/jwtRS256.key.pub
         volumes:
             - data:/keys
         depends_on:

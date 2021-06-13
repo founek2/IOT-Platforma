@@ -18,11 +18,7 @@ Pro funkčnost aplikace je potřeba nastavit enviroment promněné, buď pomocí
 -   **BODY_LIMIT** - maximal size of body in API request, value passed to library [bytes](https://www.npmjs.com/package/bytes)
 -   **AUTH_PORT** - listening port for API - [authorisation and authentication for RabbitMQ](https://github.com/rabbitmq/rabbitmq-auth-backend-http)
 -   **FIREBASE_ADMIN_PATH** - path to firebase account credentials file
--   **DATABASE_URL** - domain or ip address of running mongoDB [localhost]
--   **DATABASE_NAME** - name of database [IOTPlatform]
--   **DATABASE_USERNAME** - db user with read/write access to database
--   **DATABASE_PASSWORD** - password of db user
--   **DATABASE_PORT** - port, where mongoDB listen [27017]
+-   **DATABASE_URI** - connection URI to mongodb ex. `mongodb://userName:password@localhost:27017/db_name`
 -   **JWT_PRIVATE_KEY** - path to JWT private key
 -   **JWT_PUBLIC_KEY** - path to JWT public key
 -   **JWT_EXPIRES_IN** - lifespan of JWT token [14d]

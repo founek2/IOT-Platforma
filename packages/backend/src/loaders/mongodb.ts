@@ -4,9 +4,9 @@ import mongoose from 'mongoose';
 import { connectMongoose } from 'common/lib/utils/connectMongoose';
 
 /* Initialize connection to mongoDB */
-export default async (config: Config['db']): Promise<mongoose.Connection | null> => {
+export default async (config: Config): Promise<mongoose.Connection | null> => {
     try {
-        const mong = await connectMongoose(config)
+        const mong = await connectMongoose(config.dbUri);
 
         logger.info('Connection to DB has been established successfully.');
 

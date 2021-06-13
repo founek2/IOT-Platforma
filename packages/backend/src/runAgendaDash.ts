@@ -1,12 +1,11 @@
 import config from 'common/lib/config';
 import { spawn } from 'child_process';
-import createMongoUri from 'common/lib/utils/createMongoUri';
 import path from 'path';
 
 const pathToBin = path.resolve(__dirname, '../node_modules/.bin/agendash');
 
 let child: any;
-const argv = [`--db=${createMongoUri(config.db)}`, '--collection=agendaJobs', '--port=8089'];
+const argv = [`--db=${config.dbUri}`, '--collection=agendaJobs', '--port=8089'];
 
 /**
  * StartUp AgendaDash server - webUI dashboard for agenda jobs
