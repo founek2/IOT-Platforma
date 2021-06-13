@@ -36,7 +36,7 @@ pipeline {
 
         stage ('Build') {
             steps {
-                sh "yarn build"
+                sh "CI= yarn build"
             }
         }
 
@@ -149,6 +149,19 @@ pipeline {
                     sh "jenkins/release.sh"
                 }
             }
+        }
+
+
+        stage("Build image") {
+            app = docker.build("founek2/iot-platform")
+        }
+
+        stage('Push image') {
+            docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {            
+                    app.push("${env.BUILD_NUMBER}")            
+                    app.push("latest")        
+            }    
+           }
         }
     }
 }
