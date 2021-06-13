@@ -12,7 +12,7 @@ pipeline {
         stage ('Install dependencies') {
             steps {
                 sh "printenv"
-                sh "release.sh"
+                sh "jenkins/release.sh"
                 sh "exit 127"
                 sh "yarn"
                 sh "yarn lerna init"
