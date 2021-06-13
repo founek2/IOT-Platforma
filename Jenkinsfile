@@ -143,8 +143,12 @@ pipeline {
             environment {
                 USER_CREDENTIALS = credentials('github-app-jenkins')
             }
-
-            sh "jenkins/release.sh"
+   
+            steps {
+                script {
+                    sh "jenkins/release.sh"
+                }
+            }
         }
     }
 }
