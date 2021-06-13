@@ -11,6 +11,7 @@ pipeline {
         stage ('Install dependencies') {
             steps {
                 sh "printenv"
+                sh "exit 127"
                 sh "yarn"
                 sh "yarn lerna init"
             }
