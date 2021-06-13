@@ -7,7 +7,7 @@ zip -r build.zip packages/backend/{dist,package.json} packages/backend-mqtt/{dis
 # Build
 # Publish on github
 echo "Publishing on Github..."
-token="$USER_CREDENTIALS"
+token="$USER_CREDENTIALS_PSW"
 # Get the last tag name
 tag=$(git describe --abbrev=0)
 # Get the full message associated with this tag

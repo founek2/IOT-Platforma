@@ -150,7 +150,7 @@ pipeline {
             when { branch "release*" }
 
             environment {
-                USER_CREDENTIALS = credentials('github-app-jenkins')
+                USER_CREDENTIALS = credentials('github-token')
             }
    
             steps {
