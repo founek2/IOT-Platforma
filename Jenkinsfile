@@ -138,16 +138,11 @@ pipeline {
                         dockerImage.push('latest')
 
                     }
+
+                    sh "docker rmi $imagename:$GIT_TAG"
+                    sh "docker rmi $imagename:latest"
                 }
             }
         }
-
-        stage('Remove Unused docker image') {
-            when { branch "release*" }
-            steps{
-                sh "docker rmi $imagename:$GIT_TAG"
-                sh "docker rmi $imagename:latest"
-            }
-        } 
     }
 }
