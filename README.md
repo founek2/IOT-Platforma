@@ -23,7 +23,7 @@ cd IOT-Platforma-hosting-master
 
 In the downloaded directory you'll find one important file:
 
--   docker-compose.yml - installs and orchestrates networking between your IoT Platform server, Mongo database and RabbitMQ (MQTT broker). It comes with some defaults that are ready to go, although you're free to tweak the configuration to match your needs. All configuration options (enviroment variables) can be found in [documentation here](https://docs.v3.iotplatforma.cloud/#/quickstart?id=enviroment-promněné). Just edit them in docker-compose.yml in environment, where you can also find default values ex. DATABASE_URI and NODE_ENV.
+-   docker-compose.yml - installs and orchestrates networking between your IoT Platform server, Mongo database and RabbitMQ (MQTT broker). It comes with some defaults that are ready to go, although you're free to tweak the configuration to match your needs. All configuration options (enviroment variables) can be found in [documentation here](https://docs.iotplatforma.cloud/#/quickstart?id=enviroment-promněné). Just edit them in docker-compose.yml in environment section, where you can also find default values ex. DATABASE_URI and NODE_ENV.
 
 ## 2. Start the server
 
