@@ -90,55 +90,9 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'master') {
-                        sh "echo 'shell scripts to deploy to server...'"
-                        sh'''
-                        scp -r packages/frontend/build/* proxy:/home/websites/iot-v3/www
-
-                        sudo -u deployer bash << EOF
-                        set -u -e 
-                        echo "Stoping service iot-v3"
-                        sudo systemctl stop iot-v3
-                        echo "Stoping service iot-v3-mqtt"
-                        sudo systemctl stop iot-v3-mqtt
-
-                        rm -rf "$IOT_DEPLOY_PATH"/backend/*
-                        rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
-                        cp package.json "$IOT_DEPLOY_PATH"/backend
-
-                        cd "$IOT_DEPLOY_PATH"/backend
-                        yarn install --production
-
-                        echo "Starting service iot-v3"
-                        sudo systemctl start iot-v3
-                        echo "Starting service iot-v3-mqtt"
-                        sudo systemctl start iot-v3-mqtt
-                        '''   
+                        sh "jenkins/deploy.sh master"
                     } else {
-                        sh "echo 'shell scripts to deploy to server...'"
-                        sh'''
-                        ssh proxy "rm -rf /home/websites/v2iotplatformaDev/www/*"
-                        scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatformaDev/www
-                        scp -r docs proxy:/home/websites/v2iotplatformaDev/www
-
-                        sudo -u deployer-test bash << EOF
-                        set -u -e 
-                        echo "Stoping service iot-backend-test"
-                        sudo systemctl stop iot-backend-test
-                        echo "Stoping service iot-backend-mqtt-test"
-                        sudo systemctl stop iot-backend-mqtt-test
-
-                        rm -rf "$IOT_DEPLOY_PATH"/backend/*
-                        rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
-                        cp package.json yarn.lock "$IOT_DEPLOY_PATH"/backend
-
-                        cd "$IOT_DEPLOY_PATH"/backend
-                        yarn install --production
-
-                        echo "Starting service iot-backend-test"
-                        sudo systemctl start iot-backend-test 
-                        echo "Starting service iot-backend-mqtt-test"
-                        sudo systemctl start iot-backend-mqtt-test
-                        '''    
+                         sh "jenkins/deploy.sh develop" 
                     }
                 }
 

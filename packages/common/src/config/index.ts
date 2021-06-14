@@ -37,8 +37,6 @@ const config: Config = {
     mqtt: {
         url: process.env.MQTT_URL as string,
         port: Number(process.env.MQTT_PORT) || 8883,
-        // userName: process.env.MQTT_USERNAME as string,
-        // password: process.env.MQTT_PASSWORD as string,
     },
 };
 
