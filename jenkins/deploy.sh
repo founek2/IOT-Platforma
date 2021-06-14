@@ -1,17 +1,21 @@
 #!/bin/bash
-set -u -e 
+# set -u -e 
 echo 'shell scripts to deploy to server...'
 
+shopt -s extglob
+
+DEPLOY_PATH="$IOT_DEPLOY_PATH/backend/"
+
 deployMaster(){
-    set -u -e 
+    # set -u -e 
     sudo systemctl is-active --quiet iot-v3 && echo "Stoping service iot-v3" && sudo systemctl stop iot-v3 || echo "Service iot-v3 not running"
     sudo systemctl is-active --quiet iot-v3-mqtt && echo "Stoping service iot-v3-mqtt" && sudo systemctl stop iot-v3-mqtt || echo "Service iot-v3-mqtt not running"
 
-    rm -rf "$IOT_DEPLOY_PATH"/backend/!(node_modules)
-    rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
-    cp package.json "$IOT_DEPLOY_PATH"/backend
+    rm -rf "$DEPLOY_PATH"!(node_modules)
+    rsync -a --exclude src/ --exclude node_modules/ packages "$DEPLOY_PATH"
+    cp package.json "$DEPLOY_PATH"
 
-    cd "$IOT_DEPLOY_PATH"/backend
+    cd "$DEPLOY_PATH"
     yarn install --production
 
     echo "Starting service iot-v3"
@@ -26,11 +30,11 @@ deployDev(){
     sudo systemctl is-active --quiet iot-backend-test && echo "Stoping service iot-backend-test" && sudo systemctl stop iot-backend-test || echo "Service iot-backend-test not running"
     sudo systemctl is-active --quiet iot-backend-mqtt-test && echo "Stoping service iot-backend-mqtt-test" && sudo systemctl stop iot-backend-mqtt-test || echo "Service iot-backend-mqtt-test not running"
 
-    rm -rf "$IOT_DEPLOY_PATH"/backend/!(node_modules)
-    rsync -a --exclude src/ --exclude node_modules/ packages "$IOT_DEPLOY_PATH"/backend
-    cp package.json "$IOT_DEPLOY_PATH"/backend
+    rm -rf "$DEPLOY_PATH"/!(node_modules)
+    rsync -a --exclude src/ --exclude node_modules/ packages "$DEPLOY_PATH"
+    cp package.json "$DEPLOY_PATH"
 
-    cd "$IOT_DEPLOY_PATH"/backend
+    cd "$DEPLOY_PATH"
     yarn install --production
 
     echo "Starting service iot-backend-test"

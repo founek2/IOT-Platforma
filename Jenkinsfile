@@ -83,7 +83,7 @@ pipeline {
             }
 
             environment {
-                IOT_DEPLOY_PATH = "${env.BRANCH_NAME == 'master' ? '/var/www/iot-v3/deploy' : '/var/www/iot-test/deploy'}"
+                IOT_DEPLOY_PATH = "${env.BRANCH_NAME == 'master' ? '/var/www/iot-v3/deploy/' : '/var/www/iot-test/deploy/'}"
               
             }
 
