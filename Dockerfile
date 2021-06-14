@@ -8,7 +8,7 @@ COPY .  .
 # RUN yarn && yarn pre && yarn build
 # RUN yarn install --production
 RUN ./jenkins/docker-build.sh
-COPY ./docker-entrypoint.sh .
+COPY ./jenkins/docker-entrypoint.sh .
 
 CMD [ "./docker-entrypoint.sh" ]
 
