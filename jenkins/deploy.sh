@@ -7,6 +7,7 @@ shopt -s extglob
 DEPLOY_PATH="$IOT_DEPLOY_PATH/backend/"
 
 deployMaster(){
+sudo -u deployer bash << EOF
     set -u -e 
     shopt -s extglob
 
@@ -24,13 +25,14 @@ deployMaster(){
     sudo systemctl start iot-v3
     echo "Starting service iot-v3-mqtt"
     sudo systemctl start iot-v3-mqtt
+EOF
 }
-export -f deployMaster
 
 deployDev(){
+sudo -u deployer-test bash << EOF
     set -u -e 
     shopt -s extglob
-    
+
     sudo systemctl is-active --quiet iot-backend-test && echo "Stoping service iot-backend-test" && sudo systemctl stop iot-backend-test || echo "Service iot-backend-test not running"
     sudo systemctl is-active --quiet iot-backend-mqtt-test && echo "Stoping service iot-backend-mqtt-test" && sudo systemctl stop iot-backend-mqtt-test || echo "Service iot-backend-mqtt-test not running"
 
@@ -45,21 +47,22 @@ deployDev(){
     sudo systemctl start iot-backend-test
     echo "Starting service iot-backend-mqtt-test"
     sudo systemctl start iot-backend-mqtt-test
+EOF
 }
-export -f deployDev
 
 case "$1" in
   "master")
     scp -r packages/frontend/build/* proxy:/home/websites/iot-v3/www
     scp -r docs proxy:/home/websites/iot-v3/www
 
-    sudo -u deployer bash -c "$(declare -f deployMaster); deployMaster"
+    # sudo -u martas bash -c "$(declare -f deployMaster); deployMaster"
+    deployMaster
     ;;
   "develop")
     scp -r packages/frontend/build/* proxy:/home/websites/v2iotplatformaDev/www
     scp -r docs proxy:/home/websites/v2iotplatformaDev/www
 
-    sudo -u deployer-test bash -c "$(declare -f deployDev); deployDev"
+    deployDev
     ;;
   *)
     echo "Invalid enviroment. Allowed are master|develop"
