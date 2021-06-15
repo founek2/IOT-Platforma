@@ -42,18 +42,19 @@ interface MqttConf {
     url: string;
     port: number;
 }
-type GetUser = () => Promise<{ userName?: string; password: string }>;
+type GetUser = () => Promise<{ userName: string; password: string } | null>;
 
 let lastAttemptAt: Date | null = null;
 function connect(config: MqttConf, getUser: GetUser): ReturnType<typeof reconnect> {
     infoLog('Trying to connect to mqtt...');
     const timeOut = lastAttemptAt ? invert30seconds(Date.now() - lastAttemptAt.getTime()) : 0;
+    console.log('timeout ', timeOut);
     return new Promise((res) => setTimeout(() => res(reconnect(config, getUser)), timeOut));
 }
 
 async function reconnect(config: MqttConf, getUser: GetUser): Promise<MqttClient> {
     const user = await getUser();
-    if (!user.userName)
+    if (!user)
         return new Promise((res) => {
             setTimeout(() => res(reconnect(config, getUser)), 20 * 1000);
         });

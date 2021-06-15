@@ -13,7 +13,7 @@ import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../components/OnlineCircle';
-import * as discoveredActions from '../../store/actions/application/discovery';
+import { discoveryActions } from '../../store/actions/application/discovery';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 
 interface DiscoverySectionProps {
@@ -42,10 +42,7 @@ function DiscoverySection(props: DiscoverySectionProps) {
         const result = await addDiscoveryAction(selectedId);
         if (result) closeDialog();
     }
-    console.log(
-        'things',
-        discoveredDevices && discoveredDevices.map((device: any) => assoc('id', prop('_id', device), device))
-    );
+
     return (
         <Fragment>
             {discoveredDevices && discoveredDevices?.length > 0 && (
@@ -144,8 +141,8 @@ const _mapStateToProps = (state: any) => {
 const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            deleteDiscoveryAction: discoveredActions.deleteDevices,
-            addDiscoveryAction: discoveredActions.addDevice,
+            deleteDiscoveryAction: discoveryActions.deleteDevices,
+            addDiscoveryAction: discoveryActions.add,
             resetCreateDeviceAction: formsActions.removeForm('CREATE_DEVICE'),
             updateFormField: formsActions.updateFormField,
         },

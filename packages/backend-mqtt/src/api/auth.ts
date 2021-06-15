@@ -2,7 +2,7 @@ import { DeviceModel } from 'common/lib/models/deviceModel';
 import { UserService } from 'common/lib/services/userService';
 import express, { Response } from 'express';
 import { AuthTypes } from 'common/lib/constants';
-import { validatePass } from '../services/TemporaryPass';
+import { validatePass } from 'common/lib/services/TemporaryPass';
 import { UserModel } from 'common/lib/models/userModel';
 
 const router = express.Router();
@@ -54,15 +54,16 @@ router.post('/user', async function (req, res) {
         const success = await DeviceModel.login(topicPrefix, deviceId, password);
         return success ? res.send('allow') : sendDeny('/user device', res);
     } else if (isUser(username)) {
-        if (validatePass(password) && await UserModel.exists({ groups: "root", "info.userName": username })) return res.send('allow');
+        if (validatePass({ userName: username, password })) return res.send('allow administrator');
 
-        const { error, doc } = await UserService.checkCreditals({ userName: username, password, authType: AuthTypes.PASSWD })
+        const { error, doc } = await UserService.checkCreditals({
+            userName: username,
+            password,
+            authType: AuthTypes.PASSWD,
+        });
         if (error || !doc) return sendDeny('/user user', res);
 
-        if (doc.groups.some((group) => group === 'root' || group === 'admin'))
-            return res.send('allow administrator');
-
-
+        if (doc.groups.some((group) => group === 'root' || group === 'admin')) return res.send('allow administrator');
     } else if (isGuest(username)) {
         res.send('allow');
     } else sendDeny('/user other', res);

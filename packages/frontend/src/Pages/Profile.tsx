@@ -11,9 +11,9 @@ import Security from './profile/Security';
 import AccessTokens from './profile/AcessTokens';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAccessTokens } from '../store/actions/application/accessTokens';
 import { IState } from '../types';
 import { IUser } from 'common/lib/models/interface/userInterface';
+import { accessTokensActions } from '../store/actions/accessTokens';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,7 +45,7 @@ function Profile({ location }: RouteComponentProps) {
     const userId = useSelector<IState, IUser['_id'] | undefined>((state) => state.application.user?._id);
 
     useEffect(() => {
-        if (userId) dispatch(fetchAccessTokens(userId));
+        if (userId) dispatch(accessTokensActions.fetch(userId));
     }, [dispatch, userId]);
 
     return (

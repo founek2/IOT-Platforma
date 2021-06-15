@@ -68,4 +68,15 @@ export class Actions {
         });
         return res.status === 204;
     }
+
+    public static async getBrokerAuth(): Promise<string | null> {
+        const res = await fetch(`http://localhost:${config.portAuth}/api/actions/broker/auth`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+        return res.status === 200 ? (await res.json()).auth : null;
+    }
 }

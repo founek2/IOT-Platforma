@@ -1,36 +1,36 @@
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import { DeviceStatus, IDevice, IDeviceStatus } from "common/lib/models/interface/device";
-import { IThing, IThingProperty } from "common/lib/models/interface/thing";
-import React, { FunctionComponent, useEffect, useRef } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import OnlineCircle from "../../../../components/OnlineCircle";
-import * as deviceActions from "../../../../store/actions/application/devices";
-import * as thingHistoryActions from "../../../../store/actions/application/thingHistory";
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import { DeviceStatus, IDevice, IDeviceStatus } from 'common/lib/models/interface/device';
+import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import OnlineCircle from '../../../../components/OnlineCircle';
+import { devicesActions } from '../../../../store/actions/application/devices';
+import * as thingHistoryActions from '../../../../store/actions/application/thingHistory';
 
 const useStyles = makeStyles({
     circle: {
         top: 3,
         right: 3,
-        position: "absolute",
+        position: 'absolute',
     },
     contextMenu: {
-        width: "20%",
-        height: "20%",
-        position: "absolute",
+        width: '20%',
+        height: '20%',
+        position: 'absolute',
         right: 0,
         bottom: 0,
     },
     box: {
-        backgroundColor: "white",
+        backgroundColor: 'white',
         // border: "1px solid rgb(189, 189, 189)",
         // borderRadius: 10,
-        padding: "1rem",
-        boxSizing: "border-box",
-        height: "100%",
-        position: "relative",
-    }
+        padding: '1rem',
+        boxSizing: 'border-box',
+        height: '100%',
+        position: 'relative',
+    },
 });
 
 // const defaultProps = {
@@ -48,7 +48,7 @@ export interface BoxWidgetProps {
     thing: IThing;
     onClick: (newState: any) => Promise<void>;
     deviceStatus: IDeviceStatus;
-    deviceId: IDevice["_id"];
+    deviceId: IDevice['_id'];
     disabled?: boolean;
     fetchHistory: () => Promise<void>;
     room: string;
@@ -60,7 +60,7 @@ export interface GeneralBoxProps {
     thing: IThing;
     onClick: (newState: any) => Promise<void>;
     deviceStatus: IDeviceStatus;
-    deviceId: IDevice["_id"];
+    deviceId: IDevice['_id'];
     room: string;
     property?: IThingProperty;
     disabled?: boolean;
@@ -124,9 +124,11 @@ function BorderBox({
             elevation={2}
             className={classes.box}
         >
-            {deviceStatus?.value && deviceStatus?.value !== DeviceStatus.ready && deviceStatus?.value !== DeviceStatus.sleeping && (
-                <OnlineCircle inTransition={false} className={classes.circle} status={deviceStatus} />
-            )}
+            {deviceStatus?.value &&
+                deviceStatus?.value !== DeviceStatus.ready &&
+                deviceStatus?.value !== DeviceStatus.sleeping && (
+                    <OnlineCircle inTransition={false} className={classes.circle} status={deviceStatus} />
+                )}
             <Component
                 onClick={handleClick}
                 // lastChange={lastChange}
@@ -149,7 +151,7 @@ function BorderBox({
 const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            updateDeviceAction: deviceActions.update,
+            updateDeviceAction: devicesActions.update,
             fetchThingHistory: thingHistoryActions.fetchHistory,
         },
         dispatch

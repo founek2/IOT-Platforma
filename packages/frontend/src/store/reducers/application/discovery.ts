@@ -1,42 +1,45 @@
-import { IDiscovery } from "common/lib/models/interface/discovery";
-import { append, equals, filter, not, o, prop, propEq } from "ramda";
-import { compose } from "redux";
-import { Action, handleActions } from "redux-actions";
-import { ActionTypes } from "../../../constants/redux";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IDiscovery } from 'common/lib/models/interface/discovery';
+import { append, equals, filter, not, o, prop, propEq } from 'ramda';
+import { compose } from 'redux';
 
-
-export interface State {
-    data: (IDiscovery & { _id: string })[];
+// Define a type for the slice state
+export interface DiscoveryState {
+    data: IDiscovery[];
     lastFetch?: Date;
     lastUpdate?: Date;
 }
 
-const set = {
-    next(state: State, action: Action<IDiscovery[]>) {
-        const date = new Date();
-        return { data: action.payload, lastFetch: date, lastUpdate: date };
+// Define the initial state using that type
+const initialState: DiscoveryState = {
+    data: [],
+};
+
+export const discoverySlice = createSlice({
+    name: 'discovery',
+    // `createSlice` will infer the state type from the `initialState` argument
+    initialState,
+    reducers: {
+        add: (state, action: PayloadAction<IDiscovery>) => {
+            return {
+                // @ts-ignore
+                data: append(action.payload, filter(o(not, propEq('_id', action.payload._id)), state.data)),
+                lastFetch: state.lastFetch,
+                lastUpdate: new Date(),
+            };
+        },
+        set: (state, action: PayloadAction<IDiscovery[]>) => {
+            const date = new Date();
+            return { data: action.payload, lastFetch: date, lastUpdate: date };
+        },
+        // Use the PayloadAction type to declare the contents of `action.payload`
+        remove: ({ data, lastFetch }, action: PayloadAction<IDiscovery['_id']>) => {
+            const newData = filter(compose(not, equals(action.payload), prop('_id')), data);
+            return { data: newData, lastFetch: lastFetch, lastUpdate: new Date() };
+        },
     },
-};
+});
 
-const add = {
-    next(state: State, action: Action<IDiscovery & { _id: string }>) {
+export const discoveryReducerActions = discoverySlice.actions;
 
-        return { data: append(action.payload, filter(o(not, propEq("_id", action.payload._id)), state.data)), lastFetch: state.lastFetch, lastUpdate: new Date() };
-    },
-};
-
-const remove = {
-    next(state: State, action: Action<IDiscovery["_id"]>) {
-        console.log("removing", action);
-        const newData = filter(compose(not, equals(action.payload), prop("_id")), state.data);
-        return { data: newData, lastFetch: state.lastFetch, lastUpdate: new Date() };
-    },
-};
-
-const deviceReducers = {
-    [ActionTypes.SET_DISCOVERED_DEVICES]: set,
-    [ActionTypes.REMOVE_DISCOVERED_DEVICE]: remove,
-    [ActionTypes.ADD_DISCOVERED_DEVICES]: add,
-};
-
-export default handleActions(deviceReducers as any, { data: [] });
+export default discoverySlice.reducer;

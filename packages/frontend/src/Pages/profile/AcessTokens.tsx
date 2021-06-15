@@ -1,37 +1,24 @@
-import { makeStyles } from '@material-ui/core/styles';
-import React, { useState } from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { format } from '../../utils/date-fns';
+import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
+import EditIcon from '@material-ui/icons/Edit';
+import { IAccessToken, IUser } from 'common/lib/models/interface/userInterface';
+import Dialog from 'framework-ui/lib/Components/Dialog';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import EnchancedTable from 'framework-ui/lib/Components/Table';
-import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
-import { useSelector, useDispatch } from 'react-redux';
-import { IState } from 'frontend/src/types';
-import { IUser, IAccessToken } from 'common/lib/models/interface/userInterface';
-import { assoc, prop } from 'ramda';
-import { IconButton, CardActions, Button, useMediaQuery, useTheme } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import Dialog from 'framework-ui/lib/Components/Dialog';
-import { useHistory } from 'react-router';
 import { isUrlHash } from 'framework-ui/lib/utils/getters';
-import EditAccessToken from './accessTokens/EditAccessToken';
-import {
-    createAccessToken,
-    updateAccessToken,
-    deleteAccessToken,
-} from 'frontend/src/store/actions/application/accessTokens';
-import { getQueryID } from 'frontend/src/utils/getters';
 import { TokenPermissions } from 'frontend/src/constants';
+import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
+import { IState } from 'frontend/src/types';
+import { getQueryID } from 'frontend/src/utils/getters';
+import { assoc, prop } from 'ramda';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import EditAccessToken from './accessTokens/EditAccessToken';
+import { accessTokensActions } from 'frontend/src/store/actions/accessTokens';
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -56,15 +43,15 @@ function Security() {
 
     function deleteTokens(tokenIDs: Array<IAccessToken['token']>) {
         console.log('delete tokens...', tokenIDs);
-        tokenIDs.forEach((id) => dispatch(deleteAccessToken(id, user?._id)));
+        tokenIDs.forEach((id) => dispatch(accessTokensActions.delete(id, user?._id)));
     }
     console.log('sel token', selectedToken);
     function createToken() {
-        return dispatch(createAccessToken(user?._id));
+        return dispatch(accessTokensActions.create(user?._id));
     }
 
     function editToken() {
-        return dispatch(updateAccessToken(selectedId, user?._id));
+        return dispatch(accessTokensActions.updateToken(selectedId, user?._id));
     }
 
     return (

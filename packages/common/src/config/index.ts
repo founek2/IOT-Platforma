@@ -37,6 +37,7 @@ const config: Config = {
     mqtt: {
         url: process.env.MQTT_URL as string,
         port: Number(process.env.MQTT_PORT) || 8883,
+        managementPort: Number(process.env.MQTT_MANAGEMENT_PORT) || 15672,
     },
 };
 

@@ -1,5 +1,6 @@
 import express from 'express';
 import eventEmitter from '../services/eventEmitter';
+import { getPass } from 'common/lib/services/TemporaryPass';
 
 const router = express.Router();
 
@@ -32,6 +33,16 @@ router.post('/device/:deviceId', async function (req, res) {
 
     eventEmitter.emit('device_send_command', { device: req.body.device, command: req.body.command });
     res.sendStatus(204);
+});
+
+router.get('/broker/auth', async function (req, res) {
+    const pass = await getPass();
+    if (!pass) return res.sendStatus(503);
+
+    const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
+    res.send({
+        auth,
+    });
 });
 
 export default router;

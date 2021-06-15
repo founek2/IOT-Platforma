@@ -3,10 +3,10 @@ import { IDevice } from 'common/lib/models/interface/device';
 import { ComponentType } from 'common/lib/models/interface/thing';
 import { errorLog } from 'framework-ui/lib/logger';
 import { LocationTypography } from 'frontend/src/components/LocationTypography';
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as deviceActions from '../../store/actions/application/devices';
+import { devicesActions } from '../../store/actions/application/devices';
 import Activator from './room/Activator';
 import Generic from './room/Generic';
 import Sensor from './room/Sensor';
@@ -68,14 +68,18 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
 interface RoomProps {
     devices: IDevice[];
     location: IDevice['info']['location'];
-    updateDeviceStateA: any;
 }
-function Room({ devices, updateDeviceStateA }: RoomProps) {
+function Room({ devices }: RoomProps) {
     const classes = useStyles();
+    const dispatch = useDispatch();
+
+    function updateState(deviceId: any, thingId: string, state: any) {
+        dispatch(devicesActions.updateState(deviceId, thingId, state));
+    }
 
     const location = devices[0].info.location;
     const boxes: (JSX.Element | null | void)[] = devices
-        .map((device: IDevice) => generateBoxes(device, updateDeviceStateA, classes))
+        .map((device: IDevice) => generateBoxes(device, updateState, classes))
         .flat(2);
 
     return (
@@ -87,12 +91,5 @@ function Room({ devices, updateDeviceStateA }: RoomProps) {
         </div>
     );
 }
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            updateDeviceStateA: deviceActions.updateState,
-        },
-        dispatch
-    );
 
-export default connect(undefined, _mapDispatchToProps)(Room);
+export default Room;

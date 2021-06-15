@@ -4,6 +4,8 @@ import { HistoricalSensor, HistoricalGeneric } from 'common/lib/models/interface
 import { IThing } from 'common/lib/models/interface/thing';
 import { IUser, IAccessToken } from 'common/lib/models/interface/userInterface';
 import { fieldState } from 'framework-ui/lib/types';
+import { ThunkAction } from 'redux-thunk';
+import { AnyAction } from 'redux';
 
 export interface ControlProps {
     name: string;
@@ -47,3 +49,5 @@ export interface IState {
         query: { [key: string]: string };
     };
 }
+
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, IState, unknown, AnyAction>;

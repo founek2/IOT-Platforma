@@ -32,6 +32,7 @@ export interface Config {
     mqtt: {
         url: string;
         port: number;
+        managementPort: number;
     };
 }
 

@@ -17,7 +17,6 @@ import { checkIsRoot } from '../middlewares/user/checkIsRoot';
 import config from 'common/lib/config';
 import { pick, compose, over, lensProp } from 'ramda';
 
-
 /**
  * URL prefix /user
  */
@@ -32,27 +31,14 @@ export default () =>
          * @header Authorization-JWT
          */
         async index(req, res) {
-            const picked = pick([
-                "port",
-                "portAuth",
-                "bodyLimit",
-                "homepage",
-                "jwt",
-                "agenda",
-                "db",
-                "email",
-            ], config)
+            const picked = pick(['port', 'portAuth', 'bodyLimit', 'homepage', 'jwt', 'agenda', 'email'], config);
 
             const data = compose(
-                over(lensProp("agenda"), pick(["expiresIn"])),
+                over(lensProp('email'), pick(['host', 'port', 'secure', 'userName'])),
                 // @ts-ignore
-                over(lensProp("db"), pick(["dbName"])),
+                over(lensProp('mqtt'), pick(['url', 'port']))
                 // @ts-ignore
-                over(lensProp("email"), pick(["host", "port", "secure", "userName"])),
-                // @ts-ignore
-                over(lensProp("mqtt"), pick(["url", "port"])),
-                // @ts-ignore
-            )(picked)
+            )(picked);
             res.send({ data });
         },
 

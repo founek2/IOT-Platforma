@@ -17,7 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getToken } from '../firebase';
-import * as deviceActions from '../store/actions/application/devices';
+import { devicesActions } from '../store/actions/application/devices';
 import * as userActions from '../store/actions/application/user';
 import { IState } from '../types';
 import { getDevices } from '../utils/getters';
@@ -225,8 +225,8 @@ const _mapDispatchToProps = (dispatch: any) => ({
         {
             updateFormField: formsActions.updateFormField,
             fillEditFormAction: formsActions.fillForm('EDIT_NOTIFY'),
-            preFillForm: deviceActions.prefillNotify,
-            onSaveAction: deviceActions.updateNotify,
+            preFillForm: devicesActions.prefillNotify,
+            onSaveAction: devicesActions.updateNotify,
             registerTokenAction: userActions.registerToken,
         },
         dispatch

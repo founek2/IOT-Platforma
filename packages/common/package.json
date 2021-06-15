@@ -7,7 +7,7 @@
         "@types/hat": "^0.0.1",
         "@types/jsonwebtoken": "^8.5.1",
         "argon2": "^0.27.1",
-        "base64url": "^3.0.1",
+        "base64-js": "^1.5.1",
         "crypto": "^1.0.1",
         "date-fns": "^2.15.0",
         "hat": "^0.0.3",

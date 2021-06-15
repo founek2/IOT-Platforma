@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import io from '../webSocket';
-import * as deviceActions from '../store/actions/application/devices';
+import { devicesActions } from '../store/actions/application/devices';
 import { useDispatch, useSelector } from 'react-redux';
 import { IDevice } from 'common/lib/models/interface/device';
 import { IState } from '../types';
@@ -11,8 +11,8 @@ import { SocketUpdateThingState } from 'common/lib/types';
 
 export function useEffectFetchDevices() {
     const actions = useActions({
-        fetchDevicesA: deviceActions.fetch,
-        updateDeviceA: deviceActions.update,
+        fetchDevicesA: devicesActions.fetch,
+        updateDeviceA: devicesActions.update,
     });
 
     const devicesLastFetch = useSelector<IState>((state) => path(['devices', 'lastFetch'], getApplication(state))) as

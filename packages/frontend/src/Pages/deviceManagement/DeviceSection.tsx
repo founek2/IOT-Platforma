@@ -1,27 +1,26 @@
-import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { DeviceCommand, IDevice, IDeviceStatus } from "common/lib/models/interface/device";
-import { IThing } from "common/lib/models/interface/thing";
-import { default as AlertDialog, default as Dialog } from "framework-ui/lib/Components/Dialog";
-import EnchancedTable from "framework-ui/lib/Components/Table";
-import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import { isUrlHash } from "framework-ui/lib/utils/getters";
-import { getDevices, getQueryID } from "frontend/src/utils/getters";
-import { assoc, pick, prop } from "ramda";
-import React, { Fragment, useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
-import { bindActionCreators } from "redux";
-import OnlineCircle from "../../components/OnlineCircle";
-import * as deviceActions from "../../store/actions/application/devices";
-import EditDeviceForm from "./EditDeviceForm";
-import { useManagementStyles } from "frontend/src/hooks/useManagementStyles";
-
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { DeviceCommand, IDevice, IDeviceStatus } from 'common/lib/models/interface/device';
+import { IThing } from 'common/lib/models/interface/thing';
+import { default as AlertDialog, default as Dialog } from 'framework-ui/lib/Components/Dialog';
+import EnchancedTable from 'framework-ui/lib/Components/Table';
+import * as formsActions from 'framework-ui/lib/redux/actions/formsData';
+import { isUrlHash } from 'framework-ui/lib/utils/getters';
+import { getDevices, getQueryID } from 'frontend/src/utils/getters';
+import { assoc, pick, prop } from 'ramda';
+import React, { Fragment, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import OnlineCircle from '../../components/OnlineCircle';
+import { devicesActions } from '../../store/actions/application/devices';
+import EditDeviceForm from './EditDeviceForm';
+import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 
 interface DiscoverySectionProps {
     devices?: IDevice[];
@@ -31,12 +30,12 @@ interface DiscoverySectionProps {
     prefillEditForm: any;
     updateDeviceAction: any;
     deleteDeviceAction: any;
-    setCommandField: any,
-    sendDeviceCommandA: any,
+    setCommandField: any;
+    sendDeviceCommandA: any;
 }
 
 function DiscoverySection({
-    devices,
+    devices = [],
     resetEditDeviceAction,
     openEditDialog,
     selectedDevice,
@@ -46,17 +45,17 @@ function DiscoverySection({
     setCommandField,
     sendDeviceCommandA,
 }: DiscoverySectionProps) {
-    const classes = useManagementStyles()
-    const [menuForId, setMenuForId] = useState("");
+    const classes = useManagementStyles();
+    const [menuForId, setMenuForId] = useState('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [openAlertDialog, setOpenAlertDialog] = useState(false);
     const history = useHistory();
     const theme = useTheme();
-    const isWide = useMediaQuery(theme.breakpoints.up("md"));
-    const isSmall = useMediaQuery(theme.breakpoints.down("xs"));
+    const isWide = useMediaQuery(theme.breakpoints.up('md'));
+    const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
 
     useEffect(() => {
-        if (selectedDevice) prefillEditForm(pick(["info", "permissions"], selectedDevice));
+        if (selectedDevice) prefillEditForm(pick(['info', 'permissions'], selectedDevice));
     }, [selectedDevice, prefillEditForm]);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>, deviceId: string) => {
@@ -69,96 +68,92 @@ function DiscoverySection({
 
     function closeDialog() {
         resetEditDeviceAction();
-        setMenuForId("");
-        history.push({ hash: "" });
+        setMenuForId('');
+        history.push({ hash: '' });
     }
 
     async function onAgree() {
         const result = await updateDeviceAction(selectedDevice?._id);
-        console.log("RESULT", result)
+        console.log('RESULT', result);
         if (result) closeDialog();
     }
 
     async function onAgreeDelete() {
-        setCommandField(DeviceCommand.reset)
-        await sendDeviceCommandA(menuForId)
+        setCommandField(DeviceCommand.reset);
+        await sendDeviceCommandA(menuForId);
         const result = await deleteDeviceAction(menuForId);
         if (result) {
             setOpenAlertDialog(false);
-            history.push({ hash: "" });
+            history.push({ hash: '' });
         }
     }
 
     return (
-        <Fragment >
-            {devices && devices?.length > 0 && (
-                <EnchancedTable
-                    customClasses={{
-                        tableWrapper: classes.tableWrapper,
-                        toolbar: classes.toolbar,
-                        pagination: classes.pagination,
-                    }}
-                    // @ts-ignore
-                    dataProps={[
-                        { path: "info.name", label: "Název" },
-                        { path: "metadata.deviceId", label: "ID zařízení" },
-                        {
-                            path: "info.location",
-                            label: "Umístění",
-                            // @ts-ignore
-                            convertor: ({ building, room }) => `${building}/${room}`,
-                        },
+        <Fragment>
+            <EnchancedTable
+                customClasses={{
+                    tableWrapper: classes.tableWrapper,
+                    toolbar: classes.toolbar,
+                    pagination: classes.pagination,
+                }}
+                // @ts-ignore
+                dataProps={[
+                    { path: 'info.name', label: 'Název' },
+                    { path: 'metadata.deviceId', label: 'ID zařízení' },
+                    {
+                        path: 'info.location',
+                        label: 'Umístění',
                         // @ts-ignore
-                        {
-                            path: "things",
-                            label: "Věci",
-                            convertor: (things: IThing[]) =>
-                                Object.values(things)
-                                    .map((obj) => obj.config.name)
-                                    .join(", "),
-                        },
-                        {
-                            path: "createdAt",
-                            label: "Vytvořeno",
-                            convertor: (date: string) => new Date(date).toLocaleDateString(),
-                        },
-                        {
-                            path: "state.status",
-                            label: "Status",
-                            convertor: (status: IDeviceStatus) => <OnlineCircle status={status} inTransition={false} />,
-                        },
-                    ]}
-                    enableSearch={isWide}
-                    data={devices.map((device) => assoc("id", prop("_id", device), device))}
-                    toolbarHead="Správa zařízení"
-                    orderBy="name"
-                    enableEdit
-                    customEditButton={(id: string, device: IDevice) => device.permissions.write?.length > 0 ? (
-                        <IconButton
-                            aria-label="add"
-                            size="small"
-                            onClick={(e) => handleClick(e, id)}
-                        >
+                        convertor: ({ building, room }) => `${building}/${room}`,
+                    },
+                    // @ts-ignore
+                    {
+                        path: 'things',
+                        label: 'Věci',
+                        convertor: (things: IThing[]) =>
+                            Object.values(things)
+                                .map((obj) => obj.config.name)
+                                .join(', '),
+                    },
+                    {
+                        path: 'createdAt',
+                        label: 'Vytvořeno',
+                        convertor: (date: string) => new Date(date).toLocaleDateString(),
+                    },
+                    {
+                        path: 'state.status',
+                        label: 'Status',
+                        convertor: (status: IDeviceStatus) => <OnlineCircle status={status} inTransition={false} />,
+                    },
+                ]}
+                enableSearch={isWide}
+                data={devices.map((device) => assoc('id', prop('_id', device), device))}
+                toolbarHead="Správa zařízení"
+                orderBy="name"
+                enableEdit
+                customEditButton={(id: string, device: IDevice) =>
+                    device.permissions.write?.length > 0 ? (
+                        <IconButton aria-label="add" size="small" onClick={(e) => handleClick(e, id)}>
                             <MoreVertIcon />
                         </IconButton>
-                    ) : null}
-                    rowsPerPage={10}
-                />
-            )}
+                    ) : null
+                }
+                rowsPerPage={10}
+            />
 
             <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-                <Link to={{ hash: "edit", search: "?id=" + menuForId }}>
+                <Link to={{ hash: 'edit', search: '?id=' + menuForId }}>
                     <MenuItem onClick={handleClose}>Editovat</MenuItem>
                 </Link>
                 <MenuItem
                     onClick={() => {
-                        setCommandField(DeviceCommand.restart)
-                        sendDeviceCommandA(menuForId)
+                        setCommandField(DeviceCommand.restart);
+                        sendDeviceCommandA(menuForId);
                         handleClose();
                     }}
                 >
                     Restartovat
-				</MenuItem>
+                </MenuItem>
 
                 <MenuItem
                     onClick={() => {
@@ -167,7 +162,7 @@ function DiscoverySection({
                     }}
                 >
                     Smazat
-				</MenuItem>
+                </MenuItem>
             </Menu>
             {/* <FullScreenForm
                 open={openEditDialog}
@@ -208,19 +203,19 @@ const _mapStateToProps = (state: any) => {
     const selectedDevice = getDevices(state).find((dev: IDevice) => dev._id === deviceId);
     return {
         selectedDevice,
-        openEditDialog: isUrlHash("#edit")(state),
+        openEditDialog: isUrlHash('#edit')(state),
     };
 };
 
 const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            resetEditDeviceAction: formsActions.removeForm("EDIT_DEVICE"),
-            prefillEditForm: formsActions.fillForm("EDIT_DEVICE"),
-            updateDeviceAction: deviceActions.updateDevice,
-            deleteDeviceAction: deviceActions.deleteDevice,
-            sendDeviceCommandA: deviceActions.sendCommand,
-            setCommandField: formsActions.updateFormField("DEVICE_SEND.command")
+            resetEditDeviceAction: formsActions.removeForm('EDIT_DEVICE'),
+            prefillEditForm: formsActions.fillForm('EDIT_DEVICE'),
+            updateDeviceAction: devicesActions.updateDevice,
+            deleteDeviceAction: devicesActions.deleteDevice,
+            sendDeviceCommandA: devicesActions.sendCommand,
+            setCommandField: formsActions.updateFormField('DEVICE_SEND.command'),
         },
         dispatch
     );
