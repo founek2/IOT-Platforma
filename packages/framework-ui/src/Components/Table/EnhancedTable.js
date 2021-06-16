@@ -14,7 +14,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import getInPath from '../../utils/getInPath';
 import clsx from 'clsx';
-import isNotNil from 'framework-ui/src/utils/isNotNil';
+import isNotNil from '../../utils/isNotNil';
 
 function desc(a, b, orderBy) {
     if (getInPath(orderBy, b) < getInPath(orderBy, a)) {

@@ -1,6 +1,6 @@
 import express from 'express';
 import checkUser from './checkUser';
-import { RequestWithAuthOpt } from 'backend/src/types';
+import { RequestWithAuthOpt } from '../../types';
 import { Permission } from 'common/lib/models/interface/userInterface';
 
 /**

@@ -1,14 +1,13 @@
-import { ActionTypes } from '../../../constants/redux';
-import { getFormData, getToken } from '../../../utils/getters';
 import {
     create as createUserApi,
-    getUsers as fetchUsers,
     deleteUser as deleteUserApi,
+    getUsers as fetchUsers,
     updateUser as updateUserApi,
 } from '../../../api/userApi';
 import { baseLogger } from '../../../logger';
+import { AppThunk } from '../../../types';
+import { getFormData, getToken } from '../../../utils/getters';
 import { usersReducerActions } from '../../reducers/application/users';
-import { AppThunk } from 'framework-ui/src/types';
 import { formsDataActions } from '../formsData';
 
 export const usersActions = {

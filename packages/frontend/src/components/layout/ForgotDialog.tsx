@@ -1,27 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import { grey } from '@material-ui/core/colors';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import Grid from '@material-ui/core/Grid';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { bindActionCreators } from 'redux';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import Loader from 'framework-ui/lib/Components/Loader';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-
-import Loader from 'framework-ui/lib/Components/Loader';
-import userActions from 'framework-ui/lib/redux/actions/application/user';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import { useAppDispatch } from '../../hooks';
+import * as myUserActions from '../../store/actions/application/user';
+import { IState } from '../../types';
 import { getQueryField } from '../../utils/getters';
-import { AuthTypes } from 'common/lib/constants';
-import * as deviceActions from '../../store/actions/application/devices';
-import { grey } from '@material-ui/core/colors';
-import * as myUserActions from 'frontend/src/store/actions/application/user';
-import { IState } from 'frontend/src/types';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { useAppDispatch } from 'frontend/src/hooks';
 
 const useClasses = makeStyles((theme) => ({
     loginTitle: {

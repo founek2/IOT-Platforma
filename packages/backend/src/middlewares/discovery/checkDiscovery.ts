@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { DiscoveryModel } from 'common/lib/models/deviceDiscoveryModel';
-import { RequestWithAuthOpt } from 'backend/src/types';
+import { RequestWithAuthOpt } from '../../types';
 import { Permission } from 'common/lib/models/interface/userInterface';
 
 /**

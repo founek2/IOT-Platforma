@@ -1,7 +1,7 @@
 import express from 'express';
 import { DeviceModel } from 'common/lib/models/deviceModel';
 import checkDevice from './checkDevice';
-import { RequestWithAuthOpt } from 'backend/src/types';
+import { RequestWithAuthOpt } from '../../types';
 import { Permission } from 'common/lib/models/interface/userInterface';
 
 /**
