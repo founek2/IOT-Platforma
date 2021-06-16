@@ -147,7 +147,7 @@ pipeline {
     }
 
     post {
-        always {
+        failure {
             echo 'I will always say Hello again!'
             // script {
             //     if (params.NOTIFY_SLACK == 'true') {
