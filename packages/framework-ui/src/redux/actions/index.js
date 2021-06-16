@@ -1,10 +1,7 @@
-import * as formsDataActions from './formsData.js';
-import { getItem, setItem, removeItem } from '../../storage';
-import { ActionTypes } from '../../constants/redux';
-import { infoLog, warningLog } from '../../logger';
-import { STATE_DEHYDRATED } from '../../constants/redux';
 import { clone } from 'ramda';
-
+import { STATE_DEHYDRATED } from '../../constants/redux';
+import { infoLog, warningLog } from '../../logger';
+import { getItem, removeItem, setItem } from '../../storage';
 import parseJwtToken from '../../utils/parseJwtToken';
 
 export function dehydrateState() {
@@ -45,5 +42,3 @@ export function hydrateState() {
     }
     return undefined;
 }
-
-export { formsDataActions };

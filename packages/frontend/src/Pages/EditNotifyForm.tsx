@@ -18,7 +18,7 @@ import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getToken } from '../firebase';
 import { devicesActions } from '../store/actions/application/devices';
-import * as userActions from '../store/actions/application/user';
+import { userActions } from '../store/actions/application/user';
 import { IState } from '../types';
 import { getDevices } from '../utils/getters';
 import EditNotify from './editNotifyForm/EditNotify';

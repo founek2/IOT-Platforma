@@ -9,8 +9,6 @@ import {
 import SuccessMessages from '../../../localization/successMessages';
 import { dehydrateState } from '..';
 import { prop } from 'ramda';
-import LoginCallbacks from '../../../callbacks/login';
-import LogoutCallbacks from '../../../callbacks/login';
 import logger from '../../../logger';
 import { AppThunk } from '../../../types';
 import { userReducerActions } from '../../reducers/application/user';
@@ -36,7 +34,6 @@ export const userActions = {
                             console.log('logger', json);
                             dispatch(userActions.set({ ...json.user, token: json.token }));
                             dispatch(dehydrateState());
-                            LoginCallbacks.exec(json.token);
                             // dispatch(resetForm(LOGIN)())
                         },
                     },
@@ -84,29 +81,12 @@ export const userActions = {
                             dispatch(userActions.set({ ...json.user, token: json.token }));
                             // dispatch(formsDataActions.resetForm(REGISTRATION));
                             dispatch(dehydrateState());
-                            LoginCallbacks.exec(json.token);
                         },
                     },
                     dispatch
                 );
             }
             return false;
-        };
-    },
-
-    logOut(): AppThunk {
-        return async function (dispatch) {
-            dispatch({
-                type: ActionTypes.RESET_TO_DEFAULT,
-            });
-            dispatch(
-                notificationsActions.add({
-                    message: SuccessMessages.getMessage('successfullyLogOut'),
-                    variant: 'success',
-                    duration: 3000,
-                })
-            );
-            LogoutCallbacks.exec();
         };
     },
 

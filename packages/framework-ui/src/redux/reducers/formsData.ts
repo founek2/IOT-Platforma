@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { dissoc, dissocPath, merge } from 'ramda';
+import { dissoc, dissocPath, merge, init } from 'ramda';
 import getInPath from '../../utils/getInPath';
 import setInPath from '../../utils/setInPath';
 
@@ -17,6 +17,7 @@ export const formsDataSlice = createSlice({
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
+        toDefault: () => initialState,
         setFormData: (state, action: PayloadAction<{ formName: string; data: any }>) => {
             const { formName, data } = action.payload;
             return setInPath(formName, data, state);

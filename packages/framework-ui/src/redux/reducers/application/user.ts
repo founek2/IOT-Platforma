@@ -21,6 +21,9 @@ export const userSlice = createSlice({
         remove: (state, action: Action) => {
             return { loggedIn: false };
         },
+        toDefault: () => {
+            return initialState;
+        },
     },
 });
 

@@ -3,13 +3,12 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { userLogOut } from 'framework-ui/lib/redux/actions/application/user';
 import { getUser } from 'framework-ui/lib/utils/getters';
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import * as deviceActions from '../../store/actions/application/devices';
+import { userActions } from '../../store/actions/application/user';
 
 const styles = (theme) => ({
     rightIcon: {
@@ -65,7 +64,7 @@ const _mapStateToProps = (state) => ({
 const _mapDispatchToProps = (dispatch) =>
     bindActionCreators(
         {
-            logOutAction: userLogOut,
+            logOutAction: userActions.logOut,
         },
         dispatch
     );

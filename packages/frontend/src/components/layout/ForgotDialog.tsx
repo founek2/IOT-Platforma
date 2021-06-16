@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks';
-import * as myUserActions from '../../store/actions/application/user';
+import { userActions } from '../../store/actions/application/user';
 import { IState } from '../../types';
 import { getQueryField } from '../../utils/getters';
 
@@ -71,13 +71,13 @@ function ForgotDialog({ open, onClose, token }: LoginDialogProps) {
 
     const forgotHandler = async () => {
         setPending(true);
-        await dispatch(myUserActions.forgot('FORGOT'));
+        await dispatch(userActions.forgot('FORGOT'));
         setPending(false);
     };
 
     const passwordHandler = async () => {
         setPending(true);
-        await dispatch(myUserActions.forgot('FORGOT_PASSWORD'));
+        await dispatch(userActions.forgot('FORGOT_PASSWORD'));
         setPending(false);
     };
 

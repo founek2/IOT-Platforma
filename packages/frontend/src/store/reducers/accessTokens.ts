@@ -27,6 +27,9 @@ export const accessTokensSlice = createSlice({
             const date = new Date();
             return { data: action.payload, lastFetch: date, lastUpdate: date };
         },
+        toDefault: () => {
+            return initialState;
+        },
         // Use the PayloadAction type to declare the contents of `action.payload`
         remove: ({ data, lastFetch }, action: PayloadAction<IAccessToken['_id']>) => {
             return {

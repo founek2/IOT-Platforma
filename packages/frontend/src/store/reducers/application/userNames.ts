@@ -20,6 +20,9 @@ export const userNamesSlice = createSlice({
         set: (state, action: PayloadAction<Array<{ _id: string; userName: string }>>) => {
             return { data: action.payload, lastFetch: new Date(), lastUpdate: new Date() };
         },
+        toDefault: () => {
+            return initialState;
+        },
     },
 });
 

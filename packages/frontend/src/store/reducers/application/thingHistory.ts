@@ -39,6 +39,9 @@ export const thingHistorySlice = createSlice({
                 lastUpdate: date,
             };
         },
+        toDefault: () => {
+            return initialState;
+        },
     },
 });
 

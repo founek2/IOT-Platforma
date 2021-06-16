@@ -28,6 +28,9 @@ export const discoverySlice = createSlice({
                 lastUpdate: new Date(),
             };
         },
+        toDefault: () => {
+            return initialState;
+        },
         set: (state, action: PayloadAction<IDiscovery[]>) => {
             const date = new Date();
             return { data: action.payload, lastFetch: date, lastUpdate: date };

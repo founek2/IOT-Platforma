@@ -17,6 +17,9 @@ export const usersSlice = createSlice({
         set: (state, action: PayloadAction<UsersState>) => {
             return action.payload;
         },
+        toDefault: () => {
+            return initialState;
+        },
         remove: (state, action: PayloadAction<any>) => {
             const newState = filter(filterById(action.payload), state);
             return newState;
