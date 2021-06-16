@@ -1,18 +1,15 @@
 import { IAccessToken, IUser } from 'common/lib/models/interface/userInterface';
-import { ActionTypes } from '../../constants/redux';
 import { baseLogger } from 'framework-ui/lib/logger';
-import { validateForm } from 'framework-ui/lib/redux/actions/formsData';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
-import { IState, AppThunk } from 'frontend/src/types';
+import { AppThunk } from 'frontend/src/types';
 import {
     createAccessToken as createAccessTokenApi,
-    updateAccessToken as updateAccessTokenApi,
-    fetchAccessToken as fetchAccessTokenApi,
     deleteAccessToken as deleteAccessTokenApi,
+    fetchAccessToken as fetchAccessTokenApi,
+    updateAccessToken as updateAccessTokenApi,
 } from '../../api/accessToken';
 import { accessTokensReducerActions } from '../reducers/accessTokens';
-import { ThunkAction } from 'redux-thunk';
-import { AnyAction } from 'redux';
 
 export const accessTokensActions = {
     ...accessTokensReducerActions,
@@ -22,7 +19,7 @@ export const accessTokensActions = {
             const ADD_ACCESS_TOKEN = 'ADD_ACCESS_TOKEN';
             baseLogger(ADD_ACCESS_TOKEN);
 
-            const result = dispatch(validateForm(ADD_ACCESS_TOKEN)());
+            const result = dispatch(formsDataActions.validateForm(ADD_ACCESS_TOKEN));
             const formData = getFormData(ADD_ACCESS_TOKEN)(getState());
             if (result.valid) {
                 return createAccessTokenApi(
@@ -45,7 +42,7 @@ export const accessTokensActions = {
             const EDIT_ACCESS_TOKEN = 'EDIT_ACCESS_TOKEN';
             baseLogger(EDIT_ACCESS_TOKEN);
 
-            const result = dispatch(validateForm(EDIT_ACCESS_TOKEN)());
+            const result = dispatch(formsDataActions.validateForm(EDIT_ACCESS_TOKEN));
             const formData: any = getFormData(EDIT_ACCESS_TOKEN)(getState());
             if (result.valid) {
                 return updateAccessTokenApi(

@@ -33,6 +33,7 @@ export const validateField = (
 ): types.fieldState => {
     const pristine = getPristine(deepPath, state);
     if (!pristine || ignorePristine) {
+        // @ts-ignore
         const formsData = getFormsData(state);
 
         const descriptor: types.fieldDescriptor = getFieldDescriptor(deepPath, state);
@@ -47,6 +48,7 @@ export const validateField = (
 
         const value = getInPath(deepPath, formsData);
 
+        // @ts-ignore
         if (isRequired(descriptor, formsData[formName], deepPath) && !ignoreRequired) {
             if (notEmptyVal(value)) {
                 const result = createValidationsResult(value, validations);
@@ -71,11 +73,13 @@ function recursive(
     arrayPredicate: (value: any, pathAccum: string) => boolean,
     object: object
 ) {
-    const func = (accum = '') => (value: any, key: string | number): any => {
-        if (arrayPredicate(value, accum + key)) return recArray(value, accum + key + '.'); // pouze pokud existuje descriptor pro array
-        if (predicate(value, accum + key)) return recObj(value, accum + key + '.');
-        transform(value, accum + key);
-    };
+    const func =
+        (accum = '') =>
+        (value: any, key: string | number): any => {
+            if (arrayPredicate(value, accum + key)) return recArray(value, accum + key + '.'); // pouze pokud existuje descriptor pro array
+            if (predicate(value, accum + key)) return recObj(value, accum + key + '.');
+            transform(value, accum + key);
+        };
 
     function recObj(obj: object, accum?: string) {
         forEachObjIndexed(func(accum), obj);
@@ -155,7 +159,7 @@ export function validateForm(formName: string, state: object, ignoreRequiredFiel
 export const validateRegisteredFields = (formName: string, state: object, ignoreRequiredFields = false) => {
     const arraOfPaths: Array<string> = [];
     const arrayOfArrayFields: Array<string> = []; // to know when validate array as array and when as array of fields
-    let result = {};
+    let result: { [formName: string]: any } = {};
 
     // find all deePaths of - fields and array of fields
     // const arrayRegex = /\[\]$/;
@@ -168,6 +172,7 @@ export const validateRegisteredFields = (formName: string, state: object, ignore
     // }, F, { [formName]: formDescriptors })
 
     const regFields = getRegisteredFields(state);
+    // @ts-ignore
     if (!regFields || !regFields[formName]) return result;
 
     recursive(
@@ -178,6 +183,8 @@ export const validateRegisteredFields = (formName: string, state: object, ignore
         (val, deepPath) =>
             // Test if array is array of fields or just value
             is(Array, val) && arrayOfArrayFields.some((p) => p === deepPath),
+
+        // @ts-ignore
         { [formName]: regFields[formName] }
     );
 

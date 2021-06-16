@@ -22,7 +22,7 @@ function Security() {
 
     return (
         <div>
-            {loading && 'Načítám data...'}
+            {loading && 'Není implementováno...'}
             {/* {!loading && <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <caption>Zobrazeno posledních 15 přihlášení</caption>

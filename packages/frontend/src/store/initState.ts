@@ -4,9 +4,9 @@ import { IState } from '../types';
 export const createState = (): IState => ({
     accessTokens: { data: [] },
     application: {
-        user: undefined,
-        notifications: [],
-        users: [],
+        user: undefined, // TODO
+        notifications: [], // TODO
+        users: [], // TODO
         devices: { data: [] },
         discovery: { data: [] },
         thingHistory: {

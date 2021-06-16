@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../../../components/OnlineCircle';
 import { devicesActions } from '../../../../store/actions/application/devices';
-import * as thingHistoryActions from '../../../../store/actions/application/thingHistory';
+import { thingHistoryActions } from '../../../../store/actions/application/thingHistory';
 
 const useStyles = makeStyles({
     circle: {

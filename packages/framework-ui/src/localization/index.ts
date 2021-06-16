@@ -3,7 +3,7 @@ import isFn from '../utils/isFn';
 
 export function messageFactory(messages: types.messages) {
     return {
-        getMessage: (messageKey: string, fieldValue: any, arg?: any) => {
+        getMessage: (messageKey: string, fieldValue: any = '', arg?: any) => {
             const message = messages[messageKey];
             if (message) {
                 if (isFn(message)) {

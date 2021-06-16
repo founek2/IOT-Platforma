@@ -12,15 +12,16 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import Loader from 'framework-ui/lib/Components/Loader';
-import { login, fetchAuthType } from 'framework-ui/lib/redux/actions/application/user';
+import userActions from 'framework-ui/lib/redux/actions/application/user';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import { getQueryField } from '../../utils/getters';
 import { AuthTypes } from 'common/lib/constants';
 import * as deviceActions from '../../store/actions/application/devices';
 import { grey } from '@material-ui/core/colors';
-import * as userActions from 'frontend/src/store/actions/application/user';
+import * as myUserActions from 'frontend/src/store/actions/application/user';
 import { IState } from 'frontend/src/types';
-import { formsDataActions } from 'framework-ui/lib/redux/actions';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+import { useAppDispatch } from 'frontend/src/hooks';
 
 const useClasses = makeStyles((theme) => ({
     loginTitle: {
@@ -63,26 +64,25 @@ interface LoginDialogProps {
     token?: string;
     open: boolean;
     onClose: any;
-    forgotAction: any;
-    setFormFieldAction: any;
 }
-function ForgotDialog({ open, onClose, forgotAction, token, setFormFieldAction }: LoginDialogProps) {
+function ForgotDialog({ open, onClose, token }: LoginDialogProps) {
     const classes = useClasses();
     const [pending, setPending] = useState(false);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (token) setFormFieldAction('FORGOT_PASSWORD.token', token);
+        if (token) formsDataActions.setFormField({ deepPath: 'FORGOT_PASSWORD.token', value: token });
     }, [token]);
 
     const forgotHandler = async () => {
         setPending(true);
-        await forgotAction('FORGOT');
+        await dispatch(myUserActions.forgot('FORGOT'));
         setPending(false);
     };
 
     const passwordHandler = async () => {
         setPending(true);
-        await forgotAction('FORGOT_PASSWORD');
+        await dispatch(myUserActions.forgot('FORGOT_PASSWORD'));
         setPending(false);
     };
 
@@ -144,13 +144,4 @@ const _mapStateToProps = (state: IState) => ({
     token: getQueryField('token', state),
 });
 
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            forgotAction: userActions.forgot,
-            setFormFieldAction: formsDataActions.updateFormField,
-        },
-        dispatch
-    );
-
-export default connect(_mapStateToProps, _mapDispatchToProps)(ForgotDialog);
+export default connect(_mapStateToProps)(ForgotDialog);

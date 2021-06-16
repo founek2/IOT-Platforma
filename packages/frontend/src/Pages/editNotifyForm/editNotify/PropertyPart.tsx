@@ -3,8 +3,8 @@ import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
-import { connect } from 'react-redux';
-import { formsDataActions } from 'framework-ui/lib/redux/actions';
+import { connect, useDispatch } from 'react-redux';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 
 import { getFieldVal } from 'framework-ui/lib/utils/getters';
 import { ControlStateTypes, NotifyControlTypes } from '../../../constants';
@@ -19,12 +19,17 @@ interface PropertyPartProps {
     config: IThing['config'];
     selectedProperty?: IThingProperty;
     selectedType?: NotifyType;
-    updateFormField: (deepPath: string, value: any) => void;
 }
 
-function PropertyPart({ id, config, selectedProperty, selectedType, updateFormField }: PropertyPartProps) {
+function PropertyPart({ id, config, selectedProperty, selectedType }: PropertyPartProps) {
     const isEnum = selectedProperty ? selectedProperty.dataType === PropertyDataType.enum : false;
     const isNumerical = selectedProperty ? isNumericDataType(selectedProperty.dataType) : false;
+    const dispatch = useDispatch();
+
+    function updateFormField(deepPath: string, value: any) {
+        dispatch(formsDataActions.setFormField({ deepPath, value }));
+    }
+
     return (
         <Fragment>
             <Grid item md={4} xs={12}>
@@ -122,13 +127,4 @@ const _mapStateToProps = (state: IState, { id, config }: { id: number; config: I
     };
 };
 
-function _mapDispatchToProps(dispatch: any) {
-    return bindActionCreators(
-        {
-            updateFormField: formsDataActions.updateFormField,
-        },
-        dispatch
-    );
-}
-
-export default connect(_mapStateToProps, _mapDispatchToProps)(PropertyPart);
+export default connect(_mapStateToProps)(PropertyPart);

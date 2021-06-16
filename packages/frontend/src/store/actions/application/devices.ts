@@ -3,7 +3,7 @@ import { IThing } from 'common/lib/models/interface/thing';
 import { transformNotifyForFE } from 'common/lib/utils/transform';
 import { baseLogger } from 'framework-ui/lib/logger';
 import { dehydrateState } from 'framework-ui/lib/redux/actions';
-import { fillForm, validateForm, validateRegisteredFields } from 'framework-ui/lib/redux/actions/formsData';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
 import {
     deleteDevice as deleteDeviceApi,
@@ -35,7 +35,7 @@ export const devicesActions = {
         return async function (dispatch, getState) {
             const EDIT_DEVICE = 'EDIT_DEVICE';
             baseLogger(EDIT_DEVICE);
-            const result = dispatch(validateRegisteredFields(EDIT_DEVICE)());
+            const result = dispatch(formsDataActions.validateRegisteredFields(EDIT_DEVICE));
             if (result.valid) {
                 const state = getState();
                 const formData: any = getFormData(EDIT_DEVICE)(state);
@@ -127,7 +127,7 @@ export const devicesActions = {
                     nodeId,
                     onSuccess: (json: any) => {
                         const formData = transformNotifyForFE(json.doc.thing.properties);
-                        dispatch(fillForm('EDIT_NOTIFY')(formData));
+                        dispatch(formsDataActions.setFormData({ formName: 'EDIT_NOTIFY', data: formData }));
                     },
                 },
                 dispatch
@@ -139,7 +139,7 @@ export const devicesActions = {
         return async function (dispatch, getState) {
             const EDIT_NOTIFY = 'EDIT_NOTIFY';
             baseLogger(EDIT_NOTIFY);
-            const result = dispatch(validateForm(EDIT_NOTIFY)());
+            const result = dispatch(formsDataActions.validateForm(EDIT_NOTIFY));
             const formData = getFormData(EDIT_NOTIFY)(getState());
             if (result.valid) {
                 return updateNotifyApi(
@@ -163,7 +163,7 @@ export const devicesActions = {
         return async function (dispatch, getState) {
             const DEVICE_SEND = 'DEVICE_SEND';
             baseLogger(DEVICE_SEND);
-            const result = dispatch(validateForm(DEVICE_SEND)());
+            const result = dispatch(formsDataActions.validateForm(DEVICE_SEND));
             const formData = getFormData(DEVICE_SEND)(getState());
             if (result.valid) {
                 return postDeviceApi(

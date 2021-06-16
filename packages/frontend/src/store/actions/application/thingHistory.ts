@@ -1,36 +1,33 @@
-import type { IDevice } from "common/lib/models/interface/device";
-import type { IDiscovery } from "common/lib/models/interface/discovery";
-import type { IThing } from "common/lib/models/interface/thing";
-import { subDays } from "date-fns";
-import { baseLogger } from "framework-ui/lib/logger";
-import { getToken } from "framework-ui/lib/utils/getters";
-import { fetchHistory as fetchHistoryApi } from "../../../api/thingApi";
-import { ActionTypes } from "../../../constants/redux";
+import type { IDevice } from 'common/lib/models/interface/device';
+import { HistoricalSensor } from 'common/lib/models/interface/history';
+import type { IThing } from 'common/lib/models/interface/thing';
+import { subDays } from 'date-fns';
+import { baseLogger } from 'framework-ui/lib/logger';
+import { getToken } from 'framework-ui/lib/utils/getters';
+import { AppThunk } from 'frontend/src/types';
+import { fetchHistory as fetchHistoryApi } from '../../../api/thingApi';
+import { thingHistoryReducerActions } from '../../reducers/application/thingHistory';
 
+export const thingHistoryActions = {
+    ...thingHistoryReducerActions,
 
-export function set(data: any) {
-    return {
-        type: ActionTypes.SET_THING_HISTORY,
-        payload: data,
-    };
-}
-
-export function fetchHistory(deviceId: IDevice["_id"], thingId: IThing["_id"]) {
-    return function (dispatch: any, getState: any) {
-        baseLogger("FETCH_DISCOVERED_DEVICES");
-        return fetchHistoryApi(
-            {
-                deviceId,
-                thingId,
-                token: getToken(getState()),
-                params: {
-                    from: subDays(new Date(), 1).getTime(),
+    fetchHistory(deviceId: IDevice['_id'], thingId: IThing['_id']): AppThunk {
+        return function (dispatch, getState) {
+            baseLogger('FETCH_DISCOVERED_DEVICES');
+            return fetchHistoryApi(
+                {
+                    deviceId,
+                    thingId,
+                    token: getToken(getState()),
+                    params: {
+                        from: subDays(new Date(), 1).getTime(),
+                    },
+                    onSuccess: (json: { docs: HistoricalSensor[] }) => {
+                        dispatch(thingHistoryActions.set({ data: json.docs, deviceId, thingId }));
+                    },
                 },
-                onSuccess: (json: { docs: IDiscovery[] }) => {
-                    dispatch(set({ data: json.docs, deviceId, thingId }));
-                },
-            },
-            dispatch
-        );
-    };
-}
+                dispatch
+            );
+        };
+    },
+};

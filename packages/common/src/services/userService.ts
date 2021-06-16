@@ -127,6 +127,8 @@ export const UserService = {
             token: Security.getRandomAsciToken(30),
             createdAt: new Date(),
         };
+        if (await UserModel.exists({ 'accessTokens.token': newToken.token })) return null;
+
         const doc = await UserModel.findOneAndUpdate(
             {
                 _id: ObjectId(userID),

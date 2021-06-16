@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
+import { grey } from '@material-ui/core/colors';
+import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import Grid from '@material-ui/core/Grid';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { bindActionCreators } from 'redux';
+import { AuthTypes } from 'common/lib/constants';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import Loader from 'framework-ui/lib/Components/Loader';
+import { userActions } from 'framework-ui/lib/redux/actions/application/user';
+import { getFieldVal, getUserPresence } from 'framework-ui/lib/utils/getters';
+import { useAppDispatch } from 'frontend/src/hooks';
+import { IState } from 'frontend/src/types';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import Loader from 'framework-ui/lib/Components/Loader';
-import { login, fetchAuthType } from 'framework-ui/lib/redux/actions/application/user';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import { getFieldVal, getUserPresence } from 'framework-ui/lib/utils/getters';
-import { AuthTypes } from 'common/lib/constants';
-import * as deviceActions from '../../store/actions/application/devices';
-import { grey } from '@material-ui/core/colors';
-import { forgotPassword } from 'frontend/src/store/actions/application/user';
-
-const styles = (theme) => ({
+const useClasses = makeStyles((theme) => ({
     loginTitle: {
         margin: '0 auto',
         paddingBottom: 20,
@@ -55,29 +53,37 @@ const styles = (theme) => ({
         cursor: 'pointer',
         color: grey[500],
     },
-});
+}));
 
-let timer = null;
-function onStopTyping(callback) {
-    return (e) => {
+let timer: NodeJS.Timeout;
+function onStopTyping(callback: (...args: any[]) => void) {
+    return () => {
         clearTimeout(timer);
         timer = setTimeout(callback, 800);
     };
 }
 
-function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthTypeAction, onSuccess }) {
+interface LoginDialogProps {
+    open: boolean;
+    onClose?: DialogProps['onClose'];
+    authType: AuthTypes;
+    onSuccess?: () => void;
+}
+function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
     const [pending, setPending] = useState(false);
+    const classes = useClasses();
+    const dispatch = useAppDispatch();
 
     async function fetchAuthType() {
         if (pending) return;
         clearTimeout(timer);
         setPending(true);
-        await fetchAuthTypeAction();
+        await dispatch(userActions.fetchAuthType());
         setPending(false);
     }
     const loginMyAction = async () => {
         setPending(true);
-        const success = await loginAction();
+        const success = await dispatch(userActions.login());
         setPending(false);
         if (success) onSuccess && onSuccess();
     };
@@ -138,19 +144,9 @@ function LoginDialog({ open, onClose, classes, loginAction, authType, fetchAuthT
     );
 }
 
-const _mapStateToProps = (state) => ({
-    authType: getFieldVal('LOGIN.authType')(state),
+const _mapStateToProps = (state: IState) => ({
+    authType: getFieldVal('LOGIN.authType')(state) as AuthTypes,
     userPresence: getUserPresence(state),
 });
 
-const _mapDispatchToProps = (dispatch) =>
-    bindActionCreators(
-        {
-            loginAction: login,
-            fetchAuthTypeAction: fetchAuthType,
-            // fetchDevicesAction: deviceActions.fetch,
-        },
-        dispatch
-    );
-
-export default connect(_mapStateToProps, _mapDispatchToProps)(withStyles(styles)(LoginDialog));
+export default connect(_mapStateToProps)(LoginDialog);

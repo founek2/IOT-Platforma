@@ -1,28 +1,28 @@
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import IconButton from "@material-ui/core/IconButton";
-import MenuItem from "@material-ui/core/MenuItem";
-import { createStyles, Theme } from "@material-ui/core/styles";
-import TuneIcon from "@material-ui/icons/Tune";
-import { LINEAR_TYPE, RgbTypes } from "common/lib/constants";
-import FieldConnector from "framework-ui/lib/Components/FieldConnector";
-import { fillForm } from "framework-ui/lib/redux/actions/formsData";
-import React, { Fragment, useState } from "react";
-import ColorPicker from "./components/ColorPicker";
-import Slider from "./components/Slider";
-import { Content as Switch } from "./Swich";
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import MenuItem from '@material-ui/core/MenuItem';
+import { createStyles, Theme } from '@material-ui/core/styles';
+import TuneIcon from '@material-ui/icons/Tune';
+import { LINEAR_TYPE, RgbTypes } from 'common/lib/constants';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+// import { fillForm } from "framework-ui/lib/redux/actions/formsData";
+import React, { Fragment, useState } from 'react';
+import ColorPicker from './components/ColorPicker';
+import Slider from './components/Slider';
+import { Content as Switch } from './Swich';
 
 const styles = (theme: Theme) =>
     createStyles({
         button: {
-            position: "absolute",
+            position: 'absolute',
             left: 5,
             top: 3,
         },
         content: {
-            display: "flex",
-            flexDirection: "column",
+            display: 'flex',
+            flexDirection: 'column',
             paddingBottom: 16, // same padding as dialogTitle
         },
         colorWrap: {
@@ -34,16 +34,16 @@ const styles = (theme: Theme) =>
             paddingLeft: theme.spacing(2),
         },
         loader: {
-            position: "absolute",
-            margin: "0 auto",
+            position: 'absolute',
+            margin: '0 auto',
         },
         textField: {
             marginTop: theme.spacing(1),
             marginLeft: 0,
             marginRight: 0,
             width: 200,
-            [theme.breakpoints.down("sm")]: {
-                width: "100%",
+            [theme.breakpoints.down('sm')]: {
+                width: '100%',
             },
         },
     });
@@ -79,7 +79,7 @@ function RgbSwitch({
     };
 
     const handleOpen = () => {
-        fillForm({ type: state.type, color: state.color, bright: state.bright });
+        // fillForm({ type: state.type, color: state.color, bright: state.bright });
         setOpen(true);
     };
 

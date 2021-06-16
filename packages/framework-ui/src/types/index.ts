@@ -1,3 +1,5 @@
+import { ThunkAction, AnyAction, Action } from '@reduxjs/toolkit';
+
 export type errorMessage = string;
 
 export type validationFn = (value: any, options?: any) => true | errorMessage;
@@ -23,3 +25,7 @@ export type fieldState = {
 export type fieldDescriptors = { [key: string]: fieldDescriptors | fieldDescriptor };
 
 export type ValueOf<T> = T[keyof T];
+
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, any, unknown, Action>;
+
+export type NotificationVariant = 'default' | 'error' | 'success' | 'warning' | 'info' | undefined;

@@ -7,12 +7,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
-import * as userActions from 'framework-ui/lib/redux/actions/application/user';
-import { userLogOut } from 'framework-ui/lib/redux/actions/application/user';
-import * as formsDataActions from 'framework-ui/lib/redux/actions/formsData';
+import { userActions } from 'framework-ui/lib/redux/actions/application/user';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getGroups, getUser, getUserInfo, getUserPresence, isUrlHash } from 'framework-ui/lib/utils/getters';
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import EditUser from '../Pages/userManagement/EditUser';
@@ -20,9 +19,13 @@ import LoginDialog from './layout/LoginDialog';
 import SideMenu from './layout/SideMenu';
 import UserMenu from './layout/UserMenu';
 import ForgotDialog from './layout/ForgotDialog';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery, useTheme, makeStyles } from '@material-ui/core';
+import { WithRouterProps } from 'react-router';
+import { History } from 'history';
+import { IUser } from 'common/lib/models/interface/userInterface';
+import { useAppDispatch } from '../hooks';
 
-const styles = {
+const useClasses = makeStyles({
     root: {
         flexGrow: 1,
     },
@@ -40,25 +43,23 @@ const styles = {
         color: 'inherit',
         textDecoration: 'none',
     },
-};
+});
 
-function Layout({
-    classes,
-    userPresence,
-    loginOpen,
-    history,
-    userInfo,
-    removeLoginFormAction,
-    editUserOpen,
-    userToEdit,
-    updateUserAction,
-    forgotOpen,
-    removeForgotFormAction,
-}) {
+interface LayoutProps {
+    userPresence: boolean;
+    loginOpen: boolean;
+    history: History;
+    editUserOpen: boolean;
+    forgotOpen: boolean;
+    userToEdit: IUser;
+}
+function Layout({ userPresence, loginOpen, history, editUserOpen, userToEdit, forgotOpen }: LayoutProps) {
     const [mainMenuOpen, setMainMenuO] = useState(false);
-    const setMainMenuOpen = (bool) => () => setMainMenuO(bool);
+    const setMainMenuOpen = (bool: boolean) => () => setMainMenuO(bool);
+    const classes = useClasses();
     const theme = useTheme();
     const isWide = useMediaQuery(theme.breakpoints.up('sm'));
+    const dispatch = useAppDispatch();
 
     return (
         <Fragment>
@@ -99,7 +100,7 @@ function Layout({
                 open={loginOpen}
                 onClose={() => {
                     history.push({ hash: '' });
-                    removeLoginFormAction();
+                    dispatch(formsDataActions.removeForm('LOGIN'));
                 }}
                 onSuccess={() => history.push('/devices')}
             />
@@ -107,7 +108,7 @@ function Layout({
                 open={forgotOpen}
                 onClose={() => {
                     history.push({ hash: '' });
-                    removeForgotFormAction();
+                    dispatch(formsDataActions.removeForm('FORGOT_PASSWORD'));
                 }}
             />
             <FullScreenDialog
@@ -117,11 +118,9 @@ function Layout({
             >
                 <EditUser
                     onButtonClick={async () => {
-                        const result = await updateUserAction(userToEdit.id);
-                        console.log(result);
+                        const result = await dispatch(userActions.updateUser(userToEdit._id));
                         if (result) history.push({ hash: '', search: '' });
                     }}
-                    buttonLabel="Uložit"
                     user={userToEdit}
                 />
             </FullScreenDialog>
@@ -129,9 +128,8 @@ function Layout({
     );
 }
 
-const _mapStateToProps = (state) => {
+const _mapStateToProps = (state: any) => {
     return {
-        userInfo: getUserInfo(state),
         groups: getGroups(state),
         userPresence: getUserPresence(state),
         loginOpen: isUrlHash('#login')(state),
@@ -141,15 +139,4 @@ const _mapStateToProps = (state) => {
     };
 };
 
-const _mapDispatchToProps = (dispatch) =>
-    bindActionCreators(
-        {
-            logOut: userLogOut,
-            removeLoginFormAction: formsDataActions.removeForm('LOGIN'),
-            updateUserAction: userActions.updateUser,
-            removeForgotFormAction: formsDataActions.removeForm('FORGOT_PASSWORD'),
-        },
-        dispatch
-    );
-
-export default connect(_mapStateToProps, _mapDispatchToProps)(withStyles(styles)(Layout));
+export default connect(_mapStateToProps)(Layout);

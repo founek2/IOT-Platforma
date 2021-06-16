@@ -1,11 +1,12 @@
 import { merge, flip, o, toPairs, forEach } from 'ramda';
-import { addNotification } from '../redux/actions/application/notifications';
+import { notificationsActions } from '../redux/actions/application/notifications';
 import ErrorMessages from '../localization/errorMessages';
 import SuccessMessages from '../localization/successMessages';
 import { warningLog, infoLog } from '../logger';
 import { update } from '../redux/actions/application/user';
 import { dehydrateState } from '../redux/actions/';
 
+const addNotification = notificationsActions.add;
 const processResponse = (dispatch, successMessage) => async (response) => {
     const { status } = response;
     // set new jwt token, when provided from backend

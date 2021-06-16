@@ -23,33 +23,27 @@ export function dehydrateState() {
 }
 
 export function hydrateState() {
-    return function (dispatch, getState) {
-        const hydratedState = getItem(STATE_DEHYDRATED);
+    const hydratedState = getItem(STATE_DEHYDRATED);
 
-        if (hydratedState) {
-            const state = JSON.parse(hydratedState);
+    if (hydratedState) {
+        const state = JSON.parse(hydratedState);
 
-            if (state.application.user && state.application.user.token) {
-                const tokenParsed = parseJwtToken(state.application.user.token);
-                console.log(tokenParsed.exp, (new Date().getTime() + 1) / 1000);
-                if (tokenParsed.exp < (new Date().getTime() + 1) / 1000) {
-                    infoLog('Token expired');
-                    removeItem(STATE_DEHYDRATED);
-                    return;
-                }
+        if (state.application.user && state.application.user.token) {
+            const tokenParsed = parseJwtToken(state.application.user.token);
+            console.log(tokenParsed.exp, (new Date().getTime() + 1) / 1000);
+            if (tokenParsed.exp < (new Date().getTime() + 1) / 1000) {
+                infoLog('Token expired');
+                removeItem(STATE_DEHYDRATED);
+                return;
             }
-            delete state.dehydrationTime;
-            dispatch({
-                type: ActionTypes.HYDRATE_STATE,
-                payload: state,
-            });
-
-            return state;
-        } else {
-            infoLog('Nothing to hydrate');
         }
-        return null;
-    };
+        delete state.dehydrationTime;
+
+        return state;
+    } else {
+        infoLog('Nothing to hydrate');
+    }
+    return undefined;
 }
 
 export { formsDataActions };

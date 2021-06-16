@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import store from '../store/store';
 import withTheme from './withTheme';
 import WebSocket from './WebSocket';
-import { registerFunctions } from 'framework-ui/lib/validations/validationFactory';
-import * as fns from '../validations/customFn';
+// import { registerFunctions } from 'framework-ui/lib/validations/validationFactory';
+// import * as fns from '../validations/customFn';
 import * as serviceWorker from '../serviceWorker';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
@@ -16,7 +16,7 @@ import Notifier from './Notifier';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { getItem, removeItem } from 'framework-ui/lib/storage';
 import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
-registerFunctions(fns); // register custom validation functions
+// registerFunctions(fns); // register custom validation functions
 
 function handleError() {
     if (getItem(STATE_DEHYDRATED)) {
@@ -27,13 +27,13 @@ function handleError() {
 }
 
 let place_holder = () => console.log('nothing to install');
-function Root({ component }) {
+function Root({ component }: { component: React.FunctionComponent }) {
     const [newVersion, setNewVersion] = useState(false);
     const [forceInstall, setForceInstall] = useState(() => place_holder);
 
     useEffect(() => {
         const config = {
-            onUpdate: function (installingWorker) {
+            onUpdate: function (installingWorker: any) {
                 // new version available
                 setNewVersion(true);
                 setForceInstall(() => () => {

@@ -1,27 +1,19 @@
-import React, { Component, useEffect, useState } from 'react';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import { formsDataActions } from 'framework-ui/lib/redux/actions';
-import * as usersActions from 'framework-ui/lib/redux/actions/application/users';
+import { makeStyles } from '@material-ui/core/styles';
+import { IUser } from 'common/lib/models/interface/userInterface';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import EnchancedTable from 'framework-ui/lib/Components/Table';
+import { getAllowedGroups, isGroupAllowed } from 'framework-ui/lib/privileges';
+import { usersActions } from 'framework-ui/lib/redux/actions/application/users';
+import arrToString from 'framework-ui/lib/utils/arrToString';
+import { getGroups, getUsers, isUrlHash } from 'framework-ui/lib/utils/getters';
+import { History } from 'history';
+import { isEmpty } from 'ramda';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getGroups, getUsers, isUrlHash } from 'framework-ui/lib/utils/getters';
-import EnchancedTable from 'framework-ui/lib/Components/Table';
-import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
-import { merge, pick, isEmpty } from 'ramda';
-import arrToString from 'framework-ui/lib/utils/arrToString';
-import { getAllowedGroups } from 'framework-ui/lib/privileges';
-import { isGroupAllowed } from 'framework-ui/lib/privileges';
-import EditUser from './userManagement/EditUser';
-
-import { getQueryID } from '../utils/getters';
 import { IState } from '../types';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import { History } from 'history';
+import { useAppDispatch } from '../hooks';
 
 function convertGroupIDsToName(groups: { group: string; text: string }[]) {
     return function (arr: string[]) {
@@ -56,19 +48,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface UserManagementProps {
-    fetchAllUsers: any;
     groups: string[];
     users: IUser[];
     history: History;
-    deleteUsers: any;
 }
-function UserManagement({ fetchAllUsers, groups, users, history, deleteUsers }: UserManagementProps) {
+function UserManagement({ groups, users, history }: UserManagementProps) {
     const classes = useStyles();
+    const dispatch = useAppDispatch();
     useEffect(() => {
-        fetchAllUsers();
-    }, [fetchAllUsers]);
-    const [openCreate, setOpenCreate] = useState(false);
-    const [openEdit, setEditCreate] = useState(false);
+        dispatch(usersActions.fetchAll());
+    }, [dispatch]);
     const isAdmin = isGroupAllowed('admin', groups);
 
     return (
@@ -79,13 +68,12 @@ function UserManagement({ fetchAllUsers, groups, users, history, deleteUsers }: 
                         deepPath="USER_MANAGEMENT.selected"
                         component={({ onChange, value }) => (
                             <EnchancedTable
-                                dataProps={(userProps(getAllowedGroups(groups)) as unknown) as any}
+                                dataProps={userProps(getAllowedGroups(groups)) as unknown as any}
                                 data={users}
                                 toolbarHead="Správa uživatelů"
-                                onDelete={deleteUsers}
+                                onDelete={() => dispatch(usersActions.deleteUsers())}
                                 orderBy="userName"
                                 // enableCreation={isAdmin}
-                                onAdd={() => setOpenCreate(true)}
                                 enableEdit={isAdmin}
                                 onEdit={(id: string) => history.push({ hash: 'editUser', search: '?id=' + id })}
                                 rowsPerPage={10}
@@ -108,16 +96,4 @@ const _mapStateToProps = (state: IState) => {
     };
 };
 
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            fetchAllUsers: usersActions.fetchAll,
-            deleteUsers: usersActions.deleteUsers,
-            createUser: usersActions.create,
-            fillUserForm: formsDataActions.fillForm('USER'),
-            resetUserForm: formsDataActions.resetForm('USER'),
-        },
-        dispatch
-    );
-
-export default connect(_mapStateToProps, _mapDispatchToProps)(UserManagement);
+export default connect(_mapStateToProps)(UserManagement);

@@ -1,41 +1,39 @@
-import { Grid } from "@material-ui/core";
-import type { IDevice } from "common/lib/models/interface/device";
-import FieldConnector from "framework-ui/lib/Components/FieldConnector";
-import * as formsActions from "framework-ui/lib/redux/actions/formsData";
-import { DeviceForm } from "frontend/src/components/DeviceForm";
-import { map } from "ramda";
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as userNameActions from "../../store/actions/application/userNames";
-import { IState } from "../../types";
-import { getUserNames } from "../../utils/getters";
+import { Grid } from '@material-ui/core';
+import type { IDevice } from 'common/lib/models/interface/device';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import { DeviceForm } from 'frontend/src/components/DeviceForm';
+import { map } from 'ramda';
+import React, { useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { userNamesActions } from '../../store/actions/application/userNames';
+import { IState } from '../../types';
+import { getUserNames } from '../../utils/getters';
 
 interface DiscoverySectionProps {
     devices?: IDevice[];
-    resetEditDeviceAction: any;
     deleteDiscoveryAction: any;
     updateFormField: any;
-    fetchUserNames: any;
-    userNames: IState["application"]["userNames"];
+    userNames: IState['application']['userNames'];
 }
 
-function EditDeviceForm({ userNames, fetchUserNames }: DiscoverySectionProps) {
+function EditDeviceForm({ userNames }: DiscoverySectionProps) {
+    const dispatch = useDispatch();
     useEffect(() => {
-        fetchUserNames();
-    }, []);
+        dispatch(userNamesActions.fetch());
+    }, [dispatch]);
 
     return (
         <>
             <DeviceForm formName="EDIT_DEVICE" />
-            {userNames.data.length && (
+            {userNames.data.length ? (
                 <>
                     <Grid item xs={12} sm={6}>
                         <FieldConnector
                             deepPath="EDIT_DEVICE.permissions.read"
                             component="ChipArray"
                             optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
-                        // className={classes.chipArray}
+                            // className={classes.chipArray}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -43,7 +41,7 @@ function EditDeviceForm({ userNames, fetchUserNames }: DiscoverySectionProps) {
                             deepPath="EDIT_DEVICE.permissions.control"
                             component="ChipArray"
                             optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
-                        // className={classes.chipArray}
+                            // className={classes.chipArray}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -51,11 +49,11 @@ function EditDeviceForm({ userNames, fetchUserNames }: DiscoverySectionProps) {
                             deepPath="EDIT_DEVICE.permissions.write"
                             component="ChipArray"
                             optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
-                        // className={classes.chipArray}
+                            // className={classes.chipArray}
                         />
                     </Grid>
                 </>
-            )}
+            ) : null}
         </>
     );
 }
@@ -69,8 +67,7 @@ const _mapStateToProps = (state: any) => {
 const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            resetEditDeviceAction: formsActions.removeForm("EDIT_DEVICE"),
-            fetchUserNames: userNameActions.fetch,
+            fetchUserNames: userNamesActions.fetch,
         },
         dispatch
     );

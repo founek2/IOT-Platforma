@@ -10,11 +10,11 @@ import AddCircle from '@material-ui/icons/AddCircle';
 import { IDevice } from 'common/lib/models/interface/device';
 import { IThing } from 'common/lib/models/interface/thing';
 import Loader from 'framework-ui/lib/Components/Loader';
-import * as formsActions from 'framework-ui/lib/redux/actions/formsData';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData } from 'framework-ui/lib/utils/getters';
 import { clone } from 'ramda';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getToken } from '../firebase';
 import { devicesActions } from '../store/actions/application/devices';
@@ -90,8 +90,6 @@ const FIELDS = ['propertyId', 'type', 'value', 'interval'];
 const FIELDS_ADVANCED = ['interval', 'from', 'to', 'daysOfWeek'];
 
 interface EditDeviceDialogProps {
-    updateFormField: any;
-    fillEditFormAction: any;
     editForm: any;
     sensorCount?: number;
     preFillForm: any;
@@ -104,8 +102,6 @@ interface EditDeviceDialogProps {
 }
 
 function EditDeviceDialog({
-    updateFormField,
-    fillEditFormAction,
     editForm,
     sensorCount = 0,
     onUpdate,
@@ -118,6 +114,7 @@ function EditDeviceDialog({
 }: EditDeviceDialogProps) {
     const [pending, setPending] = useState(false);
     const [loaded, setLoaded] = useState(false);
+    const dispatch = useDispatch();
     const classes = useStyles();
 
     useEffect(() => {
@@ -161,15 +158,19 @@ function EditDeviceDialog({
         }
 
         newEditForm.count = sensorCount - 1;
-        fillEditFormAction(newEditForm);
+        dispatch(formsDataActions.setFormData({ formName: 'EDIT_NOTIFY', data: newEditForm }));
+    }
+
+    function updateField(deepPath: string, value: any) {
+        dispatch(formsDataActions.setFormField({ deepPath, value }));
     }
 
     function handleAdd() {
-        updateFormField('EDIT_NOTIFY.count', sensorCount + 1);
-        updateFormField('EDIT_NOTIFY.advanced.interval.' + sensorCount, defaultAdvanced.interval);
-        updateFormField('EDIT_NOTIFY.advanced.from.' + sensorCount, defaultAdvanced.from);
-        updateFormField('EDIT_NOTIFY.advanced.to.' + sensorCount, defaultAdvanced.to);
-        updateFormField('EDIT_NOTIFY.advanced.daysOfWeek.' + sensorCount, defaultAdvanced.daysOfWeek);
+        updateField('EDIT_NOTIFY.count', sensorCount + 1);
+        updateField('EDIT_NOTIFY.advanced.interval.' + sensorCount, defaultAdvanced.interval);
+        updateField('EDIT_NOTIFY.advanced.from.' + sensorCount, defaultAdvanced.from);
+        updateField('EDIT_NOTIFY.advanced.to.' + sensorCount, defaultAdvanced.to);
+        updateField('EDIT_NOTIFY.advanced.daysOfWeek.' + sensorCount, defaultAdvanced.daysOfWeek);
     }
 
     const handleSave = async () => {
@@ -223,8 +224,8 @@ const _mapStateToProps = (state: IState, { match: { params } }: EditDeviceDialog
 const _mapDispatchToProps = (dispatch: any) => ({
     ...bindActionCreators(
         {
-            updateFormField: formsActions.updateFormField,
-            fillEditFormAction: formsActions.fillForm('EDIT_NOTIFY'),
+            // updateFormField: formsActions.updateFormField,
+            // fillEditFormAction: formsActions.fillForm('EDIT_NOTIFY'),
             preFillForm: devicesActions.prefillNotify,
             onSaveAction: devicesActions.updateNotify,
             registerTokenAction: userActions.registerToken,

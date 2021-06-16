@@ -24,7 +24,7 @@ export const userSchemaPlain = {
     accessTokens: [
         {
             name: String,
-            token: { type: String, index: { unique: true } },
+            token: { type: String },
             permissions: [{ type: String, enum: ['read', 'write', 'control'] }],
             createdAt: Date,
             validTo: Date,

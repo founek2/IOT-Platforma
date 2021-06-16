@@ -66,14 +66,7 @@ userSchema.statics.removeUsers = function (arrayOfIDs: Array<IUser['_id']>) {
 };
 
 userSchema.statics.findAllUserNames = function () {
-    return this.find(
-        {
-            groups: { $ne: 'root' },
-        },
-        'info.userName'
-    )
-        .lean()
-        .sort({ 'info.userName': 1 });
+    return this.find({}, 'info.userName').lean().sort({ 'info.userName': 1 });
 };
 
 userSchema.statics.addNotifyToken = function (userID: IUser['_id'], token: string) {

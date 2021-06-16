@@ -5,12 +5,12 @@ import { IDiscovery, IDiscoveryThing } from 'common/lib/models/interface/discove
 import Dialog from 'framework-ui/lib/Components/Dialog';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import EnchancedTable from 'framework-ui/lib/Components/Table';
-import * as formsActions from 'framework-ui/lib/redux/actions/formsData';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { isUrlHash } from 'framework-ui/lib/utils/getters';
 import { DeviceForm } from 'frontend/src/components/DeviceForm';
 import { assoc, prop } from 'ramda';
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../components/OnlineCircle';
 import { discoveryActions } from '../../store/actions/application/discovery';
@@ -18,23 +18,20 @@ import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 
 interface DiscoverySectionProps {
     discoveredDevices?: IDiscovery[];
-    resetCreateDeviceAction: any;
-    deleteDiscoveryAction: any;
-    updateFormField: any;
     addDiscoveryAction: any;
+    deleteDiscoveryAction: any;
 }
 
-function DiscoverySection(props: DiscoverySectionProps) {
+function DiscoverySection({ discoveredDevices, addDiscoveryAction, deleteDiscoveryAction }: DiscoverySectionProps) {
     const classes = useManagementStyles();
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [selectedId, setSelectedId] = useState<null | string>(null);
-    const { discoveredDevices, resetCreateDeviceAction, deleteDiscoveryAction, updateFormField, addDiscoveryAction } =
-        props;
+    const dispatch = useDispatch();
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
 
     function closeDialog() {
-        resetCreateDeviceAction();
+        dispatch(formsDataActions.removeForm('CREATE_DEVICE'));
         setOpenAddDialog(false);
     }
 
@@ -98,9 +95,11 @@ function DiscoverySection(props: DiscoverySectionProps) {
                                     onClick={() => {
                                         setSelectedId(id);
                                         console.log('looking', discoveredDevices, id);
-                                        updateFormField(
-                                            'CREATE_DEVICE.info.name',
-                                            discoveredDevices.find((dev) => dev._id === id)?.name || ''
+                                        dispatch(
+                                            formsDataActions.setFormField({
+                                                deepPath: 'CREATE_DEVICE.info.name',
+                                                value: discoveredDevices.find((dev) => dev._id === id)?.name || '',
+                                            })
                                         );
                                         setOpenAddDialog(true);
                                     }}
@@ -143,8 +142,8 @@ const _mapDispatchToProps = (dispatch: any) =>
         {
             deleteDiscoveryAction: discoveryActions.deleteDevices,
             addDiscoveryAction: discoveryActions.add,
-            resetCreateDeviceAction: formsActions.removeForm('CREATE_DEVICE'),
-            updateFormField: formsActions.updateFormField,
+            // resetCreateDeviceAction: formsActions.removeForm('CREATE_DEVICE'),
+            // updateFormField: formsActions.updateFormField,
         },
         dispatch
     );

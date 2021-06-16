@@ -1,30 +1,24 @@
 import { getUser } from 'framework-ui/lib/utils/getters';
 import { IState } from 'frontend/src/types';
 import React from 'react';
-import { useSelector, connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import EditUser from '../userManagement/EditUser';
-import { bindActionCreators } from 'redux';
-import * as userActions from 'framework-ui/lib/redux/actions/application/user';
+import { userActions } from 'framework-ui/lib/redux/actions/application/user';
+import { useAppDispatch } from 'frontend/src/hooks';
 
-function Account({ updateUserAction }: any) {
+function Account() {
     const user = useSelector<IState, IState['application']['user']>(getUser);
+    const dispatch = useAppDispatch();
 
     if (!user) return <p>Načítám data...</p>;
     return (
         <EditUser
             onButtonClick={async () => {
-                const result = await updateUserAction(user._id);
+                await dispatch(userActions.updateUser(user._id));
             }}
             user={user}
         />
     );
 }
 
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            updateUserAction: userActions.updateUser,
-        },
-        dispatch
-    );
-export default connect(null, _mapDispatchToProps)(Account);
+export default Account;

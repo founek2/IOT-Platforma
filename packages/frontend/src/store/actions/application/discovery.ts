@@ -1,7 +1,7 @@
 import type { IDevice } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
 import { baseLogger } from 'framework-ui/lib/logger';
-import { validateForm } from 'framework-ui/lib/redux/actions/formsData';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
 import { addDiscoveredDevice, deleteDiscovery, fetchDiscovery } from '../../../api/discovery';
 import { ActionTypes } from '../../../constants/redux';
@@ -32,7 +32,7 @@ export const discoveryActions = {
             baseLogger('DELETE_DISCOVERED_DEVICES');
 
             const DISCOVERY_DEVICES = 'DISCOVERY_DEVICES';
-            const result = dispatch(validateForm(DISCOVERY_DEVICES)());
+            const result = dispatch(formsDataActions.validateForm(DISCOVERY_DEVICES));
             if (result.valid) {
                 const formData = getFormData(DISCOVERY_DEVICES)(getState()) as any;
                 formData.selected.map((id: IDiscovery['_id']) => {
@@ -56,7 +56,7 @@ export const discoveryActions = {
             baseLogger('CREATE_DEVICE');
 
             const CREATE_DEVICE = 'CREATE_DEVICE';
-            const result = dispatch(validateForm(CREATE_DEVICE)());
+            const result = dispatch(formsDataActions.validateForm(CREATE_DEVICE));
             if (result.valid) {
                 const formData = getFormData(CREATE_DEVICE)(getState()) as any;
                 return addDiscoveredDevice(

@@ -1,31 +1,34 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar, SnackbarKey } from 'notistack';
-import { removeNotification } from 'framework-ui/lib/redux/actions/application/notifications';
+import { useSnackbar } from 'notistack';
+import { notificationsActions } from 'framework-ui/lib/redux/actions/application/notifications';
+import { NotificationVariant } from 'framework-ui/lib/types';
+
+type NotifyKey = number;
 
 interface notification {
-    key: SnackbarKey
-    message: string
-    options: any
-    dismissed: boolean
-    variant?: "default" | "error" | "success" | "warning" | "info" | undefined
-    onClose: any,
-    duration?: number
+    key: NotifyKey;
+    message: string;
+    options: any;
+    dismissed: boolean;
+    variant?: NotificationVariant;
+    onClose: any;
+    duration?: number;
 }
-let displayed: SnackbarKey[] = [];
+let displayed: NotifyKey[] = [];
 
 const Notifier = () => {
     const dispatch = useDispatch();
-    const notifications = useSelector<any, notification[]>(store => store.application.notifications || []);
+    const notifications = useSelector<any, notification[]>((store) => store.application.notifications || []);
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const storeDisplayed = (id: SnackbarKey) => {
+    const storeDisplayed = (id: NotifyKey) => {
         displayed = [...displayed, id];
     };
 
-    const removeDisplayed = (id: SnackbarKey) => {
-        displayed = [...displayed.filter(key => id !== key)];
+    const removeDisplayed = (id: NotifyKey) => {
+        displayed = [...displayed.filter((key) => id !== key)];
     };
 
     React.useEffect(() => {
@@ -51,8 +54,8 @@ const Notifier = () => {
                 },
                 onExited: (event, myKey) => {
                     // remove this snackbar from redux store
-                    dispatch(removeNotification(myKey));
-                    removeDisplayed(myKey);
+                    dispatch(notificationsActions.remove(myKey as number));
+                    removeDisplayed(myKey as number);
                 },
             });
 

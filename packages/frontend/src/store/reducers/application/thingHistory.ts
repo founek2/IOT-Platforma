@@ -1,29 +1,47 @@
-import { HistoricalSensor } from "common/lib/models/interface/history";
-import { handleActions } from "redux-actions";
-import { ActionTypes } from "../../../constants/redux";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IDevice } from 'common/lib/models/interface/device';
+import { IThing } from 'common/lib/models/interface/thing';
+import { HistoricalSensor } from 'common/lib/models/interface/history';
 
-
-export interface state {
+// Define a type for the slice state
+export interface ThingHistoryState {
     data: HistoricalSensor[];
     lastFetch?: Date;
     lastUpdate?: Date;
+    deviceId?: IDevice['_id'];
+    thingId?: IThing['config']['nodeId'];
 }
 
-const set = {
-    next(state: state, action: any) {
-        const date = new Date();
-        return {
-            data: action.payload.data,
-            deviceId: action.payload.deviceId,
-            thingId: action.payload.thingId,
-            lastFetch: date,
-            lastUpdate: date,
-        };
+// Define the initial state using that type
+const initialState: ThingHistoryState = {
+    data: [],
+};
+
+export const thingHistorySlice = createSlice({
+    name: 'thingHistory',
+    // `createSlice` will infer the state type from the `initialState` argument
+    initialState,
+    reducers: {
+        set: (
+            state,
+            action: PayloadAction<{
+                data: HistoricalSensor[];
+                deviceId: IDevice['_id'];
+                thingId: IThing['config']['nodeId'];
+            }>
+        ) => {
+            const date = new Date();
+            return {
+                data: action.payload.data,
+                deviceId: action.payload.deviceId,
+                thingId: action.payload.thingId,
+                lastFetch: date,
+                lastUpdate: date,
+            };
+        },
     },
-};
+});
 
-const deviceReducers = {
-    [ActionTypes.SET_THING_HISTORY]: set,
-};
+export const thingHistoryReducerActions = thingHistorySlice.actions;
 
-export default handleActions(deviceReducers, { data: [] });
+export default thingHistorySlice.reducer;

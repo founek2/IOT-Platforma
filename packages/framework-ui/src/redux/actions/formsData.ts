@@ -9,77 +9,42 @@ import { checkValid } from '../../validations';
 import setInPath from '../../utils/setInPath';
 import { baseLogger } from '../../logger';
 import { curry, forEachObjIndexed, is } from 'ramda';
-import { addNotification } from './application/notifications';
+import { notificationsActions } from './application/notifications';
 import ErrorMessages from '../../localization/errorMessages';
+import { formsDataReducerActions } from '../reducers/formsData';
+import { AppThunk } from '../../types';
 
-export const updateFormField = curry(function (deepPath, data) {
-    return {
-        type: ActionTypes.UPDATE_FORM_FIELD,
-        payload: { deepPath, data },
-    };
-});
-
-export function fillForm(formName) {
-    return function (data) {
-        return {
-            type: ActionTypes.SET_FORM_DATA,
-            payload: { formName, data },
+function recursive(transform: any, predicate: any, object: any) {
+    const func =
+        (accum = '') =>
+        (value: any, key: any) => {
+            if (predicate(value)) return rec(value, accum + key + '.');
+            transform(value, accum + key);
         };
-    };
+
+    function rec(obj: any, accum?: any) {
+        forEachObjIndexed(func(accum), obj);
+    }
+    rec(object);
 }
 
-export function setFormsData(data) {
-    return {
-        type: ActionTypes.SET_FORMS_DATA,
-        payload: data,
-    };
-}
+export const formsDataActions = {
+    ...formsDataReducerActions,
 
-export const setFormData = (formName, data) => (dispatch) => {
-    dispatch({
-        type: ActionTypes.SET_FORM_DATA,
-        payload: { formName, data },
-    });
-};
+    validateField(deepPath: string, ignorePristine = false): AppThunk<ReturnType<typeof ValidateField>> {
+        return function (dispatch, getState) {
+            baseLogger('VALIDATE_FIELD:', deepPath);
+            const fieldState = ValidateField(deepPath, getState(), ignorePristine);
+            dispatch(formsDataActions.updateRegisteredField({ deepPath, value: fieldState }));
+            return fieldState;
+        };
+    },
 
-export function registerField(deepPath) {
-    baseLogger(ActionTypes.REGISTER_FIELD, deepPath);
-    return {
-        type: ActionTypes.REGISTER_FIELD,
-        payload: deepPath,
-    };
-}
-
-export function unregisterField(deepPath) {
-    baseLogger(ActionTypes.UNREGISTER_FIELD, deepPath);
-    return {
-        type: ActionTypes.UNREGISTER_FIELD,
-        payload: deepPath,
-    };
-}
-
-export function updateRegisteredField(deepPath, data) {
-    baseLogger(ActionTypes.UPDATE_REGISTERED_FIELD, deepPath);
-    return {
-        type: ActionTypes.UPDATE_REGISTERED_FIELD,
-        payload: { deepPath, data },
-    };
-}
-
-export function validateField(deepPath, ignorePristine) {
-    return function (dispatch, getState) {
-        baseLogger('VALIDATE_FIELD:', deepPath);
-        const fieldState = ValidateField(deepPath, getState(), ignorePristine);
-        dispatch(updateRegisteredField(deepPath, fieldState));
-        return fieldState;
-    };
-}
-
-export function validateForm(formName, ignoreRequired = false) {
-    return function () {
+    validateForm(formName: string, ignoreRequired = false): AppThunk<ReturnType<typeof checkValid>> {
         return function (dispatch, getState) {
             baseLogger('VALIDATE_FORM:', formName);
-            dispatch(setFormData(formName, getFormData(formName)(getState())));
+
+            dispatch(formsDataActions.setFormData({ formName, data: getFormData(formName)(getState()) }));
             const fieldStates = ValidateForm(formName, getState(), ignoreRequired);
 
             dispatch({
@@ -89,11 +54,12 @@ export function validateForm(formName, ignoreRequired = false) {
 
             console.log('states', fieldStates);
 
+            // @ts-ignore
             const result = checkValid(fieldStates[formName]);
             if (!result.valid) {
                 console.log('validationResult', result);
                 dispatch(
-                    addNotification({
+                    notificationsActions.add({
                         message: ErrorMessages.getMessage('validationFailed'),
                         variant: 'error',
                         duration: 3000,
@@ -102,14 +68,14 @@ export function validateForm(formName, ignoreRequired = false) {
             }
             return result;
         };
-    };
-}
+    },
 
-export function validateRegisteredFields(formName, ignoreRequired = false) {
-    return function () {
+    validateRegisteredFields(formName: string, ignoreRequired = false): AppThunk<ReturnType<typeof checkValid>> {
         return function (dispatch, getState) {
             baseLogger('VALIDATE_REGISTERED_FIELDS:', formName);
-            dispatch(setFormData(formName, getFormData(formName)(getState())));
+
+            dispatch(formsDataActions.setFormData({ formName, data: getFormData(formName)(getState()) }));
+            console.log('blabla');
             const fieldStates = ValidateRegisteredFields(formName, getState(), ignoreRequired);
 
             dispatch({
@@ -121,7 +87,7 @@ export function validateRegisteredFields(formName, ignoreRequired = false) {
             if (!result.valid) {
                 console.log('validationResult', result);
                 dispatch(
-                    addNotification({
+                    notificationsActions.add({
                         message: ErrorMessages.getMessage('validationFailed'),
                         variant: 'error',
                         duration: 3000,
@@ -130,52 +96,30 @@ export function validateRegisteredFields(formName, ignoreRequired = false) {
             }
             return result;
         };
-    };
-}
+    },
 
-function recursive(transform, predicate, object) {
-    const func =
-        (accum = '') =>
-        (value, key) => {
-            if (predicate(value)) return rec(value, accum + key + '.');
-            transform(value, accum + key);
-        };
-
-    function rec(obj, accum) {
-        forEachObjIndexed(func(accum), obj);
-    }
-    rec(object);
-}
-
-export function removeForm(formName) {
-    return function () {
-        return {
-            type: ActionTypes.REMOVE_FORM,
-            payload: formName,
-        };
-    };
-}
-
-export function resetForm(formName) {
-    return function () {
+    // TODO maybe broken?? Do I even need it???
+    resetForm(formName: string): AppThunk {
         return function (dispatch, getState) {
             baseLogger('RESET_FORM:', formName);
             const state = getState();
+
+            // @ts-ignore
             const origRegisteredFields = getRegisteredFields(state)[formName];
             const origFormData = getFormData(formName)(state);
             let formData = {};
             let registeredFields = {};
-            const resetFormData = (value, fieldPath) => {
+            const resetFormData = (value: any, fieldPath: string) => {
                 if (is(Array, value)) formData = setInPath(fieldPath, [], formData);
                 else formData = setInPath(fieldPath, '', formData);
             };
-            const resetRegisteredFields = (val, fieldPath) => {
+            const resetRegisteredFields = (val: any, fieldPath: string) => {
                 registeredFields = setInPath(fieldPath, { pristine: true, valid: true }, registeredFields);
             };
 
             recursive(
                 resetFormData,
-                (val) => {
+                (val: any) => {
                     return is(Array, val) && !is(String, val);
                 },
                 origFormData
@@ -183,7 +127,7 @@ export function resetForm(formName) {
 
             recursive(
                 resetRegisteredFields,
-                ({ valid }) => {
+                ({ valid }: { valid: boolean }) => {
                     return valid === undefined;
                 },
                 origRegisteredFields
@@ -198,5 +142,5 @@ export function resetForm(formName) {
                 payload: { path: formName, data: formData },
             });
         };
-    };
-}
+    },
+};

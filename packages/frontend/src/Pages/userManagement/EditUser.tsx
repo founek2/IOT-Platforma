@@ -1,22 +1,20 @@
-import React, { Component, useEffect, useState } from 'react';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import UserForm from '../../components/UserForm';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { connect, useSelector } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
-import Button from '@material-ui/core/Button';
-import Loader from 'framework-ui/lib/Components/Loader';
-import { map, pick } from 'ramda';
-
-import { getGroups } from 'framework-ui/lib/utils/getters';
-import { getAllowedGroups } from 'framework-ui/lib/privileges';
-import * as formsActions from 'framework-ui/lib/redux/actions/formsData';
+import { makeStyles } from '@material-ui/core/styles';
 import { IUser } from 'common/lib/models/interface/userInterface';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import Loader from 'framework-ui/lib/Components/Loader';
+import { getAllowedGroups } from 'framework-ui/lib/privileges';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+import { getGroups } from 'framework-ui/lib/utils/getters';
 import { IState } from 'frontend/src/types';
+import { map, pick } from 'ramda';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import UserForm from '../../components/UserForm';
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -70,18 +68,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface EditUserProps {
-    fillEditFormAction: any;
     user: IUser;
     onButtonClick: () => void | Promise<void>;
 }
-function EditUser({ fillEditFormAction, user, onButtonClick }: EditUserProps) {
+function EditUser({ user, onButtonClick }: EditUserProps) {
     const [pending, setPending] = useState(false);
     const groups = useSelector<IState, IUser['groups']>(getGroups as any);
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const userObj = pick(['info', 'groups', 'auth'], user);
-        fillEditFormAction(userObj);
+        dispatch(formsDataActions.setFormData({ formName: 'EDIT_USER', data: userObj }));
     });
 
     async function handleSave() {
@@ -111,12 +109,4 @@ function EditUser({ fillEditFormAction, user, onButtonClick }: EditUserProps) {
     );
 }
 
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            fillEditFormAction: formsActions.fillForm('EDIT_USER'),
-        },
-        dispatch
-    );
-
-export default connect(null, _mapDispatchToProps)(EditUser);
+export default EditUser;
