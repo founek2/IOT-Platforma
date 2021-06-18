@@ -5,12 +5,12 @@ import setInPath from '../../utils/setInPath';
 
 // Define a type for the slice state
 export interface FormsDataState {
-    fieldDescripts: any;
+    registeredFields: any;
     [formName: string]: any;
 }
 
 // Define the initial state using that type
-const initialState: FormsDataState = { fieldDescripts: {} };
+const initialState: FormsDataState = { registeredFields: {} };
 
 export const formsDataSlice = createSlice({
     name: 'formsData',

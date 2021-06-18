@@ -47,10 +47,7 @@ export const formsDataActions = {
             dispatch(formsDataActions.setFormData({ formName, data: getFormData(formName)(getState()) }));
             const fieldStates = ValidateForm(formName, getState(), ignoreRequired);
 
-            dispatch({
-                type: ActionTypes.UPDATE_REGISTERED_FIELDS,
-                payload: fieldStates,
-            });
+            dispatch(formsDataActions.updateRegisteredFields(fieldStates));
 
             // @ts-ignore
             const result = checkValid(fieldStates[formName]);
@@ -76,10 +73,7 @@ export const formsDataActions = {
             console.log('blabla');
             const fieldStates = ValidateRegisteredFields(formName, getState(), ignoreRequired);
 
-            dispatch({
-                type: ActionTypes.UPDATE_REGISTERED_FIELDS,
-                payload: fieldStates,
-            });
+            dispatch(formsDataActions.updateRegisteredFields(fieldStates));
 
             const result = checkValid(fieldStates[formName]);
             if (!result.valid) {
