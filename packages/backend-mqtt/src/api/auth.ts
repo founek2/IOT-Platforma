@@ -1,7 +1,7 @@
 import { DeviceModel } from 'common/lib/models/deviceModel';
 import { UserService } from 'common/lib/services/userService';
 import express, { Response } from 'express';
-import { AuthTypes } from 'common/lib/constants';
+import { AuthType } from 'common/lib/constants';
 import { validatePass } from 'common/lib/services/TemporaryPass';
 import { UserModel } from 'common/lib/models/userModel';
 
@@ -59,7 +59,7 @@ router.post('/user', async function (req, res) {
         const { error, doc } = await UserService.checkCreditals({
             userName: username,
             password,
-            authType: AuthTypes.PASSWD,
+            authType: AuthType.passwd,
         });
         if (error || !doc) return sendDeny('/user user', res);
 
