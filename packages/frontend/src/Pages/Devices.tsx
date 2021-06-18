@@ -10,10 +10,10 @@ import { createSelector } from 'reselect';
 import { LocationTypography } from '../components/LocationTypography';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
 import { devicesActions } from '../store/actions/application/devices';
-import { IState } from '../types';
 import io from '../webSocket';
 import Room from './devices/Room';
 import RoomWidget from './devices/RoomWidget';
+import { RootState } from '../store/store';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -134,7 +134,7 @@ const buildingsSelector = createSelector<any, { data: IDevice[]; lastUpdate: Dat
     }
 );
 
-const _mapStateToProps = (state: IState, { match }: { match: { params: { building?: string; room?: string } } }) => {
+const _mapStateToProps = (state: RootState, { match }: { match: { params: { building?: string; room?: string } } }) => {
     return {
         buildings: buildingsSelector(state),
         selectedLocation: {

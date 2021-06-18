@@ -2,24 +2,24 @@ import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { merge } from 'ramda';
 
 // Define a type for the slice state
-export type UserState = { _id?: any; loggedIn: boolean };
+export type User = { _id?: any };
+export type UserState = User | null;
 
 // Define the initial state using that type
-const initialState: UserState = { loggedIn: false };
+const initialState = null as UserState;
 
 export const userSlice = createSlice({
     name: 'user',
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
-        set: (state, action: PayloadAction<UserState>) => {
+        set: (state, action: PayloadAction<User>) => {
             return action.payload;
         },
-        update: (state, action: PayloadAction<UserState>) => {
+        update: (state, action: PayloadAction<User>) => {
+            if (!state) return action.payload;
+
             return merge(state, action.payload);
-        },
-        remove: (state, action: Action) => {
-            return { loggedIn: false };
         },
         toDefault: () => {
             return initialState;

@@ -3,7 +3,7 @@ import { getPathsWithComp } from 'framework-ui/lib/privileges';
 import { hydrateState } from 'framework-ui/lib/redux/actions';
 import { historyActions } from 'framework-ui/lib/redux/actions/history';
 import { updateTmpData } from 'framework-ui/lib/redux/actions/tmpData';
-import { getGroups, getUserPresence } from 'framework-ui/lib/utils/getters';
+import { getGroups, isUserLoggerIn } from 'framework-ui/lib/utils/getters';
 import parseQuery from 'framework-ui/lib/utils/parseQuery';
 import { createBrowserHistory } from 'history';
 import { map } from 'ramda';
@@ -16,6 +16,7 @@ import '../firebase'; // init
 import Main from '../Pages/Main';
 import RegisterUser from '../Pages/RegisterUser';
 import { historyReducerActions } from 'framework-ui/lib/redux/reducers/history';
+import { Authorization } from '../Pages/Authorization';
 
 const history = createBrowserHistory();
 
@@ -51,10 +52,7 @@ function Router({ userPresence, userGroups }: RouterProps) {
 
         if (lastHistory && history.location.pathname === '/') history.push(JSON.parse(lastHistory));
 
-        console.log('REGISTERING');
         history.listen(({ key, state, ...rest }, action) => {
-            console.log('listen');
-
             dispatch(
                 historyReducerActions.set({
                     ...rest,
@@ -89,6 +87,7 @@ function Router({ userPresence, userGroups }: RouterProps) {
                             path={[ '/devices/:building/:room', '/devices/:building', '/devices' ]}
                             component={Devices}
                         /> */}
+                    <Route path="/authorization" component={Authorization} />
                     <Route path="/" component={Main} />
                 </Switch>
             </Suspense>
@@ -96,7 +95,7 @@ function Router({ userPresence, userGroups }: RouterProps) {
     );
 }
 const _mapStateToProps = (state: any) => ({
-    userPresence: getUserPresence(state),
+    userPresence: isUserLoggerIn(state),
     userGroups: getGroups(state),
 });
 

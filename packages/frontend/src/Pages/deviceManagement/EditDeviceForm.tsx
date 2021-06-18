@@ -7,14 +7,14 @@ import React, { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { userNamesActions } from '../../store/actions/application/userNames';
-import { IState } from '../../types';
 import { getUserNames } from '../../utils/getters';
+import { RootState } from 'frontend/src/store/store';
 
 interface DiscoverySectionProps {
     devices?: IDevice[];
     deleteDiscoveryAction: any;
     updateFormField: any;
-    userNames: IState['application']['userNames'];
+    userNames: RootState['application']['userNames'];
 }
 
 function EditDeviceForm({ userNames }: DiscoverySectionProps) {

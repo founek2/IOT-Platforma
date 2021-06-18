@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { getPaths } from 'framework-ui/lib/privileges';
-import { getUserPresence, getGroups } from 'framework-ui/lib/utils/getters';
+import { isUserLoggerIn, getGroups } from 'framework-ui/lib/utils/getters';
 import uiMessages from '../../localization/ui';
 
 const styles = {
@@ -68,7 +68,7 @@ function SideMenu({ classes, open, onClose, onOpen, userPresence, userGroups }) 
 }
 
 const _mapStateToProps = (state) => ({
-    userPresence: getUserPresence(state),
+    userPresence: isUserLoggerIn(state),
     userGroups: getGroups(state) || [],
 });
 

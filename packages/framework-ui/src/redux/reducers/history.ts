@@ -23,11 +23,9 @@ export const historySlice = createSlice({
     initialState,
     reducers: {
         set: (state, action: PayloadAction<HistoryState>) => {
-            console.log('set', state, action.payload);
             return action.payload;
         },
         update: (state, action: PayloadAction<Partial<HistoryState>>) => {
-            console.log('update', state, action.payload);
             return merge(state, action.payload);
         },
     },

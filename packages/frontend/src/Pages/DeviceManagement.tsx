@@ -12,13 +12,13 @@ import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as deviceActions from '../store/actions/application/devices';
-import { IState } from '../types';
 import { getDevices, getDiscovery, getQueryField, getQueryID } from '../utils/getters';
 import io from '../webSocket';
 import DeviceSection from './deviceManagement/DeviceSection';
 import DiscoverySection from './deviceManagement/DiscoverySection';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
 import { discoveryActions } from '../store/actions/application/discovery';
+import { RootState } from '../store/store';
 
 const useStyles = makeStyles((theme) => ({
     cardContent: {
@@ -64,10 +64,10 @@ function Devices({ devices, discoveredDevices }: DevicesProps) {
     );
 }
 
-const _mapStateToProps = (state: IState) => {
+const _mapStateToProps = (state: RootState) => {
     const deviceId = getQueryField('deviceId')(state);
     // @ts-ignore
-    const discoveredDevices = prop('data', getDiscovery(state)) as IState['application']['discovery']['data'];
+    const discoveredDevices = prop('data', getDiscovery(state)) as RootState['application']['discovery']['data'];
     // @ts-ignore
     const toAddDevice = discoveredDevices.find(o(equals(deviceId), prop('deviceId')));
     const devices = getDevices(state);

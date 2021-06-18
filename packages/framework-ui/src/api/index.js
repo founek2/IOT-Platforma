@@ -25,7 +25,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
         dispatch(dehydrateState());
     }
 
-    if (status === 502) {
+    if (status === 502 || status === 504) {
         dispatch(
             addNotification({
                 message: ErrorMessages.getMessage(errorMessage || 'unavailableBackend'),

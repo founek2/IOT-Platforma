@@ -8,12 +8,13 @@ import {
 } from '../../../api/userApi';
 import SuccessMessages from '../../../localization/successMessages';
 import { dehydrateState } from '..';
-import { prop } from 'ramda';
+import { prop, head } from 'ramda';
 import logger from '../../../logger';
 import { AppThunk } from '../../../types';
 import { userReducerActions } from '../../reducers/application/user';
 import { formsDataActions } from '../formsData';
 import { notificationsActions } from './notifications';
+import { authorizationReducerActions } from '../../reducers/application/authorization';
 
 const LOGIN = 'LOGIN';
 
@@ -31,8 +32,9 @@ export const userActions = {
                         body: { formData: { LOGIN: formData } },
 
                         onSuccess: (json: any) => {
-                            console.log('logger', json);
-                            dispatch(userActions.set({ ...json.user, token: json.token }));
+                            dispatch(userActions.set({ ...json.user }));
+                            dispatch(authorizationReducerActions.setAccessToken(json.token));
+                            dispatch(authorizationReducerActions.setLoggedIn(true));
                             dispatch(dehydrateState());
                             // dispatch(resetForm(LOGIN)())
                         },
@@ -42,6 +44,14 @@ export const userActions = {
             }
 
             return false;
+        };
+    },
+
+    logout(): AppThunk {
+        return function (dispatch, getState) {
+            dispatch(authorizationReducerActions.setAccessToken(''));
+            dispatch(authorizationReducerActions.setLoggedIn(false));
+            dispatch(userActions.toDefault());
         };
     },
 
@@ -101,11 +111,15 @@ export const userActions = {
                     {
                         userName: userName,
                         params: { attribute: 'authType' },
-                        onSuccess: ({ authType }: any) => {
-                            dispatch(formsDataActions.setFormField({ deepPath: `${LOGIN}.authType`, value: authType }));
+                        onSuccess: ({ authTypes }: any) => {
+                            dispatch(
+                                formsDataActions.setFormField({
+                                    deepPath: `${LOGIN}.authType`,
+                                    value: authTypes.find((it: any) => it === 'passwd') || head(authTypes),
+                                })
+                            );
                         },
                         onError: () => {
-                            console.log('onError');
                             dispatch(formsDataActions.setFormField({ deepPath: `${LOGIN}.authType`, value: '' }));
                         },
                     },
@@ -121,11 +135,8 @@ export const userActions = {
             const EDIT_USER = 'EDIT_USER';
             logger.log('EDIT_USER_CURRENT');
 
-            console.log('onSuccess0');
             const result = dispatch(formsDataActions.validateForm(EDIT_USER));
-            console.log('onSuccess1');
-            const formData = getFormData(EDIT_USER)(getState());
-            console.log('onSuccess2');
+            const formData: any = getFormData(EDIT_USER)(getState());
             if (result.valid) {
                 return updateUserApi(
                     {
@@ -133,7 +144,11 @@ export const userActions = {
                         body: { formData: { [EDIT_USER]: formData } },
                         id,
                         onSuccess: () => {
+                            if (formData.auth) delete formData.auth;
                             dispatch(userActions.update(formData as any));
+                            dispatch(
+                                formsDataActions.setFormField({ deepPath: `${EDIT_USER}.auth.password`, value: '' })
+                            );
                             dispatch(dehydrateState());
                         },
                     },

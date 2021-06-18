@@ -52,12 +52,10 @@ export const formsDataActions = {
                 payload: fieldStates,
             });
 
-            console.log('states', fieldStates);
-
             // @ts-ignore
             const result = checkValid(fieldStates[formName]);
             if (!result.valid) {
-                console.log('validationResult', result);
+                console.error(fieldStates);
                 dispatch(
                     notificationsActions.add({
                         message: ErrorMessages.getMessage('validationFailed'),

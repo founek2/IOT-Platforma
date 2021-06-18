@@ -11,12 +11,12 @@ import Switch from './components/Switch';
 import switchCss from './components/switch/css';
 import ChartSimple from 'frontend/src/components/ChartSimple';
 import { useSelector } from 'react-redux';
-import { IState } from 'frontend/src/types';
 import { HistoricalGeneric } from 'common/lib/models/interface/history';
 import { IThingProperty } from 'common/lib/models/interface/thing';
 import { getThingHistory } from 'frontend/src/utils/getters';
 import { CopyUrlContext } from './components/helpers/CopyUrl';
 import { toogleSwitchVal } from './components/helpers/toogleSwitchVal';
+import { RootState } from 'frontend/src/store/store';
 
 const useStyles = makeStyles((theme) => ({
     ...switchCss(theme),
@@ -53,7 +53,7 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
     const classes = useStyles();
     const property = head(thing.config.properties)!;
     const value = (thing.state?.value || { [property.propertyId]: 'false' })[property.propertyId];
-    const historyData = useSelector<IState, IState['application']['thingHistory']>(getThingHistory as any);
+    const historyData = useSelector<RootState, RootState['application']['thingHistory']>(getThingHistory as any);
     const [openDialog, setOpenDialog] = React.useState(false);
     const title = room + ' - ' + thing.config.name!;
 
@@ -62,7 +62,7 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
     }, [openDialog]);
 
     const chartData = useMemo(
-        () => mergeData(historyData.data as HistoricalGeneric[], property.propertyId),
+        () => mergeData(historyData.data as unknown as HistoricalGeneric[], property.propertyId),
         [
             historyData.data.length > 0 && historyData.data[0].first,
             historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,

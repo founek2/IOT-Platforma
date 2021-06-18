@@ -1,18 +1,14 @@
-import React, { Fragment } from 'react';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import { withStyles } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
-import { connect, useDispatch } from 'react-redux';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-
-import { getFieldVal } from 'framework-ui/lib/utils/getters';
-import { ControlStateTypes, NotifyControlTypes } from '../../../constants';
-import { IState } from 'frontend/src/types';
-import { IThingProperty, IThing, PropertyDataType, IThingPropertyEnum } from 'common/lib/models/interface/thing';
-import { NotifyType, NotfyTypeForDataType, NotifyTypeText } from 'common/lib/models/interface/notifyInterface';
+import MenuItem from '@material-ui/core/MenuItem';
+import { NotfyTypeForDataType, NotifyType, NotifyTypeText } from 'common/lib/models/interface/notifyInterface';
+import { IThing, IThingProperty, IThingPropertyEnum, PropertyDataType } from 'common/lib/models/interface/thing';
 import { isNumericDataType } from 'common/lib/utils/isNumericDataType';
-import { bindActionCreators } from 'redux';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+import { getFieldVal } from 'framework-ui/lib/utils/getters';
+import { RootState } from 'frontend/src/store/store';
+import React, { Fragment } from 'react';
+import { connect, useDispatch } from 'react-redux';
 
 interface PropertyPartProps {
     id: number;
@@ -112,7 +108,7 @@ function PropertyPart({ id, config, selectedProperty, selectedType }: PropertyPa
     );
 }
 
-const _mapStateToProps = (state: IState, { id, config }: { id: number; config: IThing['config'] }) => {
+const _mapStateToProps = (state: RootState, { id, config }: { id: number; config: IThing['config'] }) => {
     const selectedPropId = getFieldVal(`EDIT_NOTIFY.propertyId.${id}`, state) as
         | IThingProperty['propertyId']
         | undefined;

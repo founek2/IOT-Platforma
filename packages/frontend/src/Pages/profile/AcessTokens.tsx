@@ -11,7 +11,6 @@ import EnchancedTable from 'framework-ui/lib/Components/Table';
 import { isUrlHash } from 'framework-ui/lib/utils/getters';
 import { TokenPermissions } from 'frontend/src/constants';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
-import { IState } from 'frontend/src/types';
 import { getQueryID } from 'frontend/src/utils/getters';
 import { assoc, prop } from 'ramda';
 import React from 'react';
@@ -19,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import EditAccessToken from './accessTokens/EditAccessToken';
 import { accessTokensActions } from 'frontend/src/store/actions/accessTokens';
+import { RootState } from 'frontend/src/store/store';
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -29,16 +29,16 @@ const useStyles = makeStyles((theme) => ({
 function Security() {
     const classes = useStyles();
     const classesTab = useManagementStyles();
-    const user = useSelector<IState, IUser | undefined>((state) => state.application.user);
-    const selectedId = useSelector<IState, string | undefined>(getQueryID);
-    const openAddDialog = useSelector<IState, boolean>(isUrlHash('#addToken'));
-    const openEditDialog = useSelector<IState, boolean>(isUrlHash('#editToken'));
+    const user = useSelector<RootState, IUser | null>((state) => state.application.user);
+    const selectedId = useSelector<RootState, string | undefined>(getQueryID);
+    const openAddDialog = useSelector<RootState, boolean>(isUrlHash('#addToken'));
+    const openEditDialog = useSelector<RootState, boolean>(isUrlHash('#editToken'));
     const history = useHistory();
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
     const dispatch = useDispatch();
 
-    const accessTokens = useSelector<IState, IState['accessTokens']>((state) => state.accessTokens);
+    const accessTokens = useSelector<RootState, RootState['accessTokens']>((state) => state.accessTokens);
     const selectedToken = accessTokens.data.find((t) => t._id === selectedId);
 
     function deleteTokens(tokenIDs: Array<IAccessToken['token']>) {

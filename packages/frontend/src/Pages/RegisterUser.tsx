@@ -6,14 +6,13 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles } from '@material-ui/core/styles';
-import { AuthTypes } from 'common/lib/constants';
 import Loader from 'framework-ui/lib/Components/Loader';
 import { userActions } from 'framework-ui/lib/redux/actions/application/user';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { History } from 'history';
 import React, { useState } from 'react';
 import UserForm from '../components/UserForm';
 import { useAppDispatch } from '../hooks';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 
 const useClasses = makeStyles((theme) => ({
     card: {
@@ -64,8 +63,6 @@ const useClasses = makeStyles((theme) => ({
     },
 }));
 
-export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }];
-
 interface RegisterUserProps {}
 function RegisterUser({ history }: RegisterUserProps & { history: History }) {
     const [pending, setPending] = useState(false);
@@ -85,23 +82,11 @@ function RegisterUser({ history }: RegisterUserProps & { history: History }) {
         setPending(false);
     };
 
-    const handleAuth = async (e: any) => {
-        if (e.target.value !== 'webAuth') return;
-        setPending(true);
-        // try {
-        //     const challenge = await getChallengeAction()
-        //     const credentials = await createCredentials(challenge);
-        //     console.log("credentials", credentials)
-        // } catch{
-        //     // TODO change to empty auth
-        // }
-        setPending(false);
-    };
     return (
         <Card className={classes.card}>
             <CardHeader className={classes.header} title="Registrace" />
             <CardContent className={classes.content}>
-                <UserForm formName="REGISTRATION" onAuthChange={handleAuth} />
+                <UserForm formName="REGISTRATION" />
             </CardContent>
             <CardActions className={classes.actions}>
                 <FormControlLabel

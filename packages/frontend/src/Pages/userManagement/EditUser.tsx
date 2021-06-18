@@ -10,11 +10,11 @@ import Loader from 'framework-ui/lib/Components/Loader';
 import { getAllowedGroups } from 'framework-ui/lib/privileges';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getGroups } from 'framework-ui/lib/utils/getters';
-import { IState } from 'frontend/src/types';
 import { map, pick } from 'ramda';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import UserForm from '../../components/UserForm';
+import { RootState } from 'frontend/src/store/store';
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -73,14 +73,14 @@ interface EditUserProps {
 }
 function EditUser({ user, onButtonClick }: EditUserProps) {
     const [pending, setPending] = useState(false);
-    const groups = useSelector<IState, IUser['groups']>(getGroups as any);
+    const groups = useSelector<RootState, IUser['groups']>(getGroups as any);
     const classes = useStyles();
     const dispatch = useDispatch();
 
     useEffect(() => {
         const userObj = pick(['info', 'groups', 'auth'], user);
         dispatch(formsDataActions.setFormData({ formName: 'EDIT_USER', data: userObj }));
-    });
+    }, [dispatch]);
 
     async function handleSave() {
         setPending(true);

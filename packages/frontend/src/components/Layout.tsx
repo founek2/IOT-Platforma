@@ -9,7 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
 import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { getGroups, getUser, getUserInfo, getUserPresence, isUrlHash } from 'framework-ui/lib/utils/getters';
+import { getGroups, getUser, getUserInfo, isUserLoggerIn, isUrlHash } from 'framework-ui/lib/utils/getters';
 import React, { Fragment, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -131,7 +131,7 @@ function Layout({ userPresence, loginOpen, history, editUserOpen, userToEdit, fo
 const _mapStateToProps = (state: any) => {
     return {
         groups: getGroups(state),
-        userPresence: getUserPresence(state),
+        userPresence: isUserLoggerIn(state),
         loginOpen: isUrlHash('#login')(state),
         forgotOpen: isUrlHash('#forgot')(state),
         editUserOpen: isUrlHash('#editUser')(state),

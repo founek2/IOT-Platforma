@@ -1,5 +1,6 @@
 import { prop, o, curry, compose, has, filter, equals, path } from 'ramda';
 import getInPath from './getInPath';
+import { AuthorizationState } from '../redux/reducers/application/authorization';
 
 type getter = (object: any) => any;
 
@@ -30,6 +31,8 @@ export const getNotifications = o(prop('notifications'), getApplication);
 
 export const getUser: getter = o(prop('user'), getApplication);
 
+export const getAuthorization = o(prop('authorization'), getApplication) as (state: any) => AuthorizationState;
+
 export const getUserAuthType = o(prop('authType'), getUser);
 
 export const getUserInfo = o(prop('info'), getUser);
@@ -38,9 +41,10 @@ export const getGroups = o(prop('groups'), getUser);
 
 export const getFieldVal = curry((deepPath, state) => o(getInPath(deepPath), getFormsData)(state));
 
-export const getToken = o(prop('token'), getUser);
+export const getToken = o(prop('accessToken'), getAuthorization);
 
-export const getUserPresence = o(Boolean, getToken);
+// export const getUserPresence = o(Boolean, getToken);
+export const isUserLoggerIn = o(prop('loggedIn'), getAuthorization);
 
 export const getUsers: getter = o(prop('users'), getApplication);
 

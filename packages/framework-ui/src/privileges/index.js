@@ -13,7 +13,7 @@ import {
     isNil,
     not,
     compose,
-    filter
+    filter,
 } from 'ramda';
 
 // TODO rewrite + add unit tests
@@ -30,9 +30,12 @@ const getArray0fGroups = (privObj) => (groupName) => o(prop('allowedGroups'), pr
 let privileges = {};
 
 export function enrichGroups(groups) {
-    const out = [ ...groups ];
+    const out = [...groups];
     forEach(
-        o(when(isNotNil, (arrOfGroups) => out.push(...arrOfGroups)), flip(prop)(privileges.groupsHeritage)),
+        o(
+            when(isNotNil, (arrOfGroups) => out.push(...arrOfGroups)),
+            flip(prop)(privileges.groupsHeritage)
+        ),
         groups
     );
     return Runiq(out);
@@ -67,7 +70,10 @@ export function getPathsWithComp(groups) {
 
 export function getAllowedGroups(groups) {
     const output = [];
-    const convertPrivToPaths = o(when(isNotNil, (array) => output.push(...array)), getArray0fGroups(privileges.routes));
+    const convertPrivToPaths = o(
+        when(isNotNil, (array) => output.push(...array)),
+        getArray0fGroups(privileges.routes)
+    );
     forEach(convertPrivToPaths, enrichGroups(groups));
     const uniq = uniqBy(prop('name'), output);
     return uniq;
@@ -87,6 +93,7 @@ export function isGroupAllowed(groupName, groups) {
 /**
  * format - {groupName: [{path: /login, component}]}
  */
-export default function(routes, groupsHeritage) {
+export default function (routes, groupsHeritage) {
+    console.log(routes, groupsHeritage);
     privileges = { routes, groupsHeritage };
 }

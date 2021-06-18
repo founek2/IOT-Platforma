@@ -10,12 +10,12 @@ import Typography from '@material-ui/core/Typography';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import Loader from 'framework-ui/lib/Components/Loader';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+import { RootState } from 'frontend/src/store/store';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks';
 import { userActions } from '../../store/actions/application/user';
-import { IState } from '../../types';
 import { getQueryField } from '../../utils/getters';
 
 const useClasses = makeStyles((theme) => ({
@@ -135,7 +135,7 @@ function ForgotDialog({ open, onClose, token }: LoginDialogProps) {
     );
 }
 
-const _mapStateToProps = (state: IState) => ({
+const _mapStateToProps = (state: RootState) => ({
     token: getQueryField('token', state),
 });
 

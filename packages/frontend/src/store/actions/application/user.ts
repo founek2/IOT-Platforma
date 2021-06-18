@@ -84,7 +84,7 @@ export const userActions = {
 
     logOut(): AppThunk {
         return async function (dispatch) {
-            dispatch(userActions.toDefault());
+            dispatch(userAct.logout());
             dispatch(devicesActions.toDefault());
             dispatch(userNamesActions.toDefault());
             dispatch(accessTokensActions.toDefault());

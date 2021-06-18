@@ -19,10 +19,10 @@ import { bindActionCreators } from 'redux';
 import { getToken } from '../firebase';
 import { devicesActions } from '../store/actions/application/devices';
 import { userActions } from '../store/actions/application/user';
-import { IState } from '../types';
 import { getDevices } from '../utils/getters';
 import EditNotify from './editNotifyForm/EditNotify';
 import { NOTIFY_INTERVALS } from 'common/lib/constants';
+import { RootState } from '../store/store';
 
 const defaultAdvanced = {
     interval: NOTIFY_INTERVALS.JUST_ONCE,
@@ -208,7 +208,7 @@ function EditDeviceDialog({
     );
 }
 
-const _mapStateToProps = (state: IState, { match: { params } }: EditDeviceDialogProps) => {
+const _mapStateToProps = (state: RootState, { match: { params } }: EditDeviceDialogProps) => {
     const editForm: any = getFormData('EDIT_NOTIFY')(state);
     const sensorCount = editForm ? editForm.count : undefined;
     const device = (getDevices(state) as IDevice[]).find((obj) => obj._id === params.deviceId);

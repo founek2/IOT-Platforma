@@ -11,9 +11,9 @@ import Security from './profile/Security';
 import AccessTokens from './profile/AcessTokens';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import { useDispatch, useSelector } from 'react-redux';
-import { IState } from '../types';
 import { IUser } from 'common/lib/models/interface/userInterface';
 import { accessTokensActions } from '../store/actions/accessTokens';
+import { RootState } from '../store/store';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -42,7 +42,7 @@ const menu = [
 function Profile({ location }: RouteComponentProps) {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const userId = useSelector<IState, IUser['_id'] | undefined>((state) => state.application.user?._id);
+    const userId = useSelector<RootState, IUser['_id'] | undefined>((state) => state.application.user?._id);
 
     useEffect(() => {
         if (userId) dispatch(accessTokensActions.fetch(userId));

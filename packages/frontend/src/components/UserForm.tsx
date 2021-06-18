@@ -1,16 +1,11 @@
-import React, { Fragment } from 'react';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import MenuItem from '@material-ui/core/MenuItem';
-import { AuthTypes } from 'common/lib/constants';
 import Grid from '@material-ui/core/Grid';
-
-export const AuthTypesWithText = [{ value: AuthTypes.WEB_AUTH, text: 'web API' }];
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import React from 'react';
 
 interface UserFormProps {
     formName: string;
-    onAuthChange?: (event: React.ChangeEvent<{ value: any }>) => void;
 }
-function UserForm({ formName, onAuthChange }: UserFormProps) {
+function UserForm({ formName }: UserFormProps) {
     return (
         <Grid container spacing={2}>
             <Grid item md={6} xs={12}>
@@ -53,29 +48,6 @@ function UserForm({ formName, onAuthChange }: UserFormProps) {
                     fieldProps={{
                         fullWidth: true,
                     }}
-                />
-            </Grid>
-            <Grid item md={6} xs={12}>
-                <FieldConnector
-                    component="Select"
-                    deepPath={`${formName}.auth.type`}
-                    onChange={onAuthChange}
-                    fieldProps={{
-                        fullWidth: true,
-                    }}
-                    selectOptions={[
-                        <MenuItem value="" key="enum">
-                            <em />
-                        </MenuItem>,
-                        ...AuthTypesWithText.map(
-                            ({ value, text }) =>
-                                value !== 'passwd' && (
-                                    <MenuItem value={value} key={value}>
-                                        {text}
-                                    </MenuItem>
-                                )
-                        ),
-                    ]}
                 />
             </Grid>
         </Grid>

@@ -11,9 +11,8 @@ import { History } from 'history';
 import { isEmpty } from 'ramda';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { IState } from '../types';
 import { useAppDispatch } from '../hooks';
+import { RootState } from '../store/store';
 
 function convertGroupIDsToName(groups: { group: string; text: string }[]) {
     return function (arr: string[]) {
@@ -88,7 +87,7 @@ function UserManagement({ groups, users, history }: UserManagementProps) {
     );
 }
 
-const _mapStateToProps = (state: IState) => {
+const _mapStateToProps = (state: RootState) => {
     return {
         groups: getGroups(state) as IUser['groups'],
         users: getUsers(state),
