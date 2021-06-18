@@ -11,8 +11,12 @@ import { History } from 'history';
 import { isEmpty } from 'ramda';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { useAppDispatch } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store/store';
+import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
+import EditUser from './userManagement/EditUser';
+import { getQueryID } from '../utils/getters';
+import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 
 function convertGroupIDsToName(groups: { group: string; text: string }[]) {
     return function (arr: string[]) {
@@ -48,12 +52,16 @@ const useStyles = makeStyles((theme) => ({
 
 interface UserManagementProps {
     groups: string[];
-    users: IUser[];
     history: History;
 }
-function UserManagement({ groups, users, history }: UserManagementProps) {
+function UserManagement({ groups, history }: UserManagementProps) {
     const classes = useStyles();
     const dispatch = useAppDispatch();
+    const openEditDialog = useAppSelector(isUrlHash('#editUser'));
+    const userId = useAppSelector(getQueryID);
+    const users = useAppSelector(getUsers) as IUser[];
+    const userToEdit = users.find((u) => u._id === userId);
+
     useEffect(() => {
         dispatch(usersActions.fetchAll());
     }, [dispatch]);
@@ -83,6 +91,21 @@ function UserManagement({ groups, users, history }: UserManagementProps) {
                     />
                 </div>
             </Card>
+            <FullScreenDialog
+                open={Boolean(openEditDialog && userToEdit)}
+                onClose={() => history.push({ hash: '', search: '' })}
+                heading="Editace uživatele"
+            >
+                {userToEdit && (
+                    <EditUser
+                        onButtonClick={async () => {
+                            const result = await dispatch(userActions.updateUser(userToEdit._id));
+                            if (result) history.push({ hash: '', search: '' });
+                        }}
+                        user={userToEdit}
+                    />
+                )}
+            </FullScreenDialog>
         </div>
     );
 }
@@ -90,8 +113,6 @@ function UserManagement({ groups, users, history }: UserManagementProps) {
 const _mapStateToProps = (state: RootState) => {
     return {
         groups: getGroups(state) as IUser['groups'],
-        users: getUsers(state),
-        openEditDialog: isUrlHash('#editUser')(state),
     };
 };
 

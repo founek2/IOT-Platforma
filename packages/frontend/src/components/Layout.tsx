@@ -49,11 +49,9 @@ interface LayoutProps {
     userPresence: boolean;
     loginOpen: boolean;
     history: History;
-    editUserOpen: boolean;
     forgotOpen: boolean;
-    userToEdit: IUser;
 }
-function Layout({ userPresence, loginOpen, history, editUserOpen, userToEdit, forgotOpen }: LayoutProps) {
+function Layout({ userPresence, loginOpen, history, forgotOpen }: LayoutProps) {
     const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool: boolean) => () => setMainMenuO(bool);
     const classes = useClasses();
@@ -111,19 +109,6 @@ function Layout({ userPresence, loginOpen, history, editUserOpen, userToEdit, fo
                     dispatch(formsDataActions.removeForm('FORGOT_PASSWORD'));
                 }}
             />
-            <FullScreenDialog
-                open={Boolean(editUserOpen && userToEdit)}
-                onClose={() => history.push({ hash: '', search: '' })}
-                heading="Editace uživatele"
-            >
-                <EditUser
-                    onButtonClick={async () => {
-                        const result = await dispatch(userActions.updateUser(userToEdit._id));
-                        if (result) history.push({ hash: '', search: '' });
-                    }}
-                    user={userToEdit}
-                />
-            </FullScreenDialog>
         </Fragment>
     );
 }
@@ -134,8 +119,6 @@ const _mapStateToProps = (state: any) => {
         userPresence: isUserLoggerIn(state),
         loginOpen: isUrlHash('#login')(state),
         forgotOpen: isUrlHash('#forgot')(state),
-        editUserOpen: isUrlHash('#editUser')(state),
-        userToEdit: getUser(state),
     };
 };
 
