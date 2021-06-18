@@ -1,4 +1,4 @@
-import { AuthTypes } from '../../constants';
+import { AuthType } from '../../constants';
 
 export enum Permission {
     read = 'read',
@@ -14,18 +14,31 @@ export interface IAccessToken {
     validTo?: Date;
 }
 
+export enum OAuthProvider {
+    seznam = 'seznam',
+}
+
+export interface IOauth {
+    accessToken: string;
+    expiresIn: number;
+    refreshToken: string;
+    tokenType: string;
+    userId: number;
+    provider: OAuthProvider;
+}
+
 export interface IUser {
     _id?: any;
     info: {
         userName: string;
-        firstName: string;
-        lastName: string;
+        firstName?: string;
+        lastName?: string;
         email: string;
-        phoneNumber?: string;
     };
     auth: {
-        type: AuthTypes;
-        password: string;
+        types: AuthType[];
+        password?: string;
+        oauth?: IOauth;
     };
     realm: string;
     groups: string[];

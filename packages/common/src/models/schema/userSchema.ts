@@ -9,14 +9,21 @@ export interface IUserDocument extends IUser, Document {}
 export const userSchemaPlain = {
     info: {
         userName: { type: String, required: true, index: { unique: true } },
-        firstName: { type: String, required: true },
-        lastName: { type: String, required: true },
+        firstName: { type: String },
+        lastName: { type: String },
         email: { type: String, lowercase: true, index: { unique: true } },
-        phoneNumber: { type: String },
     },
     auth: {
-        type: { type: String, default: 'passwd', enum: ['passwd', 'webAuth'] },
-        password: { type: String, required: true },
+        types: { type: Array },
+        password: { type: String },
+        oauth: {
+            provider: String,
+            accessToken: String,
+            expiresIn: Number,
+            refreshToken: String,
+            tokenType: String,
+            userId: Number,
+        },
     },
     groups: { type: [String], default: ['user'] },
     devices: Object, // {sensors: {order: [id, id, id]}, }

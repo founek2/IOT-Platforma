@@ -7,6 +7,7 @@ import history from './history';
 import thing from './thing';
 import accessToken from './accessToken';
 import broker from './broker';
+import authorization from './authorization';
 
 export default () => {
     let api = Router();
@@ -26,6 +27,8 @@ export default () => {
     api.use('/discovery', discovery());
 
     api.use('/broker', broker());
+
+    api.use('/authorization', authorization());
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {

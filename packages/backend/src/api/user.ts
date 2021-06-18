@@ -1,4 +1,3 @@
-import { AuthTypes } from 'common/lib/constants';
 import fieldDescriptors from 'common/lib/fieldDescriptors';
 import { IUser } from 'common/lib/models/interface/userInterface';
 import { TokenModel } from 'common/lib/models/tokenModel';
@@ -11,7 +10,6 @@ import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
 import checkWritePerm from '../middlewares/user/checkWritePerm';
 import eventEmitter from '../services/eventEmitter';
-import { not } from 'ramda';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
@@ -29,7 +27,7 @@ export default () =>
             create: [
                 rateLimiterMiddleware,
                 formDataChecker(fieldDescriptors, {
-                    allowedForms: ['LOGIN', 'REGISTRATION', 'FORGOT', 'FORGOT_PASSWORD'],
+                    allowedForms: ['REGISTRATION', 'FORGOT', 'FORGOT_PASSWORD'],
                 }),
             ],
             replaceId: [
@@ -48,10 +46,8 @@ export default () =>
          *              - default { users: IUser[] }
          */
         async index({ user, root, query: { type } }: any, res) {
-            console.log('index', user);
             if (user && type === 'userName') {
                 // tested
-                console.log('retrieving userNames');
                 const docs = await UserModel.findAllUserNames();
                 res.send({ data: docs.map(({ _id, info: { userName } }) => ({ _id, userName })) });
             } else if (root) {
@@ -67,8 +63,8 @@ export default () =>
         },
 
         /** GET /:id - Return an user attribute
-         * @param attribute specify an user atribute, supported: authType
-         * @return json { authType: AuthTypes }
+         * @param attribute specify an user atribute, supported: AuthType
+         * @return json { authType: AuthType }
          */
         async read({ params, query }, res) {
             const { id } = params;
@@ -76,9 +72,9 @@ export default () =>
 
             if (attribute === 'authType') {
                 const doc = await UserModel.findByUserName(id);
-
+                console.log('dddd', doc?.auth);
                 if (!doc) res.status(404).send({ error: 'unknownUser' });
-                else res.send({ authType: doc.auth.type });
+                else res.send({ authTypes: doc.auth.types });
             } else {
                 res.sendStatus(400);
             }
@@ -96,16 +92,7 @@ export default () =>
         async create(req, res) {
             const { formData } = req.body;
 
-            if (formData.LOGIN) {
-                const { doc, token, error } = await UserService.checkCreditals(formData.LOGIN);
-                if (error) return res.status(401).send({ error });
-
-                res.send({
-                    user: doc,
-                    token,
-                });
-                eventEmitter.emit('user_login', doc);
-            } else if (formData.REGISTRATION) {
+            if (formData.REGISTRATION) {
                 if (await UserModel.exists({ 'info.userName': formData.REGISTRATION.info.userName }))
                     return res.status(409).send({ error: 'userNameAlreadyExist' });
 
@@ -124,10 +111,9 @@ export default () =>
                 const token = await TokenModel.retrieve(formData.FORGOT_PASSWORD.token);
                 if (!token) return res.sendStatus(400);
 
-                UserService.updateUser(token.userId, {
-                    auth: { password: formData.FORGOT_PASSWORD.password, type: AuthTypes.PASSWD },
-                });
-                res.sendStatus(204);
+                const { error } = await UserService.changePassword(token.userId, formData.FORGOT_PASSWORD.password);
+                if (!error) res.sendStatus(204);
+                else res.status(400).send({ error });
             } else {
                 res.sendStatus(400);
             }

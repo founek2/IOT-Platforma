@@ -15,9 +15,9 @@ export interface EmitterEvents {
 export interface UserBasic {
     id: string;
     info: {
-        firstName: string;
+        firstName?: string;
         email: string;
-        lastName: string;
+        lastName?: string;
         userName: string;
     };
 }

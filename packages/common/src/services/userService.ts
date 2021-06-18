@@ -1,17 +1,18 @@
 import argon2 from 'argon2';
-import { IUser, Permission, IAccessToken } from '../models/interface/userInterface';
+import { IUser, Permission, IAccessToken, IOauth } from '../models/interface/userInterface';
 import { devLog } from 'framework-ui/lib/logger';
 import { UserModel } from '../models/userModel';
 import { JwtService } from '../services/jwtService';
 import { IUserDocument } from '../models/schema/userSchema';
 import mongoose from 'mongoose';
-import { AuthTypes } from '../constants';
+import { AuthType } from '../constants';
 import { NotifyModel } from '../models/notifyModel';
 import { DeviceModel } from '../models/deviceModel';
 import { TokenModel, TokenType, IToken } from '../models/tokenModel';
 import { Security } from './SecurityService';
 import addHours from 'date-fns/addHours';
 import { not } from 'ramda';
+import dotify from 'node-dotify';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -19,15 +20,15 @@ async function createHash(plainText: string) {
     return argon2.hash(plainText);
 }
 
-function comparePasswd(plainText: string, hash: IUser['auth']['password']) {
+function comparePasswd(plainText: string, hash: string) {
     return argon2.verify(hash, plainText);
 }
 
 export type UserWithToken = { doc: IUser; token: string };
 export type CredentialData = {
     userName: IUser['info']['userName'];
-    password: IUser['auth']['password'];
-    authType: IUser['auth']['type'];
+    password: string;
+    authType: AuthType;
 };
 
 /**
@@ -38,16 +39,20 @@ export const UserService = {
      * Create new user
      */
     async create(object: IUser): Promise<UserWithToken> {
-        const { password, type } = object.auth;
-        if (type && type !== AuthTypes.PASSWD) throw new Error('notImplemented');
+        const { password, oauth } = object.auth;
+
         devLog('user creating:', object);
-        const hash = await createHash(password);
 
         const rootExists = await UserModel.exists({ groups: 'root' });
+        const types = [password ? AuthType.passwd : AuthType.oauth];
 
         const user = new UserModel({
             ...object,
-            auth: { password: hash },
+            auth: {
+                types,
+                password: password ? await createHash(password) : undefined,
+                oauth,
+            },
             realm: object.info.userName,
             groups: rootExists ? ['user'] : ['root'],
         });
@@ -66,16 +71,46 @@ export const UserService = {
         authType,
         password,
     }: CredentialData): Promise<{ doc?: IUser; token?: string; error?: string }> {
-        if (authType !== AuthTypes.PASSWD) throw new Error('notImplemented');
+        if (authType !== AuthType.passwd) throw new Error('notImplemented');
 
-        const doc = await UserModel.findOne({ 'info.userName': userName, 'auth.type': authType });
+        const doc = await UserModel.findOne({ 'info.userName': userName, 'auth.types': authType });
         if (!doc) return { error: 'unknownUser' };
 
-        const matched = await comparePasswd(password, doc.auth.password);
+        const matched = await comparePasswd(password, doc.auth.password as string);
         if (!matched) return { error: 'passwordMissmatch' };
 
         const token = await JwtService.sign({ id: doc._id });
 
+        return {
+            token,
+            doc: doc.toObject(),
+        };
+    },
+
+    /**
+     * Compare credentials with one saved in DB
+     */
+    async refreshAuthorization(email: string, oauth: IOauth): Promise<{ doc?: IUser; token?: string; error?: string }> {
+        let doc = await UserModel.findOneAndUpdate({ 'info.email': email }, { 'auth.oauth': oauth });
+        // if (!doc) return { error: 'unknownUser' };
+        if (!doc) {
+            const { doc, token } = await UserService.create({
+                info: {
+                    userName: String(oauth.userId),
+                    email,
+                },
+                auth: {
+                    oauth,
+                },
+            } as any);
+
+            return {
+                token,
+                doc: doc,
+            };
+        }
+
+        const token = await JwtService.sign({ id: doc._id, groups: doc.groups });
         return {
             token,
             doc: doc.toObject(),
@@ -92,10 +127,21 @@ export const UserService = {
             data.auth.password = hash;
         } else delete data.auth;
 
-        const doc = await UserModel.findOneAndUpdate({ _id: ObjectId(userID) }, { $set: data });
+        const doc = await UserModel.findOneAndUpdate(
+            { _id: ObjectId(userID) },
+            { $set: dotify(data), $addToSet: { 'auth.types': AuthType.passwd } }
+        );
         if (!doc) throw Error('unknownUser');
 
         return doc;
+    },
+
+    async changePassword(userID: IUser['_id'], password: string): Promise<{ error?: string }> {
+        const hash = await createHash(password);
+        const doc = await UserModel.findOneAndUpdate({ _id: ObjectId(userID) }, { 'auth.password': hash });
+        if (!doc) return { error: 'unknownUser' };
+
+        return {};
     },
 
     /**

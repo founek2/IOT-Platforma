@@ -1,6 +1,6 @@
 import validationFactory from 'framework-ui/lib/validations/validationFactory';
 import { assocPath, isNil } from 'ramda';
-import { AuthTypes, NotifyIntervals } from './constants';
+import { AuthType, NotifyIntervals } from './constants';
 import { DeviceCommand } from './models/interface/device';
 import { NotifyType } from './models/interface/notifyInterface';
 import { transformToForm } from 'framework-ui/lib/utils/transformToForm';
@@ -17,7 +17,7 @@ const LOGIN: fieldDescriptors = {
     password: {
         deepPath: 'LOGIN.password',
         required: true,
-        when: ({ authType }: any) => authType === AuthTypes.PASSWD,
+        when: ({ authType }: any) => authType === AuthType.passwd,
         label: 'Heslo',
         name: 'password',
         validations: [validationFactory('isString', { min: 4, max: 20 })],
@@ -41,14 +41,14 @@ const userFields: fieldDescriptors = {
         },
         firstName: {
             deepPath: 'REGISTRATION.info.firstName',
-            required: true,
+            required: false,
             label: 'Jméno',
             name: 'firstname',
             validations: [validationFactory('isString', { min: 2, max: 20 })],
         },
         lastName: {
             deepPath: 'REGISTRATION.info.lastName',
-            required: true,
+            required: false,
             label: 'Příjmení',
             name: 'lastname',
             validations: [validationFactory('isString', { min: 2, max: 20 })],
@@ -59,15 +59,6 @@ const userFields: fieldDescriptors = {
             name: 'email',
             required: true,
             validations: [validationFactory('isEmail')],
-        },
-    },
-    auth: {
-        type: {
-            deepPath: 'REGISTRATION.auth.type',
-            required: false,
-            label: 'Pokročilá autentizace',
-            name: 'authtype',
-            validations: [validationFactory('isString', { min: 4, max: 20 })],
         },
     },
 };
@@ -315,6 +306,16 @@ const ADD_ACCESS_TOKEN: fieldDescriptors = {
 
 const EDIT_ACCESS_TOKEN = transformToForm('EDIT_ACCESS_TOKEN', ADD_ACCESS_TOKEN);
 
+const AUTHORIZATION: fieldDescriptors = {
+    code: {
+        deepPath: 'AUTHORIZATION.code',
+        required: true,
+        label: 'Kód',
+        name: 'code',
+        validations: [validationFactory('isString', { min: 5, max: 100 })],
+    },
+};
+
 const descriptors: fieldDescriptors = {
     LOGIN,
     REGISTRATION,
@@ -331,6 +332,7 @@ const descriptors: fieldDescriptors = {
     FORGOT_PASSWORD,
     ADD_ACCESS_TOKEN,
     EDIT_ACCESS_TOKEN,
+    AUTHORIZATION,
 };
 
 export default descriptors;

@@ -1,4 +1,12 @@
-#
+# 1.0.0 (2021-06-17)
+
+### DB
+
+-   change to UserModel: auth.type (AuthType) -> auth.types (AuthTypes[])
+
+### Features
+
+-   support for OAuth (just Seznam for now)
 
 # 0.2.0 (2021-05-7)
 

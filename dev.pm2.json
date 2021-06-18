@@ -1,0 +1,24 @@
+{
+    "apps": [
+        {
+            "name": "watch",
+            "script": "yarn",
+            "args": "watch",
+            "interpreter": "/bin/bash"
+        },
+        {
+            "name": "backend",
+            "script": "yarn",
+            "cwd": "./packages/backend",
+            "args": "dev",
+            "interpreter": "/bin/bash"
+        },
+        {
+            "name": "mqtt",
+            "script": "yarn",
+            "cwd": "./packages/backend-mqtt",
+            "args": "dev",
+            "interpreter": "/bin/bash"
+        }
+    ]
+}

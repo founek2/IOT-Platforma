@@ -21,7 +21,6 @@ export default function (options: { restricted: boolean; methods?: Array<'PUT'> 
         const [type, jwtToken] = (req.get('Authorization') || '').split(' ');
         const accessToken = req.query.api_key || req.get('X-API-Key');
 
-        console.log('jwt', jwtToken, 'token', accessToken);
         if (jwtToken) {
             try {
                 const obj = await JwtService.verify(jwtToken);

@@ -16,7 +16,7 @@ export default function formDataChecker(fieldDescriptors: any, { ingoreRequired,
 
         infoLog('Validating formData');
         const formData: FormData = req.body.formData;
-        console.log('dad', Object.keys(formData), allowedForms);
+        // console.log('dad', Object.keys(formData), allowedForms);
         if (allowedForms && !Object.keys(formData).every((formName) => allowedForms.includes(formName)))
             return res.status(400).send({ error: 'notAllowedFormName' });
 

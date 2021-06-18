@@ -34,6 +34,11 @@ export interface Config {
         port: number;
         managementPort: number;
     };
+    oauth?: {
+        clientSecret: string;
+        clientId: string;
+        redirectUri: string;
+    };
 }
 
 export type FormType<T> = { JSONkey: string } & T;

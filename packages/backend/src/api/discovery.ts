@@ -34,7 +34,6 @@ export default () =>
          * @return json { docs: IDiscovery[] }
          */
         async index({ user }: any, res) {
-            console.log('user - ', user.info.userName);
             const docs = await DiscoveryModel.find({
                 'state.status.value': {
                     $exists: true,

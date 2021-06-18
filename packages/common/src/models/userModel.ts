@@ -16,7 +16,7 @@ export const userSchema = new Schema<IUserDocument, IUserModel>(userSchemaPlain,
             delete ret.__v;
             // delete ret._id;
             delete ret.accessTokens;
-            if (ret.auth) delete ret.auth.password;
+            if (ret.auth) delete ret.auth;
         },
     },
     timestamps: true,
