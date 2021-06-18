@@ -1,21 +1,8 @@
-import { AuthTypes } from 'common/lib/constants';
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import { TokenModel } from 'common/lib/models/tokenModel';
-import { UserModel } from 'common/lib/models/userModel';
-import { UserService } from 'common/lib/services/userService';
-import { getAllowedGroups } from 'framework-ui/lib/privileges';
-import formDataChecker from '../middlewares/formDataChecker';
-import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
+import config from 'common/lib/config';
+import { compose, lensProp, over, pick } from 'ramda';
 import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
-import checkWritePerm from '../middlewares/user/checkWritePerm';
-import eventEmitter from '../services/eventEmitter';
-import { ObjectId } from '../utils/objectId';
-import checkUser from '../middlewares/user/checkUser';
 import { checkIsRoot } from '../middlewares/user/checkIsRoot';
-import config from 'common/lib/config';
-import { pick, compose, over, lensProp } from 'ramda';
 
 /**
  * URL prefix /user

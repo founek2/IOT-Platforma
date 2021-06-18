@@ -5,6 +5,7 @@ import formDataChecker from '../middlewares/formDataChecker';
 import resource from '../middlewares/resource-router-middleware';
 import eventEmitter from '../services/eventEmitter';
 import { requestAuthorization } from '../services/oauthService';
+import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
@@ -19,7 +20,10 @@ export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            create: [formDataChecker(fieldDescriptors, { allowedForms: ['AUTHORIZATION', 'LOGIN'] })],
+            create: [
+                rateLimiterMiddleware,
+                formDataChecker(fieldDescriptors, { allowedForms: ['AUTHORIZATION', 'LOGIN'] }),
+            ],
         },
 
         async create({ body, user }: any, res) {

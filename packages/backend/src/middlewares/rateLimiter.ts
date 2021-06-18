@@ -2,8 +2,8 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 import Express from 'express';
 
 const opts = {
-    points: 6, // 6 points
-    duration: 1, // Per second
+    points: 10, // 10 points
+    duration: 60, // Per minute
 };
 
 const rateLimiter = new RateLimiterMemory(opts);
