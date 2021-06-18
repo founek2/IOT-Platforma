@@ -42,8 +42,8 @@ pipeline {
 
         stage ('Build') {
             environment {
-                REACT_APP_OAUTH_SEZNAM_CLIENT_ID = '1eb912e099785d4ddf2d0bf6fc63e3f21c86f44bffa8b750'
-                REACT_APP_OATUH_REDIRECT_URI = 'https://v3.iotplatforma.cloud/authorization/redirect'
+                REACT_APP_OAUTH_SEZNAM_CLIENT_ID = "${env.BRANCH_NAME == 'master' ? '8c2aee73fd1a18477bb42efef6a48968054745839756ce06' : '1eb912e099785d4ddf2d0bf6fc63e3f21c86f44bffa8b750'}"
+                REACT_APP_OATUH_REDIRECT_URI = "${env.BRANCH_NAME == 'master' ? 'https://v3.iotplatforma.cloud/authorization/redirect' : 'https://dev.iotplatforma.cloud/authorization/redirect'}"
             }
             steps {
                 sh "CI= yarn build"
