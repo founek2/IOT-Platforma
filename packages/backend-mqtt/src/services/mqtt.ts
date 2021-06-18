@@ -48,7 +48,6 @@ let lastAttemptAt: Date | null = null;
 function connect(config: MqttConf, getUser: GetUser): ReturnType<typeof reconnect> {
     infoLog('Trying to connect to mqtt...');
     const timeOut = lastAttemptAt ? invert30seconds(Date.now() - lastAttemptAt.getTime()) : 0;
-    console.log('timeout ', timeOut);
     return new Promise((res) => setTimeout(() => res(reconnect(config, getUser)), timeOut));
 }
 
