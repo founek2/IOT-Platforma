@@ -18,6 +18,6 @@
     "allowSyntheticDefaultImports": true
   },
   "include": [
-    "src", "../framework-ui/src/redux/reducers/application/authorization.ts"
+    "src"
   ]
 }
