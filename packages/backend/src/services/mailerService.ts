@@ -5,6 +5,7 @@ import path from 'path';
 import config from 'common/lib/config';
 import { UserBasic } from '../types';
 import { Config } from 'common/lib/types';
+import { IToken } from 'common/lib/models/tokenModel';
 
 let defaultEmail: Email;
 
@@ -38,7 +39,7 @@ export class MailerService {
         });
     };
 
-    static sendSignUp = async (user: UserBasic) => {
+    static sendSignUp = async (user: { info: { email: string } }) => {
         const result = await defaultEmail.send({
             template: path.join(__dirname, '../templates/emails/registration'),
             message: {
@@ -46,10 +47,7 @@ export class MailerService {
             },
             locals: {
                 url: config.homepage,
-                // token: token,
                 email: user.info.email,
-                firstName: user.info.firstName,
-                lastName: user.info.lastName,
                 homepage: config.homepage,
             },
         });
@@ -67,7 +65,7 @@ export class MailerService {
         });
     };
 
-    static sendForgotPassword = async (token: string, user: UserBasic) => {
+    static sendForgotPassword = async (token: IToken['data'], user: { info: { email: string } }) => {
         await defaultEmail
             .send({
                 template: path.join(__dirname, '../templates/emails/password_reset'),
@@ -85,8 +83,6 @@ export class MailerService {
                     url: config.homepage,
                     token: token,
                     email: user.info.email,
-                    firstName: user.info.firstName,
-                    lastName: user.info.lastName,
                 },
             })
             .catch(logger.error);

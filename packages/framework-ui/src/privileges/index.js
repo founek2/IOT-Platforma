@@ -94,6 +94,5 @@ export function isGroupAllowed(groupName, groups) {
  * format - {groupName: [{path: /login, component}]}
  */
 export default function (routes, groupsHeritage) {
-    console.log(routes, groupsHeritage);
     privileges = { routes, groupsHeritage };
 }
