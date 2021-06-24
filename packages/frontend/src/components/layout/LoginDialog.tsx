@@ -104,7 +104,7 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
     const isPasswdType = authType === AuthType.passwd;
 
     const actionHandler = !authType || !isPasswdType ? fetchAuthType : loginMyAction;
-
+    const authUrl = getAuthorizeHref();
     return (
         <Dialog
             open={open}
@@ -121,11 +121,13 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
                 <Typography component="h4" className={classes.title}>
                     Přihlášení
                 </Typography>
-                <div className={classes.oauth}>
-                    <IconButton onClick={() => window.open(getAuthorizeHref(), '_self')}>
-                        <SeznamLogo />
-                    </IconButton>
-                </div>
+                {authUrl && (
+                    <div className={classes.oauth}>
+                        <IconButton onClick={() => window.open(authUrl, '_self')}>
+                            <SeznamLogo />
+                        </IconButton>
+                    </div>
+                )}
             </Paper>
             <DialogContent className={classes.content}>
                 <Typography align="center">Or Be classical</Typography>
