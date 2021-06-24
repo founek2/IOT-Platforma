@@ -15,23 +15,27 @@ cat jwtRS256.key.pub
 Pro funkčnost aplikace je potřeba nastavit enviroment promněné, buď pomocí `.env` souboru v rootu projektu nebo v rámci systému. Promněné jsou následující:
 
 -   **PORT** - listening port for backend API
--   **BODY_LIMIT** - maximal size of body in API request, value passed to library [bytes](https://www.npmjs.com/package/bytes)
 -   **AUTH_PORT** - listening port for API - [authorisation and authentication for RabbitMQ](https://github.com/rabbitmq/rabbitmq-auth-backend-http)
--   **FIREBASE_ADMIN_PATH** - path to firebase account credentials file
 -   **DATABASE_URI** - connection URI to mongodb ex. `mongodb://userName:password@localhost:27017/db_name`
 -   **JWT_PRIVATE_KEY** - path to JWT private key
 -   **JWT_PUBLIC_KEY** - path to JWT public key
 -   **JWT_EXPIRES_IN** - lifespan of JWT token [14d]
+-   **MQTT_URL** - domain of running MQTT broker with protocol ex. mqtt://localhost
+-   **MQTT_PORT** - port on which listen MQTT broker
+
+[Optional]
+
+-   **BODY_LIMIT** - maximal size of body in API request, value passed to library [bytes](https://www.npmjs.com/package/bytes)
+-   **FIREBASE_ADMIN_PATH** - path to firebase account credentials file
+-   **AGENDA_JOB_TYPES** - which agenda jobs are enabled separeted with comma - email, clean
 -   **EMAIL_HOST** - smtp email server
 -   **EMAIL_PORT** - port on which smtp listen, ssl/tls is required [465]
 -   **EMAIL_USERNAME** - username to email account
 -   **EMAIL_PASSWORD** - password to email account
--   **AGENDA_COLLECTION** - name of collection agenda will use
--   **AGENDA_JOB_TYPES** - which agenda jobs are enabled separeted with comma - email, clean
--   **MQTT_URL** - domain of running MQTT broker with protocol ex. mqtt://localhost
--   **MQTT_PORT** - port on which listen MQTT broker
--   **MQTT_USERNAME** - username, login to MQTT broker
--   **MQTT_PASSWORD** - password, login to MQTT broker
+-   **HOME_PAGE** - url of main page - ex. https://iotplatforma.cloud
+-   **OAUTH_SEZNAM_CLIENT_SECRET**
+-   **REACT_APP_OAUTH_SEZNAM_CLIENT_ID**
+-   **REACT_APP_OATUH_REDIRECT_URI**
 
 ## Lokální vývoj
 
