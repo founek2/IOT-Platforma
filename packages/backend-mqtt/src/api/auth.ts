@@ -56,14 +56,18 @@ router.post('/user', async function (req, res) {
     } else if (isUser(username)) {
         if (validatePass({ userName: username, password })) return res.send('allow administrator');
 
-        const { error, doc } = await UserService.checkCreditals({
+        const result = await UserService.checkCreditals({
             userName: username,
             password,
             authType: AuthType.passwd,
         });
-        if (error || !doc) return sendDeny('/user user', res);
 
-        if (doc.groups.some((group) => group === 'root' || group === 'admin')) return res.send('allow administrator');
+        result
+            .ifRight(
+                ({ doc }) =>
+                    doc.groups.some((group) => group === 'root' || group === 'admin') && res.send('allow administrator')
+            )
+            .ifLeft(() => sendDeny('/user user', res));
     } else if (isGuest(username)) {
         res.send('allow');
     } else sendDeny('/user other', res);

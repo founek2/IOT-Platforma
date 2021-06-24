@@ -3,7 +3,7 @@ import config from 'common/lib/config';
 import { IDevice, DeviceCommand } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
 import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-
+import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 /**
  * Service to communicate with backend-mqtt, allowing sending data directly to devices
  */
@@ -69,7 +69,7 @@ export class Actions {
         return res.status === 204;
     }
 
-    public static async getBrokerAuth(): Promise<string | null> {
+    public static async getBrokerAuth(): Promise<Maybe<string>> {
         const res = await fetch(`http://localhost:${config.portAuth}/api/actions/broker/auth`, {
             method: 'GET',
             headers: {
@@ -77,6 +77,7 @@ export class Actions {
                 'Content-Type': 'application/json',
             },
         });
-        return res.status === 200 ? (await res.json()).auth : null;
+
+        return res.status === 200 ? Just((await res.json()).auth) : Nothing;
     }
 }

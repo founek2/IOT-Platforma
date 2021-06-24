@@ -48,8 +48,8 @@ export default () =>
         },
 
         async create({ body, user }: any, res) {
-            const doc = await UserService.createAccessToken(body.formData.ADD_ACCESS_TOKEN, user._id);
-            res.send({ doc });
+            const token = await UserService.createAccessToken(body.formData.ADD_ACCESS_TOKEN, user._id);
+            token.ifRight((doc) => res.send({ doc })).ifLeft((error) => res.status(500).send({ error }));
         },
 
         async modifyId({ body, user, params }: any, res) {

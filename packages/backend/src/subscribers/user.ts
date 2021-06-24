@@ -14,9 +14,8 @@ export default function (eventEmitter: Emitter<types.EmitterEvents>) {
     });
 
     eventEmitter.on('user_forgot', async ({ email }) => {
-        const result = await UserService.forgotPassword(email);
-        if (!result) return;
-
-        agenda.now(AGENDA_JOB_TYPE.FORGOT_PASSWORD_EMAIL, { user: result.user, token: result.token });
+        (await UserService.forgotPassword(email)).ifRight((result) =>
+            agenda.now(AGENDA_JOB_TYPE.FORGOT_PASSWORD_EMAIL, { user: result.user, token: result.token })
+        );
     });
 }

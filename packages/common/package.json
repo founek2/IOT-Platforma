@@ -12,6 +12,7 @@
         "date-fns": "^2.15.0",
         "hat": "^0.0.3",
         "jsonwebtoken": "^8.5.1",
+        "purify-ts": "^0.16.3",
         "ramda": "^0.27.1",
         "winston": "^3.3.3"
     },

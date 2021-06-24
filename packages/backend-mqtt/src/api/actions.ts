@@ -36,13 +36,14 @@ router.post('/device/:deviceId', async function (req, res) {
 });
 
 router.get('/broker/auth', async function (req, res) {
-    const pass = await getPass();
-    if (!pass) return res.sendStatus(503);
-
-    const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
-    res.send({
-        auth,
-    });
+    (await getPass())
+        .ifJust((pass) => {
+            const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
+            res.send({
+                auth,
+            });
+        })
+        .ifNothing(() => res.sendStatus(503));
 });
 
 export default router;

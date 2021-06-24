@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import config from 'common/lib/config';
 import { Actions } from './actionsService';
 import { isBefore, addMinutes, isAfter } from 'date-fns';
+import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 
 const CACHE_MINUTES = 3;
 
@@ -35,8 +36,12 @@ async function fetchData() {
 }
 
 export const BrokerService = {
-    getOverView: async function () {
-        await fetchData();
-        return data.overView;
+    getOverView: async function (): Promise<Maybe<OverView>> {
+        try {
+            await fetchData();
+            return Just(data.overView);
+        } catch (err) {
+            return Nothing;
+        }
     },
 };

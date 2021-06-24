@@ -11,8 +11,9 @@ import { DeviceModel } from '../models/deviceModel';
 import { TokenModel, TokenType, IToken } from '../models/tokenModel';
 import { Security } from './SecurityService';
 import addHours from 'date-fns/addHours';
-import { not } from 'ramda';
+import { Either, Left, Right } from 'purify-ts/Either';
 import dotify from 'node-dotify';
+import { Maybe, Just } from 'purify-ts/Maybe';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -70,27 +71,29 @@ export const UserService = {
         userName,
         authType,
         password,
-    }: CredentialData): Promise<{ doc?: IUser; token?: string; error?: string }> {
-        if (authType !== AuthType.passwd) throw new Error('notImplemented');
+    }: CredentialData): Promise<Either<string, { doc: IUser; token: string }>> {
+        // : Promise<{ doc?: IUser; token?: string; error?: string }>
+        if (authType !== AuthType.passwd) return Left('notImplemented');
 
         const doc = await UserModel.findOne({ 'info.userName': userName, 'auth.types': authType });
-        if (!doc) return { error: 'unknownUser' };
+        if (!doc) return Left('unknownUser');
 
         const matched = await comparePasswd(password, doc.auth.password as string);
-        if (!matched) return { error: 'passwordMissmatch' };
+        if (!matched) return Left('passwordMissmatch');
 
         const token = await JwtService.sign({ id: doc._id });
 
-        return {
+        return Right({
             token,
             doc: doc.toObject(),
-        };
+        });
     },
 
     /**
      * Compare credentials with one saved in DB
      */
-    async refreshAuthorization(email: string, oauth: IOauth): Promise<{ doc?: IUser; token?: string; error?: string }> {
+    async refreshAuthorization(email: string, oauth: IOauth) {
+        // : Promise<{ doc?: IUser; token?: string; error?: string }>
         let doc = await UserModel.findOneAndUpdate({ 'info.email': email }, { 'auth.oauth': oauth });
         // if (!doc) return { error: 'unknownUser' };
         if (!doc) {
@@ -104,23 +107,23 @@ export const UserService = {
                 },
             } as any);
 
-            return {
+            return Just({
                 token,
                 doc: doc,
-            };
+            });
         }
 
         const token = await JwtService.sign({ id: doc._id, groups: doc.groups });
-        return {
+        return Just({
             token,
             doc: doc.toObject(),
-        };
+        });
     },
 
     /**
      * Update user
      */
-    async updateUser(userID: IUser['_id'], data: Partial<IUser>): Promise<IUserDocument> {
+    async updateUser(userID: IUser['_id'], data: Partial<IUser>) {
         if (data.auth && data.auth.password) {
             const { password } = data.auth;
             const hash = await createHash(password);
@@ -131,17 +134,17 @@ export const UserService = {
             { _id: ObjectId(userID) },
             { $set: dotify(data), $addToSet: { 'auth.types': AuthType.passwd } }
         );
-        if (!doc) throw Error('unknownUser');
+        if (!doc) return Left('unknownUser');
 
-        return doc;
+        return Right(doc);
     },
 
-    async changePassword(userID: IUser['_id'], password: string): Promise<{ error?: string }> {
+    async changePassword(userID: IUser['_id'], password: string) {
         const hash = await createHash(password);
         const doc = await UserModel.findOneAndUpdate({ _id: ObjectId(userID) }, { 'auth.password': hash });
-        if (!doc) return { error: 'unknownUser' };
+        if (!doc) return Left('unknownUser');
 
-        return {};
+        return Right(doc);
     },
 
     /**
@@ -151,7 +154,7 @@ export const UserService = {
         tokenId: IAccessToken['_id'],
         userID: IUser['_id'],
         accessToken: { name: string; permissions: Permission[]; validTo?: Date }
-    ): Promise<void> {
+    ) {
         UserModel.updateOne(
             { _id: ObjectId(userID), 'accessTokens._id': ObjectId(tokenId) },
             {
@@ -164,16 +167,14 @@ export const UserService = {
         ).exec();
     },
 
-    async createAccessToken(
-        data: { name: string; permissions: Permission[]; validTo?: Date },
-        userID: IUser['_id']
-    ): Promise<null | IAccessToken> {
+    async createAccessToken(data: { name: string; permissions: Permission[]; validTo?: Date }, userID: IUser['_id']) {
+        // : Promise<null | IAccessToken>
         const newToken = {
             ...data,
             token: Security.getRandomAsciToken(30),
             createdAt: new Date(),
         };
-        if (await UserModel.exists({ 'accessTokens.token': newToken.token })) return null;
+        if (await UserModel.exists({ 'accessTokens.token': newToken.token })) return Left('unableToCreate');
 
         const doc = await UserModel.findOneAndUpdate(
             {
@@ -184,10 +185,11 @@ export const UserService = {
             },
             { new: true, fields: 'accessTokens' }
         ).lean();
-        if (!doc) return null;
+        if (!doc) return Left('unableToCreate');
 
-        return doc.accessTokens?.pop() || null;
+        return Right(doc.accessTokens?.pop() as IAccessToken);
     },
+
     async deleteAccessToken(tokenId: IAccessToken['_id'], userID: IUser['_id']) {
         UserModel.updateOne(
             { _id: ObjectId(userID) },
@@ -228,9 +230,9 @@ export const UserService = {
     /**
      * Generate forgot token for user
      */
-    async forgotPassword(email: IUser['info']['email']): Promise<null | { token: IToken; user: IUser }> {
+    async forgotPassword(email: IUser['info']['email']) {
         const user = await UserModel.findOne({ 'info.email': email }).lean();
-        if (!user) return null;
+        if (!user) return Left('userNotExist');
 
         const token = await TokenModel.create({
             type: TokenType.forgot_password,
@@ -238,6 +240,6 @@ export const UserService = {
             validTo: addHours(new Date(), 5),
             userId: user._id,
         });
-        return { token: token, user };
+        return Right({ token: token, user });
     },
 };

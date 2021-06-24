@@ -10,6 +10,8 @@ import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
 import checkWritePerm from '../middlewares/user/checkWritePerm';
 import eventEmitter from '../services/eventEmitter';
+import { MaybeAsync } from 'purify-ts/MaybeAsync';
+import { EitherAsync } from 'purify-ts/EitherAsync';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
@@ -72,7 +74,6 @@ export default () =>
 
             if (attribute === 'authType') {
                 const doc = await UserModel.findByUserName(id);
-                console.log('dddd', doc?.auth);
                 if (!doc) res.status(404).send({ error: 'unknownUser' });
                 else res.send({ authTypes: doc.auth.types });
             } else {
@@ -95,6 +96,8 @@ export default () =>
             if (formData.REGISTRATION) {
                 if (await UserModel.exists({ 'info.userName': formData.REGISTRATION.info.userName }))
                     return res.status(409).send({ error: 'userNameAlreadyExist' });
+                if (await UserModel.exists({ 'info.email': formData.REGISTRATION.info.email }))
+                    return res.status(409).send({ error: 'emailAlreadyExist' });
 
                 const { doc, token } = await UserService.create(formData.REGISTRATION);
 
@@ -107,13 +110,12 @@ export default () =>
                 eventEmitter.emit('user_forgot', { email: formData.FORGOT.email });
                 res.sendStatus(204);
             } else if (formData.FORGOT_PASSWORD) {
-                console.log('forgot', formData.FORGOT_PASSWORD);
                 const token = await TokenModel.retrieve(formData.FORGOT_PASSWORD.token);
                 if (!token) return res.sendStatus(400);
 
-                const { error } = await UserService.changePassword(token.userId, formData.FORGOT_PASSWORD.password);
-                if (!error) res.sendStatus(204);
-                else res.status(400).send({ error });
+                (await UserService.changePassword(token.userId, formData.FORGOT_PASSWORD.password))
+                    .ifRight(() => res.sendStatus(204))
+                    .ifLeft((error) => res.status(400).send({ error }));
             } else {
                 res.sendStatus(400);
             }
@@ -136,8 +138,9 @@ export default () =>
                 if (!body.formData.EDIT_USER.groups.every((group: string) => allowedGroups.includes(group)))
                     return res.sendStatus(403);
 
-                await UserService.updateUser(id, body.formData.EDIT_USER);
-                res.sendStatus(204);
+                (await UserService.updateUser(id, body.formData.EDIT_USER))
+                    .ifRight(() => res.sendStatus(204))
+                    .ifLeft((error) => res.status(400).send({ error }));
             } else if (body.formData.FIREBASE_ADD) {
                 await UserModel.addNotifyToken(id, body.formData.FIREBASE_ADD.token);
                 res.sendStatus(204);

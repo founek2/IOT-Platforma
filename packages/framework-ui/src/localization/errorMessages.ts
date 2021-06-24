@@ -3,6 +3,7 @@ import * as types from '../types';
 
 export const messages: types.messages = {
     userNameAlreadyExist: 'Uživ. jméno je obsazeno',
+    emailAlreadyExist: 'Emailová adresa je obsazena',
     passwordMissmatch: 'Nesprávné heslo',
     unknownUser: 'Neznámý uživatel',
     userNotExist: 'Uživatel neexistuje',

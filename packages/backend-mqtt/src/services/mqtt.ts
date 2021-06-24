@@ -3,6 +3,8 @@ import { Server as serverIO } from 'socket.io';
 import handlePrefix from './mqtt/prefix';
 import handleV2 from './mqtt/v2';
 import { infoLog, devLog, errorLog } from 'framework-ui/lib/logger';
+import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
+import { MaybeAsync } from 'purify-ts/MaybeAsync';
 
 let client: mqtt.MqttClient | undefined;
 
@@ -42,7 +44,7 @@ interface MqttConf {
     url: string;
     port: number;
 }
-type GetUser = () => Promise<{ userName: string; password: string } | null>;
+type GetUser = () => Promise<Maybe<{ userName: string; password: string }>>;
 
 let lastAttemptAt: Date | null = null;
 function connect(config: MqttConf, getUser: GetUser): ReturnType<typeof reconnect> {
@@ -52,19 +54,22 @@ function connect(config: MqttConf, getUser: GetUser): ReturnType<typeof reconnec
 }
 
 async function reconnect(config: MqttConf, getUser: GetUser): Promise<MqttClient> {
-    const user = await getUser();
-    if (!user)
-        return new Promise((res) => {
-            setTimeout(() => res(reconnect(config, getUser)), 20 * 1000);
-        });
+    const doConnect = (await MaybeAsync.fromPromise(getUser)).map((user) =>
+        mqtt.connect(config.url, {
+            username: `${user.userName}`,
+            password: `${user.password}`,
+            reconnectPeriod: 0,
+            port: config.port,
+            rejectUnauthorized: false,
+        })
+    );
 
-    return mqtt.connect(config.url, {
-        username: `${user.userName}`,
-        password: `${user.password}`,
-        reconnectPeriod: 0,
-        port: config.port,
-        rejectUnauthorized: false,
-    });
+    return (
+        doConnect.extract() ||
+        new Promise<MqttClient>((res) => {
+            setTimeout(() => res(reconnect(config, getUser)), 20 * 1000);
+        })
+    );
 }
 
 function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getUser: GetUser) {
