@@ -141,7 +141,7 @@ const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
             deleteDiscoveryAction: discoveryActions.deleteDevices,
-            addDiscoveryAction: discoveryActions.add,
+            addDiscoveryAction: discoveryActions.addDevice,
             // resetCreateDeviceAction: formsActions.removeForm('CREATE_DEVICE'),
             // updateFormField: formsActions.updateFormField,
         },

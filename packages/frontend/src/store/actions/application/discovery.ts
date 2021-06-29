@@ -51,7 +51,7 @@ export const discoveryActions = {
         };
     },
 
-    add(id: IDiscovery['_id']): AppThunk {
+    addDevice(id: IDiscovery['_id']): AppThunk {
         return function (dispatch, getState) {
             baseLogger('CREATE_DEVICE');
 
