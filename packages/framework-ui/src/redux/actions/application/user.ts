@@ -88,8 +88,9 @@ export const userActions = {
                     {
                         body: { formData: { [REGISTRATION]: formData } },
                         onSuccess: (json: any) => {
-                            dispatch(userActions.set({ ...json.user, token: json.token }));
-                            // dispatch(formsDataActions.resetForm(REGISTRATION));
+                            dispatch(userActions.set({ ...json.user }));
+                            dispatch(authorizationReducerActions.setAccessToken(json.token));
+                            dispatch(authorizationReducerActions.setLoggedIn(true));
                             dispatch(dehydrateState());
                         },
                     },
