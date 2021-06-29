@@ -40,6 +40,8 @@ export class MailerService {
     };
 
     static sendSignUp = async (user: { info: { email: string } }) => {
+        if (!defaultEmail) return false;
+
         const result = await defaultEmail.send({
             template: path.join(__dirname, '../templates/emails/registration'),
             message: {
@@ -54,6 +56,8 @@ export class MailerService {
     };
 
     static sendLogin = async ({ email }: { email: string }) => {
+        if (!defaultEmail) return false;
+
         await defaultEmail.send({
             template: path.join(__dirname, '../templates/emails/login'),
             message: {
@@ -66,6 +70,8 @@ export class MailerService {
     };
 
     static sendForgotPassword = async (token: IToken['data'], user: { info: { email: string } }) => {
+        if (!defaultEmail) return false;
+
         await defaultEmail
             .send({
                 template: path.join(__dirname, '../templates/emails/password_reset'),
