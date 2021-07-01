@@ -2,7 +2,7 @@ import mqtt, { MqttClient } from 'mqtt';
 import { Server as serverIO } from 'socket.io';
 import handlePrefix from './mqtt/prefix';
 import handleV2 from './mqtt/v2';
-import { infoLog, devLog, errorLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 
@@ -48,7 +48,7 @@ type GetUser = () => Promise<Maybe<{ userName: string; password: string }>>;
 
 let lastAttemptAt: Date | null = null;
 function connect(config: MqttConf, getUser: GetUser): ReturnType<typeof reconnect> {
-    infoLog('Trying to connect to mqtt...');
+    logger.info('Trying to connect to mqtt...');
     const timeOut = lastAttemptAt ? invert30seconds(Date.now() - lastAttemptAt.getTime()) : 0;
     return new Promise((res) => setTimeout(() => res(reconnect(config, getUser)), timeOut));
 }
@@ -74,17 +74,17 @@ async function reconnect(config: MqttConf, getUser: GetUser): Promise<MqttClient
 
 function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getUser: GetUser) {
     client.on('connect', function () {
-        infoLog('mqtt connected');
+        logger.info('mqtt connected');
 
         // subscriber to all messages
         (client as MqttClient).subscribe('#', async function (err, granted) {
-            if (err) devLog('problem:', err);
+            if (err) logger.error('problem:', err);
         });
     });
 
     client.on('message', async function (topic, message) {
         const handle = topicParser(topic, message);
-        devLog(topic);
+        logger.debug(topic);
 
         // handle all messages in unauthenticated world
         if (topic.startsWith('prefix/')) handlePrefix(handle, io);
@@ -93,7 +93,7 @@ function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getU
     });
 
     client.on('error', async function (err) {
-        errorLog('mqtt connection error', err);
+        logger.error('mqtt connection error', err);
         client.end();
         client = await connect(config, getUser);
     });
@@ -101,8 +101,6 @@ function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getU
 
 /* Initialize MQTT client connection */
 export default async (io: serverIO, config: MqttConf, getUser: GetUser) => {
-    infoLog('connecting to mqtt');
-
     client = await connect(config, getUser);
 
     applyListeners(io, client, config, getUser);

@@ -1,12 +1,12 @@
 import { clone } from 'ramda';
 import { STATE_DEHYDRATED } from '../../constants/redux';
-import { infoLog, warningLog } from '../../logger';
+import { logger } from '../../logger';
 import { getItem, removeItem, setItem } from '../../storage';
 import parseJwtToken from '../../utils/parseJwtToken';
 
 export function dehydrateState() {
     return function (dispatch, getState) {
-        warningLog(STATE_DEHYDRATED);
+        logger.warning(STATE_DEHYDRATED);
 
         const { formsData, application } = clone(getState());
         delete application.notifications;
@@ -27,18 +27,17 @@ export function hydrateState() {
 
         if (state.application.user && state.application.user.token) {
             const tokenParsed = parseJwtToken(state.application.user.token);
-            console.log(tokenParsed.exp, (new Date().getTime() + 1) / 1000);
             if (tokenParsed.exp < (new Date().getTime() + 1) / 1000) {
-                infoLog('Token expired');
+                logger.info('Token expired');
                 removeItem(STATE_DEHYDRATED);
                 return;
             }
         }
         delete state.dehydrationTime;
-
+        logger.debug('State hydrated');
         return state;
     } else {
-        infoLog('Nothing to hydrate');
+        logger.debug('Nothing to hydrate');
     }
     return undefined;
 }

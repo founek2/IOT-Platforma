@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { devLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { T } from 'ramda';
 
 class MySocket {
@@ -12,8 +12,8 @@ class MySocket {
         const newCon = io({
             path: '/socket.io',
             query: {
-                token
-            }
+                token,
+            },
         });
         newCon.open();
         mySocket.applyListeners(newCon);
@@ -29,15 +29,15 @@ class MySocket {
 
     on = (action, fn) => {
         this.socket.on(action, fn);
-        this._on.push([ action, fn ]);
+        this._on.push([action, fn]);
     };
 
     off = (action, fn) => {
         this.socket.off(action, fn);
-        this._on.filter(([ a, f ]) => action !== a && f !== fn);
+        this._on.filter(([a, f]) => action !== a && f !== fn);
     };
     applyListeners = (socket) => {
-        this._on.forEach(([ action, fn ]) => {
+        this._on.forEach(([action, fn]) => {
             socket.on(action, fn);
         });
     };
@@ -55,7 +55,7 @@ class MySocket {
 const mySocket = new MySocket();
 
 function init(token = '') {
-    devLog('connecting to socket');
+    logger.debug('connecting to socket');
     mySocket.close();
     mySocket.init(token);
 }
@@ -66,5 +66,5 @@ function getSocket() {
 
 export default {
     init,
-    getSocket
+    getSocket,
 };

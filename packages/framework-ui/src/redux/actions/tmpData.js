@@ -1,8 +1,8 @@
 import { ActionTypes } from '../../constants/redux';
-import { baseLogger } from '../../logger';
+import { logger } from '../../logger';
 
 export function setTmpData(data) {
-    baseLogger(ActionTypes.SET_TMP_DATA);
+    logger.info(ActionTypes.SET_TMP_DATA);
 
     return {
         type: ActionTypes.SET_TMP_DATA,
@@ -11,7 +11,7 @@ export function setTmpData(data) {
 }
 
 export function updateTmpData(data) {
-    baseLogger(ActionTypes.UPDATE_TMP_DATA);
+    logger.info(ActionTypes.UPDATE_TMP_DATA);
 
     return {
         type: ActionTypes.UPDATE_TMP_DATA,

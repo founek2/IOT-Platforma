@@ -3,6 +3,7 @@ import addMinutes from 'date-fns/addMinutes';
 import isBefore from 'date-fns/isBefore';
 import { UserModel } from '../models/userModel';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
+import { logger } from 'framework-ui/lib/logger';
 
 export type Pass = {
     password: string;
@@ -13,7 +14,7 @@ export type Pass = {
 let currentPass: Maybe<Pass> = Nothing;
 
 async function newPass(): Promise<Maybe<Pass>> {
-    console.log('Generating new pass');
+    logger.debug('Generating new pass');
     const token = Security.getRandomToken(12);
     const doc = await UserModel.findOne({ groups: 'root' }).lean();
     if (!doc?.info.userName) return Nothing;
@@ -32,7 +33,6 @@ export async function getPass(): Promise<Maybe<Pass>> {
 }
 
 export function validatePass(pass: { userName: string; password: string }): boolean {
-    console.log('validate pass', currentPass.extract(), pass);
     return currentPass
         .map((curr) => isBefore(new Date(), curr.validTo) && curr.password === pass.password)
         .orDefault(false);

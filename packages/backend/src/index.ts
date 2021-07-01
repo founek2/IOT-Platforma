@@ -2,7 +2,7 @@ import http from 'http';
 import express, { Application } from 'express';
 import config from 'common/lib/config';
 import { JwtService } from 'common/lib/services/jwtService';
-import { devLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { Config } from './types';
 import loadersInit from './loaders';
 import mongoose from 'mongoose';
@@ -43,7 +43,6 @@ async function startServer(config: Config) {
 
     /* SocketIO proxy just for development */
     if (process.env.NODE_ENV === 'development') {
-        console.log('Socket redirect enabled');
         const proxy = require('http-proxy-middleware');
         var wsProxy = proxy('/socket.io', {
             target: 'ws://localhost:8084',
@@ -54,12 +53,12 @@ async function startServer(config: Config) {
 
         app.use(wsProxy);
         app.server.on('upgrade', wsProxy.upgrade);
-        devLog('Proxy enabled');
+        logger.info('Proxy enabled');
     }
 
     /* Start server */
     app.server.listen(config.port, () => {
-        console.log(`Started on port ${(app.server?.address() as any).port}`);
+        logger.info(`Started on port ${(app.server?.address() as any).port}`);
     });
 
     // handle appropriately server shutdown

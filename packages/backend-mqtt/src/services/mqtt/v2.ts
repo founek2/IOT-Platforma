@@ -1,7 +1,7 @@
 import { Server as serverIO } from 'socket.io';
 import { DeviceStatus, IDevice } from 'common/lib/models/interface/device';
 import { DeviceModel } from 'common/lib/models/deviceModel';
-import { devLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { getThing } from 'common/lib/utils/getThing';
 import { getProperty } from 'common/lib/utils/getProperty';
 import { validateValue } from 'common/lib/utils/validateValue';
@@ -51,12 +51,12 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
         })
             .lean()
             .exec();
-        if (!device) return devLog('mqtt - Got data from invalid/misconfigured device');
+        if (!device) return logger.warning('mqtt - Got data from invalid/misconfigured device');
 
         const thing = getThing(device, nodeId);
         const property = getProperty(thing, propertyId);
         const result = validateValue(property, message.toString());
-        if (!result.valid) return devLog('mqtt - Got invalid data');
+        if (!result.valid) return logger.debug('mqtt - Got invalid data');
 
         DeviceModel.updateOne(
             {
@@ -71,7 +71,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
             }
         ).exec();
 
-        devLog('saving data', message.toString());
+        logger.debug('saving data', message.toString());
 
         sendToUsers(io, device, nodeId, propertyId, result.value);
 

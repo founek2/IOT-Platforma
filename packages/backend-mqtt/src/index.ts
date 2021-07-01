@@ -17,6 +17,7 @@ import eventEmitter from './services/eventEmitter';
 import initSubscribers from './subscribers';
 import { UserModel } from 'common/lib/models/userModel';
 import * as TemporaryPass from 'common/lib/services/TemporaryPass';
+import { logger, LogLevel } from 'framework-ui/lib/logger';
 
 interface customApp extends Application {
     server: http.Server;
@@ -29,7 +30,7 @@ async function startServer(config: Config) {
     initSubscribers(eventEmitter);
 
     await connectMongoose(config.dbUri);
-    mongoose.set('debug', process.env.NODE_ENV === 'development');
+    mongoose.set('debug', Number(process.env.LOG_LEVEL) === LogLevel.SILLY);
 
     const appInstance = express();
     const server = http.createServer(appInstance);
@@ -47,7 +48,7 @@ async function startServer(config: Config) {
     app.use('/api', api({ io: app.io }));
 
     app.server.listen(config.portAuth, () => {
-        console.log(`Started on port ${(app.server?.address() as any).port}`);
+        logger.info(`Started on port ${(app.server?.address() as any).port}`);
 
         if (app.io) setTimeout(() => mqttService(app.io, config.mqtt, TemporaryPass.getPass), 1000); //init
     });

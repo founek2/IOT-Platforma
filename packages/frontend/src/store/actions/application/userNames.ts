@@ -1,5 +1,5 @@
 import { ActionTypes } from '../../../constants/redux';
-import { baseLogger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { getUsers } from 'framework-ui/lib/api/userApi';
 import { getToken } from 'framework-ui/lib/utils/getters';
 import { AppThunk } from '../../../types';
@@ -11,7 +11,7 @@ export const userNamesActions = {
     fetch(): AppThunk {
         return (dispatch, getState) => {
             const EDIT_PERMISSIONS = 'EDIT_PERMISSIONS';
-            baseLogger(EDIT_PERMISSIONS);
+            logger.info(EDIT_PERMISSIONS);
 
             return getUsers(
                 {

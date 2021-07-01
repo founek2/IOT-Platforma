@@ -5,7 +5,7 @@ import Input from '@material-ui/core/Input'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import AddIcon from '@material-ui/icons/CloudUpload'
 import { makeStyles } from '@material-ui/core/styles'
-import { errorLog } from '../../logger'
+import { logger } from '../../logger'
 import clsx from 'clsx'
 import MyFile from '../../dto/MyFile'
 
@@ -37,7 +37,7 @@ function FileLoader({ onChange, label, value, className, FormHelperTextProps, he
 
             onChange({ target: { value: new MyFile(files[0].name, localImageUrl) } })
         } else {
-            errorLog("Multiple files are not currently supported");
+            logger.error("Multiple files are not currently supported");
         }
     }
 

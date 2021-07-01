@@ -2,7 +2,7 @@ import type { IDevice } from 'common/lib/models/interface/device';
 import { HistoricalSensor } from 'common/lib/models/interface/history';
 import type { IThing } from 'common/lib/models/interface/thing';
 import { subDays } from 'date-fns';
-import { baseLogger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { getToken } from 'framework-ui/lib/utils/getters';
 import { AppThunk } from 'frontend/src/types';
 import { fetchHistory as fetchHistoryApi } from '../../../api/thingApi';
@@ -13,7 +13,7 @@ export const thingHistoryActions = {
 
     fetchHistory(deviceId: IDevice['_id'], thingId: IThing['_id']): AppThunk {
         return function (dispatch, getState) {
-            baseLogger('FETCH_DISCOVERED_DEVICES');
+            logger.info('FETCH_DISCOVERED_DEVICES');
             return fetchHistoryApi(
                 {
                     deviceId,

@@ -9,7 +9,7 @@ import {
 import SuccessMessages from '../../../localization/successMessages';
 import { dehydrateState } from '..';
 import { prop, head } from 'ramda';
-import logger from '../../../logger';
+import { logger } from '../../../logger';
 import { AppThunk } from '../../../types';
 import { userReducerActions } from '../../reducers/application/user';
 import { formsDataActions } from '../formsData';
@@ -24,7 +24,7 @@ export const userActions = {
     login(): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const result = dispatch(formsDataActions.validateRegisteredFields(LOGIN));
-            logger.log(LOGIN);
+            logger.info(LOGIN);
             if (result.valid) {
                 const formData = getFormData(LOGIN)(getState());
                 return loginApi(
@@ -58,7 +58,7 @@ export const userActions = {
     register(): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const REGISTRATION = 'REGISTRATION';
-            logger.log(REGISTRATION);
+            logger.info(REGISTRATION);
             const result = dispatch(formsDataActions.validateRegisteredFields(REGISTRATION));
             if (result.valid) {
                 const formData = getFormData(REGISTRATION)(getState());
@@ -80,7 +80,7 @@ export const userActions = {
     registerAngLogin(): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const REGISTRATION = 'REGISTRATION';
-            logger.log('REGISTER_AND_LOGIN');
+            logger.info('REGISTER_AND_LOGIN');
             const result = dispatch(formsDataActions.validateRegisteredFields(REGISTRATION));
             if (result.valid) {
                 const formData = getFormData(REGISTRATION)(getState());
@@ -104,7 +104,7 @@ export const userActions = {
     fetchAuthType(): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const result = dispatch(formsDataActions.validateField('LOGIN.userName', true));
-            logger.log('FETCH_AUTH_TYPE');
+            logger.info('FETCH_AUTH_TYPE');
             if (result.valid) {
                 // @ts-ignore
                 const userName = prop('userName', getFormData(LOGIN)(getState()));
@@ -134,7 +134,7 @@ export const userActions = {
     updateUser(id: any): AppThunk<Promise<Boolean>> {
         return async function (dispatch, getState) {
             const EDIT_USER = 'EDIT_USER';
-            logger.log('EDIT_USER_CURRENT');
+            logger.info('EDIT_USER_CURRENT');
 
             const result = dispatch(formsDataActions.validateForm(EDIT_USER));
             const formData: any = getFormData(EDIT_USER)(getState());

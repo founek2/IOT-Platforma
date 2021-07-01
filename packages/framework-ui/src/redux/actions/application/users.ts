@@ -4,7 +4,7 @@ import {
     getUsers as fetchUsers,
     updateUser as updateUserApi,
 } from '../../../api/userApi';
-import { baseLogger } from '../../../logger';
+import { logger } from '../../../logger';
 import { AppThunk } from '../../../types';
 import { getFormData, getToken } from '../../../utils/getters';
 import { usersReducerActions } from '../../reducers/application/users';
@@ -52,7 +52,7 @@ export const usersActions = {
     updateUser(id: any): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const EDIT_USER = 'EDIT_USER';
-            baseLogger(EDIT_USER);
+            logger.info(EDIT_USER);
 
             const result = dispatch(formsDataActions.validateForm(EDIT_USER));
             const formData = getFormData(EDIT_USER)(getState());

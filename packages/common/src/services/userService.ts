@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import { IUser, Permission, IAccessToken, IOauth } from '../models/interface/userInterface';
-import { devLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { UserModel } from '../models/userModel';
 import { JwtService } from '../services/jwtService';
 import { IUserDocument } from '../models/schema/userSchema';
@@ -42,7 +42,7 @@ export const UserService = {
     async create(object: IUser): Promise<UserWithToken> {
         const { password, oauth } = object.auth;
 
-        devLog('user creating:', object);
+        logger.debug('user creating:', object);
 
         const rootExists = await UserModel.exists({ groups: 'root' });
         const types = [password ? AuthType.passwd : AuthType.oauth];

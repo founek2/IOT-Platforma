@@ -23,8 +23,8 @@ import {
 } from '../utils/getters';
 import ChipArray from './ChipArray';
 import { onEnterRun } from '../utils/onEnter';
+import { logger } from '../logger';
 
-const errorLog = console.error;
 
 const Components = {
     TextField: TextField,
@@ -97,7 +97,7 @@ function FieldConnector({
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (!descriptor) {
-        console.error('FieldConnector> missing descriptor for -', deepPath);
+        logger.error('FieldConnector> missing descriptor for -', deepPath);
         return null;
     }
     //const { descriptor, registeredField, fieldValue: value } = data
@@ -153,7 +153,7 @@ function FieldConnector({
             />
         );
     } else {
-        errorLog('Missing descriptor: ' + deepPath);
+        logger.error('Missing descriptor: ' + deepPath);
         return null;
     }
 }

@@ -4,11 +4,12 @@ import express, { Response } from 'express';
 import { AuthType } from 'common/lib/constants';
 import { validatePass } from 'common/lib/services/TemporaryPass';
 import { UserModel } from 'common/lib/models/userModel';
+import { logger } from 'framework-ui/lib/logger';
 
 const router = express.Router();
 
 function sendDeny(path: string, res: Response) {
-    console.log(path, 'deny');
+    logger.debug(path, 'deny');
     res.send('deny');
 }
 
@@ -47,10 +48,9 @@ function removeUserNamePrefix(userName: string) {
 router.post('/user', async function (req, res) {
     // console.log('/user', req.body);
     const { username, password } = req.body;
-    console.info('username=' + username, 'password=' + password);
+    logger.debug('username=' + username, 'password=' + password);
     if (isDevice(username)) {
         const [topicPrefix, deviceId] = splitUserName(username);
-        console.log('loging', topicPrefix, deviceId, password);
         const success = await DeviceModel.login(topicPrefix, deviceId, password);
         return success ? res.send('allow') : sendDeny('/user device', res);
     } else if (isUser(username)) {

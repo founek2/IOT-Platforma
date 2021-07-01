@@ -1,25 +1,24 @@
-import { logger } from './fn'
+import { logger as loggerFn } from './fn';
 
-const loggerCSS = logger(true);
+const isNode = Boolean(typeof process !== 'undefined' && process?.versions?.node);
+
+const loggerCSS = loggerFn(!isNode);
 
 const consoleLog = loggerCSS(console);
-export const baseLogger = consoleLog('bold', "Log>")
 
-export const infoLog = consoleLog('green', 'INFO');
-export const warningLog = consoleLog('orange', 'WARNING');
-export const errorLog = consoleLog('red', 'ERROR');
-export const devLog = consoleLog('blue', 'DEV', true);
-
-export const info = consoleLog('green', 'INFO');
-export const warning = consoleLog('orange', 'WARNING');
-export const error = consoleLog('red', 'ERROR');
-export const dev = consoleLog('blue', 'DEV', true);
-export const debug = consoleLog('blue', 'debug', true);
-
-export default {
-    log: baseLogger,
-    info,
-    warning,
-    error,
-    debug,
+export enum LogLevel {
+    ERROR,
+    WARNING,
+    INFO,
+    DEV,
+    DEBUG,
+    SILLY,
 }
+
+export const logger = {
+    info: consoleLog('green', 'INFO', LogLevel.INFO),
+    warning: consoleLog('orange', 'WARNING', LogLevel.WARNING),
+    error: consoleLog('red', 'ERROR', LogLevel.ERROR),
+    debug: consoleLog('blue', 'DEV', LogLevel.DEBUG),
+    silly: consoleLog('yellow', 'SILLY', LogLevel.SILLY),
+};

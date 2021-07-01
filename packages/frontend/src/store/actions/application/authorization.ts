@@ -1,6 +1,6 @@
 import { authorizationReducerActions } from 'framework-ui/lib/redux/reducers/application/authorization';
 import { AppThunk } from 'frontend/src/types';
-import { baseLogger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData } from 'framework-ui/lib/utils/getters';
 import { postAuthorization } from '../../../api/authorization';
@@ -13,7 +13,7 @@ export const authorizationActions = {
     sendCode(code: string): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const AUTHORIZATION = 'AUTHORIZATION';
-            baseLogger(AUTHORIZATION);
+            logger.info(AUTHORIZATION);
 
             return postAuthorization(
                 {

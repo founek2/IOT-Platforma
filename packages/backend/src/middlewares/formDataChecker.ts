@@ -1,4 +1,4 @@
-import { infoLog, errorLog, warningLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { checkValidFormData } from 'common/lib/utils/validation';
 import { trimData } from 'framework-ui/lib/utils/trimData';
 import express from 'express';
@@ -14,7 +14,7 @@ export default function formDataChecker(fieldDescriptors: any, { ingoreRequired,
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
         console.log('formData', req.body.formData);
 
-        infoLog('Validating formData');
+        logger.debug('Validating formData');
         const formData: FormData = req.body.formData;
         // console.log('dad', Object.keys(formData), allowedForms);
         if (allowedForms && !Object.keys(formData).every((formName) => allowedForms.includes(formName)))
@@ -27,11 +27,11 @@ export default function formDataChecker(fieldDescriptors: any, { ingoreRequired,
             if (valid) {
                 next();
             } else {
-                warningLog('Validation Failed> ' + JSON.stringify(errors));
+                logger.warning('Validation Failed> ' + JSON.stringify(errors));
                 res.status(400).send({ error: 'validationFailed' });
             }
         } else {
-            warningLog('Missing formData');
+            logger.warning('Missing formData');
             res.status(400).send({ error: 'missingFormData' });
         }
     };

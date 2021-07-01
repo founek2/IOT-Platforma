@@ -1,19 +1,18 @@
 import { Grid, makeStyles } from '@material-ui/core';
 import { IDevice } from 'common/lib/models/interface/device';
 import { ComponentType } from 'common/lib/models/interface/thing';
-import { errorLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { LocationTypography } from 'frontend/src/components/LocationTypography';
-import React, { useCallback } from 'react';
-import { connect, useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { DeviceContext } from 'frontend/src/hooks/useDevice';
+import { ThingContext } from 'frontend/src/hooks/useThing';
+import isAfk from 'frontend/src/utils/isAfk';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { devicesActions } from '../../store/actions/application/devices';
 import Activator from './room/Activator';
 import Generic from './room/Generic';
 import Sensor from './room/Sensor';
 import Switch from './room/Swich';
-import isAfk from 'frontend/src/utils/isAfk';
-import { DeviceContext } from 'frontend/src/hooks/useDevice';
-import { ThingContext } from 'frontend/src/hooks/useThing';
 
 const compMapper = {
     [ComponentType.switch]: Switch,
@@ -60,7 +59,7 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
             );
 
             return createComponent();
-        } else errorLog('Invalid component type:', config.componentType, 'of device:', device.info.name);
+        } else logger.error('Invalid component type:', config.componentType, 'of device:', device.info.name);
         return null;
     });
 }

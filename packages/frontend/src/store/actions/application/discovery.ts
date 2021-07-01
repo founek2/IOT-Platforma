@@ -1,6 +1,6 @@
 import type { IDevice } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
-import { baseLogger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
 import { addDiscoveredDevice, deleteDiscovery, fetchDiscovery } from '../../../api/discovery';
@@ -14,7 +14,7 @@ export const discoveryActions = {
 
     fetch(): AppThunk {
         return function (dispatch, getState) {
-            baseLogger('FETCH_DISCOVERED_DEVICES');
+            logger.info('FETCH_DISCOVERED_DEVICES');
             return fetchDiscovery(
                 {
                     token: getToken(getState()),
@@ -29,7 +29,7 @@ export const discoveryActions = {
 
     deleteDevices(): AppThunk {
         return function (dispatch, getState) {
-            baseLogger('DELETE_DISCOVERED_DEVICES');
+            logger.info('DELETE_DISCOVERED_DEVICES');
 
             const DISCOVERY_DEVICES = 'DISCOVERY_DEVICES';
             const result = dispatch(formsDataActions.validateForm(DISCOVERY_DEVICES));
@@ -53,7 +53,7 @@ export const discoveryActions = {
 
     addDevice(id: IDiscovery['_id']): AppThunk {
         return function (dispatch, getState) {
-            baseLogger('CREATE_DEVICE');
+            logger.info('CREATE_DEVICE');
 
             const CREATE_DEVICE = 'CREATE_DEVICE';
             const result = dispatch(formsDataActions.validateForm(CREATE_DEVICE));

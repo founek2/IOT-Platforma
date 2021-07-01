@@ -2,7 +2,7 @@ import { merge, flip, o, toPairs, forEach } from 'ramda';
 import { notificationsActions } from '../redux/actions/application/notifications';
 import ErrorMessages from '../localization/errorMessages';
 import SuccessMessages from '../localization/successMessages';
-import { warningLog, infoLog } from '../logger';
+import { logger } from '../logger';
 import { update } from '../redux/actions/application/user';
 import { dehydrateState } from '../redux/actions/';
 
@@ -20,7 +20,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
 
     const newToken = response.headers.get('authorization-jwt-new');
     if (newToken) {
-        infoLog('Setting resigned token');
+        logger.info('Setting resigned token');
         dispatch(update({ token: newToken }));
         dispatch(dehydrateState());
     }
@@ -114,7 +114,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
 };
 
 const checkError = (Fn, error) => {
-    warningLog('API catch> ' + error, error.stack);
+    logger.warning('API catch> ' + error, error.stack);
     // if (error.message !== 'breakChain' && Fn)
     if (Fn) Fn(error);
 };

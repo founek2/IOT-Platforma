@@ -9,7 +9,7 @@ import { Config } from '../types';
 import { getProperty } from 'common/lib/utils/getProperty';
 import { getThing } from 'common/lib/utils/getThing';
 import functions from './fireBase/notifications/functions';
-import { devLog, errorLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { map, prop, uniq, o } from 'ramda';
 import { NotifyService } from './notifyService';
 
@@ -22,7 +22,7 @@ let homepageUrl: string;
 
 /* Initialize firebase SDK for later usage */
 export function init(config: Config) {
-    if (!config.firebaseAdminPath) return
+    if (!config.firebaseAdminPath) return;
 
     var serviceAccount = require(config.firebaseAdminPath);
 
@@ -182,8 +182,8 @@ async function sendAllNotifications(arrOfTokens: { userId: string; notifyTokens:
     });
 
     if (!messaging) {
-        errorLog("Unable to send messages -> FireBase not initialized")
-        return []
+        logger.error('Unable to send messages -> FireBase not initialized');
+        return [];
     }
     const response = await messaging.sendAll(messages);
     console.log(response.successCount + ' of ' + messages.length + ' messages were sent successfully');
@@ -195,7 +195,7 @@ async function sendAllNotifications(arrOfTokens: { userId: string; notifyTokens:
                 if (error.code === 'messaging/registration-token-not-registered') {
                     // console.log(Object.keys(error))
                     invalidTokens.push(messages[idx].token);
-                } else devLog(error);
+                } else logger.debug(error);
             }
         });
     }

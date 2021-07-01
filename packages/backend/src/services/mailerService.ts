@@ -1,4 +1,4 @@
-import logger from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import Email from 'email-templates';
 import { createTransport } from 'nodemailer';
 import path from 'path';

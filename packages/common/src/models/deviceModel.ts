@@ -1,9 +1,9 @@
-import { devLog } from "framework-ui/lib/logger";
-import mongoose, { Model } from "mongoose";
-import { IThing } from "./interface/thing";
-import { deviceSchemaPlain, IDeviceDocument } from "./schema/deviceSchema";
-import { IDevice } from "./interface/device";
-import { IUser } from "./interface/userInterface";
+import { logger } from 'framework-ui/lib/logger';
+import mongoose, { Model } from 'mongoose';
+import { IThing } from './interface/thing';
+import { deviceSchemaPlain, IDeviceDocument } from './schema/deviceSchema';
+import { IDevice } from './interface/device';
+import { IUser } from './interface/userInterface';
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
@@ -11,12 +11,12 @@ const ObjectId = mongoose.Types.ObjectId;
 export const deviceSchema = new Schema<IDeviceDocument, IDeviceModel>(deviceSchemaPlain, {
     toObject: {
         transform: function (doc, ret) {
-            delete ret.apiKey
+            delete ret.apiKey;
         },
     },
-    timestamps: true
+    timestamps: true,
 });
-deviceSchema.index({ "metadata.realm": 1, "metadata.deviceId": 1 }, { unique: true });
+deviceSchema.index({ 'metadata.realm': 1, 'metadata.deviceId': 1 }, { unique: true });
 
 export interface IDeviceModel extends Model<IDeviceDocument> {
     createNew(
@@ -26,21 +26,21 @@ export interface IDeviceModel extends Model<IDeviceDocument> {
     // findForPublic(): Promise<IDevice[]>;
     findForUser(userId: string): Promise<IDeviceDocument[]>;
     login(realm: string, deviceId: string, apiKey: string): Promise<boolean>;
-    checkExists(id: IDevice["_id"]): Promise<boolean>;
-    checkWritePerm(id: IDevice["_id"], userId: IUser["_id"]): Promise<boolean>;
-    checkReadPerm(id: IDevice["_id"], userId: IUser["_id"]): Promise<boolean>;
-    checkControlPerm(id: IDevice["_id"], userId: IUser["_id"]): Promise<boolean>;
-    updateByFormData(id: IDevice["_id"], object: Partial<IDevice>): Promise<void>;
+    checkExists(id: IDevice['_id']): Promise<boolean>;
+    checkWritePerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
+    checkReadPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
+    checkControlPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
+    updateByFormData(id: IDevice['_id'], object: Partial<IDevice>): Promise<void>;
 }
 
 deviceSchema.statics.createNew = async function ({ info, things, metadata }, userID) {
     const objID = ObjectId(userID);
 
     const result = await this.exists({
-        "metadata.deviceId": metadata.deviceId,
-        "metadata.realm": metadata.realm,
+        'metadata.deviceId': metadata.deviceId,
+        'metadata.realm': metadata.realm,
     });
-    if (result) throw Error("deviceIdTaken");
+    if (result) throw Error('deviceIdTaken');
 
     const newDevice = await this.create({
         info,
@@ -50,7 +50,7 @@ deviceSchema.statics.createNew = async function ({ info, things, metadata }, use
         createdBy: objID,
     });
     // if (imgExtension) newDevice.info.imgPath = `/${IMAGES_DEVICES_FOLDER}/${newDevice.id}.${imgExtension}`;
-    devLog("Creating device", newDevice);
+    logger.debug('Creating device', newDevice);
     return newDevice;
 };
 
@@ -71,9 +71,9 @@ deviceSchema.statics.findForUser = async function (userID) {
             $match: {
                 $or: [
                     { publicRead: true },
-                    { "permissions.write": userObjID },
-                    { "permissions.read": userObjID },
-                    { "permissions.control": userObjID },
+                    { 'permissions.write': userObjID },
+                    { 'permissions.read': userObjID },
+                    { 'permissions.control': userObjID },
                 ],
             },
         },
@@ -83,23 +83,23 @@ deviceSchema.statics.findForUser = async function (userID) {
                 permissions: {
                     read: {
                         $cond: {
-                            if: { $in: [userObjID, "$permissions.read"] },
-                            then: "$permissions.read",
-                            else: "$$REMOVE",
+                            if: { $in: [userObjID, '$permissions.read'] },
+                            then: '$permissions.read',
+                            else: '$$REMOVE',
                         },
                     },
                     write: {
                         $cond: {
-                            if: { $in: [userObjID, "$permissions.write"] },
-                            then: "$permissions.write",
-                            else: "$$REMOVE",
+                            if: { $in: [userObjID, '$permissions.write'] },
+                            then: '$permissions.write',
+                            else: '$$REMOVE',
                         },
                     },
                     control: {
                         $cond: {
-                            if: { $in: [userObjID, "$permissions.control"] },
-                            then: "$permissions.control",
-                            else: "$$REMOVE",
+                            if: { $in: [userObjID, '$permissions.control'] },
+                            then: '$permissions.control',
+                            else: '$$REMOVE',
                         },
                     },
                 },
@@ -110,43 +110,43 @@ deviceSchema.statics.findForUser = async function (userID) {
 
 deviceSchema.statics.login = async function (realm: string, deviceId: string, apiKey: string) {
     return await this.exists({
-        "metadata.realm": realm,
-        "metadata.deviceId": deviceId,
+        'metadata.realm': realm,
+        'metadata.deviceId': deviceId,
         apiKey: apiKey,
     });
 };
 
-deviceSchema.statics.checkExists = function (id: IDevice["_id"]) {
+deviceSchema.statics.checkExists = function (id: IDevice['_id']) {
     return this.exists({
         _id: ObjectId(id),
     });
 };
 
-deviceSchema.statics.checkWritePerm = function (id: IDevice["_id"], userId: IUser["_id"]) {
+deviceSchema.statics.checkWritePerm = function (id: IDevice['_id'], userId: IUser['_id']) {
     const userID = ObjectId(userId);
     return this.exists({
         _id: ObjectId(id),
-        "permissions.write": userID
+        'permissions.write': userID,
     });
 };
 
-deviceSchema.statics.checkReadPerm = function (id: IDevice["_id"], userId: IUser["_id"]) {
+deviceSchema.statics.checkReadPerm = function (id: IDevice['_id'], userId: IUser['_id']) {
     const userID = ObjectId(userId);
     return this.exists({
         _id: ObjectId(id),
-        "permissions.read": userID,
+        'permissions.read': userID,
     });
 };
 
-deviceSchema.statics.checkControlPerm = function (id: IDevice["_id"], userId: IUser["_id"]) {
+deviceSchema.statics.checkControlPerm = function (id: IDevice['_id'], userId: IUser['_id']) {
     const userID = ObjectId(userId);
     return this.exists({
         _id: ObjectId(id),
-        "permissions.control": userID,
+        'permissions.control': userID,
     });
 };
 
-deviceSchema.statics.updateByFormData = function (id: IDevice["_id"], object: Partial<IDevice>) {
+deviceSchema.statics.updateByFormData = function (id: IDevice['_id'], object: Partial<IDevice>) {
     return this.updateOne(
         {
             _id: ObjectId(id),
@@ -155,4 +155,4 @@ deviceSchema.statics.updateByFormData = function (id: IDevice["_id"], object: Pa
     );
 };
 
-export const DeviceModel = mongoose.model<IDeviceDocument, IDeviceModel>("DeviceAdded", deviceSchema);
+export const DeviceModel = mongoose.model<IDeviceDocument, IDeviceModel>('DeviceAdded', deviceSchema);

@@ -1,6 +1,6 @@
 import ErrorMessages from 'framework-ui/lib/localization/errorMessages';
 import SuccessMessages from 'framework-ui/lib/localization/successMessages';
-import { baseLogger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { userActions as userAct } from 'framework-ui/lib/redux/actions/application/user';
 import { usersActions } from 'framework-ui/lib/redux/actions/application/users';
 import { AppThunk } from 'framework-ui/lib/types';
@@ -36,7 +36,7 @@ export const userActions = {
     registerToken(token: string): AppThunk<Promise<boolean | void>> {
         return async function (dispatch, getState) {
             const FIREBASE_ADD = 'FIREBASE_ADD';
-            baseLogger(FIREBASE_ADD);
+            logger.info(FIREBASE_ADD);
 
             if (!token) {
                 dispatch(
@@ -63,7 +63,7 @@ export const userActions = {
 
     forgot(FORM_NAME: string): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
-            baseLogger(FORM_NAME);
+            logger.info(FORM_NAME);
 
             const result = dispatch(formsDataActions.validateForm(FORM_NAME));
             const formData = getFormData(FORM_NAME)(getState());

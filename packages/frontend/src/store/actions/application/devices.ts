@@ -1,7 +1,7 @@
 import { IDevice } from 'common/lib/models/interface/device';
 import { IThing } from 'common/lib/models/interface/thing';
 import { transformNotifyForFE } from 'common/lib/utils/transform';
-import { baseLogger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 import { dehydrateState } from 'framework-ui/lib/redux/actions';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
@@ -34,7 +34,7 @@ export const devicesActions = {
     updateDevice(id: IDevice['_id']): AppThunk {
         return async function (dispatch, getState) {
             const EDIT_DEVICE = 'EDIT_DEVICE';
-            baseLogger(EDIT_DEVICE);
+            logger.info(EDIT_DEVICE);
             const result = dispatch(formsDataActions.validateRegisteredFields(EDIT_DEVICE));
             if (result.valid) {
                 const state = getState();
@@ -58,7 +58,7 @@ export const devicesActions = {
 
     deleteDevice(id: IDevice['_id']): AppThunk {
         return async function (dispatch, getState) {
-            baseLogger('DELETE_DEVICE');
+            logger.info('DELETE_DEVICE');
             return deleteDeviceApi(
                 {
                     token: getToken(getState()),
@@ -74,7 +74,7 @@ export const devicesActions = {
 
     fetch(): AppThunk {
         return function (dispatch, getState) {
-            baseLogger('FETCH_DEVICES');
+            logger.info('FETCH_DEVICES');
             return fetchDevicesApi(
                 {
                     token: getToken(getState()),
@@ -91,7 +91,7 @@ export const devicesActions = {
     updateState(deviceId: IDevice['_id'], thingId: IThing['config']['nodeId'], state: any): AppThunk {
         return async function (dispatch, getState) {
             const EDIT_CONTROL = 'UPDATE_STATE_DEVICE';
-            baseLogger(EDIT_CONTROL);
+            logger.info(EDIT_CONTROL);
             return updateStateThingApi(
                 {
                     token: getToken(getState()),
@@ -138,7 +138,7 @@ export const devicesActions = {
     updateNotify(id: IDevice['_id'], nodeId: IThing['config']['nodeId']): AppThunk {
         return async function (dispatch, getState) {
             const EDIT_NOTIFY = 'EDIT_NOTIFY';
-            baseLogger(EDIT_NOTIFY);
+            logger.info(EDIT_NOTIFY);
             const result = dispatch(formsDataActions.validateForm(EDIT_NOTIFY));
             const formData = getFormData(EDIT_NOTIFY)(getState());
             if (result.valid) {
@@ -162,7 +162,7 @@ export const devicesActions = {
     sendCommand(deviceId: IDevice['_id']): AppThunk {
         return async function (dispatch, getState) {
             const DEVICE_SEND = 'DEVICE_SEND';
-            baseLogger(DEVICE_SEND);
+            logger.info(DEVICE_SEND);
             const result = dispatch(formsDataActions.validateForm(DEVICE_SEND));
             const formData = getFormData(DEVICE_SEND)(getState());
             if (result.valid) {

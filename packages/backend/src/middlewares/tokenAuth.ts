@@ -1,7 +1,7 @@
 import { JwtService } from 'common/lib/services/jwtService';
 import mongoose from 'mongoose';
 import { equals, T, not } from 'ramda';
-import { infoLog, warningLog } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/lib/logger';
 
 import { enrichGroups } from 'framework-ui/lib/privileges';
 import express from 'express';
@@ -29,7 +29,7 @@ export default function (options: { restricted: boolean; methods?: Array<'PUT'> 
                 const now_sec = new Date().getTime() / 1000;
 
                 if (obj.exp - now_sec < days7_sec) {
-                    infoLog('Resigning jwt token');
+                    logger.info('Resigning jwt token');
                     const newToken = await JwtService.sign({ id: obj.id });
                     res.set('Authorization-JWT-new', newToken);
                 }
@@ -38,7 +38,7 @@ export default function (options: { restricted: boolean; methods?: Array<'PUT'> 
                 const user = await UserModel.findById(obj.id).exec();
 
                 if (user) {
-                    infoLog(`Verified user=${user.info.userName}, groups=${user.groups.join(',')}`);
+                    logger.debug(`Verified user=${user.info.userName}, groups=${user.groups.join(',')}`);
                     req2.user = user.toObject();
                     req2.user.accessPermissions = [Permission.write, Permission.read, Permission.control];
                     req2.user.groups = enrichGroups(req2.user.groups);
@@ -46,7 +46,7 @@ export default function (options: { restricted: boolean; methods?: Array<'PUT'> 
                     if (req2.user.groups.some(equals('admin'))) req2.user.admin = true;
                     next();
                 } else {
-                    warningLog('userNotExist');
+                    logger.warning('userNotExist');
                     res.status(404).send({ error: 'userNotExist', command: 'logOut' });
                 }
             } catch (err) {
