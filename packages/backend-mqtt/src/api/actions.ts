@@ -20,7 +20,6 @@ router.put('/device/:deviceId/pairing/init', function (req, res) {
 
 /* Send state change of property to device */
 router.patch('/device/:deviceId/thing/:nodeId/property/:propertyId', async function (req, res) {
-    console.log('action update property state', req.params, req.body);
     const { deviceId, nodeId, propertyId } = req.params;
 
     eventEmitter.emit('device_set_state', { device: req.body.device, nodeId, propertyId, value: req.body.value });
