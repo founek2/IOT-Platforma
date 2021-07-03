@@ -9,7 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
 import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { getGroups, getUser, getUserInfo, isUserLoggerIn, isUrlHash } from 'framework-ui/lib/utils/getters';
+import { isUserLoggerIn, isUrlHash } from 'framework-ui/lib/utils/getters';
 import React, { Fragment, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -24,6 +24,7 @@ import { WithRouterProps } from 'react-router';
 import { History } from 'history';
 import { IUser } from 'common/lib/models/interface/userInterface';
 import { useAppDispatch } from '../hooks';
+import { getGroups } from '../utils/getters';
 
 const useClasses = makeStyles({
     root: {
@@ -79,18 +80,18 @@ function Layout({ userPresence, loginOpen, history, forgotOpen }: LayoutProps) {
                     {userPresence ? (
                         <UserMenu />
                     ) : (
-                        <Link to={{ hash: 'login' }}>
-                            {isWide ? (
-                                <Button variant="text" className={classes.loginButton}>
-                                    Přihlášení
-                                </Button>
-                            ) : (
-                                <IconButton className={classes.loginButton}>
-                                    <SendIcon />
-                                </IconButton>
-                            )}
-                        </Link>
-                    )}
+                            <Link to={{ hash: 'login' }}>
+                                {isWide ? (
+                                    <Button variant="text" className={classes.loginButton}>
+                                        Přihlášení
+                                    </Button>
+                                ) : (
+                                        <IconButton className={classes.loginButton}>
+                                            <SendIcon />
+                                        </IconButton>
+                                    )}
+                            </Link>
+                        )}
                 </Toolbar>
                 <SideMenu open={mainMenuOpen} onClose={setMainMenuOpen(false)} onOpen={setMainMenuOpen(true)} />
             </AppBar>

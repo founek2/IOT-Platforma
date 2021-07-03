@@ -1,4 +1,9 @@
 import { ThunkAction, AnyAction, Action } from '@reduxjs/toolkit';
+import { NotificationsState } from '../redux/reducers/application/notifications';
+import { UserState } from '../redux/reducers/application/user';
+import { UsersState } from '../redux/reducers/application/users';
+import { AuthorizationState } from '../redux/reducers/application/authorization';
+import { HistoryState } from '../redux/reducers/history';
 
 export type errorMessage = string;
 
@@ -6,7 +11,7 @@ export type validationFn = (value: any, options?: any) => true | errorMessage;
 
 export type messages = { [messageKey: string]: ((args: any) => string) | string };
 
-export type fieldDescriptor = {
+export type FieldDescriptor = {
     deepPath: string;
     required?: boolean;
     when?: ((formData: any, options: { deepPath: string; i?: number }) => boolean) | null;
@@ -16,16 +21,38 @@ export type fieldDescriptor = {
     validations?: Array<validationFn>;
 };
 
-export type fieldState = {
-    pristine?: boolean;
-    valid?: boolean;
+export type FieldState = {
+    pristine: boolean;
+    valid: boolean;
     errorMessages?: Array<string>;
 };
 
-export type fieldDescriptors = { [key: string]: fieldDescriptors | fieldDescriptor };
+export type FormRegisteredFields = { [key: string]: FieldState | FormRegisteredFields };
+export type RegisteredFields = { [formName: string]: FormRegisteredFields };
+
+export type FormFieldDescriptors = { [fieldPath: string]: FormFieldDescriptors | FieldDescriptor };
+export type FieldDescriptors = { [formName: string]: { [name: string]: FormFieldDescriptors | FieldDescriptor } };
+
+export type formsData = {
+    registeredFields: RegisteredFields;
+    [formName: string]: any;
+};
 
 export type ValueOf<T> = T[keyof T];
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, any, unknown, Action>;
 
 export type NotificationVariant = 'default' | 'error' | 'success' | 'warning' | 'info' | undefined;
+
+export type Application = {
+    notifications: NotificationsState;
+    user: UserState;
+    users: UsersState;
+    authorization: AuthorizationState;
+};
+export type State = {
+    application: Application;
+    formsData: formsData;
+    history: HistoryState;
+    fieldDescriptors: FieldDescriptors;
+};

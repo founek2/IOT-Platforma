@@ -6,7 +6,7 @@ import EnchancedTable from 'framework-ui/lib/Components/Table';
 import { getAllowedGroups, isGroupAllowed } from 'framework-ui/lib/privileges';
 import { usersActions } from 'framework-ui/lib/redux/actions/application/users';
 import arrToString from 'framework-ui/lib/utils/arrToString';
-import { getGroups, getUsers, isUrlHash } from 'framework-ui/lib/utils/getters';
+import { isUrlHash } from 'framework-ui/lib/utils/getters';
 import { History } from 'history';
 import { isEmpty } from 'ramda';
 import React, { useEffect, useState } from 'react';
@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { RootState } from '../store/store';
 import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
 import EditUser from './userManagement/EditUser';
-import { getQueryID } from '../utils/getters';
+import { getQueryID, getUsers, getGroups } from '../utils/getters';
 import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 
 function convertGroupIDsToName(groups: { group: string; text: string }[]) {
@@ -51,12 +51,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface UserManagementProps {
-    groups: string[];
     history: History;
 }
-function UserManagement({ groups, history }: UserManagementProps) {
+function UserManagement({ history }: UserManagementProps) {
     const classes = useStyles();
     const dispatch = useAppDispatch();
+    const groups = useAppSelector(getGroups)
     const openEditDialog = useAppSelector(isUrlHash('#editUser'));
     const userId = useAppSelector(getQueryID);
     const users = useAppSelector(getUsers) as IUser[];
@@ -110,10 +110,4 @@ function UserManagement({ groups, history }: UserManagementProps) {
     );
 }
 
-const _mapStateToProps = (state: RootState) => {
-    return {
-        groups: getGroups(state) as IUser['groups'],
-    };
-};
-
-export default connect(_mapStateToProps)(UserManagement);
+export default UserManagement;

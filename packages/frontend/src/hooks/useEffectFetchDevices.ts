@@ -1,4 +1,3 @@
-import { getApplication } from 'framework-ui/lib/utils/getters';
 import { path } from 'ramda';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -6,6 +5,7 @@ import { devicesActions } from '../store/actions/application/devices';
 import io from '../webSocket';
 import { useActions } from './useActions';
 import { RootState } from '../store/store';
+import { getApplication } from '../utils/getters';
 
 export function useEffectFetchDevices() {
     const actions = useActions({

@@ -4,9 +4,9 @@ import { AuthType, NotifyIntervals } from './constants';
 import { DeviceCommand } from './models/interface/device';
 import { NotifyType } from './models/interface/notifyInterface';
 import { transformToForm } from 'framework-ui/lib/utils/transformToForm';
-import { fieldDescriptors, fieldDescriptor } from 'framework-ui/lib/types';
+import { FormFieldDescriptors, FieldDescriptor, FieldDescriptors } from 'framework-ui/lib/types';
 
-const LOGIN: fieldDescriptors = {
+const LOGIN: FormFieldDescriptors = {
     userName: {
         deepPath: 'LOGIN.userName',
         required: true,
@@ -30,7 +30,7 @@ const LOGIN: fieldDescriptors = {
         validations: [validationFactory('isString', { min: 4, max: 20 })],
     },
 };
-const userFields: fieldDescriptors = {
+const userFields: FormFieldDescriptors = {
     info: {
         userName: {
             deepPath: 'REGISTRATION.info.userName',
@@ -63,7 +63,7 @@ const userFields: fieldDescriptors = {
     },
 };
 
-const passwd: fieldDescriptor = {
+const passwd: FieldDescriptor = {
     deepPath: 'REGISTRATION.auth.password',
     required: true,
     label: 'Heslo',
@@ -73,7 +73,7 @@ const passwd: fieldDescriptor = {
 
 const REGISTRATION = assocPath(['auth', 'password'], passwd, userFields);
 
-const passwdNotReq: fieldDescriptor = {
+const passwdNotReq: FieldDescriptor = {
     deepPath: 'EDIT_USER.auth.password',
     required: false,
     label: 'Heslo',
@@ -81,7 +81,7 @@ const passwdNotReq: fieldDescriptor = {
     validations: [validationFactory('isString', { min: 4, max: 20 })],
 };
 
-const EDIT_USER: fieldDescriptors = assocPath(['auth', 'password'], passwdNotReq, {
+const EDIT_USER: FormFieldDescriptors = assocPath(['auth', 'password'], passwdNotReq, {
     ...transformToForm('EDIT_USER', userFields),
     groups: {
         deepPath: 'EDIT_USER.groups',
@@ -118,7 +118,7 @@ const CREATE_DEVICE = {
     },
 };
 
-const EDIT_PERMISSIONS: fieldDescriptors = {
+const EDIT_PERMISSIONS: FormFieldDescriptors = {
     read: {
         deepPath: 'EDIT_PERMISSIONS.read',
         label: 'Čtení',
@@ -136,7 +136,7 @@ const EDIT_PERMISSIONS: fieldDescriptors = {
     },
 };
 
-const EDIT_DEVICE: fieldDescriptors = {
+const EDIT_DEVICE: FormFieldDescriptors = {
     info: {
         name: {
             deepPath: 'EDIT_DEVICE.info.name',
@@ -163,7 +163,7 @@ const EDIT_DEVICE: fieldDescriptors = {
     permissions: transformToForm('EDIT_DEVICE.permissions', EDIT_PERMISSIONS),
 };
 
-const EDIT_NOTIFY: fieldDescriptors = {
+const EDIT_NOTIFY: FormFieldDescriptors = {
     'propertyId[]': {
         deepPath: 'EDIT_NOTIFY.propertyId[]',
         getLength: ({ count }) => count,
@@ -223,7 +223,7 @@ const EDIT_NOTIFY: fieldDescriptors = {
     },
 };
 
-const USER_MANAGEMENT: fieldDescriptors = {
+const USER_MANAGEMENT: FormFieldDescriptors = {
     selected: {
         deepPath: 'USER_MANAGEMENT.selected',
         required: true,
@@ -231,7 +231,7 @@ const USER_MANAGEMENT: fieldDescriptors = {
     },
 };
 
-const DISCOVERY_DEVICES: fieldDescriptors = {
+const DISCOVERY_DEVICES: FormFieldDescriptors = {
     selected: {
         deepPath: 'DISCOVERY_DEVICES.selected',
         required: true,
@@ -239,7 +239,7 @@ const DISCOVERY_DEVICES: fieldDescriptors = {
     },
 };
 
-const FIREBASE_ADD: fieldDescriptors = {
+const FIREBASE_ADD: FormFieldDescriptors = {
     token: {
         deepPath: 'FIREBASE_ADD.token',
         label: 'Token',
@@ -252,7 +252,7 @@ const FIREBASE_ADD: fieldDescriptors = {
     },
 };
 
-const DEVICE_SEND: fieldDescriptors = {
+const DEVICE_SEND: FormFieldDescriptors = {
     command: {
         deepPath: 'DEVICE_SEND.command',
         label: 'Příkaz',
@@ -261,7 +261,7 @@ const DEVICE_SEND: fieldDescriptors = {
     },
 };
 
-const FORGOT: fieldDescriptors = {
+const FORGOT: FormFieldDescriptors = {
     email: {
         deepPath: 'FORGOT.email',
         label: 'Email',
@@ -271,7 +271,7 @@ const FORGOT: fieldDescriptors = {
     },
 };
 
-const FORGOT_PASSWORD: fieldDescriptors = {
+const FORGOT_PASSWORD: FormFieldDescriptors = {
     password: {
         deepPath: 'FORGOT_PASSWORD.password',
         required: true,
@@ -287,7 +287,7 @@ const FORGOT_PASSWORD: fieldDescriptors = {
     },
 };
 
-const ADD_ACCESS_TOKEN: fieldDescriptors = {
+const ADD_ACCESS_TOKEN: FormFieldDescriptors = {
     name: {
         deepPath: 'ADD_ACCESS_TOKEN.name',
         required: true,
@@ -306,7 +306,7 @@ const ADD_ACCESS_TOKEN: fieldDescriptors = {
 
 const EDIT_ACCESS_TOKEN = transformToForm('EDIT_ACCESS_TOKEN', ADD_ACCESS_TOKEN);
 
-const AUTHORIZATION: fieldDescriptors = {
+const AUTHORIZATION: FormFieldDescriptors = {
     code: {
         deepPath: 'AUTHORIZATION.code',
         required: true,
@@ -316,7 +316,7 @@ const AUTHORIZATION: fieldDescriptors = {
     },
 };
 
-const descriptors: fieldDescriptors = {
+const descriptors: FieldDescriptors = {
     LOGIN,
     REGISTRATION,
     USER_MANAGEMENT,

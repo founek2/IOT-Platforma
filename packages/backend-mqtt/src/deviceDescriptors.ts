@@ -1,9 +1,9 @@
 import validationFactory from 'framework-ui/lib/validations/validationFactory';
 import { ComponentType, PropertyClass, PropertyDataType } from 'common/lib/models/interface/thing';
 import { transformToForm } from 'framework-ui/lib/utils/transformToForm';
-import { fieldDescriptors } from 'framework-ui/lib/types';
+import { FormFieldDescriptors } from 'framework-ui/lib/types';
 
-const PROPERTY_BASE: fieldDescriptors = {
+const PROPERTY_BASE: FormFieldDescriptors = {
     propertyId: {
         deepPath: 'PROPERTY_BASE.propertyId',
         required: true,

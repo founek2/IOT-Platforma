@@ -27,16 +27,16 @@ const getWhenOpt = (deepPath: string) => {
 
 export const validateField = (
     deepPath: string,
-    state: object,
+    state: types.State,
     ignorePristine = false,
     ignoreRequired = false
-): types.fieldState => {
+): Partial<types.FieldState> => {
     const pristine = getPristine(deepPath, state);
     if (!pristine || ignorePristine) {
         // @ts-ignore
         const formsData = getFormsData(state);
 
-        const descriptor: types.fieldDescriptor = getFieldDescriptor(deepPath, state);
+        const descriptor: types.FieldDescriptor = getFieldDescriptor(deepPath, state);
 
         if (!descriptor || !descriptor.deepPath)
             return {
@@ -73,13 +73,11 @@ function recursive(
     arrayPredicate: (value: any, pathAccum: string) => boolean,
     object: object
 ) {
-    const func =
-        (accum = '') =>
-        (value: any, key: string | number): any => {
-            if (arrayPredicate(value, accum + key)) return recArray(value, accum + key + '.'); // pouze pokud existuje descriptor pro array
-            if (predicate(value, accum + key)) return recObj(value, accum + key + '.');
-            transform(value, accum + key);
-        };
+    const func = (accum = '') => (value: any, key: string | number): any => {
+        if (arrayPredicate(value, accum + key)) return recArray(value, accum + key + '.'); // pouze pokud existuje descriptor pro array
+        if (predicate(value, accum + key)) return recObj(value, accum + key + '.');
+        transform(value, accum + key);
+    };
 
     function recObj(obj: object, accum?: string) {
         forEachObjIndexed(func(accum), obj);
@@ -95,7 +93,7 @@ function recursive(
 type validOutput = {
     [key: string]: validOutput | { valid: boolean; errorMessages: Array<types.errorMessage> };
 };
-export function validateForm(formName: string, state: object, ignoreRequiredFields = false): validOutput {
+export function validateForm(formName: string, state: types.State, ignoreRequiredFields = false): validOutput {
     // TODO check why it adds formName itself
     const formDescriptors = getFormDescriptors(formName, state);
     const formData = getFormData(formName)(state);
@@ -108,8 +106,8 @@ export function validateForm(formName: string, state: object, ignoreRequiredFiel
     recursive(
         (val, deepPath) => {
             if (arrayRegex.test(deepPath)) {
-                const descriptor: types.fieldDescriptor = getFieldDescriptor(deepPath, state);
-                const len = (descriptor.getLength && descriptor.getLength(formData || {})) || 0;
+                const descriptor = getFieldDescriptor(deepPath, state);
+                const len = (descriptor && descriptor.getLength && descriptor.getLength(formData || {})) || 0;
                 const base = deepPath.replace(arrayRegex, '');
                 for (let i = 0; i < len; ++i) arraOfPaths.push(base + '.' + i);
                 arrayOfArrayFields.push(deepPath.replace(arrayRegex, ''));
@@ -156,7 +154,7 @@ export function validateForm(formName: string, state: object, ignoreRequiredFiel
  * @param state
  * @param ignoreRequiredFields
  */
-export const validateRegisteredFields = (formName: string, state: object, ignoreRequiredFields = false) => {
+export const validateRegisteredFields = (formName: string, state: types.State, ignoreRequiredFields = false) => {
     const arraOfPaths: Array<string> = [];
     const arrayOfArrayFields: Array<string> = []; // to know when validate array as array and when as array of fields
     let result: { [formName: string]: any } = {};
@@ -198,7 +196,7 @@ export const validateRegisteredFields = (formName: string, state: object, ignore
 };
 
 export const isRequired = (
-    descriptor: types.fieldDescriptor,
+    descriptor: types.FieldDescriptor,
     formData: { [key: string]: any },
     origDeepPath: string
 ) => {
@@ -272,6 +270,6 @@ export function createFieldState(validationResult: validationResult) {
     }
 }
 
-export const validateFormBE = (formName: string, state: object, ignoreRequiredFields = false) => {
+export const validateFormBE = (formName: string, state: types.State, ignoreRequiredFields = false) => {
     return checkValid(validateForm(formName, state, ignoreRequiredFields));
 };

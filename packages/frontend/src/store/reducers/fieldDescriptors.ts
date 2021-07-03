@@ -1,18 +1,16 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAccessToken } from 'common/lib/models/interface/userInterface';
-import { append, filter, map, mergeLeft, propEq, when } from 'ramda';
-import { fieldDescriptors } from 'framework-ui/lib/types';
+import { createSlice } from '@reduxjs/toolkit';
 import initialState from 'common/lib/fieldDescriptors';
+import { FieldDescriptors } from 'framework-ui/lib/types';
 
 // Define a type for the slice state
-export type FieldDescriptsState = fieldDescriptors;
+export type FieldDescriptsState = FieldDescriptors;
 
 // Define the initial state using that type
 
 export const fieldDescriptorsSlice = createSlice({
     name: 'fieldDescriptors',
     // `createSlice` will infer the state type from the `initialState` argument
-    initialState,
+    initialState: initialState as FieldDescriptors,
     reducers: {},
 });
 

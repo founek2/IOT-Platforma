@@ -1,7 +1,8 @@
 import setInPath from '../../utils/setInPath';
 import validationFactory from '../../validations/validationFactory';
+import { State, FieldDescriptors } from 'framework-ui/src/types';
 
-const fieldDescriptors = {
+const fieldDescriptors: FieldDescriptors = {
     REGISTRATION: {
         info: {
             userName: {
@@ -45,13 +46,15 @@ const fieldDescriptors = {
     },
 };
 
-export const stateValid = {
+export const stateValid: State = {
     application: {
         user: {},
-        notifications: {},
+        notifications: [],
         users: [],
-        devices: {
-            data: [],
+        authorization: {
+            loggedIn: false,
+            accessToken: '',
+            tokenExpiryDate: '',
         },
     },
     formsData: {
@@ -104,9 +107,9 @@ export const stateValid = {
         },
     },
     fieldDescriptors,
-    tmpData: {
-        dialog: {},
-    },
+    // tmpData: {
+    //     dialog: {},
+    // },
     history: {
         pathname: '/registerUser',
         hash: '',
@@ -115,13 +118,15 @@ export const stateValid = {
     },
 };
 
-export const stateInvalidPassword = {
+export const stateInvalidPassword: State = {
     application: {
         user: {},
-        notifications: {},
+        notifications: [],
         users: [],
-        devices: {
-            data: [],
+        authorization: {
+            loggedIn: false,
+            accessToken: '',
+            tokenExpiryDate: '',
         },
     },
     formsData: {
@@ -173,9 +178,9 @@ export const stateInvalidPassword = {
         },
     },
     fieldDescriptors,
-    tmpData: {
-        dialog: {},
-    },
+    // tmpData: {
+    //     dialog: {},
+    // },
     history: {
         pathname: '/registerUser',
         hash: '',

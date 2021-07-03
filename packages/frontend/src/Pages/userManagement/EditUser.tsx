@@ -9,12 +9,12 @@ import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import Loader from 'framework-ui/lib/Components/Loader';
 import { getAllowedGroups } from 'framework-ui/lib/privileges';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { getGroups } from 'framework-ui/lib/utils/getters';
+import { useAppSelector } from 'frontend/src/hooks';
+import { getGroups } from 'frontend/src/utils/getters';
 import { map, pick } from 'ramda';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import UserForm from '../../components/UserForm';
-import { RootState } from 'frontend/src/store/store';
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -73,7 +73,7 @@ interface EditUserProps {
 }
 function EditUser({ user, onButtonClick }: EditUserProps) {
     const [pending, setPending] = useState(false);
-    const groups = useSelector<RootState, IUser['groups']>(getGroups as any);
+    const groups = useAppSelector(getGroups);
     const classes = useStyles();
     const dispatch = useDispatch();
 

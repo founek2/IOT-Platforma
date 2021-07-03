@@ -1,5 +1,6 @@
 import * as validations from '../validations';
 import { stateValid, stateInvalidPassword, stateEmptyUserName } from './resources/state';
+import { State } from '../types';
 
 describe('Validations test', function () {
     it('should create new fieldState - invalid', function () {

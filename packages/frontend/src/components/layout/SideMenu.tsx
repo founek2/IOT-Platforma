@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -14,20 +14,22 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { getPaths } from 'framework-ui/lib/privileges';
-import { isUserLoggerIn, getGroups } from 'framework-ui/lib/utils/getters';
+import { isUserLoggerIn } from 'framework-ui/lib/utils/getters';
 import uiMessages from '../../localization/ui';
+import { useAppSelector } from 'frontend/src/hooks';
+import { getGroups } from 'frontend/src/utils/getters';
 
-const styles = {
+const useClasses = makeStyles({
     list: {
         width: 250,
     },
     fullList: {
         width: 'auto',
     },
-};
+});
 
-function createMenuListItem(location) {
-    return ({ path, name, Icon }, index) => {
+function createMenuListItem(location: { pathname: string }) {
+    return ({ path, name, Icon }: any) => {
         return (
             <Link to={path} key={path}>
                 <ListItem button selected={location.pathname === path}>
@@ -41,9 +43,18 @@ function createMenuListItem(location) {
     };
 }
 
-function SideMenu({ classes, open, onClose, onOpen, userPresence, userGroups }) {
+interface SideMenuProps {
+    open: boolean
+    onClose: () => void
+    onOpen: () => void
+}
+function SideMenu({ open, onClose, onOpen }: SideMenuProps) {
+    const userGroups = useAppSelector(getGroups)
     const userRoutes = getPaths(userGroups);
     const location = useLocation();
+    const userPresence = useAppSelector(isUserLoggerIn)
+
+    const classes = useClasses()
 
     return (
         <SwipeableDrawer open={open} onClose={onClose} onOpen={onOpen}>
@@ -67,10 +78,4 @@ function SideMenu({ classes, open, onClose, onOpen, userPresence, userGroups }) 
     );
 }
 
-const _mapStateToProps = (state) => ({
-    userPresence: isUserLoggerIn(state),
-    userGroups: getGroups(state) || [],
-});
-
-const _mapActionsToProps = (dispatch) => bindActionCreators({}, dispatch);
-export default connect(_mapStateToProps, _mapActionsToProps)(withStyles(styles)(SideMenu));
+export default SideMenu;

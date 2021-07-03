@@ -10,10 +10,10 @@ import authorization from 'framework-ui/lib/redux/reducers/application/authoriza
 import { IUser } from 'common/lib/models/interface/userInterface';
 
 export default combineReducers({
-    user: user as unknown as Reducer<IUser | null, AnyAction>,
+    user: (user as unknown) as Reducer<IUser | null, AnyAction>,
     authorization,
     notifications,
-    users,
+    users: (users as unknown) as Reducer<IUser[], AnyAction>,
     devices,
     userNames,
     discovery,

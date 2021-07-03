@@ -1,4 +1,3 @@
-import { getUser } from 'framework-ui/lib/utils/getters';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import EditUser from '../userManagement/EditUser';
@@ -7,9 +6,10 @@ import { useAppDispatch } from 'frontend/src/hooks';
 import { RootState } from 'frontend/src/store/store';
 import { IUser } from 'common/lib/models/interface/userInterface';
 import { useHistory } from 'react-router';
+import { getUser } from 'frontend/src/utils/getters';
 
 function Account() {
-    const user = useSelector<RootState, IUser | null>(getUser);
+    const user = useSelector(getUser);
     const dispatch = useAppDispatch();
     const history = useHistory();
 
