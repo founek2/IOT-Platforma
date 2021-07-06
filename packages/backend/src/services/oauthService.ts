@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import config from 'common/lib/config';
 import { OAuthProvider } from 'common/lib/models/interface/userInterface';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
+import { logger } from 'framework-ui/lib/logger';
 
 const oauth = config.oauth;
 
@@ -34,10 +35,11 @@ export async function requestAuthorization(code: string, provider: OAuthProvider
         });
 
         const body = (await res.json()) as Authorization;
-        if (body.status === 200) throw new Error('invalid status');
+        if (body.status !== 200) throw new Error('invalid status ' + body.status);
 
         return Just(body);
     } catch (err) {
+        logger.error(err)
         return Nothing;
     }
 }
