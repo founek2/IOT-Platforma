@@ -4,8 +4,9 @@ import React from 'react';
 
 interface UserFormProps {
     formName: string;
+    onEnter?: React.EventHandler<any>
 }
-function UserForm({ formName }: UserFormProps) {
+function UserForm({ formName, onEnter }: UserFormProps) {
     return (
         <Grid container spacing={2}>
             <Grid item md={6} xs={12}>
@@ -45,6 +46,7 @@ function UserForm({ formName }: UserFormProps) {
                 <FieldConnector
                     component="PasswordField"
                     deepPath={`${formName}.auth.password`}
+                    onEnter={onEnter}
                     fieldProps={{
                         fullWidth: true,
                     }}

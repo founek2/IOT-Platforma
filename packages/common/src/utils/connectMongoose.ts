@@ -4,7 +4,7 @@ export function connectMongoose(dbUri: string) {
     return mongoose.connect(dbUri, {
         useNewUrlParser: true,
         useCreateIndex: true,
-        useFindAndModify: false,
+        // useFindAndModify: false,
         useUnifiedTopology: true,
     });
 }

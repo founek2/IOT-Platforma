@@ -63,8 +63,10 @@ const useClasses = makeStyles((theme) => ({
     },
 }));
 
-interface RegisterUserProps {}
-function RegisterUser({ history }: RegisterUserProps & { history: History }) {
+interface RegisterUserProps {
+    history: History
+}
+function RegisterUser({ history }: RegisterUserProps) {
     const [pending, setPending] = useState(false);
     const [autoLogin, setAutoLogin] = useState(true);
     const classes = useClasses();
@@ -86,7 +88,7 @@ function RegisterUser({ history }: RegisterUserProps & { history: History }) {
         <Card className={classes.card}>
             <CardHeader className={classes.header} title="Registrace" />
             <CardContent className={classes.content}>
-                <UserForm formName="REGISTRATION" />
+                <UserForm formName="REGISTRATION" onEnter={handleRegister} />
             </CardContent>
             <CardActions className={classes.actions}>
                 <FormControlLabel

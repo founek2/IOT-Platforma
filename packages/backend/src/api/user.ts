@@ -133,7 +133,7 @@ export default () =>
         async replaceId({ body, params, user }: any, res) {
             const { id } = params;
             if (body.formData.EDIT_USER) {
-                const allowedGroups = getAllowedGroups(user.groups).map((obj) => obj.name);
+                const allowedGroups = getAllowedGroups(user.groups).map((obj: any) => obj.name);
 
                 if (!body.formData.EDIT_USER.groups.every((group: string) => allowedGroups.includes(group)))
                     return res.sendStatus(403);

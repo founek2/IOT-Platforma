@@ -7,11 +7,7 @@ import fieldDescriptors from './reducers/fieldDescriptors';
 import accessTokens from './reducers/accessTokens';
 
 const preloadedState = hydrateState();
-if (preloadedState) {
-    // preloadedState.accessTokens = { data: [] };
-}
 
-console.log('hydrating STATE', preloadedState);
 const store = configureStore({
     reducer: {
         accessTokens,

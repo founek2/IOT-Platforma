@@ -33,6 +33,7 @@ export type RegisteredFields = { [formName: string]: FormRegisteredFields };
 export type FormFieldDescriptors = { [fieldPath: string]: FormFieldDescriptors | FieldDescriptor };
 export type FieldDescriptors = { [formName: string]: { [name: string]: FormFieldDescriptors | FieldDescriptor } };
 
+export type FormData = { [formName: string]: any }
 export type formsData = {
     registeredFields: RegisteredFields;
     [formName: string]: any;
