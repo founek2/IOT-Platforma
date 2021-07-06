@@ -2,10 +2,10 @@ import chainHandler from '../utils/chainHandler';
 import { isRequired } from '../validations';
 import { is } from 'ramda';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 // @ts-ignore
-import { formsDataActions } from '../redux/actions/formsData';
+import { formsDataActions as formsActions } from '../redux/actions/formsData';
 import TextField from './fieldConnector/TextField';
 import DateTimePicker from './fieldConnector/DateTimePicker';
 import PasswordField from './fieldConnector/PasswordField';
@@ -24,7 +24,16 @@ import {
 import ChipArray from './ChipArray';
 import { onEnterRun } from '../utils/onEnter';
 import { logger } from '../logger';
+import { State, FieldState, FieldDescriptor, FormData } from '../types';
 
+const {
+    registerField,
+    unregisterField,
+    setFormField,
+    validateField,
+    validateForm,
+    updateRegisteredField
+} = formsActions
 
 const Components = {
     TextField: TextField,
@@ -38,16 +47,29 @@ const Components = {
 };
 type componentKeys = keyof typeof Components;
 
+interface ComponentProps {
+    id: string,
+    onChange: React.EventHandler<any>,
+    value: any,
+    className?: string,
+    error: boolean,
+    helperText: string,
+    FormHelperTextProps: { error: boolean },
+    onFocus: React.EventHandler<any>,
+    onBlur: React.EventHandler<any>,
+    name?: string,
+    autoFocus?: boolean
+    onKeyDown: React.EventHandler<any>,
+    label: string,
+}
+
 interface FieldConnectorProps {
     deepPath: string;
-    registeredField?: any;
-    descriptor?: any;
-    value?: any;
     onBlur?: React.ChangeEventHandler;
     onFocus?: React.ChangeEventHandler;
     onEnter?: (e: React.KeyboardEvent) => void;
     onChange?: React.ChangeEventHandler<{ value: any }>;
-    component?: componentKeys | ((props: any) => JSX.Element);
+    component?: componentKeys | ((props: ComponentProps) => JSX.Element);
     fieldProps?: any;
     name?: string;
     autoFocus?: boolean;
@@ -55,13 +77,8 @@ interface FieldConnectorProps {
     optionsData?: any;
     className?: string;
     label?: string;
-    registerField?: any;
-    unregisterField?: any;
-    updateRegisteredField?: any;
-    setFormField?: any;
-    validateField?: any;
-    formData?: any;
 }
+
 
 function FieldConnector({
     deepPath,
@@ -77,24 +94,27 @@ function FieldConnector({
     onEnter,
     className,
     label,
-    registerField,
-    unregisterField,
-    validateField,
-    updateRegisteredField,
-    setFormField,
-    value,
-    registeredField,
-    descriptor,
-    formData,
 }: FieldConnectorProps) {
+    // registerField: formsDataActions.registerField,
+    // unregisterField: formsDataActions.unregisterField,
+    // updateRegisteredField: formsDataActions.updateRegisteredField,
+    // setFormField: formsDataActions.setFormField,
+    // validateField: formsDataActions.validateField,
+    const dispatch = useDispatch()
     const [dirty, setDirty] = useState(false);
+    const formData = useSelector<State>(getFormData(deepPath.split('.')[0])) as FormData
+    const registeredField = useSelector(getRegisteredField(deepPath)) as FieldState
+    const descriptor = useSelector(getFieldDescriptor(deepPath)) as FieldDescriptor | undefined
+    const value = useSelector(getFieldVal(deepPath)) as any
 
     useEffect(() => {
-        registerField(deepPath);
-        if (value) validateField(deepPath, true);
+        dispatch(registerField(deepPath));
+        if (value) dispatch(validateField(deepPath, true));
 
-        return () => unregisterField(deepPath);
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+        return () => {
+            dispatch(unregisterField(deepPath))
+        };
+    }, [dispatch]);
 
     if (!descriptor) {
         logger.error('FieldConnector> missing descriptor for -', deepPath);
@@ -103,11 +123,12 @@ function FieldConnector({
     //const { descriptor, registeredField, fieldValue: value } = data
 
     function _handleChange({ target: { value } }: any, pristine: boolean) {
-        setFormField({ deepPath, value });
-        !pristine && validateField(deepPath);
+        dispatch(setFormField({ deepPath, value }));
+        console.log("_handleChange", pristine)
+        if (!pristine) dispatch(validateField(deepPath));
     }
     function _changePristine() {
-        updateRegisteredField(deepPath, { pristine: false });
+        dispatch(updateRegisteredField({ deepPath, value: { pristine: false } }));
     }
 
     const { valid, errorMessages, pristine } = registeredField || { valid: true };
@@ -141,7 +162,7 @@ function FieldConnector({
                 onFocus={onFocus}
                 onBlur={chainHandler([
                     () => pristine && (value || dirty) && _changePristine(),
-                    () => validateField(deepPath),
+                    () => dispatch(validateField(deepPath)),
                     onBlur,
                 ])}
                 name={name || descriptor.name}
@@ -158,24 +179,5 @@ function FieldConnector({
     }
 }
 
-const _mapStateToProps = (state: any, { deepPath }: FieldConnectorProps) => ({
-    formData: getFormData(deepPath.split('.')[0])(state),
-    registeredField: getRegisteredField(deepPath, state),
-    fieldDescriptors: getFieldDescriptors(state),
-    descriptor: getFieldDescriptor(deepPath, state),
-    value: getFieldVal(deepPath, state),
-});
 
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            registerField: formsDataActions.registerField,
-            unregisterField: formsDataActions.unregisterField,
-            updateRegisteredField: formsDataActions.updateRegisteredField,
-            setFormField: formsDataActions.setFormField,
-            validateField: formsDataActions.validateField,
-        },
-        dispatch
-    );
-
-export default connect(_mapStateToProps, _mapDispatchToProps)(FieldConnector);
+export default FieldConnector;
