@@ -47,6 +47,7 @@ export default () =>
                     const auth = await fromPromise(
                         requestAuthorization(body.formData.AUTHORIZATION.code, OAuthProvider.seznam)
                     );
+
                     return await fromPromise(
                         UserService.refreshAuthorization(auth.account_name, {
                             accessToken: auth.access_token,
