@@ -39,7 +39,7 @@
         "helmet": "^4.4.1",
         "http-proxy-middleware": "^0.19.1",
         "key-mirror": "^1.0.1",
-        "mongoose": "^5.11.8",
+        "mongoose": "^5.13.2",
         "morgan": "^1.9.1",
         "node-dotify": "^1.1.0",
         "node-fetch": "^2.6.0",
