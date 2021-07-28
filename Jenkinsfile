@@ -94,9 +94,9 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'master') {
-                        sh "jenkins/deploy.sh master"
+                        sh "ci/jenkins/deploy.sh master"
                     } else {
-                         sh "jenkins/deploy.sh develop" 
+                         sh "ci/jenkins/deploy.sh develop" 
                     }
                 }
 
@@ -113,7 +113,7 @@ pipeline {
    
             steps {
                 script {
-                    sh "jenkins/release.sh"
+                    sh "ci/jenkins/release.sh"
                 }
             }
         }

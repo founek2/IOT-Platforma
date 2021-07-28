@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+    web:
+        build: ./
+        volumes:
+            - ./templates:/etc/nginx/templates
+        ports:
+            - "8079:80"
+        environment:
+            - NGINX_HOST=tjv.moje
+            - NGINX_PORT=80
+        depends_on:
+            - platform
+    platform:
+        image: platform
+        environment: 
+            - PORT=8080
+            - AUTH_PORT=8081
+            - HOME_PAGE=http://localhost:3000
+            - DATABASE_USERNAME=admin
+            - DATABASE_PASSWORD=admin
+            - DATABASE_NAME=IOTPlatform_v3
+            - DATABASE_URL=mongo
+            - DATABASE_PORT=27017
+            - MQTT_URL=mqtts://rabbitmq
+            - MQTT_PORT=8883
+            - NODE_ENV=production
+            - AGENDA_JOB_TYPES=email
+        depends_on:
+          - mongo
+    
+    mongo:
+        build : ../mongo
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=root
+            - MONGO_INITDB_DATABASE=IOTPlatform_v3
+        volumes:
+            - /Users/martas/Work/Docker/mongoDB:/data/db
+        ports:
+            - 27020:27017

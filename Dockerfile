@@ -7,8 +7,8 @@ WORKDIR  /var/www/platform
 COPY .  .
 # RUN yarn && yarn pre && yarn build
 # RUN yarn install --production
-RUN ./jenkins/docker-build.sh
-COPY ./jenkins/docker-entrypoint.sh .
+RUN ./ci/jenkins/docker-build.sh
+COPY ./ci/jenkins/docker-entrypoint.sh .
 
 CMD [ "./docker-entrypoint.sh" ]
 
