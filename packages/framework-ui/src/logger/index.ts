@@ -16,9 +16,9 @@ export enum LogLevel {
 }
 
 export const logger = {
-    info: consoleLog('green', 'INFO', LogLevel.INFO),
+    info: consoleLog('green', 'INFO   ', LogLevel.INFO),
     warning: consoleLog('orange', 'WARNING', LogLevel.WARNING),
-    error: consoleLog('red', 'ERROR', LogLevel.ERROR),
-    debug: consoleLog('blue', 'DEV', LogLevel.DEBUG),
-    silly: consoleLog('yellow', 'SILLY', LogLevel.SILLY),
+    error: consoleLog('red', 'ERROR  ', LogLevel.ERROR),
+    debug: consoleLog('blue', 'DEBUG  ', LogLevel.DEBUG),
+    silly: consoleLog('yellow', 'SILLY  ', LogLevel.SILLY),
 };

@@ -9,7 +9,10 @@
         "clean": "lerna run --parallel clean",
         "test": "lerna run --scope backend --scope backend-mqtt --scope framework-ui test",
         "watch": "lerna run --parallel --scope common --scope framework-ui dev",
-        "pre": "lerna run --scope framework-ui build && lerna run  --scope common  build"
+        "pre": "lerna run --scope framework-ui build && lerna run  --scope common  build",
+        "dev:be": "yarn workspace backend dev",
+        "dev:fe": "yarn workspace frontend dev",
+        "dev:be-mqtt": "yarn workspace backend-mqtt dev"
     },
     "devDependencies": {
         "@types/node": "^14.0.20",

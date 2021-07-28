@@ -1,6 +1,7 @@
 import { JwtService } from 'common/lib/services/jwtService';
 import express from 'express';
 import { Server as serverIO, Socket } from 'socket.io';
+import { logger } from 'framework-ui/lib/logger';
 
 type socketWithUser = {
     request: { user?: { id: string } };
@@ -13,7 +14,6 @@ export default (io: serverIO) => {
     /* Login middleware to authenticate using JWT token */
     io.use((socket: socketWithUser, next) => {
         let token = socket.handshake.query.token as string;
-        console.log('middleware loging io');
         JwtService.verify(token)
             .then((payload) => {
                 socket.request.user = payload;
@@ -23,10 +23,9 @@ export default (io: serverIO) => {
     });
 
     io.on('connection', (socket: socketWithUser) => {
-        console.log('New client connected', socket.request.user?.id || 'unknown');
+        logger.debug('New client connected', socket.request.user?.id || 'unknown');
         if (socket.request.user) {
             // if authenticated, then join the appropriate group
-            console.log('user joined group');
             socket.join(socket.request.user.id);
         }
 
@@ -34,7 +33,7 @@ export default (io: serverIO) => {
         socket.join('public');
 
         socket.on('disconnect', () => {
-            console.log('Client disconnected');
+            logger.debug('Client disconnected');
         });
     });
 

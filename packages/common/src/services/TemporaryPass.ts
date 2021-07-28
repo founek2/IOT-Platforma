@@ -28,7 +28,6 @@ export async function getPass(): Promise<Maybe<Pass>> {
             .ifJust(async (pass) => (pass.validTo <= new Date() ? res(await newPass()) : res(Just(pass))))
             .ifNothing(async () => res(await newPass()));
     });
-
     return currentPass;
 }
 

@@ -5,6 +5,7 @@ import handleV2 from './mqtt/v2';
 import { logger } from 'framework-ui/lib/logger';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
+import { isNil } from 'ramda';
 
 let client: mqtt.MqttClient | undefined;
 
@@ -36,8 +37,9 @@ function topicParser(topic: string, message: any) {
     };
 }
 
+const SECONDS_30 = 30 * 1000;
 function invert30seconds(d1: number) {
-    return d1 > 30 * 1000 ? 0 : 30 * 1000 - d1;
+    return d1 >= SECONDS_30 ? 0 : SECONDS_30 - d1;
 }
 
 interface MqttConf {
@@ -45,31 +47,32 @@ interface MqttConf {
     port: number;
 }
 type GetUser = () => Promise<Maybe<{ userName: string; password: string }>>;
+type ClientCb = (client: MqttClient) => void;
 
 let lastAttemptAt: Date | null = null;
-function connect(config: MqttConf, getUser: GetUser): ReturnType<typeof reconnect> {
-    logger.info('Trying to connect to mqtt...');
-    const timeOut = lastAttemptAt ? invert30seconds(Date.now() - lastAttemptAt.getTime()) : 0;
-    return new Promise((res) => setTimeout(() => res(reconnect(config, getUser)), timeOut));
+function connect(config: MqttConf, getUser: GetUser, cb: ClientCb) {
+    const timeOut = lastAttemptAt == null ? 0 : invert30seconds(Date.now() - lastAttemptAt.getTime());
+    lastAttemptAt = new Date();
+    logger.info('Trying to connect to mqtt... timeout=', timeOut);
+    return new Promise<MqttClient>((res) => setTimeout(async () => res(await reconnect(config, getUser, cb)), timeOut));
 }
 
-async function reconnect(config: MqttConf, getUser: GetUser): Promise<MqttClient> {
-    const doConnect = (await MaybeAsync.fromPromise(getUser)).map((user) =>
-        mqtt.connect(config.url, {
+async function reconnect(config: MqttConf, getUser: GetUser, cb: ClientCb): Promise<MqttClient> {
+    const connection = await MaybeAsync(async ({ fromPromise }) => {
+        const user = await fromPromise(getUser());
+
+        const client = mqtt.connect(config.url, {
             username: `${user.userName}`,
             password: `${user.password}`,
             reconnectPeriod: 0,
             port: config.port,
             rejectUnauthorized: false,
-        })
-    );
+        });
+        cb(client);
+        return client;
+    });
 
-    return (
-        doConnect.extract() ||
-        new Promise<MqttClient>((res) => {
-            setTimeout(() => res(reconnect(config, getUser)), 20 * 1000);
-        })
-    );
+    return connection.extract() || connect(config, getUser, cb);
 }
 
 function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getUser: GetUser) {
@@ -79,6 +82,7 @@ function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getU
         // subscriber to all messages
         (client as MqttClient).subscribe('#', async function (err, granted) {
             if (err) logger.error('problem:', err);
+            else logger.info('mqtt connected and subscribed');
         });
     });
 
@@ -95,13 +99,11 @@ function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getU
     client.on('error', async function (err) {
         logger.error('mqtt connection error', err);
         client.end();
-        client = await connect(config, getUser);
+        client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
     });
 }
 
 /* Initialize MQTT client connection */
 export default async (io: serverIO, config: MqttConf, getUser: GetUser) => {
-    client = await connect(config, getUser);
-
-    applyListeners(io, client, config, getUser);
+    client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
 };
