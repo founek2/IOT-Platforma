@@ -14,8 +14,6 @@ export interface Config {
         publicKey: string;
         expiresIn: string;
     };
-    testUser: string;
-    testPassword: string;
     email:
         | {
               host: string;

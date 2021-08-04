@@ -1,13 +1,18 @@
 import { Config } from '../types';
+import { logger } from 'framework-ui/lib/logger';
 
 var path = require('path');
 
-const pathRef = path.join(__dirname, '../../../../.env');
+function areWeTestingWithJest() {
+    return process.env.JEST_WORKER_ID !== undefined;
+}
+
+const pathRef = path.join(__dirname, areWeTestingWithJest() ? '../../../../.test.env' : '../../../../.env');
 const finalPath = process.env.ENV_CONFIG_PATH ? process.env.ENV_CONFIG_PATH : path.resolve(pathRef);
 require('dotenv').config({
     path: finalPath,
 });
-console.log('loading .env from', finalPath);
+logger.info(`loading .env from ${finalPath}, env=${process.env.NODE_ENV}`);
 
 const config: Config = {
     port: Number(process.env.PORT) || 8085,
@@ -21,8 +26,6 @@ const config: Config = {
         publicKey: process.env.JWT_PUBLIC_KEY as string,
         expiresIn: process.env.JWT_EXPIRES_IN || '14d',
     },
-    testUser: 'test1',
-    testPassword: '123456',
     email: {
         host: process.env.EMAIL_HOST as string,
         port: Number(process.env.EMAIL_PORT) || 465,

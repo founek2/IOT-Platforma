@@ -18,6 +18,7 @@ import { notificationsActions } from 'framework-ui/lib/redux/actions/application
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { removeItem } from 'framework-ui/lib/storage';
 import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
+import { postSignOut } from 'frontend/src/api/authorization';
 
 export const userActions = {
     ...userAct,
@@ -83,7 +84,14 @@ export const userActions = {
     },
 
     logOut(): AppThunk {
-        return async function (dispatch) {
+        return async function (dispatch, getState) {
+            postSignOut(
+                {
+                    token: getToken(getState()),
+                },
+                dispatch
+            );
+
             dispatch(userAct.logout());
             dispatch(devicesActions.toDefault());
             dispatch(userNamesActions.toDefault());
@@ -92,14 +100,13 @@ export const userActions = {
             dispatch(discoveryActions.toDefault());
             dispatch(thingHistoryActions.toDefault());
             dispatch(formsDataActions.toDefault());
-            dispatch(
-                notificationsActions.add({
-                    message: SuccessMessages.getMessage('successfullyLogOut'),
-                    variant: 'success',
-                    duration: 3000,
-                })
-            );
-
+            // dispatch(
+            //     notificationsActions.add({
+            //         message: SuccessMessages.getMessage('successfullySignedOut'),
+            //         variant: 'success',
+            //         duration: 3000,
+            //     })
+            // );
             removeItem(STATE_DEHYDRATED);
         };
     },

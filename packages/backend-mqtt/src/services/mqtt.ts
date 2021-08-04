@@ -80,9 +80,9 @@ function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getU
         logger.info('mqtt connected');
 
         // subscriber to all messages
-        (client as MqttClient).subscribe('#', async function (err, granted) {
+        client.subscribe('#', async function (err, granted) {
             if (err) logger.error('problem:', err);
-            else logger.info('mqtt connected and subscribed');
+            else logger.info('mqtt subscribed');
         });
     });
 

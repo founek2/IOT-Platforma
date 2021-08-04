@@ -4,19 +4,13 @@ import { UserService } from 'common/lib/services/userService';
 import formDataChecker from '../middlewares/formDataChecker';
 import resource from '../middlewares/resource-router-middleware';
 import eventEmitter from '../services/eventEmitter';
-import { requestAuthorization } from '../services/oauthService';
 import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 import { EitherAsync } from 'purify-ts/EitherAsync';
-
-function removeUserItself(id: IUser['_id']) {
-    return function (doc: IUser) {
-        return doc._id != id; // dont change to !==
-    };
-}
+import { OAuthService } from '../services/oauthService';
 
 /**
- * URL prefix /user
+ * URL prefix /authorization
  */
 export default () =>
     resource({
@@ -45,7 +39,7 @@ export default () =>
             } else if (formData.AUTHORIZATION) {
                 const processAuth = MaybeAsync(async ({ fromPromise, liftMaybe }) => {
                     const auth = await fromPromise(
-                        requestAuthorization(body.formData.AUTHORIZATION.code, OAuthProvider.seznam)
+                        OAuthService.requestAuthorization(body.formData.AUTHORIZATION.code, OAuthProvider.seznam)
                     );
 
                     return await fromPromise(

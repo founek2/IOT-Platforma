@@ -12,7 +12,14 @@ import { RequestWithAuth } from '../types';
 /**
  * Middleware validating JWT token in headers and binding User object to request
  */
-export default function (options: { restricted: boolean; methods?: Array<'PUT'> } = { restricted: true }) {
+export default function (
+    options: {
+        restricted?: boolean;
+        methods?: Array<'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD'>;
+    } = {
+        restricted: true,
+    }
+) {
     return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const { restricted, methods } = options;
         // if (req.url !== '/login') {
@@ -46,7 +53,7 @@ export default function (options: { restricted: boolean; methods?: Array<'PUT'> 
                     if (req2.user.groups.some(equals('admin'))) req2.user.admin = true;
                     next();
                 } else {
-                    logger.warning('userNotExist');
+                    logger.debug('userNotExist');
                     res.status(404).send({ error: 'userNotExist', command: 'logOut' });
                 }
             } catch (err) {

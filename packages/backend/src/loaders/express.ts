@@ -16,7 +16,7 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     app.disable('x-powered-by');
 
     // logger
-    app.use('/api', morgan('dev') as any);
+    if (process.env.NODE_ENV !== 'test') app.use('/api', morgan('dev') as any);
 
     // Security headers
     app.use(

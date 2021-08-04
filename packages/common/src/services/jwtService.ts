@@ -35,7 +35,7 @@ function init({
 function sign(object: any): Promise<string> {
     return new Promise(function (resolve, reject) {
         if (privKey === null) {
-            reject('Not initialised');
+            reject('JWT Service not initialised');
             return;
         }
 
@@ -57,7 +57,7 @@ function sign(object: any): Promise<string> {
 function verify(token: string): Promise<any> {
     return new Promise(function (resolve, reject) {
         if (pubKey === null) {
-            reject('Not initialised');
+            reject('JWT Service not initialised');
             return;
         }
 

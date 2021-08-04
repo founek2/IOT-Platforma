@@ -9,3 +9,11 @@ export const postAuthorization = (object: any, dispatch: any) =>
         successMessage: 'successfullyLoggedIn',
         dispatch,
     });
+
+export const postSignOut = (object: any, dispatch: any) =>
+    postJson({
+        url: API_URL + `/authorization/signOut`,
+        ...object,
+        successMessage: 'successfullySignedOut',
+        dispatch,
+    });

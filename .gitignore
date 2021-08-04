@@ -52,7 +52,7 @@ typings/
 **/dist
 **/lib
 !**/src/**/lib
-**/.env
+**/*.env
 **/package-lock.json
 #**/yarn.lock
 .history

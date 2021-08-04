@@ -3,7 +3,7 @@ import type { Request } from 'express';
 import { IUser, Permission } from 'common/lib/models/interface/userInterface';
 
 export interface EmitterEvents {
-    user_login: any;
+    user_login: IUser;
     user_signup: UserBasic;
     user_forgot: { email: IUser['info']['email'] };
     device_control_recipe_change: { recipes: ControlRecipe[]; deviceId: string };
@@ -33,8 +33,6 @@ export interface Config {
         publicKey: string;
         expiresIn: string;
     };
-    testUser: string;
-    testPassword: string;
     email?: {
         host: string;
         port: number;

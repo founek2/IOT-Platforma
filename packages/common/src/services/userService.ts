@@ -13,7 +13,7 @@ import { Security } from './SecurityService';
 import addHours from 'date-fns/addHours';
 import { Either, Left, Right } from 'purify-ts/Either';
 import dotify from 'node-dotify';
-import { Maybe, Just } from 'purify-ts/Maybe';
+import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -39,7 +39,9 @@ export const UserService = {
     /**
      * Create new user
      */
-    async create(object: IUser): Promise<UserWithToken> {
+    async create(
+        object: Omit<IUser, 'realm' | 'groups' | 'createdAt' | 'updatedAt' | 'notifyTokens'>
+    ): Promise<UserWithToken> {
         const { password, oauth } = object.auth;
 
         logger.debug('user creating:', object);
@@ -118,6 +120,15 @@ export const UserService = {
             token,
             doc: doc.toObject(),
         });
+    },
+
+    removeAuthorization(id: IUser['_id']) {
+        UserModel.updateOne({ _id: ObjectId(id) }, { 'auth.oauth': undefined });
+    },
+
+    async getAuthorization(id: IUser['_id']) {
+        let doc = await UserModel.findOne({ _id: ObjectId(id) }, { 'auth.oauth': 1 }).lean();
+        return doc?.auth.oauth ? Just(doc.auth.oauth) : Nothing;
     },
 
     /**

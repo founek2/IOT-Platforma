@@ -15,12 +15,14 @@ const rateLimiter = new RateLimiterMemory(opts);
  * @param next
  */
 export const rateLimiterMiddleware = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    rateLimiter
-        .consume(req.ip)
-        .then(() => {
-            next();
-        })
-        .catch(() => {
-            res.status(429).send('Too Many Requests');
-        });
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') next();
+    else
+        rateLimiter
+            .consume(req.ip)
+            .then(() => {
+                next();
+            })
+            .catch(() => {
+                res.status(429).send('Too Many Requests');
+            });
 };

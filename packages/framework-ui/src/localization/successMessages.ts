@@ -6,7 +6,7 @@ export const messages: types.messages = {
     userCreated: 'Uživatel byl úspěšně vytvořen',
     userSuccessfullyDeleted: 'Uživatel byl vymazán',
     userUpdated: 'Uživatel byl aktualizován',
-    successfullyLogOut: 'Odhlášení proběhlo úspěšně',
+    successfullySignedOut: 'Odhlášení proběhlo úspěšně',
     successfullyUpdated: 'Změna uložena',
     successfullyDeleted: 'Odstraněno',
 };

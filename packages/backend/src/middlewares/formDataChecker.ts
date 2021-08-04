@@ -12,7 +12,7 @@ type FormData = { [key: string]: any };
  */
 export default function formDataChecker(fieldDescriptors: any, { ingoreRequired, allowedForms }: Options = {}) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        console.log('formData', req.body.formData);
+        logger.debug('formData', req.body.formData);
 
         logger.debug('Validating formData');
         const formData: FormData = req.body.formData;
@@ -27,11 +27,11 @@ export default function formDataChecker(fieldDescriptors: any, { ingoreRequired,
             if (valid) {
                 next();
             } else {
-                logger.warning('Validation Failed> ' + JSON.stringify(errors));
-                res.status(400).send({ error: 'validationFailed' });
+                logger.debug('Validation Failed> ' + JSON.stringify(errors));
+                res.status(400).send({ error: 'validationFailed', message: errors });
             }
         } else {
-            logger.warning('Missing formData');
+            // logger.debug('Missing formData');
             res.status(400).send({ error: 'missingFormData' });
         }
     };

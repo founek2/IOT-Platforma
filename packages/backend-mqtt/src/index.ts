@@ -30,7 +30,7 @@ async function startServer(config: Config) {
     initSubscribers(eventEmitter);
 
     await connectMongoose(config.dbUri);
-    mongoose.set('debug', Number(process.env.LOG_LEVEL) === LogLevel.SILLY);
+    mongoose.set('debug', Number(process.env.LOG_LEVEL) >= LogLevel.SILLY);
 
     const appInstance = express();
     const server = http.createServer(appInstance);

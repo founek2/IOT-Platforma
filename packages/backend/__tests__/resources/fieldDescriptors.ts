@@ -1,6 +1,7 @@
 import validationFactory from 'framework-ui/lib/validations/validationFactory';
+import { FormFieldDescriptors, FieldDescriptor, FieldDescriptors } from 'framework-ui/lib/types';
 
-const REGISTRATION = {
+const REGISTRATION: FormFieldDescriptors = {
     info: {
         userName: {
             deepPath: 'REGISTRATION.info.userName',

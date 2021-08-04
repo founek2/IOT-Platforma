@@ -12,8 +12,6 @@ export interface Config {
         url: string;
         port: number;
     };
-    testUser: string;
-    testPassword: string;
 }
 
 export interface UpdateThingState {

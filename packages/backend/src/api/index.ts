@@ -8,6 +8,7 @@ import thing from './thing';
 import accessToken from './accessToken';
 import broker from './broker';
 import authorization from './authorization';
+import signOut from './signOut';
 
 export default () => {
     let api = Router();
@@ -29,6 +30,8 @@ export default () => {
     api.use('/broker', broker());
 
     api.use('/authorization', authorization());
+
+    api.use('/authorization/signOut', signOut());
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {
