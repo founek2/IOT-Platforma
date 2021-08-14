@@ -1,3 +1,6 @@
 [submodule "docker"]
 	path = docker
 	url = https://github.com/founek2/IOT-Platforma-hosting
+[submodule "docker/node-red/project"]
+	path = docker/node-red/project
+	url = https://github.com/founek2/IOT-node-red.git
