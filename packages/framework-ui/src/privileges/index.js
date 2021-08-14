@@ -21,8 +21,7 @@ const isNotNil = o(not, isNil);
 const getRoutes = prop('routes');
 
 const getArrayOfPaths = (privObj) => (groupName) => {
-    const neco = compose(prop('routes'), prop(groupName), getRoutes)(privObj);
-    return neco;
+    return compose(prop('routes'), prop(groupName), getRoutes)(privObj) || [];
 };
 
 // const getArray0fGroups = privObj => compose(prop('allowedGroups'), flip(prop)(privObj));

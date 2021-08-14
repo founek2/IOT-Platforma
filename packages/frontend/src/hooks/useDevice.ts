@@ -4,6 +4,7 @@ import { IDevice, DeviceStatus, IDeviceStatus } from 'common/lib/models/interfac
 interface SimpleDevice {
     _id: IDevice['_id'];
     status?: IDeviceStatus;
+    metadata: IDevice['metadata'];
 }
 export const DeviceContext = createContext<SimpleDevice>({} as SimpleDevice);
 

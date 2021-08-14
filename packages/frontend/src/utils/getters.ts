@@ -25,6 +25,8 @@ export const getThingHistory = o(prop('thingHistory'), getApplication);
 
 export const getUser = o((app: RootState['application']) => app.user, getApplication);
 
+export const getRealm = o((user: RootState['application']['user']) => user?.realm, getUser);
+
 export const getUsers = o(prop('users'), getApplication);
 
 export const getUserInfo = o((user) => user?.info, getUser);

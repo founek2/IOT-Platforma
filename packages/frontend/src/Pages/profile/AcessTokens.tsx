@@ -45,7 +45,7 @@ function Security() {
         console.log('delete tokens...', tokenIDs);
         tokenIDs.forEach((id) => dispatch(accessTokensActions.delete(id, user?._id)));
     }
-    console.log('sel token', selectedToken);
+
     function createToken() {
         return dispatch(accessTokensActions.create(user?._id));
     }

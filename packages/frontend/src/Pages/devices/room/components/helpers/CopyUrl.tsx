@@ -21,9 +21,15 @@ interface CopyUrlContextProps {
     value: string | number;
     className?: string;
 }
-const empty = () => {};
+
+enum Copy {
+    Url,
+    Topic,
+    Value
+}
+
 export function CopyUrlContext({ children, propertyId, value, className }: CopyUrlContextProps) {
-    const { _id: deviceId } = useDevice();
+    const { _id: deviceId, metadata } = useDevice();
     const { config } = useThing();
     const bind = useLongPress(mouseClick, touchClick, 700);
 
@@ -32,7 +38,6 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
             mouseX: null | number;
             mouseY: null | number;
         }>(initialState);
-    const url = `${window.location.origin}/api/device/${deviceId}/thing/${config.nodeId}?property=${propertyId}&value=${value}`;
 
     function mouseClick(event: React.MouseEvent<HTMLDivElement>) {
         event.preventDefault();
@@ -52,10 +57,22 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
         });
     }
 
-    const handleClose = (cp: boolean) => {
+    const handleClose = (action: Copy | boolean = false) => {
         return (e: React.MouseEvent) => {
             e.stopPropagation();
-            if (cp) copy(url);
+            switch (action) {
+                case Copy.Url:
+                    const url = `${window.location.origin}/api/device/${deviceId}/thing/${config.nodeId}?property=${propertyId}&value=${value}`;
+                    copy(url)
+                    break;
+                case Copy.Topic:
+                    const topic = `v2/${metadata.realm}/${metadata.deviceId}/${config.nodeId}/${propertyId}`;
+                    copy(topic)
+                    break;
+                case Copy.Value:
+                    copy(String(value))
+                    break;
+            }
             setState(initialState);
         };
     };
@@ -66,7 +83,7 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
             <Menu
                 keepMounted
                 open={state.mouseY !== null}
-                onClose={handleClose(false)}
+                onClose={handleClose()}
                 anchorReference="anchorPosition"
                 anchorPosition={
                     state.mouseY !== null && state.mouseX !== null
@@ -74,7 +91,9 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
                         : undefined
                 }
             >
-                <MenuItem onClick={handleClose(true)}>Kopírovat URL</MenuItem>
+                <MenuItem onClick={handleClose(Copy.Url)}>Kopírovat URL</MenuItem>
+                <MenuItem onClick={handleClose(Copy.Topic)}>Kopírovat téma</MenuItem>
+                <MenuItem onClick={handleClose(Copy.Value)}>Kopírovat hodnotu</MenuItem>
             </Menu>
         </div>
     );

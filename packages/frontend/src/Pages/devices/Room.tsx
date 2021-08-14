@@ -42,7 +42,7 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
         if (Comp) {
             const createComponent = () => (
                 <Grid item xs={6} md={3} key={_id}>
-                    <DeviceContext.Provider value={{ _id: device._id, status: device.state?.status }}>
+                    <DeviceContext.Provider value={{ _id: device._id, status: device.state?.status, metadata: device.metadata }}>
                         <ThingContext.Provider value={thing}>
                             <Comp
                                 thing={thing}

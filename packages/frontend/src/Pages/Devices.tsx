@@ -50,7 +50,7 @@ function updateControl(updateThingA: any) {
 
 type Buildings = Map<string, Map<string, IDevice[]>>;
 
-interface DeviceControlProps {
+export interface DeviceControlProps {
     buildings: Buildings;
     selectedLocation: { building?: string; room?: string };
 }
@@ -78,40 +78,40 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
                         buildings.size === 0 ? (
                             <Typography>Nebyla nalezena žádná zařízení</Typography>
                         ) : (
-                            <div className={classes.widgetContainer}>
-                                {(selectedBuilding
-                                    ? ([[selectedLocation.building, selectedBuilding]] as Array<
-                                          [string, Map<string, IDevice[]>]
-                                      >)
-                                    : [...buildings.entries()]
-                                ).map(([building, rooms], idx) => {
-                                    return (
-                                        <Fragment key={building}>
-                                            <LocationTypography
-                                                location={{ building }}
-                                                linkBuilding={Boolean(!selectedBuilding)}
-                                                className={clsx(idx > 0 && classes.buildingContainer)}
-                                            />
-                                            <Grid container spacing={2}>
-                                                {[...rooms.entries()].map(([room, devices]) => (
-                                                    <Grid item xs={12} md={6} lg={6} key={building + '/' + room}>
-                                                        <Link to={`/devices/${building}/${room}`}>
-                                                            <RoomWidget devices={devices} className={classes.widget} />
-                                                        </Link>
-                                                    </Grid>
-                                                ))}
-                                            </Grid>
-                                        </Fragment>
-                                    );
-                                })}
-                            </div>
-                        )
+                                <div className={classes.widgetContainer}>
+                                    {(selectedBuilding
+                                        ? ([[selectedLocation.building, selectedBuilding]] as Array<
+                                            [string, Map<string, IDevice[]>]
+                                        >)
+                                        : [...buildings.entries()]
+                                    ).map(([building, rooms], idx) => {
+                                        return (
+                                            <Fragment key={building}>
+                                                <LocationTypography
+                                                    location={{ building }}
+                                                    linkBuilding={Boolean(!selectedBuilding)}
+                                                    className={clsx(idx > 0 && classes.buildingContainer)}
+                                                />
+                                                <Grid container spacing={2}>
+                                                    {[...rooms.entries()].map(([room, devices]) => (
+                                                        <Grid item xs={12} md={6} lg={6} key={building + '/' + room}>
+                                                            <Link to={`/devices/${building}/${room}`}>
+                                                                <RoomWidget devices={devices} className={classes.widget} />
+                                                            </Link>
+                                                        </Grid>
+                                                    ))}
+                                                </Grid>
+                                            </Fragment>
+                                        );
+                                    })}
+                                </div>
+                            )
                     ) : (
-                        <Room
-                            location={selectedLocation as { building: string; room: string }}
-                            devices={selectedRoom}
-                        />
-                    )}
+                            <Room
+                                location={selectedLocation as { building: string; room: string }}
+                                devices={selectedRoom}
+                            />
+                        )}
                 </Grid>
             </Grid>
         </div>
