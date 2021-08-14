@@ -75,24 +75,24 @@ function Activator({ onClick, deviceId, thing, className, fetchHistory, disabled
                         </CopyUrlContext>
                     </div>
                 ) : (
-                    <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                        <Select
-                            className={classes.select}
-                            value={value}
-                            disabled={disabled}
-                            onChange={(e) => {
-                                onClick({ [property.propertyId]: e.target.value as string });
-                            }}
-                            disableUnderline
-                        >
-                            {property.format.map((label) => (
-                                <MenuItem value={label} key={label}>
-                                    {label}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </CopyUrlContext>
-                )}
+                        <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                            <Select
+                                className={classes.select}
+                                value={value}
+                                disabled={disabled}
+                                onChange={(e) => {
+                                    onClick({ [property.propertyId]: e.target.value as string });
+                                }}
+                                disableUnderline
+                            >
+                                {property.format.map((label) => (
+                                    <MenuItem value={label} key={label}>
+                                        {label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </CopyUrlContext>
+                    )}
             </div>
 
             <SimpleDialog
