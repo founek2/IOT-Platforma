@@ -99,7 +99,7 @@ function UserManagement({ history }: UserManagementProps) {
                 {userToEdit && (
                     <EditUser
                         onButtonClick={async () => {
-                            const result = await dispatch(userActions.updateUser(userToEdit._id));
+                            const result = await dispatch(usersActions.updateUser(userToEdit._id));
                             if (result) history.push({ hash: '', search: '' });
                         }}
                         user={userToEdit}
