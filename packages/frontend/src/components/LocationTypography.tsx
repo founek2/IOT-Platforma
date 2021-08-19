@@ -7,8 +7,6 @@ import clsx from "clsx";
 const useStyles = makeStyles((theme) => ({
     buildingTitle: {
         flex: "1 0 100%",
-        // marginTop: 10,
-        // paddingBottom: 10,
         textAlign: "center",
         [theme.breakpoints.down("sm")]: {
             textAlign: "left",
@@ -48,7 +46,9 @@ export function LocationTypography({ location, linkBuilding, className }: Locati
             {!linkBuilding && linkToRoot}
             {linkToBuilding}
 
-            {!linkBuilding && location.room && "/" + location.room}
+            {!linkBuilding && location.room && "/"}
+            <wbr />
+            {location.room}
         </Typography>
     );
 }
