@@ -2,7 +2,7 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import { DeviceStatus, IDevice, IDeviceStatus } from 'common/lib/models/interface/device';
 import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import React, { FunctionComponent, useEffect, useRef, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../../../components/OnlineCircle';
@@ -57,7 +57,6 @@ export interface GeneralBoxProps {
 
 export interface BorderBoxProps extends GeneralBoxProps {
     component: FunctionComponent<BoxWidgetProps>;
-    fetchThingHistory: any;
 }
 
 function clear(ref: React.MutableRefObject<NodeJS.Timeout | null>) {
@@ -73,7 +72,6 @@ function BorderBox({
     deviceStatus,
     deviceId,
     lastChange,
-    fetchThingHistory,
     thing,
     ...other
 }: BorderBoxProps) {
@@ -81,7 +79,7 @@ function BorderBox({
     const dispatch = useAppDispatch()
     const [inTransition, setInTransition] = useState(false)
     const ref: React.MutableRefObject<NodeJS.Timeout | null> = useRef(null);
-    const fetchHistory = () => dispatch(thingHistoryActions.fetchHistory(deviceId, thing._id))
+    const fetchHistory = useCallback(() => dispatch(thingHistoryActions.fetchHistory(deviceId, thing._id)), [deviceId, thing._id])
 
     useEffect(() => {
         if (inTransition) {
@@ -127,13 +125,5 @@ function BorderBox({
         </Paper>
     );
 }
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            updateDeviceAction: devicesActions.update,
-            fetchThingHistory: thingHistoryActions.fetchHistory,
-        },
-        dispatch
-    );
 
-export default connect(null, _mapDispatchToProps)(BorderBox);
+export default BorderBox;
