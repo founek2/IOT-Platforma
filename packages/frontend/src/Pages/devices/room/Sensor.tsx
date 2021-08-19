@@ -73,7 +73,7 @@ function Sensor({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProps
             historyData.thingId === thing._id,
         ]
     );
-    console.log("chartData", chartData)
+
     const value = thing.state?.value && thing.state.value[property.propertyId];
 
     return (
