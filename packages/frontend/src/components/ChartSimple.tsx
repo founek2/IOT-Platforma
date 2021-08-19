@@ -1,9 +1,8 @@
+import { makeStyles } from "@material-ui/core/styles";
+import Loader from "framework-ui/lib/Components/Loader";
 import React, { useState } from "react";
 import { Chart } from "react-google-charts";
-import Loader from "framework-ui/lib/Components/Loader";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { ReactGoogleChartEvent, GoogleChartWrapperChartType } from "react-google-charts/dist/types";
-import subHours from "date-fns/subHours";
+import { GoogleChartWrapperChartType, ReactGoogleChartEvent } from "react-google-charts/dist/types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -72,7 +71,6 @@ function ChartSimple({
 }: //	vAxisTitle, hAxisTitle, minValue
     ChartSimpleProps) {
     const classes = useStyles();
-    console.log("chartSimple", data)
     const [convertFunc, setConvertFunc] = useState<any>(null);
 
     const chartEvents: ReactGoogleChartEvent[] = [

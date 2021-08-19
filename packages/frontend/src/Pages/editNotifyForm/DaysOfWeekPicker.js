@@ -1,10 +1,10 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { daysInWeek } from '../../constants';
-import clsx from 'clsx';
 import FormLabel from '@material-ui/core/FormLabel';
-import { assocPath, append, includes, o, __, ifElse, filter, equals, not } from 'ramda';
+import { withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { append, equals, filter, ifElse, includes, not, o, __ } from 'ramda';
+import React from 'react';
+import { daysInWeek } from '../../constants';
 
 const notEqual = (el) => o(not, equals(el));
 

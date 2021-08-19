@@ -1,4 +1,4 @@
-import { prop, o, path, curry } from 'ramda';
+import { curry, o, prop } from 'ramda';
 import { RootState } from '../store/store';
 
 export const getApplication = (state: RootState) => state.application;

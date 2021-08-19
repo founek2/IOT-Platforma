@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IDevice } from 'common/lib/models/interface/device';
-import { IAccessToken } from 'common/lib/models/interface/userInterface';
 import { SocketUpdateThingState } from 'common/lib/types';
 import { append, curry, filter, lensProp, map, mergeDeepLeft, over, pathEq, propEq, when } from 'ramda';
 import { compose } from 'redux';
@@ -45,7 +44,7 @@ export const devicesSlice = createSlice({
                 lastUpdate: new Date(),
             };
         },
-        update: ({ data, lastFetch }, action: PayloadAction<IAccessToken>) => {
+        update: ({ data, lastFetch }, action: PayloadAction<Partial<IDevice>>) => {
             // @ts-ignore
             const findAndUpdate: any = when(propEq('_id', action.payload._id), mergeDeepLeft(action.payload));
             return {

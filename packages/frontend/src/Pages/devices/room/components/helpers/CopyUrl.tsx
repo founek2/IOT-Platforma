@@ -1,14 +1,12 @@
-import React from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Typography from '@material-ui/core/Typography';
 import copy from 'clipboard-copy';
-import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-import { IDevice } from 'common/lib/models/interface/device';
-import { useDevice } from 'frontend/src/hooks/useDevice';
-import { useThing } from 'frontend/src/hooks/useThing';
 import clsx from 'clsx';
+import { IThingProperty } from 'common/lib/models/interface/thing';
+import { useDevice } from 'frontend/src/hooks/useDevice';
 import { useLongPress } from 'frontend/src/hooks/useLongPress';
+import { useThing } from 'frontend/src/hooks/useThing';
+import React from 'react';
 
 const initialState = {
     mouseX: null,

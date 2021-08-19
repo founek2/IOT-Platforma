@@ -20,14 +20,7 @@ import EditAccessToken from './accessTokens/EditAccessToken';
 import { accessTokensActions } from 'frontend/src/store/actions/accessTokens';
 import { RootState } from 'frontend/src/store/store';
 
-const useStyles = makeStyles((theme) => ({
-    header: {
-        textAlign: 'center',
-    },
-}));
-
 function Security() {
-    const classes = useStyles();
     const classesTab = useManagementStyles();
     const user = useSelector<RootState, IUser | null>((state) => state.application.user);
     const selectedId = useSelector<RootState, string | undefined>(getQueryID);
@@ -42,7 +35,6 @@ function Security() {
     const selectedToken = accessTokens.data.find((t) => t._id === selectedId);
 
     function deleteTokens(tokenIDs: Array<IAccessToken['token']>) {
-        console.log('delete tokens...', tokenIDs);
         tokenIDs.forEach((id) => dispatch(accessTokensActions.delete(id, user?._id)));
     }
 

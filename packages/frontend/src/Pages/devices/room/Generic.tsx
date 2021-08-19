@@ -45,7 +45,7 @@ function Generic({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProp
 
     useEffect(() => {
         if (openDialog) fetchHistory();
-    }, [openDialog]);
+    }, [openDialog, fetchHistory]);
 
     return (
         <>

@@ -1,10 +1,14 @@
+import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
 import ErrorMessages from 'framework-ui/lib/localization/errorMessages';
-import SuccessMessages from 'framework-ui/lib/localization/successMessages';
 import { logger } from 'framework-ui/lib/logger';
+import { notificationsActions } from 'framework-ui/lib/redux/actions/application/notifications';
 import { userActions as userAct } from 'framework-ui/lib/redux/actions/application/user';
 import { usersActions } from 'framework-ui/lib/redux/actions/application/users';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+import { removeItem } from 'framework-ui/lib/storage';
 import { AppThunk } from 'framework-ui/lib/types';
 import { getFormData, getToken, getUserId } from 'framework-ui/lib/utils/getters';
+import { postSignOut } from 'frontend/src/api/authorization';
 import {
     forgotPassword as forgotPasswordApi,
     updateUserNoMessage as updateUserNoMessageApi,
@@ -14,11 +18,6 @@ import { devicesActions } from './devices';
 import { discoveryActions } from './discovery';
 import { thingHistoryActions } from './thingHistory';
 import { userNamesActions } from './userNames';
-import { notificationsActions } from 'framework-ui/lib/redux/actions/application/notifications';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { removeItem } from 'framework-ui/lib/storage';
-import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
-import { postSignOut } from 'frontend/src/api/authorization';
 
 export const userActions = {
     ...userAct,

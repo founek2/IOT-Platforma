@@ -1,12 +1,10 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import EditUser from '../userManagement/EditUser';
 import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 import { useAppDispatch } from 'frontend/src/hooks';
-import { RootState } from 'frontend/src/store/store';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import { useHistory } from 'react-router';
 import { getUser } from 'frontend/src/utils/getters';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import EditUser from '../userManagement/EditUser';
 
 function Account() {
     const user = useSelector(getUser);

@@ -2,23 +2,20 @@ import { Grid, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import { IDevice } from 'common/lib/models/interface/device';
 import { SocketUpdateThingState } from 'common/lib/types';
-import React, { useEffect, Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect';
 import { LocationTypography } from '../components/LocationTypography';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
 import { devicesActions } from '../store/actions/application/devices';
+import { RootState } from '../store/store';
 import io from '../webSocket';
 import Room from './devices/Room';
 import RoomWidget from './devices/RoomWidget';
-import { RootState } from '../store/store';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        // display: "flex",
-        // flexWrap: "wrap",
         padding: theme.spacing(2),
     },
     item: {
