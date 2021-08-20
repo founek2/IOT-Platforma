@@ -12,13 +12,12 @@ import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import Loader from 'framework-ui/lib/Components/Loader';
 import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 import { getFieldVal, isUserLoggerIn } from 'framework-ui/lib/utils/getters';
-import { getAuthorizeHref } from 'frontend/src/oauthConfig';
 import { RootState } from 'frontend/src/store/store';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks';
-import { ReactComponent as SeznamLogo } from './seznamLogo.svg';
+import OAuthButtons from './OAuthButtons';
 
 const useClasses = makeStyles((theme) => ({
     loginActions: {
@@ -104,7 +103,7 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
     const isPasswdType = authType === AuthType.passwd;
 
     const actionHandler = !authType || !isPasswdType ? fetchAuthType : loginMyAction;
-    const authUrl = getAuthorizeHref();
+
     return (
         <Dialog
             open={open}
@@ -115,19 +114,13 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
             aria-labelledby="form-dialog-title"
             maxWidth="xs"
             fullWidth
-            // fullScreen={true}
+        // fullScreen={true}
         >
             <Paper className={classes.paperColored}>
                 <Typography component="h4" className={classes.title}>
                     Přihlášení
                 </Typography>
-                {authUrl && (
-                    <div className={classes.oauth}>
-                        <IconButton onClick={() => window.open(authUrl, '_self')}>
-                            <SeznamLogo />
-                        </IconButton>
-                    </div>
-                )}
+                <OAuthButtons className={classes.oauth} />
             </Paper>
             <DialogContent className={classes.content}>
                 <Typography align="center">Or Be classical</Typography>

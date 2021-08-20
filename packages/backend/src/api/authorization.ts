@@ -1,12 +1,13 @@
+import config from 'common/lib/config';
 import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { IUser, OAuthProvider } from 'common/lib/models/interface/userInterface';
+import { OAuthProvider } from 'common/lib/models/interface/userInterface';
 import { UserService } from 'common/lib/services/userService';
+import { EitherAsync } from 'purify-ts/EitherAsync';
+import { MaybeAsync } from 'purify-ts/MaybeAsync';
 import formDataChecker from '../middlewares/formDataChecker';
+import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
 import resource from '../middlewares/resource-router-middleware';
 import eventEmitter from '../services/eventEmitter';
-import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
-import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import { EitherAsync } from 'purify-ts/EitherAsync';
 import { OAuthService } from '../services/oauthService';
 
 /**
@@ -20,6 +21,24 @@ export default () =>
                 rateLimiterMiddleware,
                 formDataChecker(fieldDescriptors, { allowedForms: ['AUTHORIZATION', 'LOGIN'] }),
             ],
+        },
+
+        async index(req, res) {
+            const oauthArray: Array<any> = [];
+            if (config.oauth.seznam.clientId) {
+                const { clientId, redirectUri, endpoint, scopes, iconUrl } = config.oauth.seznam;
+                oauthArray.push({
+                    provider: 'seznam',
+                    iconUrl,
+                    authUrl: `${endpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+                        '%20'
+                    )}&response_type=code`,
+                });
+            }
+
+            res.send({
+                oauth: oauthArray,
+            });
         },
 
         async create({ body, user }: any, res) {

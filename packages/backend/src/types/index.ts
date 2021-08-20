@@ -44,6 +44,16 @@ export interface Config {
         collection: string;
         jobs?: string;
     };
+    oauth: {
+        seznam: {
+            clientSecret?: string;
+            clientId?: string;
+            redirectUri?: string;
+            iconUrl: string;
+            endpoint: string;
+            scopes: string[];
+        };
+    };
 }
 
 export type RequestWithAuthOpt = Request & {

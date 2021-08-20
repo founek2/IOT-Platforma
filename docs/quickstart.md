@@ -34,8 +34,8 @@ Pro funkčnost aplikace je potřeba nastavit enviroment promněné, buď pomocí
 -   **EMAIL_PASSWORD** - password to email account
 -   **HOME_PAGE** - url of main page - ex. https://iotplatforma.cloud
 -   **OAUTH_SEZNAM_CLIENT_SECRET**
--   **REACT_APP_OAUTH_SEZNAM_CLIENT_ID**
--   **REACT_APP_OATUH_REDIRECT_URI**
+-   **OAUTH_SEZNAM_CLIENT_ID**
+-   **OAUTH_REDIRECT_URI**
 
 ## Lokální vývoj
 
