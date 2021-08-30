@@ -75,18 +75,18 @@ async function reconnect(config: MqttConf, getUser: GetUser, cb: ClientCb): Prom
     return connection.extract() || connect(config, getUser, cb);
 }
 
-function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getUser: GetUser) {
-    client.on('connect', function () {
+function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser: GetUser) {
+    cl.on('connect', function () {
         logger.info('mqtt connected');
 
         // subscriber to all messages
-        client.subscribe('#', async function (err, granted) {
+        cl.subscribe('#', async function (err, granted) {
             if (err) logger.error('problem:', err);
             else logger.info('mqtt subscribed');
         });
     });
 
-    client.on('message', async function (topic, message) {
+    cl.on('message', async function (topic, message) {
         const handle = topicParser(topic, message);
         logger.debug(topic);
 
@@ -96,9 +96,9 @@ function applyListeners(io: serverIO, client: MqttClient, config: MqttConf, getU
         else if (topic.startsWith('v2/')) handleV2(handle, io);
     });
 
-    client.on('error', async function (err) {
+    cl.on('error', async function (err) {
         logger.error('mqtt connection error', err);
-        client.end();
+        cl.end();
         client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
     });
 }

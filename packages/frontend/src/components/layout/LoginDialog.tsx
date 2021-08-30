@@ -23,6 +23,10 @@ const useClasses = makeStyles((theme) => ({
     loginActions: {
         margin: 'auto',
         justifyContent: 'center',
+        [theme.breakpoints.down('md')]: {
+            paddingBottom: theme.spacing(2),
+            paddingTop: theme.spacing(2),
+        },
         paddingBottom: theme.spacing(4),
         paddingTop: theme.spacing(4),
     },
@@ -30,6 +34,7 @@ const useClasses = makeStyles((theme) => ({
         position: 'relative',
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(2),
+
     },
     loginFooter: {
         textAlign: 'center',
@@ -60,6 +65,9 @@ const useClasses = makeStyles((theme) => ({
     },
     grid: {
         marginTop: '1em',
+        [theme.breakpoints.down('md')]: {
+            marginTop: '0',
+        },
     },
     oauth: {
         marginTop: '1em',
