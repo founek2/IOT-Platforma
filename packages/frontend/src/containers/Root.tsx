@@ -5,7 +5,7 @@ import withTheme from './withTheme';
 import WebSocket from './WebSocket';
 // import { registerFunctions } from 'framework-ui/lib/validations/validationFactory';
 // import * as fns from '../validations/customFn';
-import * as serviceWorker from '../serviceWorker';
+import * as serviceWorker from '../serviceWorkerRegistration';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import { SnackbarProvider } from 'notistack';
@@ -37,7 +37,7 @@ function Root({ component }: { component: React.FunctionComponent }) {
                 // new version available
                 setNewVersion(true);
                 setForceInstall(() => () => {
-                    installingWorker.postMessage({ action: 'skipWaiting' });
+                    installingWorker.postMessage({ action: 'SKIP_WAITING' });
                     setNewVersion(false);
                 });
             },
