@@ -58,3 +58,5 @@ typings/
 .history
 .VSCodeCounter
 build.zip
+
+/packages/*/tsconfig-build.tsbuildinfo
