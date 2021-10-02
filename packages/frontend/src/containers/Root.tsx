@@ -31,13 +31,14 @@ function Root({ component }: { component: React.FunctionComponent }) {
 
     useEffect(() => {
         const config = {
-            onUpdate: function (installingWorker: any) {
+            onUpdate: function (registration: ServiceWorkerRegistration) {
                 // new version available
                 setNewVersion(true);
                 setForceInstall(() => () => {
-                    installingWorker.postMessage({ action: 'SKIP_WAITING' });
+                    const installingWorker = registration.waiting;
+                    installingWorker?.postMessage({ action: 'SKIP_WAITING' });
                     // backward compatibility
-                    installingWorker.postMessage({ action: 'skipWaiting' });
+                    installingWorker?.postMessage({ action: 'skipWaiting' });
                     setNewVersion(false);
                 });
             },
