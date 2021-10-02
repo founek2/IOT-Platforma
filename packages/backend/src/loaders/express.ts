@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import mongoSanitize from 'express-mongo-sanitize';
 import api from '../api';
 import { Config } from '../types';
+import path from 'path';
 
 function getMaxSize(req: Request) {
     // if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'
@@ -37,7 +38,7 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     );
 
     // server static frontend files
-    app.use(express.static('../frontend/build'));
+    app.use(express.static(path.join(__dirname, '../../../frontend/build')));
 
     // mongo sanitizer (removes $ from keys)
     app.use('/api', mongoSanitize());
