@@ -19,7 +19,7 @@ else
     echo "Build files are new, skipping build..."
 fi
 
-mv packages/frontend/build /var/www/frontend-build
-rm -rf packages/frontend
+# mv packages/frontend/build /var/www/frontend-build
+# rm -rf packages/frontend
 
 yarn install --production && yarn cache clean
