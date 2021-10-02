@@ -19,7 +19,7 @@ else
     echo "Build files are new, skipping build..."
 fi
 
-# mv packages/frontend/build /var/www/frontend-build
-# rm -rf packages/frontend
+# backport compatibility for react-scripts v3
+cp packages/frontend/build/service-worker.js packages/frontend/build/sw.js 
 
 yarn install --production && yarn cache clean
