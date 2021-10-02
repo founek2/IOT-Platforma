@@ -36,23 +36,22 @@ function createApp(config: Config) {
 
     if (!app.server) throw Error('Unable to create server');
 
+    /* SocketIO proxy*/
+
+    const proxy = require('http-proxy-middleware');
+    var wsProxy = proxy('/socket.io', {
+        target: 'ws://localhost:8084',
+        changeOrigin: true, // for vhosted sites, changes host header to match to target's host
+        ws: true, // enable websocket proxy
+        logLevel: 'error',
+    });
+
+    app.use(wsProxy);
+    app.server.on('upgrade', wsProxy.upgrade);
+    logger.info('Proxy enabled');
+
     loadersInit({ app, config });
-    /* --------- */
 
-    /* SocketIO proxy just for development */
-    if (process.env.NODE_ENV === 'development') {
-        const proxy = require('http-proxy-middleware');
-        var wsProxy = proxy('/socket.io', {
-            target: 'ws://localhost:8084',
-            changeOrigin: true, // for vhosted sites, changes host header to match to target's host
-            ws: true, // enable websocket proxy
-            logLevel: 'error',
-        });
-
-        app.use(wsProxy);
-        app.server.on('upgrade', wsProxy.upgrade);
-        logger.info('Proxy enabled');
-    }
     return app;
 }
 export { createApp };
