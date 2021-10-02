@@ -62,7 +62,15 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
     }, [openDialog]);
 
     const chartData = useMemo(
-        () => mergeData(historyData.data as unknown as HistoricalGeneric[], property.propertyId),
+        () => [
+            [
+                { type: 'string', id: 'Room' },
+                { type: 'string', id: 'Name' },
+                { type: 'date', id: 'Start' },
+                { type: 'date', id: 'End' },
+            ],
+            mergeData(historyData.data as unknown as HistoricalGeneric[], property.propertyId),
+        ],
         [
             historyData.data.length > 0 && historyData.data[0].first,
             historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
@@ -99,20 +107,8 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
                 thing={thing}
                 classContent={classes.dialogContent}
             >
-                {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 2 ? (
-                    <ChartSimple
-                        type="Timeline"
-                        height="100px"
-                        data={[
-                            [
-                                { type: 'string', id: 'Room' },
-                                { type: 'string', id: 'Name' },
-                                { type: 'date', id: 'Start' },
-                                { type: 'date', id: 'End' },
-                            ],
-                            ...chartData,
-                        ]}
-                    />
+                {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 3 ? (
+                    <ChartSimple type="Timeline" height="100px" data={chartData} />
                 ) : null}
                 <div>
                     {drop(1, thing.config.properties).map((property) => (
