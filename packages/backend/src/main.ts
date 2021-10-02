@@ -40,7 +40,7 @@ function createApp(config: Config) {
 
     const proxy = require('http-proxy-middleware');
     var wsProxy = proxy('/socket.io', {
-        target: 'ws://localhost:8084',
+        target: `ws://localhost:${config.portAuth}`,
         changeOrigin: true, // for vhosted sites, changes host header to match to target's host
         ws: true, // enable websocket proxy
         logLevel: 'error',

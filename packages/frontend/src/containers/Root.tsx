@@ -36,6 +36,8 @@ function Root({ component }: { component: React.FunctionComponent }) {
                 setNewVersion(true);
                 setForceInstall(() => () => {
                     installingWorker.postMessage({ action: 'SKIP_WAITING' });
+                    // backward compatibility
+                    installingWorker.postMessage({ action: 'skipWaiting' });
                     setNewVersion(false);
                 });
             },
