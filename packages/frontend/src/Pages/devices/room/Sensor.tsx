@@ -64,9 +64,9 @@ function Sensor({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProps
     const chartData = useMemo(
         () => [
             [{ type: 'date', label: 'Čas' }, title],
-            ...mergeData(historyData.data as HistoricalSensor[], property.propertyId)
+            ...mergeData(historyData.data as HistoricalSensor[], property.propertyId),
         ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [
             historyData.data.length > 0 && historyData.data[0].first,
             historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
@@ -109,7 +109,7 @@ function Sensor({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProps
                         className={classes.updatedBefore}
                     />
                 ) : null}
-                {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 2 ? (
+                {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 3 ? (
                     <ChartSimple data={chartData} />
                 ) : null}
 

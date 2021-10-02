@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { init as initFirebase } from '../firebase';
 import '../privileges'; // init
-import * as serviceWorker from '../serviceWorker';
+import * as serviceWorker from '../serviceWorkerRegistration';
 import store from '../store/store';
 import Notifier from './Notifier';
 import WebSocket from './WebSocket';
@@ -35,7 +35,7 @@ function Root({ component }: { component: React.FunctionComponent }) {
                 // new version available
                 setNewVersion(true);
                 setForceInstall(() => () => {
-                    installingWorker.postMessage({ action: 'skipWaiting' });
+                    installingWorker.postMessage({ action: 'SKIP_WAITING' });
                     setNewVersion(false);
                 });
             },

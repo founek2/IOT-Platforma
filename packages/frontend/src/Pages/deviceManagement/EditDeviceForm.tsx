@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux';
 import { userNamesActions } from '../../store/actions/application/userNames';
 import { getUserNames } from '../../utils/getters';
 import { RootState } from 'frontend/src/store/store';
+import PermissionSelect from './editDeviceForm/PermissionSelect';
 
 interface DiscoverySectionProps {
     devices?: IDevice[];
@@ -27,32 +28,12 @@ function EditDeviceForm({ userNames }: DiscoverySectionProps) {
         <>
             <DeviceForm formName="EDIT_DEVICE" />
             {userNames.data.length ? (
-                <>
-                    <Grid item xs={12} sm={6}>
-                        <FieldConnector
-                            deepPath="EDIT_DEVICE.permissions.read"
-                            component="ChipArray"
-                            optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
-                            // className={classes.chipArray}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FieldConnector
-                            deepPath="EDIT_DEVICE.permissions.control"
-                            component="ChipArray"
-                            optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
-                            // className={classes.chipArray}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FieldConnector
-                            deepPath="EDIT_DEVICE.permissions.write"
-                            component="ChipArray"
-                            optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
-                            // className={classes.chipArray}
-                        />
-                    </Grid>
-                </>
+                <FieldConnector
+                    deepPath="EDIT_DEVICE.permissions"
+                    component={({ label, error, value, onChange }) => (
+                        <PermissionSelect label={label} error={error} permissions={value} onChange={onChange} />
+                    )}
+                />
             ) : null}
         </>
     );
