@@ -146,7 +146,7 @@ export const userActions = {
                         id,
                         onSuccess: () => {
                             const { auth, ...userObject } = formData;
-                            dispatch(userActions.update(userObject as any));
+                            dispatch(userActions.update({ _id: id, ...userObject }));
                             dispatch(
                                 formsDataActions.setFormField({ deepPath: `${EDIT_USER}.auth.password`, value: '' })
                             );

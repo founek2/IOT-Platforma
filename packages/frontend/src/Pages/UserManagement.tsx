@@ -2,6 +2,7 @@ import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
 import { IUser } from 'common/lib/models/interface/userInterface';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
 import EnchancedTable from 'framework-ui/lib/Components/Table';
 import { getAllowedGroups, isGroupAllowed } from 'framework-ui/lib/privileges';
 import { usersActions } from 'framework-ui/lib/redux/actions/application/users';
@@ -9,14 +10,10 @@ import arrToString from 'framework-ui/lib/utils/arrToString';
 import { isUrlHash } from 'framework-ui/lib/utils/getters';
 import { History } from 'history';
 import { isEmpty } from 'ramda';
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { RootState } from '../store/store';
-import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
+import { getGroups, getQueryID, getUsers } from '../utils/getters';
 import EditUser from './userManagement/EditUser';
-import { getQueryID, getUsers, getGroups } from '../utils/getters';
-import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 
 function convertGroupIDsToName(groups: { group: string; text: string }[]) {
     return function (arr: string[]) {
@@ -99,7 +96,7 @@ function UserManagement({ history }: UserManagementProps) {
                 {userToEdit && (
                     <EditUser
                         onButtonClick={async () => {
-                            const result = await dispatch(userActions.updateUser(userToEdit._id));
+                            const result = await dispatch(usersActions.updateUser(userToEdit._id));
                             if (result) history.push({ hash: '', search: '' });
                         }}
                         user={userToEdit}

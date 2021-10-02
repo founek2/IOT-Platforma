@@ -63,7 +63,12 @@ export const usersActions = {
                         body: { formData: { [EDIT_USER]: formData } },
                         id,
                         onSuccess: () => {
-                            dispatch(usersActions.updateMultiple([formData as any]));
+                            const { auth, user } = formData;
+                            console.log(formData);
+                            dispatch(usersActions.updateMultiple([{ _id: id, ...user }]));
+                            dispatch(
+                                formsDataActions.setFormField({ deepPath: `${EDIT_USER}.auth.password`, value: '' })
+                            );
                         },
                     },
                     dispatch

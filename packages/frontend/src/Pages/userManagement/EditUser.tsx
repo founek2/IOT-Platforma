@@ -80,7 +80,7 @@ function EditUser({ user, onButtonClick }: EditUserProps) {
     useEffect(() => {
         const userObj = pick(['info', 'groups', 'auth'], user);
         dispatch(formsDataActions.setFormData({ formName: 'EDIT_USER', data: userObj }));
-    }, [dispatch]);
+    }, [dispatch, user]);
 
     async function handleSave() {
         setPending(true);

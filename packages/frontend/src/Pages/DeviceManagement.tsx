@@ -1,24 +1,18 @@
 import { makeStyles } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
 import { IDevice } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
-import * as formsActions from 'framework-ui/lib/redux/actions/formsData';
-import { isUrlHash, getApplication } from 'framework-ui/lib/utils/getters';
-import { equals, filter, o, prop, path } from 'ramda';
+import { equals, o, prop } from 'ramda';
 import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as deviceActions from '../store/actions/application/devices';
-import { getDevices, getDiscovery, getQueryField, getQueryID } from '../utils/getters';
-import io from '../webSocket';
-import DeviceSection from './deviceManagement/DeviceSection';
-import DiscoverySection from './deviceManagement/DiscoverySection';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
 import { discoveryActions } from '../store/actions/application/discovery';
 import { RootState } from '../store/store';
+import { getDevices, getDiscovery, getQueryField } from '../utils/getters';
+import io from '../webSocket';
+import DeviceSection from './deviceManagement/DeviceSection';
+import DiscoverySection from './deviceManagement/DiscoverySection';
 
 const useStyles = makeStyles((theme) => ({
     cardContent: {

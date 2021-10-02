@@ -1,20 +1,20 @@
-import React, { useState, Fragment } from 'react';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import FormLabel from '@material-ui/core/FormLabel';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import ClearIcon from '@material-ui/icons/Clear';
+import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import { connect } from 'react-redux';
-
-import { getFieldVal } from 'framework-ui/lib/utils/getters';
-import DaysOfWeekPicker from './DaysOfWeekPicker';
+import ClearIcon from '@material-ui/icons/Clear';
 import { NotifyIntervals } from 'common/lib/constants';
-import PropertyPart from './editNotify/PropertyPart';
 import { IThing } from 'common/lib/models/interface/thing';
+import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import { getFieldVal } from 'framework-ui/lib/utils/getters';
 import { RootState } from 'frontend/src/store/store';
+import React, { Fragment, useState } from 'react';
+import { connect } from 'react-redux';
+import DaysOfWeekPicker from './DaysOfWeekPicker';
+import PropertyPart from './editNotify/PropertyPart';
+
 
 const useStyles = makeStyles((theme) => ({
     quantity: {

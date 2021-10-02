@@ -12,18 +12,21 @@ import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import Loader from 'framework-ui/lib/Components/Loader';
 import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 import { getFieldVal, isUserLoggerIn } from 'framework-ui/lib/utils/getters';
-import { getAuthorizeHref } from 'frontend/src/oauthConfig';
 import { RootState } from 'frontend/src/store/store';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks';
-import { ReactComponent as SeznamLogo } from './seznamLogo.svg';
+import OAuthButtons from './OAuthButtons';
 
 const useClasses = makeStyles((theme) => ({
     loginActions: {
         margin: 'auto',
         justifyContent: 'center',
+        [theme.breakpoints.down('md')]: {
+            paddingBottom: theme.spacing(2),
+            paddingTop: theme.spacing(2),
+        },
         paddingBottom: theme.spacing(4),
         paddingTop: theme.spacing(4),
     },
@@ -31,6 +34,7 @@ const useClasses = makeStyles((theme) => ({
         position: 'relative',
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(2),
+
     },
     loginFooter: {
         textAlign: 'center',
@@ -61,6 +65,9 @@ const useClasses = makeStyles((theme) => ({
     },
     grid: {
         marginTop: '1em',
+        [theme.breakpoints.down('md')]: {
+            marginTop: '0',
+        },
     },
     oauth: {
         marginTop: '1em',
@@ -104,7 +111,7 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
     const isPasswdType = authType === AuthType.passwd;
 
     const actionHandler = !authType || !isPasswdType ? fetchAuthType : loginMyAction;
-    const authUrl = getAuthorizeHref();
+
     return (
         <Dialog
             open={open}
@@ -115,19 +122,13 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
             aria-labelledby="form-dialog-title"
             maxWidth="xs"
             fullWidth
-            // fullScreen={true}
+        // fullScreen={true}
         >
             <Paper className={classes.paperColored}>
                 <Typography component="h4" className={classes.title}>
                     Přihlášení
                 </Typography>
-                {authUrl && (
-                    <div className={classes.oauth}>
-                        <IconButton onClick={() => window.open(authUrl, '_self')}>
-                            <SeznamLogo />
-                        </IconButton>
-                    </div>
-                )}
+                <OAuthButtons className={classes.oauth} />
             </Paper>
             <DialogContent className={classes.content}>
                 <Typography align="center">Or Be classical</Typography>

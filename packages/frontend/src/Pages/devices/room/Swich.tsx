@@ -59,7 +59,7 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
 
     useEffect(() => {
         if (openDialog) fetchHistory();
-    }, [openDialog]);
+    }, [openDialog, fetchHistory]);
 
     const chartData = useMemo(
         () => [

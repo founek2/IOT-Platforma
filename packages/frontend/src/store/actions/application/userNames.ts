@@ -1,6 +1,5 @@
-import { ActionTypes } from '../../../constants/redux';
-import { logger } from 'framework-ui/lib/logger';
 import { getUsers } from 'framework-ui/lib/api/userApi';
+import { logger } from 'framework-ui/lib/logger';
 import { getToken } from 'framework-ui/lib/utils/getters';
 import { AppThunk } from '../../../types';
 import { userNamesReducerActions } from '../../reducers/application/userNames';

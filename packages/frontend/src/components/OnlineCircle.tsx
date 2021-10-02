@@ -1,10 +1,9 @@
-import React from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
-import getLastUpdateText from "framework-ui/lib/utils/getLastUpdateText";
-import getCircleColor, { CircleColors, getCircleTooltipText } from "../utils/getCircleColor";
 import { grey } from "@material-ui/core/colors";
-import { IDeviceStatus, DeviceStatus } from "common/lib/models/interface/device";
+import { makeStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+import { DeviceStatus, IDeviceStatus } from "common/lib/models/interface/device";
+import React from "react";
+import getCircleColor, { CircleColors, getCircleTooltipText } from "../utils/getCircleColor";
 
 const useStyles = makeStyles({
 	wrapper: {

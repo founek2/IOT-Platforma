@@ -39,9 +39,9 @@ export class OAuthService {
                 body: JSON.stringify({
                     grant_type: 'authorization_code',
                     code,
-                    redirect_uri: oauth?.redirectUri,
-                    client_secret: oauth?.clientSecret,
-                    client_id: oauth?.clientId,
+                    redirect_uri: oauth.seznam.redirectUri,
+                    client_secret: oauth.seznam.clientSecret,
+                    client_id: oauth.seznam.clientId,
                 }),
             });
 

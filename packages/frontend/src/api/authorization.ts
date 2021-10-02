@@ -1,6 +1,13 @@
-import { postJson } from 'framework-ui/lib/api';
+import { postJson, getJson } from 'framework-ui/lib/api';
 
 const API_URL = '/api';
+
+export const fetchAuthorization = (object: any, dispatch: any) =>
+    getJson({
+        url: API_URL + `/authorization`,
+        ...object,
+        dispatch,
+    });
 
 export const postAuthorization = (object: any, dispatch: any) =>
     postJson({

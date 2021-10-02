@@ -43,9 +43,14 @@ const config: Config = {
         managementPort: Number(process.env.MQTT_MANAGEMENT_PORT) || 15672,
     },
     oauth: {
-        clientSecret: process.env.OAUTH_SEZNAM_CLIENT_SECRET as string,
-        clientId: process.env.REACT_APP_OAUTH_SEZNAM_CLIENT_ID as string,
-        redirectUri: process.env.REACT_APP_OATUH_REDIRECT_URI as string,
+        seznam: {
+            clientSecret: process.env.OAUTH_SEZNAM_CLIENT_SECRET as string,
+            clientId: process.env.OAUTH_SEZNAM_CLIENT_ID as string,
+            redirectUri: process.env.OAUTH_REDIRECT_URI as string,
+            iconUrl: '/images/seznamLogo.svg',
+            endpoint: 'https://login.szn.cz/api/v1/oauth/auth',
+            scopes: ['identity'],
+        },
     },
 };
 

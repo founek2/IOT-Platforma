@@ -2,12 +2,13 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import { DeviceStatus, IDevice, IDeviceStatus } from 'common/lib/models/interface/device';
 import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-import React, { FunctionComponent, useEffect, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useRef, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../../../components/OnlineCircle';
 import { devicesActions } from '../../../../store/actions/application/devices';
 import { thingHistoryActions } from '../../../../store/actions/application/thingHistory';
+import { useAppDispatch } from 'frontend/src/hooks';
 
 const useStyles = makeStyles({
     circle: {
@@ -24,24 +25,12 @@ const useStyles = makeStyles({
     },
     box: {
         backgroundColor: 'white',
-        // border: "1px solid rgb(189, 189, 189)",
-        // borderRadius: 10,
         padding: '1rem',
         boxSizing: 'border-box',
         height: '100%',
         position: 'relative',
     },
 });
-
-// const defaultProps = {
-//     bgcolor: "background.paper",
-//     // m: 1,
-//     border: 1,
-//     style: { padding: "1rem" },
-//     position: "relative",
-//     width: "100%",
-//     boxSizing: "border-box"
-// };
 
 export interface BoxWidgetProps {
     className?: string;
@@ -50,7 +39,7 @@ export interface BoxWidgetProps {
     deviceStatus: IDeviceStatus;
     deviceId: IDevice['_id'];
     disabled?: boolean;
-    fetchHistory: () => Promise<void>;
+    fetchHistory: () => Promise<any>;
     room: string;
     property?: IThingProperty;
 }
@@ -68,8 +57,6 @@ export interface GeneralBoxProps {
 
 export interface BorderBoxProps extends GeneralBoxProps {
     component: FunctionComponent<BoxWidgetProps>;
-    fetchThingHistory: any;
-    updateDeviceAction: any;
 }
 
 function clear(ref: React.MutableRefObject<NodeJS.Timeout | null>) {
@@ -84,24 +71,29 @@ function BorderBox({
     component,
     deviceStatus,
     deviceId,
-    updateDeviceAction,
     lastChange,
-    fetchThingHistory,
     thing,
     ...other
 }: BorderBoxProps) {
     const classes = useStyles();
+    const dispatch = useAppDispatch()
+    const [inTransition, setInTransition] = useState(false)
     const ref: React.MutableRefObject<NodeJS.Timeout | null> = useRef(null);
+    const fetchHistory = useCallback(() => dispatch(thingHistoryActions.fetchHistory(deviceId, thing._id)), [deviceId, thing._id])
 
     useEffect(() => {
-        clear(ref);
-        return () => clear(ref);
-    }, [lastChange]);
+        if (inTransition) {
+            clear(ref);
+            setInTransition(false)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [lastChange, setInTransition]);
 
     async function handleClick(newState: any) {
+        setInTransition(true)
         await onClick(newState);
         ref.current = setTimeout(() => {
-            updateDeviceAction({
+            dispatch(devicesActions.update({
                 _id: deviceId,
                 state: {
                     status: {
@@ -109,21 +101,13 @@ function BorderBox({
                         timestamp: new Date(),
                     },
                 },
-            });
+            }));
         }, 3000);
     }
 
     const Component = component;
     return (
-        <Paper
-            // display="inline-block"
-            // borderRadius={10}
-            // borderColor="grey.400"
-            // className={className ? className : ""}
-            // {...defaultProps}
-            elevation={2}
-            className={classes.box}
-        >
+        <Paper elevation={2} className={classes.box} >
             {deviceStatus?.value &&
                 deviceStatus?.value !== DeviceStatus.ready &&
                 deviceStatus?.value !== DeviceStatus.sleeping && (
@@ -135,26 +119,11 @@ function BorderBox({
                 deviceStatus={deviceStatus}
                 thing={thing}
                 deviceId={deviceId}
-                fetchHistory={() => fetchThingHistory(deviceId, thing._id)}
+                fetchHistory={fetchHistory}
                 {...other}
             />
-            {/* <Loader open={pending} className="marginAuto" /> */}
-            {/* <div onContextMenu={handleContext} className={classes.contextMenu}></div> */}
-            {/* <ControlDetail
-				open={detailOpen}
-				data={data}
-				handleClose={() => setOpen(false)}
-			/> */}
         </Paper>
     );
 }
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            updateDeviceAction: devicesActions.update,
-            fetchThingHistory: thingHistoryActions.fetchHistory,
-        },
-        dispatch
-    );
 
-export default connect(null, _mapDispatchToProps)(BorderBox);
+export default BorderBox;

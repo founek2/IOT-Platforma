@@ -3,11 +3,10 @@ import { IDiscovery } from 'common/lib/models/interface/discovery';
 import { logger } from 'framework-ui/lib/logger';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
-import { addDiscoveredDevice, deleteDiscovery, fetchDiscovery } from '../../../api/discovery';
-import { ActionTypes } from '../../../constants/redux';
-import { devicesActions } from './devices';
-import { discoveryReducerActions } from '../../reducers/application/discovery';
 import { AppThunk } from 'frontend/src/types';
+import { addDiscoveredDevice, deleteDiscovery, fetchDiscovery } from '../../../api/discovery';
+import { discoveryReducerActions } from '../../reducers/application/discovery';
+import { devicesActions } from './devices';
 
 export const discoveryActions = {
     ...discoveryReducerActions,

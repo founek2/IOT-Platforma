@@ -1,21 +1,19 @@
-import React, { useEffect, Fragment, useState } from 'react';
-import { Provider } from 'react-redux';
-import store from '../store/store';
-import withTheme from './withTheme';
-import WebSocket from './WebSocket';
-// import { registerFunctions } from 'framework-ui/lib/validations/validationFactory';
-// import * as fns from '../validations/customFn';
-import * as serviceWorker from '../serviceWorkerRegistration';
-import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
+import { getItem, removeItem } from 'framework-ui/lib/storage';
 import { SnackbarProvider } from 'notistack';
-
+import React, { useEffect, useState } from 'react';
+import { Provider } from 'react-redux';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { init as initFirebase } from '../firebase';
 import '../privileges'; // init
+import * as serviceWorker from '../serviceWorkerRegistration';
+import store from '../store/store';
 import Notifier from './Notifier';
-import { ErrorBoundary } from '../components/ErrorBoundary';
-import { getItem, removeItem } from 'framework-ui/lib/storage';
-import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
+import WebSocket from './WebSocket';
+import withTheme from './withTheme';
+
 // registerFunctions(fns); // register custom validation functions
 
 function handleError() {

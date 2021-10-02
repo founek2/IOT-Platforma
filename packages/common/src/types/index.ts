@@ -32,10 +32,15 @@ export interface Config {
         port: number;
         managementPort: number;
     };
-    oauth?: {
-        clientSecret: string;
-        clientId: string;
-        redirectUri: string;
+    oauth: {
+        seznam: {
+            clientSecret?: string;
+            clientId?: string;
+            redirectUri?: string;
+            iconUrl: string;
+            endpoint: string;
+            scopes: string[];
+        };
     };
 }
 
