@@ -80,29 +80,6 @@ pipeline {
         //         }
         //     }
         // }
-
-      	stage ("Deploy") {
-            when  {
-                 branch pattern: "develop|master", comparator: "REGEXP"
-            }
-
-            environment {
-                IOT_DEPLOY_PATH = "${env.BRANCH_NAME == 'master' ? '/var/www/iot-v3/deploy/' : '/var/www/iot-test/deploy/'}"
-              
-            }
-
-            steps {
-                script {
-                    if (env.BRANCH_NAME == 'master') {
-                        sh "ci/jenkins/deploy.sh master"
-                    } else {
-                         sh "ci/jenkins/deploy.sh develop" 
-                    }
-                }
-
-            }
-      	}
-
           
         stage('Release') {
             when { branch "release*" }
