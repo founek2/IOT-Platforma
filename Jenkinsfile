@@ -119,40 +119,39 @@ pipeline {
         }
 
 
-        stage('Building image') {
-            when { branch "release*" }
-            steps{
-                script {
-                    dockerImage = docker.build("$imagename")
-                }
-            }
-        }
+        // stage('Building image') {
+        //     when { branch "release*" }
+        //     steps{
+        //         script {
+        //             dockerImage = docker.build("$imagename")
+        //         }
+        //     }
+        // }
 
-        stage('Deploy Image') {
-            when { branch "release*" }
-            steps{
-                script {
-                    GIT_TAG = sh (
-                        script: 'git describe --abbrev=0',
-                        returnStdout: true
-                    ).trim()
+        // stage('Deploy Image') {
+        //     when { branch "release*" }
+        //     steps{
+        //         script {
+        //             GIT_TAG = sh (
+        //                 script: 'git describe --abbrev=0',
+        //                 returnStdout: true
+        //             ).trim()
 
-                    docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push("$GIT_TAG")
-                        dockerImage.push('latest')
+        //             docker.withRegistry( '', registryCredential ) {
+        //                 dockerImage.push("$GIT_TAG")
+        //                 dockerImage.push('latest')
 
-                    }
+        //             }
 
-                    sh "docker rmi $imagename:$GIT_TAG"
-                    sh "docker rmi $imagename:latest"
-                }
-            }
-        }
+        //             sh "docker rmi $imagename:$GIT_TAG"
+        //             sh "docker rmi $imagename:latest"
+        //         }
+        //     }
+        // }
     }
 
     post {
         failure {
-            echo 'I will always say Hello again!'
             // script {
             //     if (params.NOTIFY_SLACK == 'true') {
             //         slackSend(...)

@@ -1,20 +1,18 @@
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SecurityIcon from '@material-ui/icons/Security';
-import React, { useEffect } from 'react';
-import { Route, RouteComponentProps, useLocation, useRouteMatch } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import Account from './profile/Account';
-import Security from './profile/Security';
-import AccessTokens from './profile/AcessTokens';
-import AccessibilityIcon from '@material-ui/icons/Accessibility';
-import { useDispatch, useSelector } from 'react-redux';
 import { IUser } from 'common/lib/models/interface/userInterface';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { accessTokensActions } from '../store/actions/accessTokens';
 import { RootState } from '../store/store';
-import { Switch } from "react-router-dom"
+import Account from './profile/Account';
+import AccessTokens from './profile/AcessTokens';
+import Security from './profile/Security';
 
 const useStyles = makeStyles((theme) => ({
     root: {
