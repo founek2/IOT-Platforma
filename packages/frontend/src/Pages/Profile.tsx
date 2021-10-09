@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SecurityIcon from '@material-ui/icons/Security';
 import React, { useEffect } from 'react';
-import { Route, RouteComponentProps, withRouter } from 'react-router';
+import { Route, RouteComponentProps, useLocation, useRouteMatch } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Account from './profile/Account';
 import Security from './profile/Security';
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IUser } from 'common/lib/models/interface/userInterface';
 import { accessTokensActions } from '../store/actions/accessTokens';
 import { RootState } from '../store/store';
+import { Switch } from "react-router-dom"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,10 +40,12 @@ const menu = [
     // { icon: PersonAddIcon, text: "Vytvořit uživatele", link: "/profile/addUser", role: "ENTITY_MANAGER" }
 ];
 
-function Profile({ location }: RouteComponentProps) {
+function Profile({ location, match }: RouteComponentProps) {
+
     const classes = useStyles();
     const dispatch = useDispatch();
     const userId = useSelector<RootState, IUser['_id'] | undefined>((state) => state.application.user?._id);
+
 
     useEffect(() => {
         if (userId) dispatch(accessTokensActions.fetch(userId));
@@ -63,13 +66,13 @@ function Profile({ location }: RouteComponentProps) {
                     </Link>
                 ))}
             </Breadcrumbs>
-
-            <Route component={Security} path="/profile/security" />
-            <Route component={AccessTokens} path="/profile/accessTokens" />
-            {/* <Route component={AddUser} path="/profile/addUser" /> */}
-            <Route component={Account} path="/profile" exact />
+            <Switch>
+                <Route component={Security} path={`${match.path}/security`} />
+                <Route component={AccessTokens} path={`${match.path}/accessTokens`} />
+                <Route component={Account} path={match.path} exact />
+            </Switch>
         </div>
     );
 }
 
-export default withRouter(Profile);
+export default Profile;

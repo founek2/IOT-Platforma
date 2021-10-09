@@ -13,6 +13,7 @@ const DeviceManagement = lazy(() => import('../Pages/DeviceManagement'));
 const DevicesLazy = lazy(() => import('../Pages/Devices'));
 
 const EditNotifyFormLazy = lazy(() => import('../Pages/EditNotifyForm'));
+
 const ProfileLazy = lazy(() => import('../Pages/Profile'));
 
 export const routes = {

@@ -36,9 +36,7 @@ function Root({ component }: { component: React.FunctionComponent }) {
                 setNewVersion(true);
                 setForceInstall(() => () => {
                     const installingWorker = registration.waiting;
-                    installingWorker?.postMessage({ action: 'SKIP_WAITING' });
-                    // backward compatibility
-                    installingWorker?.postMessage({ action: 'skipWaiting' });
+                    installingWorker?.postMessage({ type: 'SKIP_WAITING' });
                     setNewVersion(false);
                 });
             },

@@ -11,7 +11,7 @@ import { isUrlHash, isUserLoggerIn } from 'framework-ui/lib/utils/getters';
 import { History } from 'history';
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useAppDispatch } from '../hooks';
 import { getGroups } from '../utils/getters';
 import ForgotDialog from './layout/ForgotDialog';
@@ -42,10 +42,10 @@ const useClasses = makeStyles({
 interface LayoutProps {
     userPresence: boolean;
     loginOpen: boolean;
-    history: History;
     forgotOpen: boolean;
 }
-function Layout({ userPresence, loginOpen, history, forgotOpen }: LayoutProps) {
+function Layout({ userPresence, loginOpen, forgotOpen }: LayoutProps) {
+    const history = useHistory()
     const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool: boolean) => () => setMainMenuO(bool);
     const classes = useClasses();

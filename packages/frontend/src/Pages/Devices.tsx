@@ -4,7 +4,7 @@ import { IDevice } from 'common/lib/models/interface/device';
 import { SocketUpdateThingState } from 'common/lib/types';
 import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { createSelector } from 'reselect';
 import { LocationTypography } from '../components/LocationTypography';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
@@ -52,6 +52,8 @@ export interface DeviceControlProps {
     selectedLocation: { building?: string; room?: string };
 }
 function Devices({ buildings, selectedLocation }: DeviceControlProps) {
+    const location = useLocation()
+    console.log(location)
     const classes = useStyles();
     useEffectFetchDevices();
     const dispatch = useDispatch();
