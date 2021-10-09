@@ -24,7 +24,7 @@ release=$(curl -XPOST -H "Authorization: token $token" -H "Accept: application/v
 echo "release response"
 echo $release
 
-id=$(echo "$release" | sed -n -e 's/"id":\ \([0-9]\+\),/\1/p' | head -n 1 | sed 's/[[:blank:]]//g')
+id=$(echo "$release" | grep -Eo '"id": ([^,]*),' | head -n1 | grep -Eo '[0-9]+')
 echo "\nid"
 echo $id
 
