@@ -160,7 +160,11 @@ const EDIT_DEVICE: FormFieldDescriptors = {
             },
         },
     },
-    permissions: transformToForm('EDIT_DEVICE.permissions', EDIT_PERMISSIONS),
+    permissions: {
+        deepPath: 'EDIT_DEVICE.permissions',
+        label: 'Oprávnění',
+    },
+    // permissions: transformToForm('EDIT_DEVICE.permissions', EDIT_PERMISSIONS),
 };
 
 const EDIT_NOTIFY: FormFieldDescriptors = {

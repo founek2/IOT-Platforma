@@ -39,6 +39,9 @@ export const routes = {
         routes: [],
         allowedGroups: allowedGroups.root,
     },
+    // flow: {
+    //     routers: [],
+    // },
 };
 
 initPrivileges(routes, groupsHeritage);

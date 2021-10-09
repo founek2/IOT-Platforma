@@ -22,16 +22,14 @@ const compMapper = {
 };
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        // padding: theme.spacing(2),
-        // backgroundColor: grey[100],
-    },
     location: {
         paddingBottom: 10,
     },
-    // item: {
-    //     height: "100%",
-    // }
+    justifyWide: {
+        [theme.breakpoints.up('md')]: {
+            justifyContent: "center"
+        },
+    },
 }));
 
 function generateBoxes(device: IDevice, updateState: any, classes: any) {
@@ -42,7 +40,7 @@ function generateBoxes(device: IDevice, updateState: any, classes: any) {
         if (Comp) {
             const createComponent = () => (
                 <Grid item xs={6} md={3} key={_id}>
-                    <DeviceContext.Provider value={{ _id: device._id, status: device.state?.status }}>
+                    <DeviceContext.Provider value={{ _id: device._id, status: device.state?.status, metadata: device.metadata }}>
                         <ThingContext.Provider value={thing}>
                             <Comp
                                 thing={thing}
@@ -82,9 +80,9 @@ function Room({ devices }: RoomProps) {
         .flat(2);
 
     return (
-        <div className={classes.root}>
+        <div>
             <LocationTypography location={location} className={classes.location} />
-            <Grid container justify="center" spacing={2}>
+            <Grid container className={classes.justifyWide} spacing={2}>
                 {boxes}
             </Grid>
         </div>

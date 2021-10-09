@@ -1,6 +1,6 @@
 import { logger as loggerFn } from './fn';
 
-const isNode = Boolean(typeof process !== 'undefined' && process?.versions?.node);
+const isNode = typeof window === 'undefined';
 
 const loggerCSS = loggerFn(!isNode);
 

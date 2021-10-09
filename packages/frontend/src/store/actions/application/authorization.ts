@@ -1,11 +1,9 @@
+import { logger } from 'framework-ui/lib/logger';
+import { dehydrateState } from 'framework-ui/lib/redux/actions';
+import { userActions } from 'framework-ui/lib/redux/actions/application/user';
 import { authorizationReducerActions } from 'framework-ui/lib/redux/reducers/application/authorization';
 import { AppThunk } from 'frontend/src/types';
-import { logger } from 'framework-ui/lib/logger';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { getFormData } from 'framework-ui/lib/utils/getters';
 import { postAuthorization } from '../../../api/authorization';
-import { userActions } from 'framework-ui/lib/redux/actions/application/user';
-import { dehydrateState } from 'framework-ui/lib/redux/actions';
 
 export const authorizationActions = {
     ...authorizationReducerActions,

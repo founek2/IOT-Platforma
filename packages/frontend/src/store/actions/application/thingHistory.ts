@@ -11,7 +11,7 @@ import { thingHistoryReducerActions } from '../../reducers/application/thingHist
 export const thingHistoryActions = {
     ...thingHistoryReducerActions,
 
-    fetchHistory(deviceId: IDevice['_id'], thingId: IThing['_id']): AppThunk {
+    fetchHistory(deviceId: IDevice['_id'], thingId: IThing['_id']): AppThunk<Promise<boolean>> {
         return function (dispatch, getState) {
             logger.info('FETCH_DISCOVERED_DEVICES');
             return fetchHistoryApi(

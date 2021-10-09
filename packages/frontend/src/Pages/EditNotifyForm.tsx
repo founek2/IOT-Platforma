@@ -209,7 +209,7 @@ function EditDeviceDialog({
 }
 
 const _mapStateToProps = (state: RootState, { match: { params } }: EditDeviceDialogProps) => {
-    const editForm: any = getFormData('EDIT_NOTIFY')(state);
+    const editForm = getFormData('EDIT_NOTIFY')(state);
     const sensorCount = editForm ? editForm.count : undefined;
     const device = (getDevices(state) as IDevice[]).find((obj) => obj._id === params.deviceId);
     const thing = device?.things.find((thing) => thing.config.nodeId === params.nodeId);

@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import mongoSanitize from 'express-mongo-sanitize';
 import api from '../api';
 import { Config } from '../types';
+import path from 'path';
 
 function getMaxSize(req: Request) {
     // if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'
@@ -19,12 +20,12 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     if (process.env.NODE_ENV !== 'test') app.use('/api', morgan('dev') as any);
 
     // Security headers
-    app.use(
-        helmet({
-            hsts: false,
-            hidePoweredBy: false, // already disabled
-        })
-    );
+    // app.use(
+    //     helmet({
+    //         hsts: false,
+    //         hidePoweredBy: false, // already disabled
+    //     })
+    // );
 
     // decoder
     app.use(express.urlencoded({ extended: true }));
@@ -36,8 +37,11 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
         })(req, res, next)
     );
 
+    // server static frontend files
+    app.use(express.static(path.join(__dirname, '../../../frontend/build')));
+
     // mongo sanitizer (removes $ from keys)
-    app.use(mongoSanitize());
+    app.use('/api', mongoSanitize());
 
     // const corsOptions = {
     //      origin: 'https://tracker.iotplatforma.cloud'

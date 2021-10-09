@@ -104,9 +104,10 @@ export const devicesActions = {
                                 _id: deviceId,
                                 thing: {
                                     nodeId: thingId,
+                                    // @ts-ignore dont add timestamp -> just UI update
                                     state: {
                                         value: state,
-                                        timestamp: new Date(),
+                                        // timestamp: new Date(),
                                     },
                                 },
                             })

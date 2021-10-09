@@ -1,6 +1,3 @@
-const currentLogLevel = Number(process.env.LOG_LEVEL || process.env.REACT_APP_LOG_LEVEL || '2');
-console.log(`Loglevel is set to ${currentLogLevel}`);
-
 const styleArray = {
     red: ['color: red', '\x1b[31m'],
     green: ['color: green', '\x1b[32m'],
@@ -25,7 +22,8 @@ export function logger(useCss = true, styles = styleArray) {
                 }
 
                 // log message
-                if (process.env.LOG_LEVEL && currentLogLevel >= logLevel)
+                const currentLogLevel = Number(process.env.LOG_LEVEL || process.env.REACT_APP_LOG_LEVEL || '2');
+                if (currentLogLevel >= logLevel)
                     log.apply(logger, [new Date().toLocaleTimeString(), ...entry, ...value]); // logger: Console
 
                 return value;

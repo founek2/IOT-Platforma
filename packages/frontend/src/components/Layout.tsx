@@ -1,30 +1,23 @@
+import { makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/core/styles';
-import SendIcon from '@material-ui/icons/Send';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
-import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
-import { userActions } from 'framework-ui/lib/redux/actions/application/user';
+import SendIcon from '@material-ui/icons/Send';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { isUserLoggerIn, isUrlHash } from 'framework-ui/lib/utils/getters';
+import { isUrlHash, isUserLoggerIn } from 'framework-ui/lib/utils/getters';
+import { History } from 'history';
 import React, { Fragment, useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import EditUser from '../Pages/userManagement/EditUser';
+import { useAppDispatch } from '../hooks';
+import { getGroups } from '../utils/getters';
+import ForgotDialog from './layout/ForgotDialog';
 import LoginDialog from './layout/LoginDialog';
 import SideMenu from './layout/SideMenu';
 import UserMenu from './layout/UserMenu';
-import ForgotDialog from './layout/ForgotDialog';
-import { useMediaQuery, useTheme, makeStyles } from '@material-ui/core';
-import { WithRouterProps } from 'react-router';
-import { History } from 'history';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import { useAppDispatch } from '../hooks';
-import { getGroups } from '../utils/getters';
 
 const useClasses = makeStyles({
     root: {
