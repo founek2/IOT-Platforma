@@ -4,7 +4,7 @@ RUN apk add --no-cache openssh-keygen yarn openssl bash unzip && mkdir /keys
 
 RUN mkdir -p /var/www/platform
 WORKDIR  /var/www/platform
-COPY .  .
+COPY ./ci  ./ci
 # RUN yarn && yarn pre && yarn build
 # RUN yarn install --production
 RUN ./ci/jenkins/docker-build.sh

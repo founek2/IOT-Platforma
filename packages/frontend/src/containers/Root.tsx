@@ -38,6 +38,7 @@ function Root({ component }: { component: React.FunctionComponent }) {
                     const installingWorker = registration.waiting;
                     installingWorker?.postMessage({ type: 'SKIP_WAITING' });
                     setNewVersion(false);
+                    window.location.reload(true);
                 });
             },
         };
