@@ -23,4 +23,4 @@ release=$(curl -XPOST -H "Authorization: token $token" -H "Accept: application/v
 # Extract the id of the release from the creation response
 id=$(echo "$release" | sed -n -e 's/"id":\ \([0-9]\+\),/\1/p' | head -n 1 | sed 's/[[:blank:]]//g')
 # Upload the artifact
-curl -XPOST -H "Authorization: token $token" -H "Content-Type:application/octet-stream" -H "Accept: application/vnd.github.v3+json" --data-binary @build.zip https://uploads.github.com/repos/founek2/IOT-Platforma/releases/$id/assets?name=build.zip
+curl -XPOST -H "Authorization: token $token" -H "Content-Type:application/octet-stream" -H "Accept: application/vnd.github.v3+json" --data-binary @build.zip https://uploads.github.com/repos/founek2/IOT-Platforma/releases/$id/assets?name=assets.zip
