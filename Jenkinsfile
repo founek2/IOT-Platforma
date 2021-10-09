@@ -85,7 +85,7 @@ pipeline {
             when { branch "release*" }
 
             environment {
-                USER_CREDENTIALS = credentials('github-token')
+                USER_CREDENTIALS = credentials('Jenkins - iot')
             }
    
             steps {
