@@ -51,27 +51,27 @@ pipeline {
         }
 
 
-        stage('SonarQube analysis') {
-            when { branch "develop" }
+        // stage('SonarQube analysis') {
+        //     when { branch "develop" }
 
-            environment {
-                SCANNER_HOME = tool 'SonarQubeScanner'
-            }
+        //     environment {
+        //         SCANNER_HOME = tool 'SonarQubeScanner'
+        //     }
 
-            steps {
-                withSonarQubeEnv('Sonar qube') {
-                    sh '''
-                    $SCANNER_HOME/bin/sonar-scanner \
-                    -D sonar.projectKey=delegi \
-                    -D sonar.projectName="Delegy system" \
-                    -D sonar.projectVersion=0.1.0 \
-                    -D sonar.sources=packages/backend/src \
-                    -D sonar.language=ts \
-                    -D sonar.javascript.lcov.reportPaths=packages/backend/coverage/lcov.info
-                    '''
-                }
-            }
-        }
+        //     steps {
+        //         withSonarQubeEnv('Sonar qube') {
+        //             sh '''
+        //             $SCANNER_HOME/bin/sonar-scanner \
+        //             -D sonar.projectKey=delegi \
+        //             -D sonar.projectName="Delegy system" \
+        //             -D sonar.projectVersion=0.1.0 \
+        //             -D sonar.sources=packages/backend/src \
+        //             -D sonar.language=ts \
+        //             -D sonar.javascript.lcov.reportPaths=packages/backend/coverage/lcov.info
+        //             '''
+        //         }
+        //     }
+        // }
 
         // stage("Quality Gate") {
         //     steps {
