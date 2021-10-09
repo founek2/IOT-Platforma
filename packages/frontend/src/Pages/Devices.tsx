@@ -52,8 +52,6 @@ export interface DeviceControlProps {
     selectedLocation: { building?: string; room?: string };
 }
 function Devices({ buildings, selectedLocation }: DeviceControlProps) {
-    const location = useLocation()
-    console.log(location)
     const classes = useStyles();
     useEffectFetchDevices();
     const dispatch = useDispatch();

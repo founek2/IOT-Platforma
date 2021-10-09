@@ -8,7 +8,7 @@ import { createBrowserHistory } from 'history';
 import { map } from 'ramda';
 import React, { Suspense, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Route, BrowserRouter, Switch } from 'react-router-dom';
+import { Route, Router as RouterReact, Switch } from 'react-router-dom';
 import Layout from '../components/Layout';
 import '../firebase'; // init
 import { Authorization } from '../Pages/Authorization';
@@ -71,7 +71,7 @@ function Router({ userPresence, userGroups }: RouterProps) {
     }
 
     return (
-        <BrowserRouter>
+        <RouterReact history={history}>
             <Layout />
             <Suspense fallback={<Loader open center />}>
                 <Switch>
@@ -89,7 +89,7 @@ function Router({ userPresence, userGroups }: RouterProps) {
                     <Route path="/" component={Main} />
                 </Switch>
             </Suspense>
-        </BrowserRouter>
+        </RouterReact>
     );
 }
 const _mapStateToProps = (state: any) => ({
