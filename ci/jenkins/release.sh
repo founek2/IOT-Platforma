@@ -21,6 +21,12 @@ description=$(echo "$description" | sed 's/\n/\\n/g') # Escape line breaks to pr
 echo "Creating releasing with tag_name=$tag"
 release=$(curl -XPOST -H "Authorization: token $token" -H "Accept: application/vnd.github.v3+json" --data "{\"tag_name\": \"$tag\", \"target_commitish\": \"release\", \"name\": \"$name\", \"body\": \"$description\", \"draft\": false, \"prerelease\": false}" https://api.github.com/repos/founek2/IOT-Platforma/releases)
 # Extract the id of the release from the creation response
+echo "release response"
+echo $release
+
 id=$(echo "$release" | sed -n -e 's/"id":\ \([0-9]\+\),/\1/p' | head -n 1 | sed 's/[[:blank:]]//g')
+echo "\nid"
+echo $id
+
 # Upload the artifact
 curl -XPOST -H "Authorization: token $token" -H "Content-Type:application/octet-stream" -H "Accept: application/vnd.github.v3+json" --data-binary @assets.zip https://uploads.github.com/repos/founek2/IOT-Platforma/releases/$id/assets?name=assets.zip
