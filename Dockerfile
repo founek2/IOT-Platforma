@@ -1,6 +1,6 @@
 FROM node:16-alpine3.11
 
-RUN apk update && apk add openssh-keygen yarn openssl bash && mkdir /keys
+RUN apk add --no-cache openssh-keygen yarn openssl bash unzip && mkdir /keys
 
 RUN mkdir -p /var/www/platform
 WORKDIR  /var/www/platform

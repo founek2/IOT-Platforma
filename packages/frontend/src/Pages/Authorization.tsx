@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core';
 import Loader from 'framework-ui/lib/Components/Loader';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useAppDispatch } from '../hooks';
 import { authorizationActions } from '../store/actions/application/authorization';
 import { RootState } from '../store/store';

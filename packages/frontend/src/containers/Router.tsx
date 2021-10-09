@@ -8,7 +8,7 @@ import { createBrowserHistory } from 'history';
 import { map } from 'ramda';
 import React, { Suspense, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Route, Router as RouterReact, Switch } from 'react-router-dom';
+import { Route, BrowserRouter, Switch } from 'react-router-dom';
 import Layout from '../components/Layout';
 import '../firebase'; // init
 import { Authorization } from '../Pages/Authorization';
@@ -21,7 +21,7 @@ const history = createBrowserHistory();
 const defLocation = history.location;
 
 function createRoute({ path, Component }: { path: string; Component: any }) {
-    return <Route path={path} key={path} render={(props) => <Component {...props} />} />;
+    return <Route path={path} key={path} component={Component} />;
 }
 
 interface RouterProps {
@@ -71,8 +71,8 @@ function Router({ userPresence, userGroups }: RouterProps) {
     }
 
     return (
-        <RouterReact history={history}>
-            <Layout history={history} />
+        <BrowserRouter>
+            <Layout />
             <Suspense fallback={<Loader open center />}>
                 <Switch>
                     {/* <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} /> */}
@@ -89,7 +89,7 @@ function Router({ userPresence, userGroups }: RouterProps) {
                     <Route path="/" component={Main} />
                 </Switch>
             </Suspense>
-        </RouterReact>
+        </BrowserRouter>
     );
 }
 const _mapStateToProps = (state: any) => ({
