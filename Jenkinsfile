@@ -51,35 +51,14 @@ pipeline {
         }
 
 
-        // stage('SonarQube analysis') {
-        //     when { branch "develop" }
-
-        //     environment {
-        //         SCANNER_HOME = tool 'SonarQubeScanner'
-        //     }
-
-        //     steps {
-        //         withSonarQubeEnv('Sonar qube') {
-        //             sh '''
-        //             $SCANNER_HOME/bin/sonar-scanner \
-        //             -D sonar.projectKey=delegi \
-        //             -D sonar.projectName="Delegy system" \
-        //             -D sonar.projectVersion=0.1.0 \
-        //             -D sonar.sources=packages/backend/src \
-        //             -D sonar.language=ts \
-        //             -D sonar.javascript.lcov.reportPaths=packages/backend/coverage/lcov.info
-        //             '''
-        //         }
-        //     }
-        // }
-
-        // stage("Quality Gate") {
-        //     steps {
-        //         timeout(time: 10, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage('Deploy docs') {
+            when { branch "release*" }
+            steps{
+                script {
+                    sh "scp -r docs/* jenkins@free.iotplatforma.cloud:/home/websites/home-iot/www"
+                }
+            }
+        }
           
         stage('Release') {
             when { branch "release*" }
@@ -105,26 +84,6 @@ pipeline {
         //     }
         // }
 
-        // stage('Deploy Image') {
-        //     when { branch "release*" }
-        //     steps{
-        //         script {
-        //             GIT_TAG = sh (
-        //                 script: 'git describe --abbrev=0',
-        //                 returnStdout: true
-        //             ).trim()
-
-        //             docker.withRegistry( '', registryCredential ) {
-        //                 dockerImage.push("$GIT_TAG")
-        //                 dockerImage.push('latest')
-
-        //             }
-
-        //             sh "docker rmi $imagename:$GIT_TAG"
-        //             sh "docker rmi $imagename:latest"
-        //         }
-        //     }
-        // }
     }
 
     post {
