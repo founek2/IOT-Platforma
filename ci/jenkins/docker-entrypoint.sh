@@ -10,4 +10,4 @@ if [ ! -f "$JWT_PRIVATE_KEY" ]; then
     openssl rsa -in "$JWT_PRIVATE_KEY" -pubout -outform PEM -out "$JWT_PUBLIC_KEY"
 fi
 
-pm2-runtime process.json
+pm2-runtime --raw process.json

@@ -21,7 +21,7 @@ const history = createBrowserHistory();
 const defLocation = history.location;
 
 function createRoute({ path, Component }: { path: string; Component: any }) {
-    return <Route path={path} key={path} render={(props) => <Component {...props} />} />;
+    return <Route path={path} key={path} component={Component} />;
 }
 
 interface RouterProps {
@@ -72,7 +72,7 @@ function Router({ userPresence, userGroups }: RouterProps) {
 
     return (
         <RouterReact history={history}>
-            <Layout history={history} />
+            <Layout />
             <Suspense fallback={<Loader open center />}>
                 <Switch>
                     {/* <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} /> */}

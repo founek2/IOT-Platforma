@@ -4,7 +4,7 @@ import { IDevice } from 'common/lib/models/interface/device';
 import { SocketUpdateThingState } from 'common/lib/types';
 import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { createSelector } from 'reselect';
 import { LocationTypography } from '../components/LocationTypography';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';

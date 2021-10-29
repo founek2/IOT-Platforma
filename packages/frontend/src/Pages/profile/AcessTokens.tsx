@@ -15,12 +15,12 @@ import { getQueryID } from 'frontend/src/utils/getters';
 import { assoc, prop } from 'ramda';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import EditAccessToken from './accessTokens/EditAccessToken';
 import { accessTokensActions } from 'frontend/src/store/actions/accessTokens';
 import { RootState } from 'frontend/src/store/store';
 
-function Security() {
+function AccessTokens() {
     const classesTab = useManagementStyles();
     const user = useSelector<RootState, IUser | null>((state) => state.application.user);
     const selectedId = useSelector<RootState, string | undefined>(getQueryID);
@@ -111,11 +111,6 @@ function Security() {
                                 )}
                             />
                         </CardContent>
-                        {/* <CardActions>
-                        <Button color="primary" variant="contained">
-                            Přidat
-                        </Button>
-                    </CardActions> */}
                     </Card>
                 </Grid>
             </Grid>
@@ -148,4 +143,4 @@ function Security() {
     );
 }
 
-export default Security;
+export default AccessTokens;

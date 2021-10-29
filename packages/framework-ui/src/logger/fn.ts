@@ -23,8 +23,19 @@ export function logger(useCss = true, styles = styleArray) {
 
                 // log message
                 const currentLogLevel = Number(process.env.LOG_LEVEL || process.env.REACT_APP_LOG_LEVEL || '2');
-                if (currentLogLevel >= logLevel)
-                    log.apply(logger, [new Date().toLocaleTimeString(), ...entry, ...value]); // logger: Console
+                if (currentLogLevel >= logLevel) {
+                    if (useCss)
+                        log.apply(logger, [
+                            new Date().toLocaleTimeString() + ` %c${message}%c ` + value.join(' '),
+                            style[0],
+                            styleArray.reset[0],
+                        ]);
+                    // logger: Console
+                    else {
+                        entry = [`${style[1]}${message}${styles['reset'][1]}`];
+                        log.apply(logger, [new Date().toLocaleTimeString(), ...entry, ...value]); // logger: Console
+                    }
+                }
 
                 return value;
             };
