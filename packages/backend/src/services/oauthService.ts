@@ -28,7 +28,11 @@ export interface RevokeErrorBody {
 }
 
 export class OAuthService {
-    static async requestAuthorization(code: string, provider: OAuthProvider): Promise<Maybe<Authorization>> {
+    static async requestAuthorization(
+        code: string,
+        redirectUri: string,
+        provider: OAuthProvider
+    ): Promise<Maybe<Authorization>> {
         try {
             const res = await fetch('https://login.szn.cz/api/v1/oauth/token', {
                 method: 'POST',
@@ -39,7 +43,7 @@ export class OAuthService {
                 body: JSON.stringify({
                     grant_type: 'authorization_code',
                     code,
-                    redirect_uri: oauth.seznam.redirectUri,
+                    redirect_uri: redirectUri,
                     client_secret: oauth.seznam.clientSecret,
                     client_id: oauth.seznam.clientId,
                 }),

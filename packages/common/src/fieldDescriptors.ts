@@ -318,6 +318,13 @@ const AUTHORIZATION: FormFieldDescriptors = {
         name: 'code',
         validations: [validationFactory('isString', { min: 5, max: 100 })],
     },
+    redirectUri: {
+        deepPath: 'AUTHORIZATION.redirectUri',
+        required: true,
+        label: 'Adresa pro přesměrování',
+        name: 'redirectUri',
+        validations: [validationFactory('isString', { min: 5, max: 200 })],
+    },
 };
 
 const descriptors: FieldDescriptors = {

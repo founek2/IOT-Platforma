@@ -8,14 +8,14 @@ import { postAuthorization } from '../../../api/authorization';
 export const authorizationActions = {
     ...authorizationReducerActions,
 
-    sendCode(code: string): AppThunk<Promise<boolean>> {
+    sendCode(code: string, redirectUri: string): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const AUTHORIZATION = 'AUTHORIZATION';
             logger.info(AUTHORIZATION);
 
             return postAuthorization(
                 {
-                    body: { formData: { [AUTHORIZATION]: { code } } },
+                    body: { formData: { [AUTHORIZATION]: { code, redirectUri } } },
                     onSuccess: (json: any) => {
                         dispatch(userActions.set(json.user));
                         dispatch(authorizationActions.setAccessToken(json.token));

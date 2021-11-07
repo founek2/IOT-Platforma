@@ -2,6 +2,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { useAppDispatch } from 'frontend/src/hooks';
 import React, { useEffect, useState } from 'react';
 import { fetchAuthorization } from "../../api/authorization";
+import { buildRedirectUri } from 'frontend/src/utils/redirectUri';
 
 type AuthType = {
     provider: string;
@@ -30,7 +31,7 @@ function OAuthButtons({ className }: { className?: string }) {
             fetchAuthorization({
                 onSuccess: (json: AuthResponse) => setAuth(json.oauth.map(obj => ({
                     ...obj,
-                    authUrl: obj.authUrl + `&redirect_uri=${window.location.origin}/authorization/redirect`
+                    authUrl: obj.authUrl + `&redirect_uri=${buildRedirectUri()}`
                 })))
             }, dispatch)
         }

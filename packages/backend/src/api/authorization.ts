@@ -56,7 +56,11 @@ export default () =>
             } else if (formData.AUTHORIZATION) {
                 const processAuth = MaybeAsync(async ({ fromPromise, liftMaybe }) => {
                     const auth = await fromPromise(
-                        OAuthService.requestAuthorization(body.formData.AUTHORIZATION.code, OAuthProvider.seznam)
+                        OAuthService.requestAuthorization(
+                            body.formData.AUTHORIZATION.code,
+                            body.formData.AUTHORIZATION.redirectUri,
+                            OAuthProvider.seznam
+                        )
                     );
 
                     return await fromPromise(

@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { useAppDispatch } from '../hooks';
 import { authorizationActions } from '../store/actions/application/authorization';
 import { RootState } from '../store/store';
+import { buildRedirectUri } from '../utils/redirectUri';
 
 export function Authorization() {
     const { code } = useSelector((state: RootState) => state.history.query);
@@ -17,7 +18,7 @@ export function Authorization() {
     useEffect(() => {
         async function send(code: string) {
             setPending(true);
-            const result = await dispatch(authorizationActions.sendCode(code));
+            const result = await dispatch(authorizationActions.sendCode(code, buildRedirectUri()));
             if (result) history.push('/devices');
             else history.push({ search: '', hash: 'login' });
             setPending(false);
