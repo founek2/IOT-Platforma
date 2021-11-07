@@ -46,7 +46,6 @@ const config: Config = {
         seznam: {
             clientSecret: process.env.OAUTH_SEZNAM_CLIENT_SECRET as string,
             clientId: process.env.OAUTH_SEZNAM_CLIENT_ID as string,
-            redirectUri: process.env.OAUTH_REDIRECT_URI as string,
             iconUrl: '/images/seznamLogo.svg',
             endpoint: 'https://login.szn.cz/api/v1/oauth/auth',
             scopes: ['identity'],

@@ -26,13 +26,11 @@ export default () =>
         async index(req, res) {
             const oauthArray: Array<any> = [];
             if (config.oauth.seznam.clientId) {
-                const { clientId, redirectUri, endpoint, scopes, iconUrl } = config.oauth.seznam;
+                const { clientId, endpoint, scopes, iconUrl } = config.oauth.seznam;
                 oauthArray.push({
                     provider: 'seznam',
                     iconUrl,
-                    authUrl: `${endpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-                        '%20'
-                    )}&response_type=code`,
+                    authUrl: `${endpoint}?client_id=${clientId}&scope=${scopes.join('%20')}&response_type=code`,
                 });
             }
 

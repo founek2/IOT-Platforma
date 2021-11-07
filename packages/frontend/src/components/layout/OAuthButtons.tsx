@@ -28,7 +28,10 @@ function OAuthButtons({ className }: { className?: string }) {
     useEffect(() => {
         async function run() {
             fetchAuthorization({
-                onSuccess: (json: AuthResponse) => setAuth(json.oauth)
+                onSuccess: (json: AuthResponse) => setAuth(json.oauth.map(obj => ({
+                    ...obj,
+                    authUrl: obj.authUrl + `&redirect_uri=${window.location.origin}/authorization/redirect`
+                })))
             }, dispatch)
         }
         run()

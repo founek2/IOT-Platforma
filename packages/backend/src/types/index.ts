@@ -48,7 +48,6 @@ export interface Config {
         seznam: {
             clientSecret?: string;
             clientId?: string;
-            redirectUri?: string;
             iconUrl: string;
             endpoint: string;
             scopes: string[];
