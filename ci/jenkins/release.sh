@@ -11,7 +11,7 @@ token="$USER_CREDENTIALS_PSW"
 # Get the last tag name
 tag=$(git describe --abbrev=0)
 # Get the full message associated with this tag
-message="$(git for-each-ref refs/tags/$tag --format='%(contents)' | git for-each-ref refs/tags/v1.2.5 --format='%(contents)' | awk '{ if ($0 == "-----BEGIN PGP SIGNATURE-----") { exit 1 } print }')"
+message="$(git for-each-ref refs/tags/$tag --format='%(contents)' | git for-each-ref refs/tags/v1.2.5 --format='%(contents)' | awk '{ if ($0 == \"-----BEGIN PGP SIGNATURE-----\") { exit 0 } print }')"
 # Get the title and the description as separated variables
 name=$(echo "$message" | head -n1)
 description=$(echo "$message" | tail -n +3)
