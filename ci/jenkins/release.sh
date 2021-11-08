@@ -19,6 +19,7 @@ description=$(echo "$description" | sed 's/\n/\\n/g') # Escape line breaks to pr
 
 # Create a release
 echo "Creating releasing with tag_name=$tag"
+echo curl -XPOST -H "Authorization: token $token" -H "Accept: application/vnd.github.v3+json" --data "{\"tag_name\": \"$tag\", \"target_commitish\": \"release\", \"name\": \"$name\", \"body\": \"$description\", \"draft\": false, \"prerelease\": false}" https://api.github.com/repos/founek2/IOT-Platforma/releases
 release=$(curl -XPOST -H "Authorization: token $token" -H "Accept: application/vnd.github.v3+json" --data "{\"tag_name\": \"$tag\", \"target_commitish\": \"release\", \"name\": \"$name\", \"body\": \"$description\", \"draft\": false, \"prerelease\": false}" https://api.github.com/repos/founek2/IOT-Platforma/releases)
 # Extract the id of the release from the creation response
 echo "release response"
