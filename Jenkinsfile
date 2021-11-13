@@ -72,7 +72,7 @@ pipeline {
 
 
         stage('Building image') {
-            agent { label 'agent-docker' }
+            agent { label 'java-docker-slave' }
             when { branch "release*" }
             steps{
                 script {
