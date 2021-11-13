@@ -71,14 +71,15 @@ pipeline {
         }
 
 
-        // stage('Building image') {
-        //     when { branch "release*" }
-        //     steps{
-        //         script {
-        //             dockerImage = docker.build("$imagename")
-        //         }
-        //     }
-        // }
+        stage('Building image') {
+            agent { label 'agent-docker' }
+            when { branch "release*" }
+            steps{
+                script {
+                    dockerImage = docker.build("$imagename")
+                }
+            }
+        }
 
     }
 
