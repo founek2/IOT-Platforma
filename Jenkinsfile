@@ -3,12 +3,6 @@ pipeline {
     // deleteDir()
     agent any
 
-    environment {
-        imagename = "founek2/iot-platform"
-        registryCredential = 'docker-hub'
-        dockerImage = ''
-    }
-
     stages {
         stage ('Install dependencies') {
             steps {
@@ -74,9 +68,14 @@ pipeline {
         stage('Building image') {
             agent { label 'java-docker-slave' }
             when { branch "release*" }
+
+            environment {
+                USER_CREDENTIALS = credentials('Jenkins-docker')
+            }
+
             steps{
                 script {
-                    dockerImage = docker.build("$imagename")
+                    sh "ci/jenkins/docker-publish.sh"
                 }
             }
         }
