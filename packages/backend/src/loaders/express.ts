@@ -1,5 +1,4 @@
 import express, { Application, Request } from 'express';
-import helmet from 'helmet';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mongoSanitize from 'express-mongo-sanitize';
@@ -19,14 +18,6 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     // logger
     if (process.env.NODE_ENV !== 'test') app.use('/api', morgan('dev') as any);
 
-    // Security headers
-    // app.use(
-    //     helmet({
-    //         hsts: false,
-    //         hidePoweredBy: false, // already disabled
-    //     })
-    // );
-
     // decoder
     app.use(express.urlencoded({ extended: true }));
 
@@ -38,21 +29,17 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     );
 
     // server static frontend files
-    app.use(express.static(path.join(__dirname, '../../../frontend/build')));
+    const frontend_path = path.join(__dirname, '../../../frontend/build');
+    app.use(express.static(frontend_path));
 
     // mongo sanitizer (removes $ from keys)
     app.use('/api', mongoSanitize());
-
-    // const corsOptions = {
-    //      origin: 'https://tracker.iotplatforma.cloud'
-    // }
-    // app.use(cors(corsOptions))
 
     // api router
     app.use('/api', api());
 
     // fallback
     app.use('/api/*', (req, res) => res.sendStatus(404));
-
+    app.get('/', (req, res) => res.sendFile(path.join(frontend_path, 'index.html')));
     return app;
 };
