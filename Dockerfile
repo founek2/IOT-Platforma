@@ -7,6 +7,7 @@ WORKDIR  /var/www/platform
 COPY ./ci  ./ci
 # RUN yarn && yarn pre && yarn build
 # RUN yarn install --production
+ADD https://github.com/founek2/IOT-Platforma/releases/latest/download/assets.zip assets.zip
 RUN ./ci/jenkins/docker-build.sh
 COPY ./ci/jenkins/docker-entrypoint.sh .
 

@@ -3,8 +3,6 @@ set -e
 
 yarn global add --silent pm2
 
-# https://github.com/founek2/IOT-Platforma/releases/latest/download/assets.zip
-wget https://github.com/founek2/IOT-Platforma/releases/latest/download/assets.zip
 unzip assets.zip
 rm assets.zip
 
