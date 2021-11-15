@@ -40,6 +40,6 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
 
     // fallback
     app.use('/api/*', (req, res) => res.sendStatus(404));
-    app.get('/', (req, res) => res.sendFile(path.join(frontend_path, 'index.html')));
+    app.get('/*', (req, res) => res.sendFile(path.join(frontend_path, 'index.html')));
     return app;
 };
