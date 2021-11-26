@@ -13,6 +13,9 @@ import { getDevices, getDiscovery, getQueryField } from '../utils/getters';
 import io from '../webSocket';
 import DeviceSection from './deviceManagement/DeviceSection';
 import DiscoverySection from './deviceManagement/DiscoverySection';
+import { createSelector } from 'reselect';
+import { Locations } from 'frontend/src/types';
+import { locationsSelector } from '../store/selectors/deviceSelector';
 
 const useStyles = makeStyles((theme) => ({
     cardContent: {
@@ -21,12 +24,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
 interface DevicesProps {
     devices: IDevice[];
     discoveredDevices: IDiscovery[];
+    locations: Locations
 }
 
-function Devices({ devices, discoveredDevices }: DevicesProps) {
+function Devices({ devices, discoveredDevices, locations }: DevicesProps) {
     const classes = useStyles();
     const dispatch = useDispatch();
     useEffectFetchDevices();
@@ -49,7 +54,7 @@ function Devices({ devices, discoveredDevices }: DevicesProps) {
             <Card>
                 {/* <CardHeader title="Správa zařízení" /> */}
                 <div className={classes.cardContent}>
-                    <DiscoverySection discoveredDevices={discoveredDevices} />
+                    <DiscoverySection discoveredDevices={discoveredDevices} locations={locations} />
                     <DeviceSection devices={devices} />
                 </div>
                 <CardActions />
@@ -57,6 +62,7 @@ function Devices({ devices, discoveredDevices }: DevicesProps) {
         </Fragment>
     );
 }
+
 
 const _mapStateToProps = (state: RootState) => {
     const deviceId = getQueryField('deviceId')(state);
@@ -69,6 +75,7 @@ const _mapStateToProps = (state: RootState) => {
         devices,
         discoveredDevices: discoveredDevices,
         toAddDevice,
+        locations: locationsSelector(state)
     };
 };
 

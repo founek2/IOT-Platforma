@@ -17,6 +17,7 @@ import React, { useState } from 'react';
 import SwitchMy from './Switch';
 import { CopyUrlContext } from './helpers/CopyUrl';
 import { toogleSwitchVal } from './helpers/toogleSwitchVal';
+import ColorPicker from "./ColorPicker"
 
 const useStyles = makeStyles({
     container: {
@@ -95,6 +96,17 @@ function ValueComponent({
                             onChange(toogleSwitchVal(value));
                         }}
                         checked={value === 'true'}
+                    />
+                </CopyUrlContext>
+            );
+        } else if (property.dataType === PropertyDataType.color) {
+            return (
+                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                    <ColorPicker
+                        value={value as string}
+                        onChange={(e) => {
+                            onChange(e.target.value);
+                        }}
                     />
                 </CopyUrlContext>
             );

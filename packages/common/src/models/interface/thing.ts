@@ -1,23 +1,24 @@
 export enum PropertyClass {
-    temperature = "temperature",
-    humidity = "humidity",
-    pressure = "pressure",
-    voltage = "voltage",
+    temperature = 'temperature',
+    humidity = 'humidity',
+    pressure = 'pressure',
+    voltage = 'voltage',
 }
 
 export enum ComponentType {
-    sensor = "sensor",
-    activator = "activator",
-    switch = "switch",
-    generic = "generic",
+    sensor = 'sensor',
+    activator = 'activator',
+    switch = 'switch',
+    generic = 'generic',
 }
 
 export enum PropertyDataType {
-    string = "string",
-    float = "float",
-    boolean = "boolean",
-    integer = "integer",
-    enum = "enum",
+    string = 'string',
+    float = 'float',
+    boolean = 'boolean',
+    integer = 'integer',
+    color = 'color',
+    enum = 'enum',
 }
 
 export interface IThing {
@@ -54,4 +55,9 @@ export interface IThingPropertyNumeric extends IThingPropertyBase {
 export interface IThingPropertyEnum extends IThingPropertyBase {
     dataType: PropertyDataType.enum;
     format: string[];
+}
+
+export interface IThingPropertyColor extends IThingPropertyBase {
+    dataType: PropertyDataType.color;
+    format: 'hsv' | 'rgb';
 }

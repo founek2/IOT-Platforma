@@ -10,15 +10,18 @@ import { userNamesActions } from '../../store/actions/application/userNames';
 import { getUserNames } from '../../utils/getters';
 import { RootState } from 'frontend/src/store/store';
 import PermissionSelect from './editDeviceForm/PermissionSelect';
+import { Locations } from 'frontend/src/types';
+import { locationsSelector } from 'frontend/src/store/selectors/deviceSelector';
 
 interface DiscoverySectionProps {
     devices?: IDevice[];
     deleteDiscoveryAction: any;
     updateFormField: any;
     userNames: RootState['application']['userNames'];
+    locations: Locations
 }
 
-function EditDeviceForm({ userNames }: DiscoverySectionProps) {
+function EditDeviceForm({ userNames, locations }: DiscoverySectionProps) {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(userNamesActions.fetch());
@@ -26,7 +29,7 @@ function EditDeviceForm({ userNames }: DiscoverySectionProps) {
 
     return (
         <>
-            <DeviceForm formName="EDIT_DEVICE" />
+            <DeviceForm formName="EDIT_DEVICE" locations={locations} />
             {userNames.data.length ? (
                 <FieldConnector
                     deepPath="EDIT_DEVICE.permissions"
@@ -41,6 +44,7 @@ function EditDeviceForm({ userNames }: DiscoverySectionProps) {
 
 const _mapStateToProps = (state: any) => {
     return {
+        locations: locationsSelector(state),
         userNames: getUserNames(state),
     };
 };

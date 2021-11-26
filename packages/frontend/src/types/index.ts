@@ -14,5 +14,6 @@ export interface ControlProps {
     pending: boolean;
     forceUpdate: React.ChangeEventHandler;
 }
+export type Locations = Map<string, Set<string>>;
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>;

@@ -15,14 +15,16 @@ import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../components/OnlineCircle';
 import { discoveryActions } from '../../store/actions/application/discovery';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
+import { Locations } from 'frontend/src/types';
 
 interface DiscoverySectionProps {
     discoveredDevices?: IDiscovery[];
     addDiscoveryAction: any;
     deleteDiscoveryAction: any;
+    locations: Locations
 }
 
-function DiscoverySection({ discoveredDevices, addDiscoveryAction, deleteDiscoveryAction }: DiscoverySectionProps) {
+function DiscoverySection({ discoveredDevices, addDiscoveryAction, deleteDiscoveryAction, locations }: DiscoverySectionProps) {
     const classes = useManagementStyles();
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [selectedId, setSelectedId] = useState<null | string>(null);
@@ -123,7 +125,7 @@ function DiscoverySection({ discoveredDevices, addDiscoveryAction, deleteDiscove
                 fullScreen={isSmall}
                 content={
                     <Grid container spacing={2}>
-                        <DeviceForm formName="CREATE_DEVICE" onEnter={onAgree} />
+                        <DeviceForm formName="CREATE_DEVICE" onEnter={onAgree} locations={locations} />
                     </Grid>
                 }
             />

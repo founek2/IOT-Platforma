@@ -22,9 +22,11 @@ import {
     getFormData,
 } from '../utils/getters';
 import ChipArray from './ChipArray';
+import Autocomplete from './fieldConnector/Autocomplete';
 import { onEnterRun } from '../utils/onEnter';
 import { logger } from '../logger';
 import { State, FieldState, FieldDescriptor, FormData } from '../types';
+
 
 const {
     registerField,
@@ -44,6 +46,7 @@ const Components = {
     FileLoader: FileLoader,
     ChipArray: ChipArray,
     CheckBox: CheckBox,
+    Autocomplete: Autocomplete
 };
 type componentKeys = keyof typeof Components;
 
@@ -147,6 +150,9 @@ function FieldConnector({
         let options = {};
         if (component === 'Select') {
             options = { selectOptions };
+        }
+        if (component === 'Autocomplete') {
+            options = { options: selectOptions };
         }
         if (component === 'ChipArray') options = { optionsData };
         return (
