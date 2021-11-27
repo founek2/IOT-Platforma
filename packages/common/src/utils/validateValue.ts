@@ -33,6 +33,17 @@ export function validateValue(
         return { valid: true, value: value };
     }
 
+    if (property.dataType === PropertyDataType.color) {
+        const channels = value.split(',');
+        console.log(
+            channels,
+            channels.map((val) => parseInt(val) >= 0)
+        );
+        if (channels.length !== 3 || !channels.every((val) => parseInt(val) >= 0)) return { valid: false };
+
+        return { valid: true, value: value };
+    }
+
     return { valid: false };
 }
 
