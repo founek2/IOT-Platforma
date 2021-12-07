@@ -74,7 +74,6 @@ function AccessTokens() {
                                                     TokenPermissions.find((el) => el.value.toString() === String(val))
                                                         ?.label,
                                             },
-                                            { path: 'token', label: 'Token' },
                                             {
                                                 path: 'createdAt',
                                                 label: 'Vytvořeno',

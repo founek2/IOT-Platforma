@@ -69,14 +69,13 @@ export default () =>
                             expiresIn: auth.expires_in,
                             refreshToken: auth.refresh_token,
                             tokenType: auth.token_type,
-                            userId: auth.user_id,
                             provider: OAuthProvider.seznam,
                         })
                     );
                 });
 
                 (await processAuth.run())
-                    .ifJust(({ doc, token }) => {
+                    .ifJust(({ doc, token, oldOauth }) => {
                         res.send({ user: doc, token });
                         eventEmitter.emit('user_login', doc);
                     })

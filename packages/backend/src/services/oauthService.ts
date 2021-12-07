@@ -8,11 +8,10 @@ const oauth = config.oauth;
 
 export interface Authorization {
     access_token: string;
-    account_name: string;
+    account_name: string; // email
     expires_in: number;
     refresh_token: string;
-    token_type: string;
-    user_id: number;
+    token_type: string; // bearer
     status: number; // 200
     messsage: string; // "ok"
 }
@@ -80,6 +79,7 @@ export class OAuthService {
             });
 
             const body = (await res.json()) as RevokeBody;
+            console.log(res.status, body);
             if (body.status !== 200) throw new Error('invalid status ' + JSON.stringify(body));
 
             return Just(body);

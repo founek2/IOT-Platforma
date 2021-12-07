@@ -96,8 +96,10 @@ export default () =>
             if (formData.REGISTRATION) {
                 if (await UserModel.exists({ 'info.userName': formData.REGISTRATION.info.userName }))
                     return res.status(409).send({ error: 'userNameAlreadyExist' });
-                if (await UserModel.exists({ 'info.email': formData.REGISTRATION.info.email }))
+                if (await UserModel.exists({ 'info.email': formData.REGISTRATION.info.email })) {
+                    console.log(await UserModel.find());
                     return res.status(409).send({ error: 'emailAlreadyExist' });
+                }
 
                 const { doc, token } = await UserService.create(formData.REGISTRATION);
 

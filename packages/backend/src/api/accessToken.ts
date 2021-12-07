@@ -2,6 +2,7 @@ import fieldDescriptors from 'common/lib/fieldDescriptors';
 import { IUser } from 'common/lib/models/interface/userInterface';
 import { UserModel } from 'common/lib/models/userModel';
 import { UserService } from 'common/lib/services/userService';
+import { map, omit } from 'ramda';
 import formDataChecker from '../middlewares/formDataChecker';
 import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
@@ -44,7 +45,7 @@ export default () =>
                 .lean();
             if (!doc) return res.sendStatus(404);
 
-            res.send({ docs: doc.accessTokens || [] });
+            res.send({ docs: map(omit(['token']), doc.accessTokens || []) });
         },
 
         async create({ body, user }: any, res) {

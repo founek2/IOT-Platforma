@@ -23,7 +23,6 @@ export interface IOauth {
     expiresIn: number;
     refreshToken: string;
     tokenType: string;
-    userId: number;
     provider: OAuthProvider;
 }
 

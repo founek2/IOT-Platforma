@@ -9,9 +9,10 @@ import { RootState } from '../store/store';
 import { buildRedirectUri } from '../utils/redirectUri';
 
 export function Authorization() {
-    const { code } = useSelector((state: RootState) => state.history.query);
+    const { code, error } = useSelector((state: RootState) => state.history.query);
     const history = useHistory();
     const [pending, setPending] = useState(false);
+    const [message, setMessage] = useState('Probíhá přihlašování...');
     // const tokenExpiryDate = useSelector((state));
     const dispatch = useAppDispatch();
 
@@ -28,9 +29,16 @@ export function Authorization() {
         }
     }, [code, setPending, history, dispatch]);
 
+    useEffect(() => {
+        if (error) {
+            setMessage('Při přihlašování nastala chyba, akci opakujte');
+            setPending(false);
+        }
+    }, [error, setPending, setMessage]);
+
     return (
         <>
-            <Typography>Probíhá přihlašování... </Typography>
+            <Typography>{message}</Typography>
             <Loader open={pending} />
         </>
     );
