@@ -4,6 +4,7 @@ import './index.css'
 import Root from './containers/Root'
 import Router from './containers/Router'
 import reportWebVitals from './reportWebVitals';
+import "./stateNormalizing"
 
 ReactDOM.render(
     <React.StrictMode>

@@ -66,7 +66,6 @@ function Sensor({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProps
             [{ type: 'date', label: 'Čas' }, title],
             ...mergeData(historyData.data as HistoricalSensor[], property.propertyId),
         ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [
             historyData.data.length > 0 && historyData.data[0].first,
             historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,

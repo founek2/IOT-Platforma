@@ -1,9 +1,11 @@
 import { makeStyles, Paper, Typography, useMediaQuery, useTheme } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import clsx from "clsx";
-import { IDevice } from "common/lib/models/interface/device";
 import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { SensorIcons } from "frontend/src/components/SensorIcons";
+import { useAppSelector } from "frontend/src/hooks";
+import { Device } from "frontend/src/store/reducers/application/devices";
+import { getThingEntities } from "frontend/src/utils/getters";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -74,10 +76,11 @@ function SimpleSensor({ thing, property }: SimpleSensorProps) {
 }
 
 interface RoomProps {
-    devices: IDevice[];
+    devices: Device[];
     className?: string;
 }
 function RoomWidget({ devices, className }: RoomProps) {
+    const thingEntities = useAppSelector(getThingEntities)
     const classes = useStyles();
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down("md"));
@@ -86,7 +89,8 @@ function RoomWidget({ devices, className }: RoomProps) {
 
     const sensors: JSX.Element[] = [];
     devices.forEach((device) => {
-        device.things.forEach((thing) => {
+        device.things.forEach((thingId) => {
+            const thing = thingEntities[thingId]!
             if (thing.config.componentType === ComponentType.sensor)
                 thing.config.properties.forEach((property) => {
                     if (property.propertyClass && sensors.length < sensorsLimit)

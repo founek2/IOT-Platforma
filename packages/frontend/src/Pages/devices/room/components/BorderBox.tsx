@@ -47,7 +47,7 @@ export interface GeneralBoxProps {
     lastChange?: Date;
     className?: string;
     thing: IThing;
-    onClick: (newState: any) => Promise<void>;
+    onClick: (newState: any) => Promise<any>;
     deviceStatus: IDeviceStatus;
     deviceId: IDevice['_id'];
     room: string;
@@ -93,15 +93,17 @@ function BorderBox({
         setInTransition(true)
         await onClick(newState);
         ref.current = setTimeout(() => {
-            dispatch(devicesActions.update({
-                _id: deviceId,
-                state: {
-                    status: {
-                        value: DeviceStatus.alert,
-                        timestamp: new Date(),
-                    },
-                },
-            }));
+            // BLABLA
+            // TODO
+            // dispatch(devicesActions.update({
+            //     _id: deviceId,
+            //     state: {
+            //         status: {
+            //             value: DeviceStatus.alert,
+            //             timestamp: new Date(),
+            //         },
+            //     },
+            // }));
         }, 3000);
     }
 

@@ -91,6 +91,7 @@ function sendToUsers(io: serverIO, device: IDevice, nodeId: string, propertyId: 
     const updateData: SocketUpdateThingState = {
         _id: device._id,
         thing: {
+            _id: thing._id,
             nodeId: thing.config.nodeId,
             state: thing.state,
         },
