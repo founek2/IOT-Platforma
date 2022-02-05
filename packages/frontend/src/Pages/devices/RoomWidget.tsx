@@ -1,9 +1,12 @@
 import { makeStyles, Paper, Typography, useMediaQuery, useTheme } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import clsx from "clsx";
-import { IDevice } from "common/lib/models/interface/device";
 import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
 import { SensorIcons } from "frontend/src/components/SensorIcons";
+import { useAppSelector } from "frontend/src/hooks";
+import { Device } from "frontend/src/store/reducers/application/devices";
+import { Thing } from "frontend/src/store/reducers/application/things";
+import { getThing } from "frontend/src/utils/getters";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -74,9 +77,32 @@ function SimpleSensor({ thing, property }: SimpleSensorProps) {
 }
 
 interface RoomProps {
-    devices: IDevice[];
+    devices: Device[];
     className?: string;
 }
+
+interface SensorBadgesProps {
+    thingId: Thing["_id"]
+}
+function SensorBadges({ thingId }: SensorBadgesProps) {
+    const badges: JSX.Element[] = []
+    const thing = useAppSelector(getThing(thingId))
+    if (thing?.config.componentType !== ComponentType.sensor) return badges
+
+    thing.config.properties.forEach((property) => {
+        if (property.propertyClass)
+            badges.push(
+                <SimpleSensor
+                    thing={thing}
+                    property={property as IThingPropertyWithDeviceClass}
+                    key={property._id}
+                />
+            );
+    });
+
+    return badges
+}
+
 function RoomWidget({ devices, className }: RoomProps) {
     const classes = useStyles();
     const theme = useTheme();
@@ -84,28 +110,19 @@ function RoomWidget({ devices, className }: RoomProps) {
     const sensorsLimit = isSmall ? 3 : 4;
     const location = devices[0].info.location;
 
-    const sensors: JSX.Element[] = [];
+    let sensors: (JSX.Element | null)[] = [];
     devices.forEach((device) => {
-        device.things.forEach((thing) => {
-            if (thing.config.componentType === ComponentType.sensor)
-                thing.config.properties.forEach((property) => {
-                    if (property.propertyClass && sensors.length < sensorsLimit)
-                        sensors.push(
-                            <SimpleSensor
-                                thing={thing}
-                                property={property as IThingPropertyWithDeviceClass}
-                                key={property._id}
-                            />
-                        );
-                });
-        });
+        device.things.forEach((thingId) => {
+            const badges = SensorBadges({ thingId })
+            sensors = [...sensors, ...badges]
+        })
     });
     return (
         <Paper className={clsx(className, classes.widget)} elevation={3}>
             <Typography variant="h3" className={clsx(classes.title, classes.center)}>
                 {location.room}
             </Typography>
-            <div className={classes.sensorsGrid}>{sensors}</div>
+            <div className={classes.sensorsGrid}>{sensors.slice(0, sensorsLimit)}</div>
         </Paper>
     );
 }

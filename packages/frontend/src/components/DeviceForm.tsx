@@ -1,11 +1,10 @@
 import { Grid } from "@material-ui/core";
 import FieldConnector from "framework-ui/lib/Components/FieldConnector";
-import React from "react";
-import { Locations } from "../types";
-import TextField from '@material-ui/core/TextField';
-import { useSelector } from "react-redux";
 import { getFieldVal } from "framework-ui/lib/utils/getters";
+import React from "react";
+import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { Locations } from "../types";
 
 interface DeviceFormProps {
     formName: "CREATE_DEVICE" | "EDIT_DEVICE"

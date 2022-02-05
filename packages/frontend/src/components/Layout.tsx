@@ -8,7 +8,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { isUrlHash, isUserLoggerIn } from 'framework-ui/lib/utils/getters';
-import { History } from 'history';
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';

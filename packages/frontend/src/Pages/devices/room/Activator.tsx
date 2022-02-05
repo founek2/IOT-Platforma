@@ -5,20 +5,19 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import clsx from 'clsx';
-import { IThingPropertyEnum, IThingProperty } from 'common/lib/models/interface/thing';
+import { HistoricalGeneric } from 'common/lib/models/interface/history';
+import { IThingProperty, IThingPropertyEnum } from 'common/lib/models/interface/thing';
+import ChartSimple from 'frontend/src/components/ChartSimple';
+import { RootState } from 'frontend/src/store/store';
+import { getThingHistory } from 'frontend/src/utils/getters';
 import { drop, head } from 'ramda';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';
 import { SimpleDialog } from './components/Dialog';
-import PropertyRow from './components/PropertyRow';
 import { CopyUrlContext } from './components/helpers/CopyUrl';
-import { useSelector } from 'react-redux';
-import { RootState } from 'frontend/src/store/store';
-import { getThingHistory } from 'frontend/src/utils/getters';
-import { useMemo } from 'react';
-import { HistoricalSensor, HistoricalGeneric } from 'common/lib/models/interface/history';
-import ChartSimple from 'frontend/src/components/ChartSimple';
+import PropertyRow from './components/PropertyRow';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,7 +60,7 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
 
     useEffect(() => {
         if (openDialog) fetchHistory();
-    }, [openDialog]);
+    }, [openDialog, fetchHistory]);
 
     const chartData = useMemo(
         () => [
@@ -73,11 +72,6 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
             historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
             historyData.thingId === thing._id,
         ]
-    );
-
-    console.log(
-        'chartData',
-        chartData.map(([a, b]) => typeof a)
     );
 
     return (
@@ -104,24 +98,24 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
                         </CopyUrlContext>
                     </div>
                 ) : (
-                        <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                            <Select
-                                className={classes.select}
-                                value={value}
-                                disabled={disabled}
-                                onChange={(e) => {
-                                    onClick({ [property.propertyId]: e.target.value as string });
-                                }}
-                                disableUnderline
-                            >
-                                {property.format.map((label) => (
-                                    <MenuItem value={label} key={label}>
-                                        {label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </CopyUrlContext>
-                    )}
+                    <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                        <Select
+                            className={classes.select}
+                            value={value}
+                            disabled={disabled}
+                            onChange={(e) => {
+                                onClick({ [property.propertyId]: e.target.value as string });
+                            }}
+                            disableUnderline
+                        >
+                            {property.format.map((label) => (
+                                <MenuItem value={label} key={label}>
+                                    {label}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </CopyUrlContext>
+                )}
             </div>
 
             <SimpleDialog

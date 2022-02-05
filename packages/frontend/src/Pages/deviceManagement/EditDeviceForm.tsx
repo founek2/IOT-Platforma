@@ -1,17 +1,15 @@
-import { Grid } from '@material-ui/core';
 import type { IDevice } from 'common/lib/models/interface/device';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import { DeviceForm } from 'frontend/src/components/DeviceForm';
-import { map } from 'ramda';
+import { locationsSelector } from 'frontend/src/store/selectors/deviceSelector';
+import { RootState } from 'frontend/src/store/store';
+import { Locations } from 'frontend/src/types';
 import React, { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { userNamesActions } from '../../store/actions/application/userNames';
 import { getUserNames } from '../../utils/getters';
-import { RootState } from 'frontend/src/store/store';
 import PermissionSelect from './editDeviceForm/PermissionSelect';
-import { Locations } from 'frontend/src/types';
-import { locationsSelector } from 'frontend/src/store/selectors/deviceSelector';
 
 interface DiscoverySectionProps {
     devices?: IDevice[];

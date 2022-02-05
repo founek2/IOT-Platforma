@@ -102,7 +102,7 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
             <SimpleDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
-                title={thing.config.name}
+                title={title}
                 deviceId={deviceId}
                 thing={thing}
                 classContent={classes.dialogContent}

@@ -6,12 +6,14 @@ import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { DeviceCommand, IDevice, IDeviceStatus } from 'common/lib/models/interface/device';
-import { IThing } from 'common/lib/models/interface/thing';
 import { default as AlertDialog, default as Dialog } from 'framework-ui/lib/Components/Dialog';
 import EnchancedTable from 'framework-ui/lib/Components/Table';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { isUrlHash } from 'framework-ui/lib/utils/getters';
-import { getDevices, getQueryID } from 'frontend/src/utils/getters';
+import { useAppSelector } from 'frontend/src/hooks';
+import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
+import { Device } from 'frontend/src/store/reducers/application/devices';
+import { getDevice, getQueryID, getThingEntities } from 'frontend/src/utils/getters';
 import { assoc, pick, prop } from 'ramda';
 import React, { Fragment, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -20,13 +22,10 @@ import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../components/OnlineCircle';
 import { devicesActions } from '../../store/actions/application/devices';
 import EditDeviceForm from './EditDeviceForm';
-import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 
 interface DiscoverySectionProps {
-    devices?: IDevice[];
+    devices?: Device[];
     resetFormAction: any;
-    openEditDialog: boolean;
-    selectedDevice?: IDevice;
     setFormDataAction: any;
     updateDeviceAction: any;
     deleteDeviceAction: any;
@@ -37,14 +36,17 @@ interface DiscoverySectionProps {
 function DiscoverySection({
     devices = [],
     resetFormAction,
-    openEditDialog,
-    selectedDevice,
     setFormDataAction,
     updateDeviceAction,
     deleteDeviceAction,
     setFormField,
     sendDeviceCommandA,
 }: DiscoverySectionProps) {
+    const deviceId = useAppSelector(getQueryID)
+    const selectedDevice = useAppSelector(getDevice(deviceId))
+    const openEditDialog = useAppSelector(isUrlHash('#edit'))
+    const things = useAppSelector(getThingEntities)
+
     const classes = useManagementStyles();
     const [menuForId, setMenuForId] = useState('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -111,10 +113,9 @@ function DiscoverySection({
                     {
                         path: 'things',
                         label: 'Věci',
-                        convertor: (things: IThing[]) =>
-                            Object.values(things)
-                                .map((obj) => obj.config.name)
-                                .join(', '),
+                        convertor: (thingIds: Device["things"]) =>
+                            thingIds.map(id => things[id]?.config.name).join(', '),
+
                     },
                     {
                         path: 'createdAt',
@@ -199,15 +200,6 @@ function DiscoverySection({
     );
 }
 
-const _mapStateToProps = (state: any) => {
-    const deviceId = getQueryID(state);
-    const selectedDevice = getDevices(state).find((dev: IDevice) => dev._id === deviceId);
-    return {
-        selectedDevice,
-        openEditDialog: isUrlHash('#edit')(state),
-    };
-};
-
 const _mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
@@ -223,4 +215,4 @@ const _mapDispatchToProps = (dispatch: any) =>
         dispatch
     );
 
-export default connect(_mapStateToProps, _mapDispatchToProps)(DiscoverySection);
+export default connect(null, _mapDispatchToProps)(DiscoverySection);

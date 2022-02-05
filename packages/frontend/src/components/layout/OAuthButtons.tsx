@@ -18,7 +18,7 @@ const emptyArray = [] as AuthType[]
 
 function createButton({ authUrl, iconUrl, provider }: AuthType) {
     return <IconButton key={provider} onClick={() => window.open(authUrl, '_self')}>
-        <img src={iconUrl} />
+        <img src={iconUrl} alt={provider} />
     </IconButton>
 }
 

@@ -140,6 +140,7 @@ interface PropertyRowProps {
 function PropertyRow({ property, value, onChange }: PropertyRowProps) {
     const classes = useStyles();
     const { unitOfMeasurement, propertyClass, name } = property;
+    console.log("property", propertyClass)
     const Icon = propertyClass ? SensorIcons[propertyClass] : null;
 
     const units = unitOfMeasurement ? ' ' + unitOfMeasurement : '';
