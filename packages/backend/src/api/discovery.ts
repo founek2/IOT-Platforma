@@ -55,7 +55,7 @@ export default () =>
             const result = await DiscoveryModel.deleteMany({
                 _id: ObjectId(id),
             });
-            console.log('deleted', result);
+
             eventEmitter.emit('device_delete', id);
             res.sendStatus(204);
         },

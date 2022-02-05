@@ -31,11 +31,7 @@ class MyEmitter<T extends EventMap> implements Emitter<T> {
 }
 
 export interface deviceSetState {
-    device: {
-        _id?: IDevice["_id"];
-        things: IDevice["things"];
-        metadata: IDevice["metadata"];
-    };
+    device: IDevice;
     nodeId: IThing["config"]["nodeId"];
     propertyId: IThingProperty["propertyId"];
     value: string | number;

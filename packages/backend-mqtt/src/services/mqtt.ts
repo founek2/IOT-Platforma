@@ -1,4 +1,4 @@
-import mqtt, { MqttClient } from 'mqtt';
+import mqtt, { IClientPublishOptions, MqttClient } from 'mqtt';
 import { Server as serverIO } from 'socket.io';
 import handlePrefix from './mqtt/prefix';
 import handleV2 from './mqtt/v2';
@@ -9,18 +9,10 @@ import { isNil } from 'ramda';
 
 let client: mqtt.MqttClient | undefined;
 
-type qosType = { qos: 0 | 2 | 1 | undefined };
-export function publishStr(topic: string, message: string, opt: qosType = { qos: 2 }): boolean {
+export function publishStr(topic: string, message: string, opt: IClientPublishOptions = {}): boolean {
     if (!client) return false;
 
-    client.publish(topic, message, { qos: opt.qos });
-    return true;
-}
-
-export function publish(topic: string, message: string, opt: qosType = { qos: 2 }): boolean {
-    if (!client) return false;
-
-    client.publish(topic, message, { qos: opt.qos });
+    client.publish(topic, message, opt);
     return true;
 }
 

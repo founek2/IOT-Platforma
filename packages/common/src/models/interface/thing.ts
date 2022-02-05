@@ -45,6 +45,7 @@ export interface IThingPropertyBase {
     unitOfMeasurement?: string;
     dataType: PropertyDataType;
     settable: boolean;
+    retained?: boolean;
 }
 
 export interface IThingPropertyNumeric extends IThingPropertyBase {
