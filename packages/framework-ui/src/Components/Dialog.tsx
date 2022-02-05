@@ -56,9 +56,6 @@ function AlertDialog({
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             fullScreen={fullScreen}
-            classes={{
-                paper: classes.paper,
-            }}
         >
             <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
             <DialogContent>
