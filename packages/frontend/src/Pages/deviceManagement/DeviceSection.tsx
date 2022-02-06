@@ -42,10 +42,10 @@ function DiscoverySection({
     setFormField,
     sendDeviceCommandA,
 }: DiscoverySectionProps) {
-    const deviceId = useAppSelector(getQueryID)
-    const selectedDevice = useAppSelector(getDevice(deviceId))
-    const openEditDialog = useAppSelector(isUrlHash('#edit'))
-    const things = useAppSelector(getThingEntities)
+    const deviceId = useAppSelector(getQueryID);
+    const selectedDevice = useAppSelector(getDevice(deviceId));
+    const openEditDialog = useAppSelector(isUrlHash('#edit'));
+    const things = useAppSelector(getThingEntities);
 
     const classes = useManagementStyles();
     const [menuForId, setMenuForId] = useState('');
@@ -77,7 +77,6 @@ function DiscoverySection({
 
     async function onAgree() {
         const result = await updateDeviceAction(selectedDevice?._id);
-        console.log('RESULT', result);
         if (result) closeDialog();
     }
 
@@ -113,9 +112,8 @@ function DiscoverySection({
                     {
                         path: 'things',
                         label: 'Věci',
-                        convertor: (thingIds: Device["things"]) =>
-                            thingIds.map(id => things[id]?.config.name).join(', '),
-
+                        convertor: (thingIds: Device['things']) =>
+                            thingIds.map((id) => things[id]?.config.name).join(', '),
                     },
                     {
                         path: 'createdAt',

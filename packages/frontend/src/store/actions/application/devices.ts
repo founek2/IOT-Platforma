@@ -74,7 +74,6 @@ export const devicesActions = {
                         const normilized = normalizeDevices(json.docs);
                         dispatch(devicesActions.setAll(normilized.entities.devices as any));
                         dispatch(thingsReducerActions.setAll(normilized.entities.things as any));
-                        console.log('normilized', normilized.entities.devices);
                         dispatch(dehydrateState());
                     },
                 },

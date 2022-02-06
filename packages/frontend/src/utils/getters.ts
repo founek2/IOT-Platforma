@@ -27,17 +27,17 @@ export const getQueryField = curry((field: string, state: RootState) =>
     o((history) => history.query[field], getHistory)(state)
 );
 
-export const getUserNames = o(prop('userNames'), getApplication);
+export const getUserNames = o((app) => app.userNames, getApplication);
 
-export const getDiscovery = o(prop('discovery'), getApplication);
+export const getDiscovery = o((app) => app.discovery, getApplication);
 
-export const getThingHistory = o(prop('thingHistory'), getApplication);
+export const getThingHistory = o((app) => app.thingHistory, getApplication);
 
-export const getUser = o((app: RootState['application']) => app.user, getApplication);
+export const getUser = o((app) => app.user, getApplication);
 
-export const getRealm = o((user: RootState['application']['user']) => user?.realm, getUser);
+export const getRealm = o((user) => user?.realm, getUser);
 
-export const getUsers = o(prop('users'), getApplication);
+export const getUsers = o((app) => app.users, getApplication);
 
 export const getUserInfo = o((user) => user?.info, getUser);
 

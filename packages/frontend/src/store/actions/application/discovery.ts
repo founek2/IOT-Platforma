@@ -68,10 +68,8 @@ export const discoveryActions = {
                         onSuccess: (json: { doc: IDevice }) => {
                             dispatch(discoveryActions.remove(id));
                             const { device, things } = normalizeDevice(json.doc);
-                            console.log('device', device);
                             dispatch(devicesActions.addOne(device));
                             dispatch(thingsReducerActions.addMany(things));
-                            // BLE
                         },
                     },
                     dispatch

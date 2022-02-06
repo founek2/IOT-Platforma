@@ -5,13 +5,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import clsx from 'clsx';
-import { HistoricalGeneric } from 'common/lib/models/interface/history';
-import { IThingProperty, IThingPropertyEnum } from 'common/lib/models/interface/thing';
-import ChartSimple from 'frontend/src/components/ChartSimple';
+import { IThingPropertyEnum } from 'common/lib/models/interface/thing';
 import { RootState } from 'frontend/src/store/store';
 import { getThingHistory } from 'frontend/src/utils/getters';
-import { drop, head } from 'ramda';
-import React, { useEffect, useMemo } from 'react';
+import { head } from 'ramda';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';
@@ -62,18 +60,6 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
         if (openDialog) fetchHistory();
     }, [openDialog, fetchHistory]);
 
-    const chartData = useMemo(
-        () => [
-            [{ type: 'date', label: 'Čas' }, title],
-            ...mergeData(historyData.data as unknown as HistoricalGeneric[], property.propertyId),
-        ],
-        [
-            historyData.data.length > 0 && historyData.data[0].first,
-            historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
-            historyData.thingId === thing._id,
-        ]
-    );
-
     return (
         <div className={clsx(className, classes.root)}>
             <div className={classes.header} onClick={() => setOpenDialog(true)}>
@@ -121,40 +107,25 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
             <SimpleDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
-                title={thing.config.name}
+                title={title}
                 deviceId={deviceId}
                 thing={thing}
             >
-                {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 2 ? (
-                    <ChartSimple data={chartData} type="ScatterChart" />
-                ) : null}
                 <div>
-                    {drop(1, thing.config.properties).map((property) => (
+                    {thing.config.properties.map((property, i) => (
                         <PropertyRow
                             key={property.propertyId}
                             property={property}
                             value={thing.state?.value[property.propertyId]}
                             onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
+                            history={historyData?.deviceId === deviceId ? historyData : undefined}
+                            defaultShowDetail={i === 0}
                         />
                     ))}
                 </div>
             </SimpleDialog>
         </div>
     );
-}
-
-function mergeData(data: HistoricalGeneric[], propertyId: IThingProperty['propertyId']) {
-    if (!propertyId) return [];
-
-    let result: Array<[Date, number]> = [];
-    data.forEach((doc) => {
-        if (doc.properties[propertyId])
-            result = result.concat(
-                doc.properties[propertyId].samples.map((rec) => [new Date(rec.timestamp), rec.value === 'on' ? 1 : 0])
-            );
-    });
-
-    return result;
 }
 
 export default boxHoc(Activator);
