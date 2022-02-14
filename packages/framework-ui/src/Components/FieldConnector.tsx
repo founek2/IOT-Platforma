@@ -127,7 +127,6 @@ function FieldConnector({
 
     function _handleChange({ target: { value } }: any, pristine: boolean) {
         dispatch(setFormField({ deepPath, value }));
-        console.log("_handleChange", pristine)
         if (!pristine) dispatch(validateField(deepPath));
     }
     function _changePristine() {

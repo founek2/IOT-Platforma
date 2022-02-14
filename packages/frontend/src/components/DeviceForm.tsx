@@ -2,7 +2,6 @@ import { Grid } from "@material-ui/core";
 import FieldConnector from "framework-ui/lib/Components/FieldConnector";
 import React from "react";
 import { Locations } from "../types";
-import TextField from '@material-ui/core/TextField';
 import { useSelector } from "react-redux";
 import { getFieldVal } from "framework-ui/lib/utils/getters";
 import { RootState } from "../store/store";
@@ -14,7 +13,7 @@ interface DeviceFormProps {
 }
 export function DeviceForm({ formName, onEnter, locations }: DeviceFormProps) {
     const selectedBuilding = useSelector<RootState, string | undefined>(getFieldVal(`${formName}.info.location.building`))
-    console.log("building", selectedBuilding)
+
     return (
         <>
             <Grid item xs={12}>

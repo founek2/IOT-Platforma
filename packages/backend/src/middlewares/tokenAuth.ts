@@ -57,7 +57,7 @@ export default function (
                     res.status(404).send({ error: 'userNotExist', command: 'logOut' });
                 }
             } catch (err) {
-                console.log('token problem', err);
+                logger.error('token problem', err);
                 res.status(400).send({ error: 'invalidToken' });
             }
             return;

@@ -1,6 +1,7 @@
 import express from 'express';
 import eventEmitter from '../services/eventEmitter';
 import { getPass } from 'common/lib/services/TemporaryPass';
+import { logger } from 'framework-ui/lib/logger';
 
 const router = express.Router();
 
@@ -10,10 +11,9 @@ const router = express.Router();
 
 /* Send apiKey to device */
 router.put('/device/:deviceId/pairing/init', function (req, res) {
-    console.log('action /device pairing init');
     const deviceId = req.params.deviceId;
     const apiKey = req.body.apiKey;
-    console.log('ACTIONS body', req.body);
+    logger.debug('ACTIONS body', req.body);
     eventEmitter.emit('device_pairing_init', { deviceId, apiKey });
     res.sendStatus(204);
 });

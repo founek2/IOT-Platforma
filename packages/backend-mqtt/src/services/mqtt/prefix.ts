@@ -91,10 +91,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 
     handle('prefix/+/$state', async function (topic, data, [deviceId]) {
         const status: DeviceStatus = data.toString();
-        if (!(status in DeviceStatus)) {
-            console.log('invalid state');
-            return;
-        }
+        if (!(status in DeviceStatus)) return;
 
         if (status === DeviceStatus.paired) {
             return DiscoveryModel.deleteOne({ deviceId, pairing: true }).exec();

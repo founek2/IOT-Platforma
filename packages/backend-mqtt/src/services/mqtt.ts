@@ -29,7 +29,6 @@ function topicParser(topic: string, message: any) {
     return (stringTemplate: string, fn: cbFn) => {
         const regex = new RegExp('^' + stringTemplate.replace('$', '\\$').replace(/\+/g, '([^/\\$]+)') + '$');
         const match = topic.match(regex) as any;
-        //console.log("matching topic=" + topic, "by regex=" + regex, "result=" + match);
         if (!match) return;
 
         const [wholeMatch, ...groups] = match;

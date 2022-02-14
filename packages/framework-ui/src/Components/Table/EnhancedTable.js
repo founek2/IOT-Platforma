@@ -140,7 +140,6 @@ class EnhancedTable extends React.Component {
     };
 
     handleSearchChange = (e) => {
-        console.log(e.target.value);
         this.setState({
             searchText: e.target.value,
         });

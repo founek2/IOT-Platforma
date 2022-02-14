@@ -14,7 +14,7 @@ type cbFn = (topic: string, message: any, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO) {
     handle('v2/+/+/$state', async function (topic, data, [realm, deviceId]) {
         const message: DeviceStatus = data.toString();
-        console.log('got', message, realm, deviceId);
+        logger.debug('got', message, realm, deviceId);
         const device = await DeviceModel.findOneAndUpdate(
             {
                 'metadata.deviceId': deviceId,

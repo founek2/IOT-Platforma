@@ -16,7 +16,7 @@ process.once('SIGHUP', shutDown(app, mongoose.connection));
 
 function shutDown(app: MyApp, connection: mongoose.Connection) {
     return async (code: NodeJS.Signals) => {
-        console.log(code, 'received...');
+        logger.info(code, 'received...');
         app.server.close();
         await connection.close();
         process.exit(0);

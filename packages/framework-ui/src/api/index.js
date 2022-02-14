@@ -14,7 +14,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
     // const bodyLen = response.headers.get('content-length');
     const contentType = response.headers.get('content-type');
     const isJson = contentType ? ~contentType.indexOf('application/json') : false;
-    // console.log('bodyLen', bodyLen, contentType);
+
     const jsonBody = isJson ? await response.json() : undefined;
     const errorMessage = jsonBody ? jsonBody.error : undefined;
 
