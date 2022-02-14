@@ -9,7 +9,6 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import InfoIcon from '@material-ui/icons/Info';
 import { getPaths } from 'framework-ui/lib/privileges';
-import { isUserLoggerIn } from 'framework-ui/lib/utils/getters';
 import { useAppSelector } from 'frontend/src/hooks';
 import { getGroups } from 'frontend/src/utils/getters';
 import React from 'react';

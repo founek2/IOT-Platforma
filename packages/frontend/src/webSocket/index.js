@@ -64,7 +64,9 @@ function getSocket() {
     return mySocket;
 }
 
-export default {
+const toExport = {
     init,
     getSocket,
 };
+
+export default toExport;

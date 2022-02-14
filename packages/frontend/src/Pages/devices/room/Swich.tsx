@@ -1,22 +1,18 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
-import { drop, head } from 'ramda';
-import React, { useEffect, useMemo } from 'react';
+import { useAppSelector } from 'frontend/src/hooks';
+import { getThingHistory } from 'frontend/src/utils/getters';
+import { head } from 'ramda';
+import React, { useEffect } from 'react';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';
 import { SimpleDialog } from './components/Dialog';
+import { CopyUrlContext } from './components/helpers/CopyUrl';
+import { toogleSwitchVal } from './components/helpers/toogleSwitchVal';
 import PropertyRow from './components/PropertyRow';
 import Switch from './components/Switch';
 import switchCss from './components/switch/css';
-import ChartSimple from 'frontend/src/components/ChartSimple';
-import { useSelector } from 'react-redux';
-import { HistoricalGeneric } from 'common/lib/models/interface/history';
-import { IThingProperty } from 'common/lib/models/interface/thing';
-import { getThingHistory } from 'frontend/src/utils/getters';
-import { CopyUrlContext } from './components/helpers/CopyUrl';
-import { toogleSwitchVal } from './components/helpers/toogleSwitchVal';
-import { RootState } from 'frontend/src/store/store';
 
 const useStyles = makeStyles((theme) => ({
     ...switchCss(theme),
@@ -53,30 +49,13 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
     const classes = useStyles();
     const property = head(thing.config.properties)!;
     const value = (thing.state?.value || { [property.propertyId]: 'false' })[property.propertyId];
-    const historyData = useSelector<RootState, RootState['application']['thingHistory']>(getThingHistory as any);
+    const historyData = useAppSelector(getThingHistory);
     const [openDialog, setOpenDialog] = React.useState(false);
     const title = room + ' - ' + thing.config.name!;
 
     useEffect(() => {
         if (openDialog) fetchHistory();
     }, [openDialog, fetchHistory]);
-
-    const chartData = useMemo(
-        () => [
-            [
-                { type: 'string', id: 'Room' },
-                { type: 'string', id: 'Name' },
-                { type: 'date', id: 'Start' },
-                { type: 'date', id: 'End' },
-            ],
-            mergeData(historyData.data as unknown as HistoricalGeneric[], property.propertyId),
-        ],
-        [
-            historyData.data.length > 0 && historyData.data[0].first,
-            historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
-            historyData.thingId === thing._id,
-        ]
-    );
 
     return (
         <div className={clsx(className, classes.root)}>
@@ -102,55 +81,26 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
             <SimpleDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
-                title={thing.config.name}
+                title={title}
                 deviceId={deviceId}
                 thing={thing}
                 classContent={classes.dialogContent}
             >
-                {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 3 ? (
-                    <ChartSimple type="Timeline" height="100px" data={chartData} />
-                ) : null}
                 <div>
-                    {drop(1, thing.config.properties).map((property) => (
+                    {thing.config.properties.map((property, i) => (
                         <PropertyRow
                             key={property.propertyId}
                             property={property}
                             value={thing.state?.value[property.propertyId]}
                             onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
+                            history={historyData?.deviceId === deviceId ? historyData : undefined}
+                            defaultShowDetail={i === 0}
                         />
                     ))}
                 </div>
             </SimpleDialog>
         </div>
     );
-}
-
-function mergeData(data: HistoricalGeneric[], propertyId: IThingProperty['propertyId']) {
-    if (!propertyId) return [];
-
-    let result: Array<[string, string | null, Date, Date]> = [];
-    let lastTrue: { value: string; timestamp: Date } | null = null;
-
-    data.forEach((doc: HistoricalGeneric) => {
-        const samples = doc.properties[propertyId]?.samples;
-        if (samples) {
-            for (let i = 0; i < samples.length; i++) {
-                const rec = samples[i];
-                if (rec.value === 'true') {
-                    lastTrue = rec;
-                } else if (lastTrue) {
-                    result.push(['Zapnuto', '', new Date(lastTrue.timestamp), new Date(rec.timestamp)]);
-                    lastTrue = null;
-                }
-            }
-        }
-    });
-
-    if (lastTrue) {
-        result.push(['Zapnuto', '', new Date((lastTrue as any).timestamp), new Date()]);
-    }
-
-    return result;
 }
 
 export const Content = MySwitch;

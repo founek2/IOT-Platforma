@@ -41,7 +41,6 @@ function PropertyPart({ id, config, selectedProperty, selectedType }: PropertyPa
                         </MenuItem>
                     ))}
                     onChange={() => {
-                        console.log('setting');
                         updateFormField(`EDIT_NOTIFY.type.${id}`, '');
                         updateFormField(`EDIT_NOTIFY.value.${id}`, '');
                     }}

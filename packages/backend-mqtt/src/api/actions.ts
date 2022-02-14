@@ -2,6 +2,7 @@ import express from 'express';
 import eventEmitter from '../services/eventEmitter';
 import { getPass } from 'common/lib/services/TemporaryPass';
 import { logger } from 'framework-ui/lib/logger';
+import { IDevice } from 'common/lib/models/interface/device';
 
 const router = express.Router();
 
@@ -21,8 +22,9 @@ router.put('/device/:deviceId/pairing/init', function (req, res) {
 /* Send state change of property to device */
 router.patch('/device/:deviceId/thing/:nodeId/property/:propertyId', async function (req, res) {
     const { deviceId, nodeId, propertyId } = req.params;
+    const body = req.body as { device: IDevice; value: string | number };
 
-    eventEmitter.emit('device_set_state', { device: req.body.device, nodeId, propertyId, value: req.body.value });
+    eventEmitter.emit('device_set_state', { device: body.device, nodeId, propertyId, value: body.value });
     res.sendStatus(204);
 });
 

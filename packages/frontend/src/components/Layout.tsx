@@ -8,7 +8,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { isUrlHash, isUserLoggerIn } from 'framework-ui/lib/utils/getters';
-import { History } from 'history';
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -45,7 +44,7 @@ interface LayoutProps {
     forgotOpen: boolean;
 }
 function Layout({ userPresence, loginOpen, forgotOpen }: LayoutProps) {
-    const history = useHistory()
+    const history = useHistory();
     const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool: boolean) => () => setMainMenuO(bool);
     const classes = useClasses();
@@ -67,24 +66,24 @@ function Layout({ userPresence, loginOpen, forgotOpen }: LayoutProps) {
                     </IconButton>
                     <Link className={`${classes.flex} ${classes.noLinkStyles}`} to="/devices">
                         <Typography variant="h5" color="inherit">
-                            Platform
+                            {isWide ? 'IoT' : ''} Domu
                         </Typography>
                     </Link>
                     {userPresence ? (
                         <UserMenu />
                     ) : (
-                            <Link to={{ hash: 'login' }}>
-                                {isWide ? (
-                                    <Button variant="text" className={classes.loginButton}>
-                                        Přihlášení
-                                    </Button>
-                                ) : (
-                                        <IconButton className={classes.loginButton}>
-                                            <SendIcon />
-                                        </IconButton>
-                                    )}
-                            </Link>
-                        )}
+                        <Link to={{ hash: 'login' }}>
+                            {isWide ? (
+                                <Button variant="text" className={classes.loginButton}>
+                                    Přihlášení
+                                </Button>
+                            ) : (
+                                <IconButton className={classes.loginButton}>
+                                    <SendIcon />
+                                </IconButton>
+                            )}
+                        </Link>
+                    )}
                 </Toolbar>
                 <SideMenu open={mainMenuOpen} onClose={setMainMenuOpen(false)} onOpen={setMainMenuOpen(true)} />
             </AppBar>

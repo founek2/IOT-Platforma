@@ -21,10 +21,15 @@ interface DiscoverySectionProps {
     discoveredDevices?: IDiscovery[];
     addDiscoveryAction: any;
     deleteDiscoveryAction: any;
-    locations: Locations
+    locations: Locations;
 }
 
-function DiscoverySection({ discoveredDevices, addDiscoveryAction, deleteDiscoveryAction, locations }: DiscoverySectionProps) {
+function DiscoverySection({
+    discoveredDevices,
+    addDiscoveryAction,
+    deleteDiscoveryAction,
+    locations,
+}: DiscoverySectionProps) {
     const classes = useManagementStyles();
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [selectedId, setSelectedId] = useState<null | string>(null);
@@ -96,7 +101,6 @@ function DiscoverySection({ discoveredDevices, addDiscoveryAction, deleteDiscove
                                     disabled={item.state?.status.value !== DeviceStatus.ready}
                                     onClick={() => {
                                         setSelectedId(id);
-                                        console.log('looking', discoveredDevices, id);
                                         dispatch(
                                             formsDataActions.setFormField({
                                                 deepPath: 'CREATE_DEVICE.info.name',

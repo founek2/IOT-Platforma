@@ -66,6 +66,7 @@ export type AckHandler = (recipe: ControlRecipe) => Promise<boolean>;
 export type SocketUpdateThingState = {
     _id: IDevice['_id'];
     thing: {
+        _id: IThing['_id'];
         nodeId: IThing['config']['nodeId'];
         state: {
             value: { [propertyId: string]: string | number };

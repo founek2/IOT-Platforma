@@ -18,11 +18,10 @@ export const deviceSchema = new Schema<IDeviceDocument, IDeviceModel>(deviceSche
 });
 deviceSchema.index({ 'metadata.realm': 1, 'metadata.deviceId': 1 }, { unique: true });
 
+export type Metadata = { realm: string; deviceId: string };
 export interface IDeviceModel extends Model<IDeviceDocument> {
-    createNew(
-        device: { info: any; things: IThing[]; metadata: { realm: string; deviceId: string } },
-        ownerId: string
-    ): Promise<IDeviceDocument>;
+    createNew(device: { info: any; things: IThing[]; metadata: Metadata }, ownerId: string): Promise<IDeviceDocument>;
+    checkIdTaken(metadata: Metadata): Promise<boolean>;
     // findForPublic(): Promise<IDevice[]>;
     findForUser(userId: string): Promise<IDeviceDocument[]>;
     login(realm: string, deviceId: string, apiKey: string): Promise<boolean>;
@@ -33,14 +32,14 @@ export interface IDeviceModel extends Model<IDeviceDocument> {
     updateByFormData(id: IDevice['_id'], object: Partial<IDevice>): Promise<void>;
 }
 
-deviceSchema.statics.createNew = async function ({ info, things, metadata }, userID) {
-    const objID = ObjectId(userID);
-
-    const result = await this.exists({
+deviceSchema.statics.checkIdTaken = async function (metadata) {
+    return this.exists({
         'metadata.deviceId': metadata.deviceId,
         'metadata.realm': metadata.realm,
     });
-    if (result) throw Error('deviceIdTaken');
+};
+deviceSchema.statics.createNew = async function ({ info, things, metadata }, userID) {
+    const objID = ObjectId(userID);
 
     const newDevice = await this.create({
         info,

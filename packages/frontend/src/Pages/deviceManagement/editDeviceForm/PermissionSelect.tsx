@@ -1,25 +1,20 @@
-import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { Grid, makeStyles, Typography } from '@material-ui/core';
-import Chip from '@material-ui/core/Chip';
-import { map, indexOf, remove, append, concat, equals, o, prop } from 'ramda';
+import { makeStyles } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Divider from '@material-ui/core/Divider';
-import clsx from 'clsx';
-import { useAppSelector } from 'frontend/src/hooks';
-import { getUserNames } from 'frontend/src/utils/getters';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SettingsRemoteIcon from '@material-ui/icons/SettingsRemote';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
-import { IUser } from 'common/lib/models/interface/userInterface';
 import { IDevice } from 'common/lib/models/interface/device';
-import { useState } from 'react';
+import { IUser } from 'common/lib/models/interface/userInterface';
+import { useAppSelector } from 'frontend/src/hooks';
+import { getUserNames } from 'frontend/src/utils/getters';
+import { map, o, prop } from 'ramda';
+import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -66,14 +61,14 @@ type UserName = {
 
 const createListItem =
     (clickHandler: (e: any, id: IUser['_id']) => void, permissions: IDevice['permissions'], classes: any) =>
-    (obj: UserName) => {
-        return (
-            <ListItem button onClick={(e) => clickHandler(e, obj._id)} key={obj._id}>
-                <ListItemText primary={obj.userName} />
-                <ListItemIcon className={classes.icon}>{getIcon(obj._id, permissions)}</ListItemIcon>
-            </ListItem>
-        );
-    };
+        (obj: UserName) => {
+            return (
+                <ListItem button onClick={(e) => clickHandler(e, obj._id)} key={obj._id}>
+                    <ListItemText primary={obj.userName} />
+                    <ListItemIcon className={classes.icon}>{getIcon(obj._id, permissions)}</ListItemIcon>
+                </ListItem>
+            );
+        };
 
 interface PermissionSelectProps {
     label: string;

@@ -17,6 +17,7 @@ export const thingSchema = new Schema({
 				dataType: String,
 				format: Schema.Types.Mixed,
 				settable: Boolean,
+				retained: Boolean,
 			},
 		],
 	},

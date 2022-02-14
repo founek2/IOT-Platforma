@@ -19,7 +19,6 @@ export const userNamesActions = {
                     },
                     token: getToken(getState()),
                     onSuccess: (json: any) => {
-                        console.log('jsonData', json.data);
                         dispatch(userNamesActions.set(json.data));
                     },
                 },

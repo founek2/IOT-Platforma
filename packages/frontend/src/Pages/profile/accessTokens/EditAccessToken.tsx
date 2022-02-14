@@ -3,7 +3,7 @@ import { IAccessToken } from 'common/lib/models/interface/userInterface';
 import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { TokenPermissions } from 'frontend/src/constants';
-import { lensProp, over, pick } from 'ramda';
+import { pick } from 'ramda';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { compose } from 'redux';

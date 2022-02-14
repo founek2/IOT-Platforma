@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Loader from "./Loader";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import React, { useState } from 'react';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Loader from './Loader';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
     loader: {
-        position: "absolute",
+        position: 'absolute',
     },
     agreeButton: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 
@@ -37,7 +37,7 @@ function AlertDialog({
     title,
     content,
     cancelText,
-    agreeText = "Souhlasím",
+    agreeText = 'Souhlasím',
     disablePending = false,
     fullScreen,
 }: AlertDialogProps) {
@@ -59,11 +59,11 @@ function AlertDialog({
         >
             <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
             <DialogContent>
-                {typeof content == "string" ? (
+                {typeof content == 'string' ? (
                     <DialogContentText id="alert-dialog-description">{content}</DialogContentText>
                 ) : (
-                        content
-                    )}
+                    content
+                )}
             </DialogContent>
             <DialogActions>
                 {cancelText ? (

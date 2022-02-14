@@ -1,4 +1,6 @@
 import { logger } from 'framework-ui/lib/logger';
+import { getProperty } from 'common/lib/utils/getProperty';
+import { getThing } from 'common/lib/utils/getThing';
 import { Emitter, EmitterEvents } from '../services/eventEmitter';
 import { publishStr } from '../services/mqtt';
 
@@ -11,10 +13,13 @@ export default function (eventEmitter: Emitter<EmitterEvents>) {
 
     eventEmitter.on('device_set_state', ({ device, value, nodeId, propertyId }) => {
         logger.debug('state to change', value);
+        const thing = getThing(device, nodeId);
+        const property = getProperty(thing, propertyId);
 
         publishStr(
             `v2/${device.metadata.realm}/${device.metadata.deviceId}/${nodeId}/${propertyId}/set`,
-            String(value)
+            String(value),
+            { retain: Boolean(property.retained) }
         );
     });
 
