@@ -29,16 +29,22 @@ export function useEffectFetchDevices() {
     useEffect(() => {
         let mounted = true;
         async function handler() {
+            if (document.hidden) return;
+
             const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 10 * 60 * 1000;
-            if (isOld) {
+
+            if (isOld || !io.getSocket().isConnected()) {
                 if ((await actions.fetchDevicesA()) && mounted) setLastFetchAt(new Date());
             }
         }
+
         window.addEventListener('focus', handler);
+        document.addEventListener('visibilitychange', handler, false);
 
         return () => {
             mounted = false;
             window.removeEventListener('focus', handler);
+            document.removeEventListener('visibilitychange', handler);
         };
     }, [actions, lastFetchAt]);
 }

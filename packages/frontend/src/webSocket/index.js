@@ -17,13 +17,7 @@ class MySocket {
         });
         newCon.open();
         mySocket.applyListeners(newCon);
-        // newCon.on("connect", function() {
-        //     console.log("connected")
 
-        //     newCon.on("disconnect", function() {
-        //         console.log("DC")
-        //     })
-        // })
         this.socket = newCon;
     };
 
