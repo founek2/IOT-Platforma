@@ -14,7 +14,7 @@ export function useEffectFetchDevices() {
         let mounted = true;
 
         async function run() {
-            if (await actions.fetchDevicesA()) setLastFetchAt(new Date());
+            if ((await actions.fetchDevicesA()) && mounted) setLastFetchAt(new Date());
         }
         run();
 
