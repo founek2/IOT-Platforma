@@ -40,7 +40,9 @@ pipeline {
                 WATCHTOWER_TOKEN = credentials('watchtower-token')
             }
 
-            sh "env"
+            steps {
+                sh "env"
+            }
 
         }
 
