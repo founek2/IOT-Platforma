@@ -34,18 +34,6 @@ pipeline {
         //     }
         // }
 
-        stage('Deploy') {
-            when { branch "release*" }
-            environment {
-                WATCHTOWER_TOKEN = credentials('watchtower-token')
-            }
-
-            steps {
-                sh "env"
-            }
-
-        }
-
         stage ('Build') {
             steps {
                 sh "CI= yarn build"
@@ -91,8 +79,17 @@ pipeline {
                 }
             }
         }
+    }
 
+    stage('Deploy') {
+        when { branch "release*" }
+        environment {
+            WATCHTOWER_TOKEN = credentials('watchtower-token')
+        }
 
+        steps {
+            sh 'curl -H "Authorization: Bearer $WATCHTOWER_TOKEN" http://docker.iotdomu.cz:8080/v1/update'
+        }
     }
 
     post {
