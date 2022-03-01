@@ -34,6 +34,16 @@ pipeline {
         //     }
         // }
 
+        stage('Deploy') {
+            when { branch "release*" }
+            environment {
+                WATCHTOWER_TOKEN = credentials('watchtower-token')
+            }
+
+            sh "env"
+
+        }
+
         stage ('Build') {
             steps {
                 sh "CI= yarn build"
@@ -79,6 +89,7 @@ pipeline {
                 }
             }
         }
+
 
     }
 
