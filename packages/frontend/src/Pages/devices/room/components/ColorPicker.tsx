@@ -93,12 +93,12 @@ function ColorPicker({ value, disabled, onChange }: SwitchMyProps) {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        if (value && !pickedColor) {
+        if (value) {
             try {
                 setPickedColor({ hex: rgbToHex(value) });
             } catch (err) {}
         }
-    }, [setPickedColor, value, pickedColor]);
+    }, [setPickedColor, value]);
 
     return (
         <div>
