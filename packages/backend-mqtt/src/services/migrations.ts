@@ -19,6 +19,8 @@ export async function migrate(config: Config) {
     const files = await fs.readdir(migrationFolder);
 
     for (const fileName of files) {
+        if (!fileName.endsWith('.js')) continue;
+
         const migrationNumber = parseInt(fileName.split('_')[0]);
         if (migrations.applied.indexOf(migrationNumber) == -1) {
             logger.info('Running migration', fileName);
