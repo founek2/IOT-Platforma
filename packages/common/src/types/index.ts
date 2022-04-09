@@ -9,6 +9,12 @@ export interface Config {
     portAuth: number;
     firebaseAdminPath: string;
     dbUri: string;
+    influxDb: {
+        url: string;
+        apiKey: string;
+        organization: string;
+        bucket: string;
+    };
     jwt: {
         privateKey: string;
         publicKey: string;

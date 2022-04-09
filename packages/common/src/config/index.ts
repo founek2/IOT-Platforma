@@ -21,6 +21,12 @@ const config: Config = {
     portAuth: Number(process.env.AUTH_PORT) || 8084,
     firebaseAdminPath: process.env.FIREBASE_ADMIN_PATH as string,
     dbUri: process.env.DATABASE_URI as string,
+    influxDb: {
+        url: process.env.INFLUX_URL || 'http://localhost:8086',
+        apiKey: process.env.INFLUX_API_KEY as string,
+        organization: process.env.INFLUX_ORGANIZATION as string,
+        bucket: process.env.INFLUX_BUCKET as string,
+    },
     jwt: {
         privateKey: process.env.JWT_PRIVATE_KEY as string,
         publicKey: process.env.JWT_PUBLIC_KEY as string,

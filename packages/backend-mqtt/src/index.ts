@@ -1,23 +1,21 @@
-import http from 'http';
-import express, { Application } from 'express';
-import morgan from 'morgan';
-import { Config } from './types';
-import mqttService from './services/mqtt';
-// import webSockets from "./services/webSocket";
-import { JwtService } from 'common/lib/services/jwtService';
-import api from './api';
 import bodyParser from 'body-parser';
-import * as FireBase from './services/FireBase';
-import { Server as serverIO } from 'socket.io';
-import mongoose from 'mongoose';
 import config from 'common/lib/config';
-import { connectMongoose } from 'common/lib/utils/connectMongoose';
-
-import eventEmitter from './services/eventEmitter';
-import initSubscribers from './subscribers';
-import { UserModel } from 'common/lib/models/userModel';
+import { InfluxService } from 'common/lib/services/influxService';
+import { JwtService } from 'common/lib/services/jwtService';
 import * as TemporaryPass from 'common/lib/services/TemporaryPass';
-import { logger, LogLevel } from 'framework-ui/lib/logger';
+import { connectMongoose } from 'common/lib/utils/connectMongoose';
+import express, { Application } from 'express';
+import { logger } from 'framework-ui/lib/logger';
+import http from 'http';
+import morgan from 'morgan';
+import { Server as serverIO } from 'socket.io';
+import api from './api';
+import eventEmitter from './services/eventEmitter';
+import * as FireBase from './services/FireBase';
+import { migrate } from './services/migrations';
+import mqttService from './services/mqtt';
+import initSubscribers from './subscribers';
+import { Config } from './types';
 
 interface customApp extends Application {
     server: http.Server;
@@ -27,10 +25,14 @@ interface customApp extends Application {
 async function startServer(config: Config) {
     JwtService.init(config.jwt);
     FireBase.init(config);
+    InfluxService.init(config.influxDb);
+
     initSubscribers(eventEmitter);
 
     await connectMongoose(config.dbUri);
-    mongoose.set('debug', Number(process.env.LOG_LEVEL) >= LogLevel.SILLY);
+    await migrate(config);
+
+    // mongoose.set('debug', Number(process.env.LOG_LEVEL) >= LogLevel.SILLY);
 
     const appInstance = express();
     const server = http.createServer(appInstance);

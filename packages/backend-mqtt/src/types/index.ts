@@ -8,6 +8,12 @@ export interface Config {
         publicKey: string;
         expiresIn: string;
     };
+    influxDb: {
+        url: string;
+        apiKey: string;
+        organization: string;
+        bucket: string;
+    };
     mqtt: {
         url: string;
         port: number;
