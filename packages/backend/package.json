@@ -6,8 +6,8 @@
     "main": "lib/main.js",
     "scripts": {
         "dev": "ts-node-dev src/index.ts",
-        "devWin": "yarn nodemon --watch 'src/**/*.ts' --verbose --exec node -r ts-node/register src/index.ts",
-        "build": "yarn clean && tsc --project tsconfig-build.json && yarn copyFiles",
+        "compile": "tsc -p tsconfig-build.json",
+        "build": "yarn clean && yarn compile && yarn copyFiles",
         "copyFiles": "copyfiles -u 1 src/templates/**/*.pug dist/",
         "clean": "rimraf tsconfig-build.tsbuildinfo dist",
         "test": "jest",

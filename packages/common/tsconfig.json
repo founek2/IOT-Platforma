@@ -1,19 +1,12 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.build.json",
     "compilerOptions": {
         "rootDir": "src",
-        "composite": true,
         "outDir": "lib",
-        "declaration": true,
-        "sourceMap": true,
         "moduleResolution": "node",
-        "forceConsistentCasingInFileNames": true,
-        "strictNullChecks": true,
-        "lib": [
-            "ES2019"
-        ]
+        "paths": {
+            "framework-ui/*": ["../framework-ui/src/*"]
+        }
     },
-    "include": [
-        "src/**/*"
-    ]
+    "references": [{ "path": "../framework-ui" }]
 }

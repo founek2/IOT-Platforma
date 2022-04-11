@@ -18,8 +18,9 @@
     "main": "dist/index.js",
     "typings": "index.d.ts",
     "scripts": {
-        "build": "yarn clean && tsc -p .",
-        "clean": "rimraf tsconfig.tsbuildinfo lib",
+        "compile": "tsc -p tsconfig.build.json",
+        "build": "yarn clean && yarn build",
+        "clean": "rimraf tsconfig.tsbuildinfo ./dist",
         "dev": "tsc -w",
         "test": "jest"
     },

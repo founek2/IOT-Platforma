@@ -1,22 +1,15 @@
 {
+    "extends": "./tsconfig.build.json",
+
     "compilerOptions": {
-        "baseUrl": "./packages",
-        "downlevelIteration": true,
-        "allowJs": true,
-        "module": "commonjs",
-        "target": "es5",
-        "sourceMap": true,
-        "declaration": true,
-        "declarationMap": true,
-        "strict": true,
-        // "composite": true,
-        "esModuleInterop": true
+        "paths": {
+            "common/*": ["../common/src/*"]
+        }
     },
-    "exclude": [
-        "**/dist/*",
-        "**/node_modules/*"
+    "references": [
+        {
+            "path": "../common"
+        }
     ],
-    "files": [
-        "types/global.d.ts"
-    ]
+    "files": ["types/global.d.ts"]
 }
