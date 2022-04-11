@@ -55,7 +55,7 @@ export default () =>
             const result = await DiscoveryModel.deleteMany({
                 _id: ObjectId(id),
             });
-            console.log('deleted', result);
+
             eventEmitter.emit('device_delete', id);
             res.sendStatus(204);
         },
@@ -81,6 +81,12 @@ export default () =>
             if (!doc) return res.status(400).send({ error: 'deviceNotReady' });
 
             const convertThings = map(convertDiscoveryThing);
+            const metadata = {
+                realm: doc.realm,
+                deviceId: doc.deviceId,
+            };
+
+            if (await DeviceModel.checkIdTaken(metadata)) return res.status(400).send({ error: 'deviceIdTaken' });
             const newDevice = await DeviceModel.createNew(
                 // convert discovered device to new device
                 {
@@ -88,10 +94,7 @@ export default () =>
                     things: convertThings(
                         map((nodeId) => assocPath(['config', 'nodeId'], nodeId, doc.things[nodeId]), doc.nodeIds)
                     ),
-                    metadata: {
-                        realm: doc.realm,
-                        deviceId: doc.deviceId,
-                    },
+                    metadata,
                 },
                 user.id
             );

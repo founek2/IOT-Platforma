@@ -1,41 +1,50 @@
-import { path } from 'ramda';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { devicesActions } from '../store/actions/application/devices';
 import io from '../webSocket';
 import { useActions } from './useActions';
-import { RootState } from '../store/store';
-import { getApplication } from '../utils/getters';
 
 export function useEffectFetchDevices() {
     const actions = useActions({
         fetchDevicesA: devicesActions.fetch,
-        updateDeviceA: devicesActions.update,
+        updateDeviceA: devicesActions.updateOne,
     });
-
-    const devicesLastFetch = useSelector<RootState>((state) =>
-        path(['devices', 'lastFetch'], getApplication(state))
-    ) as Date | undefined;
+    const [lastFetchAt, setLastFetchAt] = useState<Date>();
 
     useEffect(() => {
-        actions.fetchDevicesA();
+        let mounted = true;
+
+        async function run() {
+            if ((await actions.fetchDevicesA()) && mounted) setLastFetchAt(new Date());
+        }
+        run();
 
         io.getSocket().on('device', actions.updateDeviceA);
 
         return () => {
             io.getSocket().off('device', actions.updateDeviceA);
+            mounted = false;
         };
     }, [actions]);
 
     useEffect(() => {
-        function handler() {
-            const isOld = !devicesLastFetch || Date.now() - new Date(devicesLastFetch).getTime() > 20 * 60 * 1000;
-            if (!io.getSocket().isConnected() || isOld) {
-                actions.fetchDevicesA();
+        let mounted = true;
+        async function handler() {
+            if (document.hidden) return;
+
+            const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 10 * 60 * 1000;
+
+            if (isOld || !io.getSocket().isConnected()) {
+                if ((await actions.fetchDevicesA()) && mounted) setLastFetchAt(new Date());
             }
         }
-        window.addEventListener('focus', handler);
 
-        return () => window.removeEventListener('focus', handler);
-    }, [actions, devicesLastFetch]);
+        window.addEventListener('focus', handler);
+        document.addEventListener('visibilitychange', handler, false);
+
+        return () => {
+            mounted = false;
+            window.removeEventListener('focus', handler);
+            document.removeEventListener('visibilitychange', handler);
+        };
+    }, [actions, lastFetchAt]);
 }

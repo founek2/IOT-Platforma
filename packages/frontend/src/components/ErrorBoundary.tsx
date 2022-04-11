@@ -1,3 +1,4 @@
+import { logger } from 'framework-ui/lib/logger';
 import React from 'react';
 /* global umami */
 
@@ -23,10 +24,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
         // Display fallback UI
         if (process.env.NODE_ENV === 'production') {
             // this.setState({ hasError: true });
-            console.log(error, info)
-            console.log('error', error, info);
+            logger.error(error, info)
             // @ts-ignore
-            umami.trackEvent(JSON.stringify(info), error.message);
+            if (typeof umami != "undefined")
+             // @ts-ignore
+                umami.trackEvent(JSON.stringify(info), error.message);
         }
     }
 
@@ -38,7 +40,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
             return (
                 <div>
                     <h1>Nastala chyba při vytváření rozhraní.</h1>
-                    <a style={{ color: 'blue' }} href="#" onClick={() => document.location.reload(true)}>
+                    <a style={{ color: 'blue' }} href="#" onClick={() => document.location.reload()}>
                         Kliknutím na tento odkaz rozhraní restartujete
                     </a>
                     <br />

@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AddCircle from '@material-ui/icons/AddCircle';
+import { NOTIFY_INTERVALS } from 'common/lib/constants';
 import { IDevice } from 'common/lib/models/interface/device';
 import { IThing } from 'common/lib/models/interface/thing';
 import Loader from 'framework-ui/lib/Components/Loader';
@@ -15,14 +16,14 @@ import { getFormData } from 'framework-ui/lib/utils/getters';
 import { clone } from 'ramda';
 import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { getToken } from '../firebase';
+import { useAppSelector } from '../hooks';
 import { devicesActions } from '../store/actions/application/devices';
 import { userActions } from '../store/actions/application/user';
-import { getDevices } from '../utils/getters';
+import { getThing } from '../utils/getters';
 import EditNotify from './editNotifyForm/EditNotify';
-import { NOTIFY_INTERVALS } from 'common/lib/constants';
-import { RootState } from '../store/store';
 
 const defaultAdvanced = {
     interval: NOTIFY_INTERVALS.JUST_ONCE,
@@ -102,16 +103,15 @@ interface EditDeviceDialogProps {
 }
 
 function EditDeviceDialog({
-    editForm,
-    sensorCount = 0,
-    onUpdate,
     registerTokenAction,
-    match: { params },
     preFillForm,
-    device,
     onSaveAction,
-    thing,
 }: EditDeviceDialogProps) {
+    const params = useParams<{ deviceId?: string, nodeId?: string }>()
+    const editForm = useAppSelector(getFormData('EDIT_NOTIFY'));
+    const sensorCount = editForm ? editForm.count : 0;
+    const thing = useAppSelector(getThing(params.nodeId))
+
     const [pending, setPending] = useState(false);
     const [loaded, setLoaded] = useState(false);
     const dispatch = useDispatch();
@@ -132,6 +132,7 @@ function EditDeviceDialog({
         }
         preFill();
         sendToken();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function removeSensorByIndex(idx: number) {
@@ -208,24 +209,9 @@ function EditDeviceDialog({
     );
 }
 
-const _mapStateToProps = (state: RootState, { match: { params } }: EditDeviceDialogProps) => {
-    const editForm = getFormData('EDIT_NOTIFY')(state);
-    const sensorCount = editForm ? editForm.count : undefined;
-    const device = (getDevices(state) as IDevice[]).find((obj) => obj._id === params.deviceId);
-    const thing = device?.things.find((thing) => thing.config.nodeId === params.nodeId);
-    return {
-        sensorCount,
-        editForm,
-        device,
-        thing,
-    };
-};
-
 const _mapDispatchToProps = (dispatch: any) => ({
     ...bindActionCreators(
         {
-            // updateFormField: formsActions.updateFormField,
-            // fillEditFormAction: formsActions.fillForm('EDIT_NOTIFY'),
             preFillForm: devicesActions.prefillNotify,
             onSaveAction: devicesActions.updateNotify,
             registerTokenAction: userActions.registerToken,
@@ -234,4 +220,4 @@ const _mapDispatchToProps = (dispatch: any) => ({
     ),
 });
 
-export default connect(_mapStateToProps, _mapDispatchToProps)(EditDeviceDialog);
+export default connect(null, _mapDispatchToProps)(EditDeviceDialog);

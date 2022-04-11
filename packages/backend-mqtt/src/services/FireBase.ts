@@ -154,7 +154,7 @@ async function processOutput(output: Output, sended: { _id: IThingProperty['_id'
 
         if (invalidTokens.length) {
             UserModel.removeNotifyTokens(invalidTokens);
-            console.log('Deleting notify Tokens>', invalidTokens.length);
+            logger.debug('Deleting notify Tokens>', invalidTokens.length);
         }
     }
 }
@@ -186,14 +186,13 @@ async function sendAllNotifications(arrOfTokens: { userId: string; notifyTokens:
         return [];
     }
     const response = await messaging.sendAll(messages);
-    console.log(response.successCount + ' of ' + messages.length + ' messages were sent successfully');
+    logger.debug(response.successCount + ' of ' + messages.length + ' messages were sent successfully');
 
     const invalidTokens: string[] = [];
     if (response.successCount !== messages.length) {
         response.responses.forEach(({ error }, idx) => {
             if (error) {
                 if (error.code === 'messaging/registration-token-not-registered') {
-                    // console.log(Object.keys(error))
                     invalidTokens.push(messages[idx].token);
                 } else logger.debug(error);
             }

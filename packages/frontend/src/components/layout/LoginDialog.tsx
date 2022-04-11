@@ -1,4 +1,4 @@
-import { IconButton, Paper } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { grey } from '@material-ui/core/colors';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';

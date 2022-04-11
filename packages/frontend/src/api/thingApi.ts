@@ -9,9 +9,9 @@ export const fetchHistory = ({ deviceId, thingId, ...object }: any, dispatch: an
         dispatch,
     });
 
-export const updateState = ({ deviceId, thingId, ...object }: any, dispatch: any) =>
+export const updateState = ({ deviceId, nodeId, ...object }: any, dispatch: any) =>
     patchJson({
-        url: API_URL + '/device/' + deviceId + '/thing/' + thingId,
+        url: API_URL + '/device/' + deviceId + '/thing/' + nodeId,
         ...object,
         dispatch,
     });

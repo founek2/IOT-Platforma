@@ -4,8 +4,10 @@ import { logger } from 'framework-ui/lib/logger';
 import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
 import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
 import { AppThunk } from 'frontend/src/types';
+import { normalizeDevice } from 'frontend/src/utils/normalizers';
 import { addDiscoveredDevice, deleteDiscovery, fetchDiscovery } from '../../../api/discovery';
 import { discoveryReducerActions } from '../../reducers/application/discovery';
+import { thingsReducerActions } from '../../reducers/application/things';
 import { devicesActions } from './devices';
 
 export const discoveryActions = {
@@ -65,7 +67,9 @@ export const discoveryActions = {
                         body: { formData: { [CREATE_DEVICE]: formData } },
                         onSuccess: (json: { doc: IDevice }) => {
                             dispatch(discoveryActions.remove(id));
-                            dispatch(devicesActions.add(json.doc));
+                            const { device, things } = normalizeDevice(json.doc);
+                            dispatch(devicesActions.addOne(device));
+                            dispatch(thingsReducerActions.addMany(things));
                         },
                     },
                     dispatch

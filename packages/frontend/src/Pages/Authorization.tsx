@@ -27,7 +27,7 @@ export function Authorization() {
         if (code && !pending) {
             send(code);
         }
-    }, [code, setPending, history, dispatch]);
+    }, [code, setPending, history, dispatch, pending]);
 
     useEffect(() => {
         if (error) {

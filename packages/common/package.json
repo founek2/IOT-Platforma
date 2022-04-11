@@ -4,6 +4,8 @@
     "license": "GPL-3.0-only",
     "private": true,
     "dependencies": {
+        "@influxdata/influxdb-client": "^1.24.0",
+        "@influxdata/influxdb-client-apis": "^1.24.0",
         "@material-ui/lab": "^4.0.0-alpha.60",
         "argon2": "^0.27.1",
         "crypto": "^1.0.1",

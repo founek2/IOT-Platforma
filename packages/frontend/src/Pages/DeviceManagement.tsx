@@ -3,19 +3,19 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import { IDevice } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
-import { equals, o, prop } from 'ramda';
+import { Locations } from 'frontend/src/types';
+import { prop } from 'ramda';
 import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import { useAppSelector } from '../hooks';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
 import { discoveryActions } from '../store/actions/application/discovery';
+import { locationsSelector } from '../store/selectors/deviceSelector';
 import { RootState } from '../store/store';
-import { getDevices, getDiscovery, getQueryField } from '../utils/getters';
+import { getDevices, getDiscovery } from '../utils/getters';
 import io from '../webSocket';
 import DeviceSection from './deviceManagement/DeviceSection';
 import DiscoverySection from './deviceManagement/DiscoverySection';
-import { createSelector } from 'reselect';
-import { Locations } from 'frontend/src/types';
-import { locationsSelector } from '../store/selectors/deviceSelector';
 
 const useStyles = makeStyles((theme) => ({
     cardContent: {
@@ -31,7 +31,9 @@ interface DevicesProps {
     locations: Locations
 }
 
-function Devices({ devices, discoveredDevices, locations }: DevicesProps) {
+function Devices({ discoveredDevices }: DevicesProps) {
+    const devices = useAppSelector(getDevices)
+    const locations = useAppSelector(locationsSelector)
     const classes = useStyles();
     const dispatch = useDispatch();
     useEffectFetchDevices();
@@ -65,17 +67,10 @@ function Devices({ devices, discoveredDevices, locations }: DevicesProps) {
 
 
 const _mapStateToProps = (state: RootState) => {
-    const deviceId = getQueryField('deviceId')(state);
     // @ts-ignore
     const discoveredDevices = prop('data', getDiscovery(state)) as RootState['application']['discovery']['data'];
-    // @ts-ignore
-    const toAddDevice = discoveredDevices.find(o(equals(deviceId), prop('deviceId')));
-    const devices = getDevices(state);
     return {
-        devices,
-        discoveredDevices: discoveredDevices,
-        toAddDevice,
-        locations: locationsSelector(state)
+        discoveredDevices: discoveredDevices
     };
 };
 

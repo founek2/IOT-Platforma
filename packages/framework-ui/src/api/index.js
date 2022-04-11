@@ -3,7 +3,7 @@ import { notificationsActions } from '../redux/actions/application/notifications
 import ErrorMessages from '../localization/errorMessages';
 import SuccessMessages from '../localization/successMessages';
 import { logger } from '../logger';
-import { update } from '../redux/actions/application/user';
+import { userActions } from '../redux/actions/application/user';
 import { dehydrateState } from '../redux/actions/';
 
 const addNotification = notificationsActions.add;
@@ -14,14 +14,14 @@ const processResponse = (dispatch, successMessage) => async (response) => {
     // const bodyLen = response.headers.get('content-length');
     const contentType = response.headers.get('content-type');
     const isJson = contentType ? ~contentType.indexOf('application/json') : false;
-    // console.log('bodyLen', bodyLen, contentType);
+
     const jsonBody = isJson ? await response.json() : undefined;
     const errorMessage = jsonBody ? jsonBody.error : undefined;
 
     const newToken = response.headers.get('authorization-jwt-new');
     if (newToken) {
         logger.info('Setting resigned token');
-        dispatch(update({ token: newToken }));
+        dispatch(userActions.update({ token: newToken }));
         dispatch(dehydrateState());
     }
 

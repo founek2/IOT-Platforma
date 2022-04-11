@@ -2,8 +2,9 @@ import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import { DeviceStatus, IDeviceStatus } from "common/lib/models/interface/device";
-import React from "react";
+import React, { useState } from "react";
 import getCircleColor, { CircleColors, getCircleTooltipText } from "../utils/getCircleColor";
+import {format} from "frontend/src/utils/date-fns"
 
 const useStyles = makeStyles({
 	wrapper: {
@@ -33,10 +34,10 @@ const useStyles = makeStyles({
 	},
 });
 
-interface CircleComponentProps {
+type CircleComponentProps ={
 	color: CircleColors;
 	className?: string;
-}
+}& React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 const CircleComponent = React.forwardRef(function ({ color, className, ...props }: CircleComponentProps, ref: any) {
 	const classes = useStyles();
 	return (
@@ -52,22 +53,25 @@ interface CircleProps {
 	inTransition: boolean;
 }
 function Circle({ status, className, inTransition }: CircleProps) {
-	if (!status)
-		return (
-			<Tooltip title="Nikdy nebylo připojeno" placement="bottom" arrow={true}>
-				<CircleComponent
-					color={getCircleColor(inTransition, DeviceStatus.disconnected)}
-					className={className}
-				/>
-			</Tooltip>
-		);
+	const [showDate, setShowDate ] = useState(false)
+	
+	const titleText = status?.timestamp
+	? getCircleTooltipText(inTransition, status.value)
+	: "Zařízení nikdy nebylo připojeno";
 
-	const title = status?.timestamp
-		? getCircleTooltipText(inTransition, status.value)
-		: "Zařízení nikdy nebylo připojeno";
+	const titleDate = status?.timestamp
+	? format(new Date(status.timestamp), "d. L. yyyy H:mm")
+	: "?. ?. ????";
+
+	const title = showDate ? titleDate: titleText
+
 	return (
 		<Tooltip title={title} placement="bottom" arrow={true}>
-			<CircleComponent color={getCircleColor(inTransition, status.value)} className={className} />
+			<CircleComponent 
+			color={getCircleColor(inTransition, status?.value || DeviceStatus.disconnected)}
+			 className={className}
+			 onClick={() => setShowDate(!showDate)}
+			  />
 		</Tooltip>
 	);
 }

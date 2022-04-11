@@ -5,20 +5,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import clsx from 'clsx';
-import { IThingPropertyEnum, IThingProperty } from 'common/lib/models/interface/thing';
-import { drop, head } from 'ramda';
+import { IThingPropertyEnum } from 'common/lib/models/interface/thing';
+import { RootState } from 'frontend/src/store/store';
+import { getThingHistory } from 'frontend/src/utils/getters';
+import { head } from 'ramda';
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';
 import { SimpleDialog } from './components/Dialog';
-import PropertyRow from './components/PropertyRow';
 import { CopyUrlContext } from './components/helpers/CopyUrl';
-import { useSelector } from 'react-redux';
-import { RootState } from 'frontend/src/store/store';
-import { getThingHistory } from 'frontend/src/utils/getters';
-import { useMemo } from 'react';
-import { HistoricalSensor, HistoricalGeneric } from 'common/lib/models/interface/history';
-import ChartSimple from 'frontend/src/components/ChartSimple';
+import PropertyRow from './components/PropertyRow';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,24 +58,7 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
 
     useEffect(() => {
         if (openDialog) fetchHistory();
-    }, [openDialog]);
-
-    const chartData = useMemo(
-        () => [
-            [{ type: 'date', label: 'Čas' }, title],
-            ...mergeData(historyData.data as unknown as HistoricalGeneric[], property.propertyId),
-        ],
-        [
-            historyData.data.length > 0 && historyData.data[0].first,
-            historyData.data.length > 0 && historyData.data[historyData.data.length - 1].last,
-            historyData.thingId === thing._id,
-        ]
-    );
-
-    console.log(
-        'chartData',
-        chartData.map(([a, b]) => typeof a)
-    );
+    }, [openDialog, fetchHistory]);
 
     return (
         <div className={clsx(className, classes.root)}>
@@ -104,63 +84,48 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
                         </CopyUrlContext>
                     </div>
                 ) : (
-                        <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                            <Select
-                                className={classes.select}
-                                value={value}
-                                disabled={disabled}
-                                onChange={(e) => {
-                                    onClick({ [property.propertyId]: e.target.value as string });
-                                }}
-                                disableUnderline
-                            >
-                                {property.format.map((label) => (
-                                    <MenuItem value={label} key={label}>
-                                        {label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </CopyUrlContext>
-                    )}
+                    <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                        <Select
+                            className={classes.select}
+                            value={value}
+                            disabled={disabled}
+                            onChange={(e) => {
+                                onClick({ [property.propertyId]: e.target.value as string });
+                            }}
+                            disableUnderline
+                        >
+                            {property.format.map((label) => (
+                                <MenuItem value={label} key={label}>
+                                    {label}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </CopyUrlContext>
+                )}
             </div>
 
             <SimpleDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
-                title={thing.config.name}
+                title={title}
                 deviceId={deviceId}
                 thing={thing}
             >
-                {historyData.deviceId === deviceId && historyData.thingId === thing._id && chartData.length > 2 ? (
-                    <ChartSimple data={chartData} type="ScatterChart" />
-                ) : null}
                 <div>
-                    {drop(1, thing.config.properties).map((property) => (
+                    {thing.config.properties.map((property, i) => (
                         <PropertyRow
                             key={property.propertyId}
                             property={property}
                             value={thing.state?.value[property.propertyId]}
                             onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
+                            history={historyData?.deviceId === deviceId ? historyData : undefined}
+                            defaultShowDetail={i === 0}
                         />
                     ))}
                 </div>
             </SimpleDialog>
         </div>
     );
-}
-
-function mergeData(data: HistoricalGeneric[], propertyId: IThingProperty['propertyId']) {
-    if (!propertyId) return [];
-
-    let result: Array<[Date, number]> = [];
-    data.forEach((doc) => {
-        if (doc.properties[propertyId])
-            result = result.concat(
-                doc.properties[propertyId].samples.map((rec) => [new Date(rec.timestamp), rec.value === 'on' ? 1 : 0])
-            );
-    });
-
-    return result;
 }
 
 export default boxHoc(Activator);

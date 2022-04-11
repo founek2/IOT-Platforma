@@ -9,12 +9,13 @@ import { HistoricalModel } from 'common/lib/models/historyModel';
 import * as FireBaseService from '../FireBase';
 import { SocketUpdateThingState } from 'common/lib/types';
 import { uniq } from 'ramda';
+import { InfluxService } from 'common/lib/services/influxService';
 
 type cbFn = (topic: string, message: any, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO) {
     handle('v2/+/+/$state', async function (topic, data, [realm, deviceId]) {
         const message: DeviceStatus = data.toString();
-        console.log('got', message, realm, deviceId);
+        logger.debug('got', message, realm, deviceId);
         const device = await DeviceModel.findOneAndUpdate(
             {
                 'metadata.deviceId': deviceId,
@@ -77,6 +78,15 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 
         HistoricalModel.saveData(device._id, thing._id, propertyId, result.value, timestamp);
         FireBaseService.processData(device, nodeId, propertyId, result.value);
+
+        const sample = InfluxService.createMeasurement(
+            device._id.toString(),
+            device.info.name,
+            thing.config.nodeId,
+            property,
+            { value: result.value, timestamp }
+        );
+        InfluxService.saveMeasurement(sample);
     });
 }
 
@@ -91,6 +101,7 @@ function sendToUsers(io: serverIO, device: IDevice, nodeId: string, propertyId: 
     const updateData: SocketUpdateThingState = {
         _id: device._id,
         thing: {
+            _id: thing._id,
             nodeId: thing.config.nodeId,
             state: thing.state,
         },

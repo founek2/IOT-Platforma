@@ -1,15 +1,16 @@
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
-import { IDevice } from 'common/lib/models/interface/device';
 import { SocketUpdateThingState } from 'common/lib/types';
 import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
 import { LocationTypography } from '../components/LocationTypography';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
-import { devicesActions } from '../store/actions/application/devices';
+import { Device } from '../store/reducers/application/devices';
+import { thingsReducerActions } from '../store/reducers/application/things';
 import { RootState } from '../store/store';
+import { getDevices } from '../utils/getters';
 import io from '../webSocket';
 import Room from './devices/Room';
 import RoomWidget from './devices/RoomWidget';
@@ -45,7 +46,7 @@ function updateControl(updateThingA: any) {
     };
 }
 
-type Buildings = Map<string, Map<string, IDevice[]>>;
+type Buildings = Map<string, Map<string, Device[]>>;
 
 export interface DeviceControlProps {
     buildings: Buildings;
@@ -57,8 +58,9 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
     const dispatch = useDispatch();
     useEffect(() => {
         function updateThingA(payload: SocketUpdateThingState) {
-            dispatch(devicesActions.updateThing(payload));
+            dispatch(thingsReducerActions.updateOne({ id: payload.thing._id, changes: { state: payload.thing.state } }))
         }
+
         const listener = updateControl(updateThingA);
         io.getSocket().on('control', listener);
         return () => io.getSocket().off('control', listener);
@@ -75,51 +77,48 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
                         buildings.size === 0 ? (
                             <Typography>Nebyla nalezena žádná zařízení</Typography>
                         ) : (
-                                <div className={classes.widgetContainer}>
-                                    {(selectedBuilding
-                                        ? ([[selectedLocation.building, selectedBuilding]] as Array<
-                                            [string, Map<string, IDevice[]>]
-                                        >)
-                                        : [...buildings.entries()]
-                                    ).map(([building, rooms], idx) => {
-                                        return (
-                                            <Fragment key={building}>
-                                                <LocationTypography
-                                                    location={{ building }}
-                                                    linkBuilding={Boolean(!selectedBuilding)}
-                                                    className={clsx(idx > 0 && classes.buildingContainer)}
-                                                />
-                                                <Grid container spacing={2}>
-                                                    {[...rooms.entries()].map(([room, devices]) => (
-                                                        <Grid item xs={12} md={6} lg={6} key={building + '/' + room}>
-                                                            <Link to={`/devices/${building}/${room}`}>
-                                                                <RoomWidget devices={devices} className={classes.widget} />
-                                                            </Link>
-                                                        </Grid>
-                                                    ))}
-                                                </Grid>
-                                            </Fragment>
-                                        );
-                                    })}
-                                </div>
-                            )
+                            <div className={classes.widgetContainer}>
+                                {(selectedLocation.building && selectedBuilding
+                                    ? [[selectedLocation.building, selectedBuilding] as [string, Map<string, Device[]>]]
+                                    : [...buildings.entries()]
+                                ).map(([building, rooms], idx) => {
+                                    return (
+                                        <Fragment key={building}>
+                                            <LocationTypography
+                                                location={{ building }}
+                                                linkBuilding={Boolean(!selectedBuilding)}
+                                                className={clsx(idx > 0 && classes.buildingContainer)}
+                                            />
+                                            <Grid container spacing={2}>
+                                                {[...rooms.entries()].map(([room, devices]) => (
+                                                    <Grid item xs={12} md={6} lg={6} key={building + '/' + room}>
+                                                        <Link to={`/devices/${building}/${room}`}>
+                                                            <RoomWidget devices={devices} className={classes.widget} />
+                                                        </Link>
+                                                    </Grid>
+                                                ))}
+                                            </Grid>
+                                        </Fragment>
+                                    );
+                                })}
+                            </div>
+                        )
                     ) : (
-                            <Room
-                                location={selectedLocation as { building: string; room: string }}
-                                devices={selectedRoom}
-                            />
-                        )}
+                        <Room
+                            location={selectedLocation as { building: string; room: string }}
+                            devices={selectedRoom}
+                        />
+                    )}
                 </Grid>
             </Grid>
         </div>
     );
 }
 
-const buildingsSelector = createSelector<any, { data: IDevice[]; lastUpdate: Date }, Buildings>(
-    // (o(filter(isControllable), getDevices) as unknown) as any,
-    (state: any) => state.application.devices,
-    ({ data: devices, lastUpdate }: { data: IDevice[]; lastUpdate: Date }) => {
-        const buildings = new Map<string, Map<string, IDevice[]>>();
+const buildingsSelector = createSelector(
+    getDevices,
+    (devices) => {
+        const buildings: Buildings = new Map();
         devices.forEach((device) => {
             const { building, room } = device.info.location;
             if (!buildings.has(building)) buildings.set(building, new Map());

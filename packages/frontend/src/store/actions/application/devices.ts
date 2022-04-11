@@ -16,18 +16,10 @@ import {
 import { updateState as updateStateThingApi } from '../../../api/thingApi';
 import { devicesReducerActions } from '../../reducers/application/devices';
 import { AppThunk } from 'frontend/src/types';
-
-function getBuilding(device: IDevice) {
-    return device.info.location.building;
-}
-function getRoom(device: IDevice) {
-    return device.info.location.room;
-}
-function sortDevices(a: IDevice, b: IDevice) {
-    const comp1 = getBuilding(a).localeCompare(getBuilding(b));
-    if (comp1 !== 0) return 0;
-    return getRoom(a).localeCompare(getRoom(b));
-}
+import { normalizeDevices } from 'frontend/src/utils/normalizers';
+import { thingsReducerActions } from '../../reducers/application/things';
+import { getThing } from 'frontend/src/utils/getters';
+import { mergeDeepLeft } from 'ramda';
 
 export const devicesActions = {
     ...devicesReducerActions,
@@ -45,7 +37,7 @@ export const devicesActions = {
                         body: { formData: { [EDIT_DEVICE]: formData } },
                         token: getToken(state),
                         onSuccess: () => {
-                            dispatch(devicesActions.update({ ...formData, _id: id }));
+                            dispatch(devicesActions.updateOne({ ...formData, _id: id }));
                             dispatch(dehydrateState());
                         },
                         id,
@@ -64,7 +56,7 @@ export const devicesActions = {
                     token: getToken(getState()),
                     id,
                     onSuccess: () => {
-                        dispatch(devicesActions.remove(id));
+                        dispatch(devicesActions.removeOne(id));
                     },
                 },
                 dispatch
@@ -79,7 +71,9 @@ export const devicesActions = {
                 {
                     token: getToken(getState()),
                     onSuccess: (json: { docs: IDevice[] }) => {
-                        dispatch(devicesActions.set(json.docs.sort(sortDevices)));
+                        const normilized = normalizeDevices(json.docs);
+                        dispatch(devicesActions.setAll(normilized.entities.devices as any));
+                        dispatch(thingsReducerActions.setAll(normilized.entities.things as any));
                         dispatch(dehydrateState());
                     },
                 },
@@ -88,27 +82,35 @@ export const devicesActions = {
         };
     },
 
-    updateState(deviceId: IDevice['_id'], thingId: IThing['config']['nodeId'], state: any): AppThunk {
+    updateState(deviceId: IDevice['_id'], thingId: IThing['_id'], state: any): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const EDIT_CONTROL = 'UPDATE_STATE_DEVICE';
             logger.info(EDIT_CONTROL);
+
+            const nodeId = getThing(thingId)(getState())?.config.nodeId;
+            if (!nodeId) logger.error('Invalid thingId', thingId);
+
             return updateStateThingApi(
                 {
                     token: getToken(getState()),
                     deviceId,
-                    thingId,
+                    nodeId,
                     body: { state },
                     onSuccess: () => {
+                        const thing = getThing(thingId)(getState())!;
+                        const mergedState = thing.state
+                            ? mergeDeepLeft(
+                                  {
+                                      value: state,
+                                  },
+                                  thing.state
+                              )
+                            : { timestamp: new Date(), value: {} };
                         dispatch(
-                            devicesActions.updateThing({
-                                _id: deviceId,
-                                thing: {
-                                    nodeId: thingId,
-                                    // @ts-ignore dont add timestamp -> just UI update
-                                    state: {
-                                        value: state,
-                                        // timestamp: new Date(),
-                                    },
+                            thingsReducerActions.updateOne({
+                                id: thingId,
+                                changes: {
+                                    state: mergedState,
                                 },
                             })
                         );

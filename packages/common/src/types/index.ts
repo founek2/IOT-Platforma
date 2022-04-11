@@ -9,6 +9,12 @@ export interface Config {
     portAuth: number;
     firebaseAdminPath: string;
     dbUri: string;
+    influxDb: {
+        url: string;
+        apiKey: string;
+        organization: string;
+        bucket: string;
+    };
     jwt: {
         privateKey: string;
         publicKey: string;
@@ -66,6 +72,7 @@ export type AckHandler = (recipe: ControlRecipe) => Promise<boolean>;
 export type SocketUpdateThingState = {
     _id: IDevice['_id'];
     thing: {
+        _id: IThing['_id'];
         nodeId: IThing['config']['nodeId'];
         state: {
             value: { [propertyId: string]: string | number };

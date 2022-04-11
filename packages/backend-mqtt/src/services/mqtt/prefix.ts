@@ -89,12 +89,19 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
         ).exec();
     });
 
+    handle('prefix/+/+/+/$retained', async function (topic, data, [deviceId, nodeId, propertyId]) {
+        const retained = data.toString();
+        if (!(retained === 'true' || retained === 'false')) return;
+
+        DiscoveryModel.updateOne(
+            { deviceId },
+            { [`things.${nodeId}.config.properties.${propertyId}.retained`]: retained }
+        ).exec();
+    });
+
     handle('prefix/+/$state', async function (topic, data, [deviceId]) {
         const status: DeviceStatus = data.toString();
-        if (!(status in DeviceStatus)) {
-            console.log('invalid state');
-            return;
-        }
+        if (!(status in DeviceStatus)) return;
 
         if (status === DeviceStatus.paired) {
             return DiscoveryModel.deleteOne({ deviceId, pairing: true }).exec();

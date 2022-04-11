@@ -22,7 +22,7 @@ export default () =>
          */
         async index({ params, query: { from, to } }, res) {
             const { deviceId, thingId } = params;
-            console.log('par', params);
+
             const docs = await HistoricalModel.getData(
                 deviceId,
                 thingId,

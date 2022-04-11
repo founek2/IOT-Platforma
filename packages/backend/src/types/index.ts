@@ -28,6 +28,12 @@ export interface Config {
     homepage: string;
     portAuth: number;
     dbUri: string;
+    influxDb: {
+        url: string;
+        apiKey: string;
+        organization: string;
+        bucket: string;
+    };
     jwt: {
         privateKey: string;
         publicKey: string;

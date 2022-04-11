@@ -15,10 +15,12 @@ import { AppThunk } from '../../types';
 import { logger } from '../../logger';
 
 function recursive(transform: any, predicate: any, object: any) {
-    const func = (accum = '') => (value: any, key: any) => {
-        if (predicate(value)) return rec(value, accum + key + '.');
-        transform(value, accum + key);
-    };
+    const func =
+        (accum = '') =>
+        (value: any, key: any) => {
+            if (predicate(value)) return rec(value, accum + key + '.');
+            transform(value, accum + key);
+        };
 
     function rec(obj: any, accum?: any) {
         forEachObjIndexed(func(accum), obj);
@@ -68,14 +70,12 @@ export const formsDataActions = {
             logger.info('VALIDATE_REGISTERED_FIELDS:', formName);
 
             dispatch(formsDataActions.setFormData({ formName, data: getFormData(formName)(getState()) }));
-            console.log('blabla');
             const fieldStates = ValidateRegisteredFields(formName, getState(), ignoreRequired);
 
             dispatch(formsDataActions.updateRegisteredFields(fieldStates));
 
             const result = checkValid(fieldStates[formName]);
             if (!result.valid) {
-                console.log('validationResult', result);
                 dispatch(
                     notificationsActions.add({
                         message: ErrorMessages.getMessage('validationFailed'),

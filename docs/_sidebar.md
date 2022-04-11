@@ -15,6 +15,7 @@
     -   [Ovládání hlasem](guides/voice.md)
     -   [Instalace služeb](guides/installation.md)
     -   [Nasazení](guides/deploy.md)
+    -   [Python klient](guides/python_client.md)
 
 -   [Todo](todo.md)
 -   [Changelog](CHANGELOG.md)

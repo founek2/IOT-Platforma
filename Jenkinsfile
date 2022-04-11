@@ -80,6 +80,16 @@ pipeline {
             }
         }
 
+        stage('Deploy') {
+            when { branch "release*" }
+            environment {
+                WATCHTOWER_TOKEN = credentials('watchtower-token')
+            }
+
+            steps {
+                sh 'curl -H "Authorization: Bearer $WATCHTOWER_TOKEN" http://docker.iotdomu.cz:8080/v1/update'
+            }
+        }
     }
 
     post {
@@ -91,7 +101,7 @@ pipeline {
             // }
             
             emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+                recipientProviders: [developers(), requestor()],
                 subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
             
         }
