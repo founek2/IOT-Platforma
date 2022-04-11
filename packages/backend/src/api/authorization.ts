@@ -64,13 +64,17 @@ export default () =>
                     );
 
                     return await fromPromise(
-                        UserService.refreshAuthorization(auth.account_name, {
-                            accessToken: auth.access_token,
-                            expiresIn: auth.expires_in,
-                            refreshToken: auth.refresh_token,
-                            tokenType: auth.token_type,
-                            provider: OAuthProvider.seznam,
-                        })
+                        UserService.refreshAuthorization(
+                            auth.username + '@' + auth.domain,
+                            auth.username.replace(/\./g, ''),
+                            {
+                                accessToken: auth.access_token,
+                                expiresIn: auth.expires_in,
+                                refreshToken: auth.refresh_token,
+                                tokenType: auth.token_type,
+                                provider: OAuthProvider.seznam,
+                            }
+                        )
                     );
                 });
 

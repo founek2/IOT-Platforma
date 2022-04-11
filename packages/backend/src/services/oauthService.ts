@@ -8,12 +8,15 @@ const oauth = config.oauth;
 
 export interface Authorization {
     access_token: string;
-    account_name: string; // email
     expires_in: number;
     refresh_token: string;
     token_type: string; // bearer
     status: number; // 200
     messsage: string; // "ok"
+
+    oauth_user_id: string;
+    username: string; // část uživatelského jména (tj. e-mailové adresy) před zavináčem
+    domain: string; // část uživatelského jména (tj. e-mailové adresy) za zavináčem
 }
 
 export interface RevokeBody {
@@ -51,6 +54,7 @@ export class OAuthService {
             const body = (await res.json()) as Authorization;
             if (body.status !== 200) throw new Error('invalid status ' + body.status);
 
+            (body as Authorization & { email: string }).email = body.username + '@' + body.domain;
             return Just(body);
         } catch (err) {
             logger.error(err);

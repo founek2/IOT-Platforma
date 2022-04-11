@@ -96,6 +96,7 @@ export const UserService = {
      */
     async refreshAuthorization(
         email: string,
+        userName: string,
         oauth: IOauth
     ): Promise<Maybe<{ token: string; doc: IUser; oldOauth?: IOauth }>> {
         // : Promise<{ doc?: IUser; token?: string; error?: string }>
@@ -104,7 +105,7 @@ export const UserService = {
         if (!doc) {
             const { doc, token } = await UserService.create({
                 info: {
-                    userName: email,
+                    userName,
                     email,
                 },
                 auth: {
