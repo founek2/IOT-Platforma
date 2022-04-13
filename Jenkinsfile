@@ -13,7 +13,7 @@ pipeline {
         
         stage ('Pre build') {
             steps {
-                sh "yarn pre"
+                sh "yarn prepare"
             }
         }
 
