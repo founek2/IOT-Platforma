@@ -30,7 +30,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
             .lean()
             .exec();
 
-        if (device)
+        if (device) {
             uniq(Object.values(device.permissions).flat().map(String)).forEach((userId) =>
                 io.to(userId).emit('device', {
                     _id: device._id,
@@ -39,6 +39,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
                     },
                 })
             );
+        }
     });
 
     handle('v2/+/+/+/+', async function (topic, message, [realm, deviceId, nodeId, propertyId]) {

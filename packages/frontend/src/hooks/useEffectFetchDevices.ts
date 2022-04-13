@@ -1,20 +1,12 @@
-import { Update } from '@reduxjs/toolkit';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch } from '.';
 import { devicesActions } from '../store/actions/application/devices';
 import { Device } from '../store/reducers/application/devices';
 import io from '../webSocket';
-import { useActions } from './useActions';
 
 export function useEffectFetchDevices() {
     const dispatch = useAppDispatch();
     const [lastFetchAt, setLastFetchAt] = useState<Date>();
-    const updateDevice = useCallback(() => {
-        return (payload: Update<Device>) => {
-            console.log('payload', payload);
-            dispatch(devicesActions.updateOne(payload));
-        };
-    }, [dispatch]);
 
     useEffect(() => {
         let mounted = true;
@@ -24,13 +16,17 @@ export function useEffectFetchDevices() {
         }
         run();
 
+        function updateDevice(payload: Device) {
+            dispatch(devicesActions.updateOne({ id: payload._id, changes: payload }));
+        }
+
         io.getSocket().on('device', updateDevice);
 
         return () => {
             io.getSocket().off('device', updateDevice);
             mounted = false;
         };
-    }, [dispatch, updateDevice]);
+    }, [dispatch]);
 
     useEffect(() => {
         let mounted = true;
