@@ -64,7 +64,7 @@ export const devicesActions = {
         };
     },
 
-    fetch(): AppThunk {
+    fetch(): AppThunk<Promise<boolean>> {
         return function (dispatch, getState) {
             logger.info('FETCH_DEVICES');
             return fetchDevicesApi(

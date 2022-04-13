@@ -1,30 +1,36 @@
-import { useEffect, useState } from 'react';
+import { Update } from '@reduxjs/toolkit';
+import { useCallback, useEffect, useState } from 'react';
+import { useAppDispatch } from '.';
 import { devicesActions } from '../store/actions/application/devices';
+import { Device } from '../store/reducers/application/devices';
 import io from '../webSocket';
 import { useActions } from './useActions';
 
 export function useEffectFetchDevices() {
-    const actions = useActions({
-        fetchDevicesA: devicesActions.fetch,
-        updateDeviceA: devicesActions.updateOne,
-    });
+    const dispatch = useAppDispatch();
     const [lastFetchAt, setLastFetchAt] = useState<Date>();
+    const updateDevice = useCallback(() => {
+        return (payload: Update<Device>) => {
+            console.log('payload', payload);
+            dispatch(devicesActions.updateOne(payload));
+        };
+    }, [dispatch]);
 
     useEffect(() => {
         let mounted = true;
 
         async function run() {
-            if ((await actions.fetchDevicesA()) && mounted) setLastFetchAt(new Date());
+            if ((await dispatch(devicesActions.fetch())) && mounted) setLastFetchAt(new Date());
         }
         run();
 
-        io.getSocket().on('device', actions.updateDeviceA);
+        io.getSocket().on('device', updateDevice);
 
         return () => {
-            io.getSocket().off('device', actions.updateDeviceA);
+            io.getSocket().off('device', updateDevice);
             mounted = false;
         };
-    }, [actions]);
+    }, [dispatch, updateDevice]);
 
     useEffect(() => {
         let mounted = true;
@@ -34,7 +40,7 @@ export function useEffectFetchDevices() {
             const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 10 * 60 * 1000;
 
             if (isOld || !io.getSocket().isConnected()) {
-                if ((await actions.fetchDevicesA()) && mounted) setLastFetchAt(new Date());
+                if ((await dispatch(devicesActions.fetch())) && mounted) setLastFetchAt(new Date());
             }
         }
 
@@ -46,5 +52,5 @@ export function useEffectFetchDevices() {
             window.removeEventListener('focus', handler);
             document.removeEventListener('visibilitychange', handler);
         };
-    }, [actions, lastFetchAt]);
+    }, [lastFetchAt, dispatch]);
 }
