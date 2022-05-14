@@ -14,7 +14,7 @@ import { accessTokensReducerActions } from '../reducers/accessTokens';
 export const accessTokensActions = {
     ...accessTokensReducerActions,
 
-    create(userId: IUser['_id']): AppThunk {
+    create(userId: IUser['_id']): AppThunk<Promise<false | string>> {
         return function (dispatch, getState) {
             const ADD_ACCESS_TOKEN = 'ADD_ACCESS_TOKEN';
             logger.info(ADD_ACCESS_TOKEN);
@@ -29,11 +29,14 @@ export const accessTokensActions = {
                         body: { formData: { [ADD_ACCESS_TOKEN]: formData } },
                         onSuccess: (json: { doc: IAccessToken }) => {
                             dispatch(accessTokensActions.add(json.doc));
+                            return json.doc.token;
                         },
                     },
                     dispatch
                 );
             }
+
+            return Promise.resolve(false);
         };
     },
 

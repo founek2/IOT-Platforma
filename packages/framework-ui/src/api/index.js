@@ -142,6 +142,7 @@ export const jsonSender = async ({
     successMessage,
 }) => {
     let catched = false;
+    let successValue = undefined;
     try {
         const response = await fetch(url, {
             method,
@@ -153,13 +154,13 @@ export const jsonSender = async ({
             body: JSON.stringify(body),
         });
         const json = await processResponse(dispatch, successMessage)(response);
-        if (onSuccess) onSuccess(json);
+        if (onSuccess) successValue = onSuccess(json);
     } catch (e) {
         checkError(onError, e);
         catched = true;
     }
     onFinish && onFinish();
-    return !catched;
+    return successValue ?? !catched;
 };
 
 export const paramSender = async ({

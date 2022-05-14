@@ -102,15 +102,12 @@ interface EditDeviceDialogProps {
     onSaveAction: any;
 }
 
-function EditDeviceDialog({
-    registerTokenAction,
-    preFillForm,
-    onSaveAction,
-}: EditDeviceDialogProps) {
-    const params = useParams<{ deviceId?: string, nodeId?: string }>()
+function EditDeviceDialog({ registerTokenAction, preFillForm, onSaveAction }: EditDeviceDialogProps) {
+    const params = useParams<{ deviceId?: string; nodeId?: string }>();
     const editForm = useAppSelector(getFormData('EDIT_NOTIFY'));
     const sensorCount = editForm ? editForm.count : 0;
-    const thing = useAppSelector(getThing(params.nodeId))
+    const thing = useAppSelector(getThing(params.nodeId));
+    console.log('thing', thing, params);
 
     const [pending, setPending] = useState(false);
     const [loaded, setLoaded] = useState(false);

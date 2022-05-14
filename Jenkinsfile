@@ -87,7 +87,7 @@ pipeline {
             }
 
             steps {
-                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" http://localhost:9020/trigger/IOT-Platforma-hosting/platform'
+                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" http://192.168.10.219:9020/trigger/IOT-Platforma-hosting/platform'
             }
         }
     }

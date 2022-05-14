@@ -208,6 +208,7 @@ function PropertyRow({ property, value, onChange, history, timestamp, defaultSho
             </div>
             {showDetail && timestamp ? (
                 <UpdatedBefore
+                    gutterBottom
                     time={new Date(timestamp)}
                     variant="body2"
                     prefix="Aktualizováno před"

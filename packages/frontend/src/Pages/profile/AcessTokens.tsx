@@ -1,4 +1,4 @@
-import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
+import { DialogContentText, IconButton, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
@@ -13,15 +13,24 @@ import { TokenPermissions } from 'frontend/src/constants';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 import { getQueryID } from 'frontend/src/utils/getters';
 import { assoc, prop } from 'ramda';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import EditAccessToken from './accessTokens/EditAccessToken';
 import { accessTokensActions } from 'frontend/src/store/actions/accessTokens';
 import { RootState } from 'frontend/src/store/store';
+import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+
+const useStyles = makeStyles((theme) => ({
+    bold: {
+        fontWeight: 700,
+    },
+}));
 
 function AccessTokens() {
+    const classes = useStyles();
     const classesTab = useManagementStyles();
+    const [apiToken, setApiToken] = useState<string>();
     const user = useSelector<RootState, IUser | null>((state) => state.application.user);
     const selectedId = useSelector<RootState, string | undefined>(getQueryID);
     const openAddDialog = useSelector<RootState, boolean>(isUrlHash('#addToken'));
@@ -38,12 +47,21 @@ function AccessTokens() {
         tokenIDs.forEach((id) => dispatch(accessTokensActions.delete(id, user?._id)));
     }
 
-    function createToken() {
-        return dispatch(accessTokensActions.create(user?._id));
+    async function createToken() {
+        const token = await dispatch(accessTokensActions.create(user?._id));
+        if (token) {
+            setApiToken(token as unknown as string);
+            dispatch(formsDataActions.resetForm('ADD_ACCESS_TOKEN'));
+            history.push({ hash: '' });
+        }
     }
 
     function editToken() {
         return dispatch(accessTokensActions.updateToken(selectedId, user?._id));
+    }
+
+    function clearApiToken() {
+        setApiToken(undefined);
     }
 
     return (
@@ -118,9 +136,7 @@ function AccessTokens() {
                 title="Vytvoření tokenu"
                 cancelText="Zrušit"
                 agreeText="Uložit"
-                onAgree={async () => {
-                    if (await createToken()) history.push({ hash: '' });
-                }}
+                onAgree={createToken}
                 onClose={() => history.push({ hash: '' })}
                 fullScreen={isSmall}
                 content={<EditAccessToken formName="ADD_ACCESS_TOKEN" />}
@@ -137,6 +153,19 @@ function AccessTokens() {
                 onClose={() => history.push({ hash: '', search: '' })}
                 fullScreen={isSmall}
                 content={<EditAccessToken formName="EDIT_ACCESS_TOKEN" accessToken={selectedToken} />}
+            />
+            <Dialog
+                open={Boolean(apiToken)}
+                title="Přístupový token pro API"
+                agreeText="Zavřít"
+                onAgree={clearApiToken}
+                onClose={clearApiToken}
+                content={
+                    <DialogContentText>
+                        Váš token: <Typography className={classes.bold}>{apiToken}</Typography> Uložte si ho, protože po
+                        zavření tohoto okna již jej nebude možné token zobrazit.
+                    </DialogContentText>
+                }
             />
         </>
     );
