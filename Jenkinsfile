@@ -69,10 +69,6 @@ pipeline {
             agent { label 'java-docker-slave' }
             when { branch "release*" }
 
-            environment {
-                USER_CREDENTIALS = credentials('Jenkins-docker')
-            }
-
             steps{
                 script {
                     sh "ci/jenkins/docker-publish.sh"
