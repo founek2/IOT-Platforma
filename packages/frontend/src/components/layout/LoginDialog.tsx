@@ -34,7 +34,6 @@ const useClasses = makeStyles((theme) => ({
         position: 'relative',
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(2),
-
     },
     loginFooter: {
         textAlign: 'center',
@@ -122,7 +121,7 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
             aria-labelledby="form-dialog-title"
             maxWidth="xs"
             fullWidth
-        // fullScreen={true}
+            // fullScreen={true}
         >
             <Paper className={classes.paperColored}>
                 <Typography component="h4" className={classes.title}>
@@ -145,7 +144,7 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
                             }}
                         />
                     </Grid>
-                    {(isPasswdType && (
+                    {isPasswdType ? (
                         <Grid item md={10} xs={12}>
                             <FieldConnector
                                 deepPath="LOGIN.password"
@@ -157,8 +156,8 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
                                 onEnter={actionHandler}
                             />
                         </Grid>
-                    )) ||
-                        (authType && !isPasswdType && 'Nemáte nastavené heslo. Využijte přihlášení přes Seznam')}
+                    ) : null}
+                    {authType && !isPasswdType ? 'Nemáte nastavené heslo. Využijte přihlášení přes Seznam' : null}
                 </Grid>
             </DialogContent>
             <DialogActions className={classes.loginActions}>

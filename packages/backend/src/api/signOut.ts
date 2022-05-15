@@ -1,14 +1,8 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { IUser, OAuthProvider } from 'common/lib/models/interface/userInterface';
+import { OAuthProvider } from 'common/lib/models/interface/userInterface';
 import { UserService } from 'common/lib/services/userService';
-import formDataChecker from '../middlewares/formDataChecker';
 import resource from '../middlewares/resource-router-middleware';
-import eventEmitter from '../services/eventEmitter';
-import { OAuthService } from '../services/oauthService';
-import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
-import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import { EitherAsync } from 'purify-ts/EitherAsync';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
+import { OAuthService } from '../services/oauthService';
 
 /**
  * URL prefix /authorization/signOut

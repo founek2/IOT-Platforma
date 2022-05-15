@@ -58,7 +58,9 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
     const dispatch = useDispatch();
     useEffect(() => {
         function updateThingA(payload: SocketUpdateThingState) {
-            dispatch(thingsReducerActions.updateOne({ id: payload.thing._id, changes: { state: payload.thing.state } }))
+            dispatch(
+                thingsReducerActions.updateOne({ id: payload.thing._id, changes: { state: payload.thing.state } })
+            );
         }
 
         const listener = updateControl(updateThingA);
@@ -81,26 +83,39 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
                                 {(selectedLocation.building && selectedBuilding
                                     ? [[selectedLocation.building, selectedBuilding] as [string, Map<string, Device[]>]]
                                     : [...buildings.entries()]
-                                ).map(([building, rooms], idx) => {
-                                    return (
-                                        <Fragment key={building}>
-                                            <LocationTypography
-                                                location={{ building }}
-                                                linkBuilding={Boolean(!selectedBuilding)}
-                                                className={clsx(idx > 0 && classes.buildingContainer)}
-                                            />
-                                            <Grid container spacing={2}>
-                                                {[...rooms.entries()].map(([room, devices]) => (
-                                                    <Grid item xs={12} md={6} lg={6} key={building + '/' + room}>
-                                                        <Link to={`/devices/${building}/${room}`}>
-                                                            <RoomWidget devices={devices} className={classes.widget} />
-                                                        </Link>
-                                                    </Grid>
-                                                ))}
-                                            </Grid>
-                                        </Fragment>
-                                    );
-                                })}
+                                )
+                                    .sort(([name1], [name2]) => name1.localeCompare(name2))
+                                    .map(([building, rooms], idx) => {
+                                        return (
+                                            <Fragment key={building}>
+                                                <LocationTypography
+                                                    location={{ building }}
+                                                    linkBuilding={Boolean(!selectedBuilding)}
+                                                    className={clsx(idx > 0 && classes.buildingContainer)}
+                                                />
+                                                <Grid container spacing={2}>
+                                                    {[...rooms.entries()]
+                                                        .sort(([name1], [name2]) => name1.localeCompare(name2))
+                                                        .map(([room, devices]) => (
+                                                            <Grid
+                                                                item
+                                                                xs={12}
+                                                                md={6}
+                                                                lg={6}
+                                                                key={building + '/' + room}
+                                                            >
+                                                                <Link to={`/devices/${building}/${room}`}>
+                                                                    <RoomWidget
+                                                                        devices={devices}
+                                                                        className={classes.widget}
+                                                                    />
+                                                                </Link>
+                                                            </Grid>
+                                                        ))}
+                                                </Grid>
+                                            </Fragment>
+                                        );
+                                    })}
                             </div>
                         )
                     ) : (
@@ -115,20 +130,17 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
     );
 }
 
-const buildingsSelector = createSelector(
-    getDevices,
-    (devices) => {
-        const buildings: Buildings = new Map();
-        devices.forEach((device) => {
-            const { building, room } = device.info.location;
-            if (!buildings.has(building)) buildings.set(building, new Map());
-            const roomMap = buildings.get(building)!;
-            roomMap.set(room, [...(roomMap.get(room) || []), device]);
-        });
+const buildingsSelector = createSelector(getDevices, (devices) => {
+    const buildings: Buildings = new Map();
+    devices.forEach((device) => {
+        const { building, room } = device.info.location;
+        if (!buildings.has(building)) buildings.set(building, new Map());
+        const roomMap = buildings.get(building)!;
+        roomMap.set(room, [...(roomMap.get(room) || []), device]);
+    });
 
-        return buildings;
-    }
-);
+    return buildings;
+});
 
 const _mapStateToProps = (state: RootState, { match }: { match: { params: { building?: string; room?: string } } }) => {
     return {

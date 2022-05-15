@@ -76,40 +76,45 @@ function BorderBox({
     ...other
 }: BorderBoxProps) {
     const classes = useStyles();
-    const dispatch = useAppDispatch()
-    const [inTransition, setInTransition] = useState(false)
+    const dispatch = useAppDispatch();
+    const [inTransition, setInTransition] = useState(false);
     const ref: React.MutableRefObject<NodeJS.Timeout | null> = useRef(null);
-    const fetchHistory = useCallback(() => dispatch(thingHistoryActions.fetchHistory(deviceId, thing._id)), [deviceId, thing._id])
+    const fetchHistory = useCallback(
+        () => dispatch(thingHistoryActions.fetchHistory(deviceId, thing._id)),
+        [deviceId, thing._id]
+    );
 
     useEffect(() => {
         if (inTransition) {
             clear(ref);
-            setInTransition(false)
+            setInTransition(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lastChange, setInTransition]);
 
     async function handleClick(newState: any) {
-        setInTransition(true)
+        setInTransition(true);
         await onClick(newState);
         ref.current = setTimeout(() => {
-            // BLABLA
-            // TODO
-            // dispatch(devicesActions.update({
-            //     _id: deviceId,
-            //     state: {
-            //         status: {
-            //             value: DeviceStatus.alert,
-            //             timestamp: new Date(),
-            //         },
-            //     },
-            // }));
+            dispatch(
+                devicesActions.updateOne({
+                    id: deviceId,
+                    changes: {
+                        state: {
+                            status: {
+                                value: DeviceStatus.alert,
+                                timestamp: new Date(),
+                            },
+                        },
+                    },
+                })
+            );
         }, 3000);
     }
 
     const Component = component;
     return (
-        <Paper elevation={2} className={classes.box} >
+        <Paper elevation={2} className={classes.box}>
             {deviceStatus?.value &&
                 deviceStatus?.value !== DeviceStatus.ready &&
                 deviceStatus?.value !== DeviceStatus.sleeping && (
