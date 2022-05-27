@@ -71,7 +71,8 @@ router.post('/user', async function (req, res) {
     } else if (isGuest(username)) {
         // in password is username <=> Realm
         const doc = await UserModel.findByUserName(password);
-        if (doc) res.send('allow');
+        // "guest" for backward compatibility
+        if (doc || password === 'guest') res.send('allow');
         else sendDeny('/user invalid username', res);
     } else sendDeny('/user other', res);
 });
