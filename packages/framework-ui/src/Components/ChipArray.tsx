@@ -10,60 +10,60 @@ import Divider from '@material-ui/core/Divider';
 
 const styles = (theme) => ({
     root: {
-        display: 'flex'
+        display: 'flex',
         // flexWrap: "wrap"
     },
     chip: {
-        margin: theme.spacing(0.5)
+        margin: theme.spacing(0.5),
     },
     list: {
         // width: "10%",
         backgroundColor: theme.palette.background.paper,
         position: 'relative',
-        overflowY: 'auto'
+        overflowY: 'auto',
         // overflowX: 'visible',
         // maxHeight: 300,
         // borderRight: '1px solid rgba(0, 0, 0, 0.42)',
     },
     listSection: {
-        backgroundColor: 'inherit'
+        backgroundColor: 'inherit',
     },
     ul: {
         backgroundColor: 'inherit',
         paddingRight: 10,
-        paddingLeft: 0
+        paddingLeft: 0,
     },
     itemText: {
-        fontSize: 14
+        fontSize: 14,
     },
     listItem: {
         paddingLeft: 0,
         paddingRight: theme.spacing(3),
         paddingTop: 2,
         paddingBottom: 2,
-        cursor: 'pointer'
+        cursor: 'pointer',
     },
     listHeader: {
         paddingLeft: 0,
         paddingRight: theme.spacing(1),
         height: 40,
         fontSize: 16,
-        whiteSpace: 'pre'
+        whiteSpace: 'pre',
     },
     chipContainer: {
         padding: theme.spacing(1),
         // maxWidth: 370,
         overflowY: 'auto',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
     },
     errorColor: {
-        color: '#f44336'
+        color: '#f44336',
     },
     listWrapper: {
         maxWidth: '45%',
         overflowX: 'visible',
-        display: 'flex'
-    }
+        display: 'flex',
+    },
 });
 
 const createListItems = (array, clickHandler, classes) => {
@@ -80,21 +80,32 @@ class ChipArray extends Component {
         super(props);
         this.state = {
             chipData: [],
-            options: [ ...props.optionsData ]
+            options: [...props.optionsData],
             // optionsData: props.optionsData,
         };
     }
     componentWillReceiveProps({ optionsData, value }) {
+        //@ts-ignore
         const prevOptionsData = this.props.optionsData;
         if (!equals(prevOptionsData, optionsData)) {
             this.syncOptions(optionsData);
         }
-        if (!this.state.gotValue && !equals(this.state.chipData.map(({ value }) => value), value)) {
+        if (
+            //@ts-ignore
+            !this.state.gotValue &&
+            !equals(
+                //@ts-ignore
+                this.state.chipData.map(({ value }) => value),
+                value
+            )
+        ) {
             if (value) {
+                //@ts-ignore
                 const { options, chipData } = this.state;
                 let newChipData = clone(chipData);
                 let newOptions = clone(options);
                 value.forEach((val) => {
+                    //@ts-ignore
                     const option = this.state.options.find((obj) => obj.value === val);
                     if (option) {
                         const index = indexOf(option, newOptions);
@@ -105,53 +116,61 @@ class ChipArray extends Component {
                 this.setState({
                     options: newOptions,
                     chipData: newChipData,
-                    gotValue: true
+                    gotValue: true,
                 });
             }
         } else {
             if (!value) {
                 this.setState({
                     options: optionsData,
-                    chipData: []
+                    chipData: [],
                 });
             }
         }
     }
     syncOptions = (newOptionsData) => {
+        //@ts-ignore
         const { options, chipData } = this.state;
-        const diff = difference(newOptionsData, [ ...options, ...chipData ]);
+        const diff = difference(newOptionsData, [...options, ...chipData]);
         this.setState({
-            options: concat(options, diff)
+            options: concat(options, diff),
             // optionsData: newOptionsData,
         });
     };
     handleDelete = (data) => () => {
+        //@ts-ignore
         const { chipData, options } = this.state;
         const index = indexOf(data, chipData);
         const newChipData = remove(index, 1, chipData);
         this.setState({
             chipData: newChipData,
-            options: append(data, options)
+            options: append(data, options),
         });
+        //@ts-ignore
         const { onChange } = this.props;
+        //@ts-ignore
         onChange({ target: { value: newChipData.map((obj) => obj.value) } });
     };
     handleAddChip = (option, sync = false) => {
+        //@ts-ignore
         const { options, chipData } = this.state;
         const index = indexOf(option, options);
         const newChipData = append(option, chipData);
         this.setState({
             options: remove(index, 1, options),
-            chipData: newChipData
+            chipData: newChipData,
         });
         if (!sync) {
+            //@ts-ignore
             const { onChange } = this.props;
             onChange({ target: { value: newChipData.map((obj) => obj.value) } });
         }
     };
 
     render() {
+        //@ts-ignore
         const { classes, label, required, error, className } = this.props;
+        //@ts-ignore
         const { chipData, options } = this.state;
         const createChip = (data) => (
             <Chip
@@ -187,4 +206,5 @@ class ChipArray extends Component {
     }
 }
 
+//@ts-ignore
 export default withStyles(styles)(ChipArray);

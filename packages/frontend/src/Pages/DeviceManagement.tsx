@@ -16,6 +16,7 @@ import { getDevices, getDiscovery } from '../utils/getters';
 import io from '../webSocket';
 import DeviceSection from './deviceManagement/DeviceSection';
 import DiscoverySection from './deviceManagement/DiscoverySection';
+import { Device } from '../store/reducers/application/devices';
 
 const useStyles = makeStyles((theme) => ({
     cardContent: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface DevicesProps {
-    devices: IDevice[];
+    devices: Device[];
     discoveredDevices: IDiscovery[];
     locations: Locations;
 }

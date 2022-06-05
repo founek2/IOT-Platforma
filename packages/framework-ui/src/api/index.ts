@@ -5,9 +5,10 @@ import SuccessMessages from '../localization/successMessages';
 import { logger } from '../logger';
 import { userActions } from '../redux/actions/application/user';
 import { dehydrateState } from '../redux/actions/';
+import { Dispatch } from '@reduxjs/toolkit';
 
 const addNotification = notificationsActions.add;
-const processResponse = (dispatch, successMessage) => async (response) => {
+const processResponse = (dispatch: Dispatch, successMessage: string) => async (response) => {
     const { status } = response;
     // set new jwt token, when provided from backend
 
@@ -22,6 +23,7 @@ const processResponse = (dispatch, successMessage) => async (response) => {
     if (newToken) {
         logger.info('Setting resigned token');
         dispatch(userActions.update({ token: newToken }));
+        // @ts-ignore
         dispatch(dehydrateState());
     }
 
@@ -130,6 +132,17 @@ function buildParams(params) {
     return result.slice(0, -1);
 }
 
+interface SenderParams {
+    url: string;
+    token?: string;
+    onSuccess?: (data: any) => boolean | any;
+    onError?: (err: any) => any;
+    onFinish?: () => void;
+    method: 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'GET';
+    dispatch: Dispatch;
+    successMessage?: string;
+}
+type JsonSenderParams = SenderParams & { body?: any };
 export const jsonSender = async ({
     url,
     token = '',
@@ -140,7 +153,7 @@ export const jsonSender = async ({
     body,
     dispatch,
     successMessage,
-}) => {
+}: JsonSenderParams) => {
     let catched = false;
     let successValue = undefined;
     try {
@@ -163,6 +176,7 @@ export const jsonSender = async ({
     return successValue ?? !catched;
 };
 
+export type SenderParam = SenderParams & { params?: any };
 export const paramSender = async ({
     url,
     token = '',
@@ -172,7 +186,8 @@ export const paramSender = async ({
     method = 'GET',
     dispatch,
     params,
-}) => {
+    successMessage,
+}: SenderParam) => {
     let catched = false;
     try {
         const response = await fetch(url + (params ? buildParams(params) : ''), {
@@ -183,7 +198,7 @@ export const paramSender = async ({
                 Authorization: `Bearer ${token}`,
             },
         });
-        const json = await processResponse(dispatch)(response);
+        const json = await processResponse(dispatch, successMessage)(response);
         onSuccess(json);
     } catch (e) {
         catched = true;
@@ -193,12 +208,32 @@ export const paramSender = async ({
     return !catched;
 };
 
-export const postJson = o(jsonSender, flip(merge)({ method: 'POST' }));
+export type SenderJson = Omit<JsonSenderParams, 'method'>;
+export const postJson = function (props: SenderJson) {
+    return jsonSender({ ...props, method: 'POST' });
+};
 
-export const putJson = o(jsonSender, flip(merge)({ method: 'PUT' }));
+export const putJson = function (props: SenderJson) {
+    return jsonSender({ ...props, method: 'PUT' });
+};
 
-export const deleteJson = o(jsonSender, flip(merge)({ method: 'DELETE' }));
+export const deleteJson = function (props: SenderJson) {
+    return jsonSender({ ...props, method: 'DELETE' });
+};
 
-export const patchJson = o(jsonSender, flip(merge)({ method: 'PATCH' }));
+export const patchJson = function (props: SenderJson) {
+    return jsonSender({ ...props, method: 'PATCH' });
+};
 
-export const getJson = o(jsonSender, flip(merge)({ method: 'GET' }));
+export const getJson = function (props: SenderJson) {
+    return jsonSender({ ...props, method: 'GET' });
+};
+// export const postJson = o(jsonSender, flip(merge)({ method: 'POST' }));
+
+// export const putJson = o(jsonSender, flip(merge)({ method: 'PUT' }));
+
+// export const deleteJson = o(jsonSender, flip(merge)({ method: 'DELETE' }));
+
+// export const patchJson = o(jsonSender, flip(merge)({ method: 'PATCH' }));
+
+// export const getJson = o(jsonSender, flip(merge)({ method: 'GET' }));

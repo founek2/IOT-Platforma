@@ -6,7 +6,7 @@ const initialState = {
     mouseY: null,
 };
 
-export default function ContextMenu({ children, renderItems = () => null }) {
+export default function ContextMenu({ children, renderItems = (closeCb: any) => null }) {
     const [state, setState] = React.useState(initialState);
 
     const handleClick = (event) => {

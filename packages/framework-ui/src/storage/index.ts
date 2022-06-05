@@ -2,25 +2,25 @@ import { logger } from '../logger';
 
 let storage = localStorage;
 
-export function getItem(key) {
+export function getItem(key: string) {
     return storage.getItem(key);
 }
 
-export function setItem(key, value) {
+export function setItem(key: string, value: any) {
     return storage.setItem(key, value);
 }
 
-export function removeItem(key) {
+export function removeItem(key: string) {
     storage.removeItem(key);
 }
 
-export function removeItems(array) {
+export function removeItems(array: string[]) {
     array.forEach((key) => {
         storage.removeItem(key);
     });
 }
 
-export function setStorage(type) {
+export function setStorage(type: 'local' | 'session') {
     if (type === 'local') storage = localStorage;
     else if (type === 'session') storage = sessionStorage;
     else logger.error('Unsupported storage');

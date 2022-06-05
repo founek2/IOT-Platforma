@@ -16,7 +16,8 @@
     "jsx": "react",
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "strict": true
   },
   "include": [
     "src"

@@ -89,6 +89,9 @@ function DiscoverySection({
             history.push({ hash: '' });
         }
     }
+    const dataWithId = devices.map((device) => Object.assign({ id: device._id }, device)) as unknown as (Device & {
+        id: string;
+    })[];
 
     return (
         <Fragment>
@@ -98,17 +101,14 @@ function DiscoverySection({
                     toolbar: classes.toolbar,
                     pagination: classes.pagination,
                 }}
-                // @ts-ignore
                 dataProps={[
                     { path: 'info.name', label: 'Název' },
                     { path: 'metadata.deviceId', label: 'ID zařízení' },
                     {
                         path: 'info.location',
                         label: 'Umístění',
-                        // @ts-ignore
-                        convertor: ({ building, room }) => `${building}/${room}`,
+                        convertor: ({ building, room }: Device['info']['location']) => `${building}/${room}`,
                     },
-                    // @ts-ignore
                     {
                         path: 'things',
                         label: 'Věci',
@@ -127,11 +127,11 @@ function DiscoverySection({
                     },
                 ]}
                 enableSearch={isWide}
-                data={devices.map((device) => assoc('id', prop('_id', device), device))}
+                data={dataWithId}
                 toolbarHead="Správa zařízení"
                 orderBy="name"
                 enableEdit
-                customEditButton={(id: string, device: IDevice) =>
+                customEditButton={(id: string, device: Device) =>
                     device.permissions.write?.length > 0 ? (
                         <IconButton aria-label="add" size="small" onClick={(e) => handleClick(e, id)}>
                             <MoreVertIcon />

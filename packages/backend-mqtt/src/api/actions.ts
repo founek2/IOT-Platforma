@@ -1,6 +1,5 @@
 import express from 'express';
 import eventEmitter from '../services/eventEmitter';
-import { getPass } from 'common/src/services/TemporaryPass';
 import { logger } from 'framework-ui/src/logger';
 import { IDevice } from 'common/src/models/interface/device';
 
@@ -34,17 +33,6 @@ router.post('/device/:deviceId', async function (req, res) {
 
     eventEmitter.emit('device_send_command', { device: req.body.device, command: req.body.command });
     res.sendStatus(204);
-});
-
-router.get('/broker/auth', async function (req, res) {
-    (await getPass())
-        .ifJust((pass) => {
-            const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
-            res.send({
-                auth,
-            });
-        })
-        .ifNothing(() => res.sendStatus(503));
 });
 
 export default router;

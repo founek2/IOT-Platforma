@@ -1,8 +1,12 @@
-import { postJson, paramSender, deleteJson, putJson, patchJson } from '.';
+import { postJson, paramSender, deleteJson, putJson, patchJson, SenderParam, SenderJson } from '.';
+import { Dispatch } from '@reduxjs/toolkit';
 
 const API_URL = '/api';
 
-export const login = (object, dispatch) =>
+type SenderJsonOmitted = Omit<SenderJson, 'url' | 'dispatch'>;
+type SenderParamOmitted = Omit<SenderParam, 'url' | 'dispatch' | 'method'>;
+
+export const login = (object: SenderJsonOmitted, dispatch: Dispatch) =>
     postJson({
         url: API_URL + '/authorization',
         ...object,
@@ -10,7 +14,7 @@ export const login = (object, dispatch) =>
         dispatch,
     });
 
-export const create = (object, dispatch) =>
+export const create = (object: SenderJsonOmitted, dispatch: Dispatch) =>
     postJson({
         url: API_URL + '/user',
         ...object,
@@ -18,16 +22,19 @@ export const create = (object, dispatch) =>
         dispatch,
     });
 
-export const getUsers = (object, dispatch) =>
+export const getUsers = (object: SenderParamOmitted, dispatch: Dispatch) =>
     paramSender({
         url: API_URL + '/user',
+        method: 'GET',
         ...object,
         dispatch,
     });
 
-export const getUserAuthType = ({ userName, ...rest }, dispatch) =>
+export type SenderParamWithUsername = SenderParamOmitted & { userName: string };
+export const getUserAuthType = ({ userName, ...rest }: SenderParamWithUsername, dispatch: Dispatch) =>
     paramSender({
         url: API_URL + `/user/${userName}`,
+        method: 'GET',
         ...rest,
         dispatch,
     });
@@ -39,7 +46,8 @@ export const getUsersActiveBefore = (object, dispatch) =>
         dispatch,
     });
 
-export const deleteUser = ({ id, ...object }, dispatch) =>
+export type SenderJsonWithId = SenderJsonOmitted & { id: any };
+export const deleteUser = ({ id, ...object }: SenderJsonWithId, dispatch: Dispatch) =>
     deleteJson({
         url: API_URL + `/user/${id}`,
         ...object,
@@ -47,7 +55,7 @@ export const deleteUser = ({ id, ...object }, dispatch) =>
         dispatch,
     });
 
-export const updateUser = ({ id, ...object }, dispatch) =>
+export const updateUser = ({ id, ...object }: SenderJsonWithId, dispatch: Dispatch) =>
     putJson({
         url: API_URL + `/user/${id}`,
         ...object,
@@ -55,7 +63,7 @@ export const updateUser = ({ id, ...object }, dispatch) =>
         dispatch,
     });
 
-export const patchUser = ({ id, ...object }, dispatch) =>
+export const patchUser = ({ id, ...object }: SenderJsonWithId, dispatch: Dispatch) =>
     patchJson({
         url: API_URL + `/user/${id}`,
         ...object,
