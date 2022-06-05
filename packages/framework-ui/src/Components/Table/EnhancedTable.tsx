@@ -73,13 +73,13 @@ interface EnhancedTableProps<T extends { id: any }> {
     enableCreation?: boolean;
     enableEdit?: boolean;
     enableSearch?: boolean;
-    customClasses: {
+    customClasses?: {
         toolbar?: string;
         tableWrapper?: string;
         pagination?: string;
     };
     rowsPerPageOptions?: number[];
-    customEditButton: (id: any, item: any) => JSX.Element | null | JSX.Element[];
+    customEditButton?: (id: any, item: any) => JSX.Element | null | JSX.Element[];
 }
 function EnhancedTable<T extends { id: string }>({
     dataProps,

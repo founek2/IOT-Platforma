@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
 const FIELDS = ['propertyId', 'type', 'value', 'interval'];
 const FIELDS_ADVANCED = ['interval', 'from', 'to', 'daysOfWeek'];
 
-interface EditDeviceDialogProps {
+export interface EditDeviceDialogProps {
     editForm: any;
     sensorCount?: number;
     preFillForm: any;

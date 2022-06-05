@@ -9,11 +9,12 @@ import { usersActions } from 'framework-ui/lib/redux/actions/application/users';
 import arrToString from 'framework-ui/lib/utils/arrToString';
 import { isUrlHash } from 'framework-ui/lib/utils/getters';
 import { History } from 'history';
-import { isEmpty } from 'ramda';
+import { isEmpty, assoc, prop } from 'ramda';
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getGroups, getQueryID, getUsers } from '../utils/getters';
 import EditUser from './userManagement/EditUser';
+import { User } from 'framework-ui/lib/redux/reducers/application/user';
 
 function convertGroupIDsToName(groups: { group: string; text: string }[]) {
     return function (arr: string[]) {
@@ -63,6 +64,9 @@ function UserManagement({ history }: UserManagementProps) {
         dispatch(usersActions.fetchAll());
     }, [dispatch]);
     const isAdmin = isGroupAllowed('admin', groups);
+    const usersWithId = users.map((user) => assoc('id', prop('_id', user), user)) as unknown as (IUser & {
+        id: string;
+    })[];
 
     return (
         <div>
@@ -73,7 +77,7 @@ function UserManagement({ history }: UserManagementProps) {
                         component={({ onChange, value }) => (
                             <EnchancedTable
                                 dataProps={userProps(getAllowedGroups(groups)) as unknown as any}
-                                data={users}
+                                data={usersWithId}
                                 toolbarHead="Správa uživatelů"
                                 onDelete={() => dispatch(usersActions.deleteUsers())}
                                 orderBy="userName"

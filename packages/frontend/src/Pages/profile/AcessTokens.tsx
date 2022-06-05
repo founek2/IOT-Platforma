@@ -90,7 +90,7 @@ function AccessTokens() {
                                                 label: 'Oprávnění',
                                                 convertor: (val: Array<any>) =>
                                                     TokenPermissions.find((el) => el.value.toString() === String(val))
-                                                        ?.label,
+                                                        ?.label || '',
                                             },
                                             {
                                                 path: 'createdAt',

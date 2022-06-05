@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface DevicesProps {
+export interface DevicesProps {
     devices: Device[];
     discoveredDevices: IDiscovery[];
     locations: Locations;
