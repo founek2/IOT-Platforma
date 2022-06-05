@@ -58,7 +58,7 @@ const useStyles = makeStyles({
     },
 });
 
-interface EnhancedTableProps<T extends { id: any }> {
+interface EnhancedTableProps<T extends { _id: any }> {
     order?: 'asc' | 'desc';
     orderBy: string;
     data: T[];
@@ -81,7 +81,7 @@ interface EnhancedTableProps<T extends { id: any }> {
     rowsPerPageOptions?: number[];
     customEditButton?: (id: any, item: any) => JSX.Element | null | JSX.Element[];
 }
-function EnhancedTable<T extends { id: string }>({
+function EnhancedTable<T extends { _id: string }>({
     dataProps,
     data,
     toolbarHead,
@@ -206,21 +206,21 @@ function EnhancedTable<T extends { id: string }>({
                             .sort(getSorting(orderState, orderByState))
                             .slice(pageState * rowsPerPageState, pageState * rowsPerPageState + rowsPerPageState)
                             .map((n) => {
-                                const isSelected = isSelectedFn(n.id);
+                                const isSelected = isSelectedFn(n._id);
                                 return (
                                     <TableRow
                                         hover
                                         role="checkbox"
                                         aria-checked={isSelected}
                                         tabIndex={-1}
-                                        key={n.id}
+                                        key={n._id}
                                         selected={isSelected}
                                     >
                                         {enableSelection && (
                                             <TableCell padding="checkbox">
                                                 <Checkbox
                                                     checked={isSelected}
-                                                    onClick={(event) => handleClick(event, n.id)}
+                                                    onClick={(event) => handleClick(event, n._id)}
                                                 />
                                             </TableCell>
                                         )}
@@ -242,12 +242,12 @@ function EnhancedTable<T extends { id: string }>({
                                                         // color="primary"
                                                         aria-label="Edit"
                                                         size="small"
-                                                        onClick={() => onEdit(n.id)}
+                                                        onClick={() => onEdit(n._id)}
                                                     >
                                                         <EditIcon />
                                                     </IconButton>
                                                 ) : (
-                                                    customEditButton(n.id, n)
+                                                    customEditButton(n._id, n)
                                                 ))}
                                         </TableCell>
                                     </TableRow>

@@ -1,13 +1,8 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { IDevice } from 'common/src/models/interface/device';
 
-export type Device = Omit<IDevice, 'things'> & { things: string[] };
+export type Device = Omit<IDevice, 'things'> & { _id: string; things: string[] };
 // Define a type for the slice state
-export interface DeviceState {
-    data: IDevice[];
-    lastFetch?: Date;
-    lastUpdate?: Date;
-}
 
 const devicesAdapter = createEntityAdapter<Device>({
     // Assume IDs are stored in a field other than `book.id`

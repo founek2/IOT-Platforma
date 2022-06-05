@@ -64,9 +64,6 @@ function UserManagement({ history }: UserManagementProps) {
         dispatch(usersActions.fetchAll());
     }, [dispatch]);
     const isAdmin = isGroupAllowed('admin', groups);
-    const usersWithId = users.map((user) => assoc('id', prop('_id', user), user)) as unknown as (IUser & {
-        id: string;
-    })[];
 
     return (
         <div>
@@ -77,7 +74,7 @@ function UserManagement({ history }: UserManagementProps) {
                         component={({ onChange, value }) => (
                             <EnchancedTable
                                 dataProps={userProps(getAllowedGroups(groups)) as unknown as any}
-                                data={usersWithId}
+                                data={users as unknown as (IUser & { _id: string })[]}
                                 toolbarHead="Správa uživatelů"
                                 onDelete={() => dispatch(usersActions.deleteUsers())}
                                 orderBy="info.userName"

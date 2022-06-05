@@ -89,9 +89,6 @@ function DiscoverySection({
             history.push({ hash: '' });
         }
     }
-    const dataWithId = devices.map((device) => Object.assign({ id: device._id }, device)) as unknown as (Device & {
-        id: string;
-    })[];
 
     return (
         <Fragment>
@@ -127,7 +124,7 @@ function DiscoverySection({
                     },
                 ]}
                 enableSearch={isWide}
-                data={dataWithId}
+                data={devices}
                 toolbarHead="Správa zařízení"
                 orderBy="info.name"
                 enableEdit

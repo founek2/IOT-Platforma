@@ -3,9 +3,10 @@ import { IDiscovery } from 'common/src/models/interface/discovery';
 import { append, equals, filter, not, o, prop, propEq } from 'ramda';
 import { compose } from 'redux';
 
+export type Discovery = IDiscovery & { _id: string };
 // Define a type for the slice state
 export interface DiscoveryState {
-    data: IDiscovery[];
+    data: Discovery[];
     lastFetch?: Date;
     lastUpdate?: Date;
 }
@@ -20,10 +21,11 @@ export const discoverySlice = createSlice({
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
-        add: (state, action: PayloadAction<IDiscovery>) => {
+        add: (state, action: PayloadAction<Discovery>) => {
+            const filtered = state.data.filter((device) => device._id !== action.payload._id);
+
             return {
-                // @ts-ignore
-                data: append(action.payload, filter(o(not, propEq('_id', action.payload._id)), state.data)),
+                data: append(action.payload, filtered),
                 lastFetch: state.lastFetch,
                 lastUpdate: new Date(),
             };
@@ -31,7 +33,7 @@ export const discoverySlice = createSlice({
         toDefault: () => {
             return initialState;
         },
-        set: (state, action: PayloadAction<IDiscovery[]>) => {
+        set: (state, action: PayloadAction<Discovery[]>) => {
             const date = new Date();
             return { data: action.payload, lastFetch: date, lastUpdate: date };
         },

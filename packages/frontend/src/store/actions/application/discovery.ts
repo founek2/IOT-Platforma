@@ -6,7 +6,7 @@ import { getFormData, getToken } from 'framework-ui/src/utils/getters';
 import { AppThunk } from 'frontend/src/types';
 import { normalizeDevice } from 'frontend/src/utils/normalizers';
 import { addDiscoveredDevice, deleteDiscovery, fetchDiscovery } from '../../../api/discovery';
-import { discoveryReducerActions } from '../../reducers/application/discovery';
+import { discoveryReducerActions, Discovery } from '../../reducers/application/discovery';
 import { thingsReducerActions } from '../../reducers/application/things';
 import { devicesActions } from './devices';
 
@@ -19,7 +19,7 @@ export const discoveryActions = {
             return fetchDiscovery(
                 {
                     token: getToken(getState()),
-                    onSuccess: (json: { docs: IDiscovery[] }) => {
+                    onSuccess: (json: { docs: Discovery[] }) => {
                         dispatch(discoveryActions.set(json.docs));
                     },
                 },
