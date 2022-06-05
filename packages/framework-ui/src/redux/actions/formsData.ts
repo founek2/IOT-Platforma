@@ -123,14 +123,8 @@ export const formsDataActions = {
                 origRegisteredFields
             );
 
-            dispatch({
-                type: ActionTypes.UPDATE_REGISTERED_FIELDS,
-                payload: { [formName]: registeredFields },
-            });
-            dispatch({
-                type: ActionTypes.UPDATE_FORM,
-                payload: { path: formName, data: formData },
-            });
+            dispatch(formsDataActions.updateRegisteredFields({ [formName]: registeredFields }));
+            dispatch(formsDataActions.updateFormData({ formName, data: formData }));
         };
     },
 };

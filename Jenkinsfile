@@ -10,12 +10,6 @@ pipeline {
                 sh "yarn lerna init"
             }
         }
-        
-        stage ('Pre build') {
-            steps {
-                sh "yarn pre"
-            }
-        }
 
         // stage ('Tests') {
         //     steps {
@@ -69,10 +63,6 @@ pipeline {
             agent { label 'java-docker-slave' }
             when { branch "release*" }
 
-            environment {
-                USER_CREDENTIALS = credentials('Jenkins-docker')
-            }
-
             steps{
                 script {
                     sh "ci/jenkins/docker-publish.sh"
@@ -83,27 +73,12 @@ pipeline {
         stage('Deploy') {
             when { branch "release*" }
             environment {
-                WATCHTOWER_TOKEN = credentials('watchtower-token')
+                TRIGGER_API_KEY = credentials('docker-compose-trigger-api-key-free')
             }
 
             steps {
-                sh 'curl -H "Authorization: Bearer $WATCHTOWER_TOKEN" http://docker.iotdomu.cz:8080/v1/update'
+                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://free.iotplatforma.cloud:9020/trigger/IOT-Platforma-hosting/platform'
             }
-        }
-    }
-
-    post {
-        failure {
-            // script {
-            //     if (params.NOTIFY_SLACK == 'true') {
-            //         slackSend(...)
-            //     }
-            // }
-            
-            emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
-                recipientProviders: [developers(), requestor()],
-                subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
-            
         }
     }
 }

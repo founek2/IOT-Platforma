@@ -16,9 +16,6 @@ const devicesAdapter = createEntityAdapter<Device>({
     sortComparer: (a, b) => a.info.name.localeCompare(b.info.name),
 });
 
-// const alter = curry((action, key, path, items) => map(when(pathEq(path, key), action), items));
-// const updateThingF = compose(over(lensProp('things')), alter);
-
 export const devicesSlice = createSlice({
     name: 'devices',
     // `createSlice` will infer the state type from the `initialState` argument
@@ -33,20 +30,6 @@ export const devicesSlice = createSlice({
         },
         removeOne: devicesAdapter.removeOne,
         updateOne: devicesAdapter.updateOne,
-        // updateThing: ({ data, lastFetch }, action: PayloadAction<SocketUpdateThingState>) => {
-        //     const {
-        //         _id,
-        //         thing: { nodeId, ...updateData },
-        //     } = action.payload;
-
-        //     const newData = alter(
-        //         updateThingF(mergeDeepLeft(updateData), nodeId, ['config', 'nodeId']),
-        //         _id,
-        //         ['_id'],
-        //         data
-        //     );
-        //     return { lastFetch, data: newData, lastUpdate: new Date() };
-        // },
     },
 });
 

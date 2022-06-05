@@ -30,6 +30,9 @@ a {
 .utils--fullWidth {
     width: 100%;
 }
+.textCenter {
+    text-align: center;
+}
 
 /* cyrillic-ext */
 

@@ -7,7 +7,7 @@ export const postDevice = ({ id, ...object }, dispatch) =>
         url: API_URL + `/device/${id}`,
         ...object,
         successMessage: 'commandSended',
-        dispatch
+        dispatch,
     });
 
 export const updateState = ({ id, ...object }, dispatch) =>
@@ -15,14 +15,14 @@ export const updateState = ({ id, ...object }, dispatch) =>
         url: API_URL + `/device/${id}`,
         ...object,
         // successMessage: 'deviceCreated',
-        dispatch
+        dispatch,
     });
 
 export const fetchDevices = (object, dispatch) =>
     paramSender({
         url: API_URL + '/device',
         ...object,
-        dispatch
+        dispatch,
     });
 
 export const updateDevice = ({ id, ...object }, dispatch) =>
@@ -30,7 +30,7 @@ export const updateDevice = ({ id, ...object }, dispatch) =>
         url: API_URL + `/device/${id}`,
         ...object,
         successMessage: 'deviceUpdated',
-        dispatch
+        dispatch,
     });
 
 export const deleteDevice = ({ id, ...object }, dispatch) =>
@@ -38,27 +38,27 @@ export const deleteDevice = ({ id, ...object }, dispatch) =>
         url: API_URL + `/device/${id}`,
         ...object,
         successMessage: 'deviceDeleted',
-        dispatch
+        dispatch,
     });
 
 export const fetchDeviceData = ({ id, ...object }, dispatch) =>
     paramSender({
         url: API_URL + `/device/${id}`,
         ...object,
-        dispatch
+        dispatch,
     });
 
 export const updateNotify = ({ id, nodeId, ...object }, dispatch) =>
     putJson({
         url: API_URL + `/device/${id}/thing/${nodeId}/notify`,
         ...object,
-        successMessage: 'deviceUpdated',
-        dispatch
+        successMessage: 'notificationsUpdated',
+        dispatch,
     });
 
 export const getNotify = ({ id, nodeId, ...object }, dispatch) =>
     paramSender({
         url: API_URL + `/device/${id}/thing/${nodeId}/notify`,
         ...object,
-        dispatch
+        dispatch,
     });
