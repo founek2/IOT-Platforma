@@ -1,7 +1,7 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import { UserModel } from 'common/lib/models/userModel';
-import { UserService } from 'common/lib/services/userService';
+import fieldDescriptors from '@common/fieldDescriptors';
+import { IUser } from '@common/models/interface/userInterface';
+import { UserModel } from '@common/models/userModel';
+import { UserService } from '@common/services/userService';
 import { map, omit } from 'ramda';
 import formDataChecker from '../middlewares/formDataChecker';
 import resource from '../middlewares/resource-router-middleware';

@@ -1,9 +1,9 @@
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import { UserService } from 'common/lib/services/userService';
+import { DeviceModel } from '@common/models/deviceModel';
+import { UserService } from '@common/services/userService';
 import express, { Response } from 'express';
-import { AuthType } from 'common/lib/constants';
-import { validatePass } from 'common/lib/services/TemporaryPass';
-import { UserModel } from 'common/lib/models/userModel';
+import { AuthType } from '@common/constants';
+import { validatePass } from '@common/services/TemporaryPass';
+import { UserModel } from '@common/models/userModel';
 import { logger } from 'framework-ui/lib/logger';
 
 const router = express.Router();

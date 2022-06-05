@@ -1,4 +1,4 @@
-import { HistoricalModel } from 'common/lib/models/historyModel';
+import { HistoricalModel } from '@common/models/historyModel';
 import express from 'express';
 import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';

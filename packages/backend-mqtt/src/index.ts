@@ -1,9 +1,9 @@
 import bodyParser from 'body-parser';
-import config from 'common/lib/config';
-import { InfluxService } from 'common/lib/services/influxService';
-import { JwtService } from 'common/lib/services/jwtService';
-import * as TemporaryPass from 'common/lib/services/TemporaryPass';
-import { connectMongoose } from 'common/lib/utils/connectMongoose';
+import config from '@common/config';
+import { InfluxService } from '@common/services/influxService';
+import { JwtService } from '@common/services/jwtService';
+import * as TemporaryPass from '@common/services/TemporaryPass';
+import { connectMongoose } from '@common/utils/connectMongoose';
 import express, { Application } from 'express';
 import { logger } from 'framework-ui/lib/logger';
 import http from 'http';

@@ -1,13 +1,13 @@
-import { IDevice } from 'common/lib/models/interface/device';
-import { INotifyThingProperty, INotify } from 'common/lib/models/interface/notifyInterface';
-import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import { NotifyModel } from 'common/lib/models/notifyModel';
-import { UserModel } from 'common/lib/models/userModel';
+import { IDevice } from '@common/models/interface/device';
+import { INotifyThingProperty, INotify } from '@common/models/interface/notifyInterface';
+import { IThing, IThingProperty } from '@common/models/interface/thing';
+import { IUser } from '@common/models/interface/userInterface';
+import { NotifyModel } from '@common/models/notifyModel';
+import { UserModel } from '@common/models/userModel';
 import * as admin from 'firebase-admin';
 import { Config } from '../types';
-import { getProperty } from 'common/lib/utils/getProperty';
-import { getThing } from 'common/lib/utils/getThing';
+import { getProperty } from '@common/utils/getProperty';
+import { getThing } from '@common/utils/getThing';
 import functions from './fireBase/notifications/functions';
 import { logger } from 'framework-ui/lib/logger';
 import { map, prop, uniq, o } from 'ramda';
@@ -147,7 +147,8 @@ function processNotifications(
 }
 async function processOutput(output: Output, sended: { _id: IThingProperty['_id']; userId: IUser['_id'] }[]) {
     if (sended.length > 0) {
-        const uniqIds = o(uniq, map(prop('userId')), sended);
+        const userIds = sended.map((item) => item.userId);
+        const uniqIds = uniq(userIds);
         const arrOfTokensPerUser = await getTokensPerUser(uniqIds);
 
         const invalidTokens = await sendAllNotifications(arrOfTokensPerUser, output);

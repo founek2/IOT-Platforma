@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
-import config from 'common/lib/config';
-import { OAuthProvider } from 'common/lib/models/interface/userInterface';
+import config from '@common/config';
+import { OAuthProvider } from '@common/models/interface/userInterface';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from '@framework-ui/logger';
 
 const oauth = config.oauth;
 

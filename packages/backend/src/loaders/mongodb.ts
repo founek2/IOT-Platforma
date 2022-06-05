@@ -1,7 +1,7 @@
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from '@framework-ui/logger';
 import { Config } from '../types';
 import mongoose from 'mongoose';
-import { connectMongoose } from 'common/lib/utils/connectMongoose';
+import { connectMongoose } from '@common/utils/connectMongoose';
 
 /* Initialize connection to mongoDB */
 export default async (config: Config): Promise<mongoose.Connection | null> => {

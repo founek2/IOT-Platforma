@@ -1,4 +1,4 @@
-import config from 'common/lib/config';
+import config from '@common/config';
 import { spawn } from 'child_process';
 import path from 'path';
 

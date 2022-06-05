@@ -4,5 +4,6 @@
         "rootDir": "src",
         "outDir": "lib",
         "jsx": "react"
-    }
+    },
+    "exclude": ["./lib"]
 }

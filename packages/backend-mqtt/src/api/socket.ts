@@ -1,4 +1,4 @@
-import { JwtService } from 'common/lib/services/jwtService';
+import { JwtService } from '@common/services/jwtService';
 import express from 'express';
 import { Server as serverIO, Socket } from 'socket.io';
 import { logger } from 'framework-ui/lib/logger';

@@ -1,5 +1,5 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import config from 'common/lib/config/index';
+import config from '@common/config/index';
 import { logger } from 'framework-ui/lib/logger';
 
 export default async function () {

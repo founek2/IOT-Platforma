@@ -18,7 +18,8 @@ export const notificationsSlice = createSlice({
             return action.payload;
         },
         remove: (state, action: PayloadAction<number>) => {
-            return filter(o(not, propEq('key', action.payload)), state);
+            return state.filter((notification) => notification.key != action.payload);
+            // return filter(o(not, propEq('key', action.payload)), state);
         },
         add: (state, action: PayloadAction<Omit<Notification, 'key'>>) => {
             const updatedState = append({ ...action.payload, key: new Date().getTime() }, state);

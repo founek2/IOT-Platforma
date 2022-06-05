@@ -1,5 +1,5 @@
-import { OAuthProvider } from 'common/lib/models/interface/userInterface';
-import { UserService } from 'common/lib/services/userService';
+import { OAuthProvider } from '@common/models/interface/userInterface';
+import { UserService } from '@common/services/userService';
 import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';
 import { OAuthService } from '../services/oauthService';

@@ -1,5 +1,5 @@
 import { is } from 'ramda';
-import { NOTIFY_INTERVALS } from 'common/lib/constants';
+import { NOTIFY_INTERVALS } from '@common/constants';
 
 function getMinFromEpoch(date) {
     return date / 1000 / 60;

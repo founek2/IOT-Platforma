@@ -1,4 +1,4 @@
-import { DeviceModel } from 'common/lib/models/deviceModel';
+import { DeviceModel } from '@common/models/deviceModel';
 import express from 'express';
 import mongoose from 'mongoose';
 

@@ -1,15 +1,7 @@
 {
     "extends": "./tsconfig.build.json",
 
-    "compilerOptions": {
-        "paths": {
-            "common/*": ["../common/src/*"]
-        }
-    },
-    "references": [
-        {
-            "path": "../common"
-        }
-    ],
+    "compilerOptions": {},
+
     "files": ["types/global.d.ts"]
 }

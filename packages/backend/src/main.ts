@@ -1,8 +1,8 @@
-import { allowedGroups, groupsHeritage } from 'common/lib/constants/privileges';
-import { JwtService } from 'common/lib/services/jwtService';
+import { allowedGroups, groupsHeritage } from '@common/constants/privileges';
+import { JwtService } from '@common/services/jwtService';
 import express, { Application } from 'express';
-import { logger } from 'framework-ui/lib/logger';
-import initPrivileges from 'framework-ui/lib/privileges';
+import { logger } from '@framework-ui/logger';
+import initPrivileges from '@framework-ui/privileges';
 import http from 'http';
 import loadersInit from './loaders';
 import { MailerService } from './services/mailerService';

@@ -1,6 +1,6 @@
 import { OverView } from '../types/rabbitmq';
 import fetch from 'node-fetch';
-import config from 'common/lib/config';
+import config from '@common/config';
 import { Actions } from './actionsService';
 import { isBefore, addMinutes, isAfter } from 'date-fns';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';

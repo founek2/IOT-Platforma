@@ -1,6 +1,6 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { NotifyModel } from 'common/lib/models/notifyModel';
-import { transformNotifyForBE } from 'common/lib/utils/transform';
+import fieldDescriptors from '@common/fieldDescriptors';
+import { NotifyModel } from '@common/models/notifyModel';
+import { transformNotifyForBE } from '@common/utils/transform';
 import checkReadPerm from '../middlewares/device/checkReadPerm';
 import checkWritePerm from '../middlewares/device/checkWritePerm';
 import formDataChecker from '../middlewares/formDataChecker';

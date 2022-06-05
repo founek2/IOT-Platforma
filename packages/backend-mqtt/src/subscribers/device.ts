@@ -1,6 +1,6 @@
 import { logger } from 'framework-ui/lib/logger';
-import { getProperty } from 'common/lib/utils/getProperty';
-import { getThing } from 'common/lib/utils/getThing';
+import { getProperty } from '@common/utils/getProperty';
+import { getThing } from '@common/utils/getThing';
 import { Emitter, EmitterEvents } from '../services/eventEmitter';
 import { publishStr } from '../services/mqtt';
 

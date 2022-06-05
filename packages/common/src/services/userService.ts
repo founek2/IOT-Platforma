@@ -247,7 +247,7 @@ export const UserService = {
     /**
      * Generate forgot token for user
      */
-    async forgotPassword(email: IUser['info']['email']) {
+    async forgotPassword(email: IUser['info']['email']): Promise<Either<string, { token: IToken; user: IUser }>> {
         const user = await UserModel.findOne({ 'info.email': email }).lean();
         if (!user) return Left('userNotExist');
 

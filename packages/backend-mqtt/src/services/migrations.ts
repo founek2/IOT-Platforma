@@ -1,4 +1,4 @@
-import { MigrateModel, IMigrateDocument } from 'common/lib/models/migrateModel';
+import { MigrateModel, IMigrateDocument } from '@common/models/migrateModel';
 import { logger } from 'framework-ui/lib/logger';
 import fs from 'fs/promises';
 import path from 'path';

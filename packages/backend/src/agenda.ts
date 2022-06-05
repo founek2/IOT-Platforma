@@ -1,7 +1,7 @@
 import Agenda from 'agenda';
-import config from 'common/lib/config';
-import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda';
-import { logger } from 'framework-ui/lib/logger';
+import config from '@common/config';
+import { AGENDA_JOB_TYPE } from '@common/constants/agenda';
+import { logger } from '@framework-ui/logger';
 
 const configAgenda = config.agenda;
 

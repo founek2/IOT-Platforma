@@ -1,12 +1,4 @@
-import { ComponentType, PropertyClass } from "./thing";
-
-export interface IDiscoveryProperty {
-    propertyClass?: PropertyClass;
-    name?: string;
-    unitOfMeasurement?: string;
-    dataType?: string;
-    format?: string;
-}
+import { ComponentType, IThingProperty, PropertyClass } from './thing';
 
 export interface IDiscoveryThing {
     _id?: any;
@@ -14,8 +6,8 @@ export interface IDiscoveryThing {
         name?: string;
         nodeId?: string;
         componentType?: ComponentType;
-        propertyIds?: string[],
-        properties: { [propertyId: string]: IDiscoveryProperty };
+        propertyIds?: string[];
+        properties: { [propertyId: string]: IThingProperty };
     };
     state?: {
         timeStamp: Date;
@@ -28,7 +20,7 @@ export interface IDiscovery {
     deviceId: string;
     realm: string;
     name: string;
-    nodeIds: string[],
+    nodeIds: string[];
     things: { [nodeId: string]: IDiscoveryThing };
     createdAt: Date;
     updatedAt: Date;
