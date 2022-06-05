@@ -1,5 +1,5 @@
-import fieldDescriptors from '@common/fieldDescriptors';
-import { DeviceModel } from '@common/models/deviceModel';
+import fieldDescriptors from 'common/src/fieldDescriptors';
+import { DeviceModel } from 'common/src/models/deviceModel';
 import checkWritePerm from '../middlewares/device/checkWritePerm';
 import formDataChecker from '../middlewares/formDataChecker';
 import resource from '../middlewares/resource-router-middleware';
@@ -7,7 +7,7 @@ import tokenAuthMIddleware from '../middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import { DeviceService } from '../services/deviceService';
 import eventEmitter from '../services/eventEmitter';
-import { IDevice } from '@common/models/interface/device';
+import { IDevice } from 'common/src/models/interface/device';
 
 /**
  * URL prefix /device

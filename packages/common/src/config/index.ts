@@ -1,7 +1,6 @@
 import { Config } from '../types';
-import { logger } from 'framework-ui/lib/logger';
-
-var path = require('path');
+import { logger } from 'framework-ui/src/logger';
+import path from 'path';
 
 function areWeTestingWithJest() {
     return process.env.JEST_WORKER_ID !== undefined;
@@ -19,6 +18,8 @@ const config: Config = {
     bodyLimit: process.env.BODY_LIMIT || '100kb',
     homepage: process.env.HOME_PAGE as string,
     portAuth: Number(process.env.AUTH_PORT) || 8084,
+    portMqtt: Number(process.env.MQTT_PORT) || 8083,
+    authUri: (process.env.AUTH_URI as string) || 'http://localhost:8084',
     firebaseAdminPath: process.env.FIREBASE_ADMIN_PATH as string,
     dbUri: process.env.DATABASE_URI as string,
     influxDb: {

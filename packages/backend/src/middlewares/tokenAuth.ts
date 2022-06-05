@@ -1,12 +1,12 @@
-import { JwtService } from '@common/services/jwtService';
+import { JwtService } from 'common/src/services/jwtService';
 import mongoose from 'mongoose';
 import { equals, T, not } from 'ramda';
-import { logger } from '@framework-ui/logger';
+import { logger } from 'framework-ui/src/logger';
 
-import { enrichGroups } from '@framework-ui/privileges';
+import { enrichGroups } from 'framework-ui/src/privileges';
 import express from 'express';
-import { IUser, Permission } from '@common/models/interface/userInterface';
-import { UserModel } from '@common/models/userModel';
+import { IUser, Permission } from 'common/src/models/interface/userInterface';
+import { UserModel } from 'common/src/models/userModel';
 import { RequestWithAuth } from '../types';
 
 /**

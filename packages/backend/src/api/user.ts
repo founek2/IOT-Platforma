@@ -1,9 +1,9 @@
-import fieldDescriptors from '@common/fieldDescriptors';
-import { IUser } from '@common/models/interface/userInterface';
-import { TokenModel } from '@common/models/tokenModel';
-import { UserModel } from '@common/models/userModel';
-import { UserService } from '@common/services/userService';
-import { getAllowedGroups } from '@framework-ui/privileges';
+import fieldDescriptors from 'common/src/fieldDescriptors';
+import { IUser } from 'common/src/models/interface/userInterface';
+import { TokenModel } from 'common/src/models/tokenModel';
+import { UserModel } from 'common/src/models/userModel';
+import { UserService } from 'common/src/services/userService';
+import { getAllowedGroups } from 'framework-ui/src/privileges';
 import formDataChecker from '../middlewares/formDataChecker';
 import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
 import resource from '../middlewares/resource-router-middleware';

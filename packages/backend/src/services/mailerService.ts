@@ -1,11 +1,11 @@
-import { logger } from '@framework-ui/logger';
+import { logger } from 'framework-ui/src/logger';
 import Email from 'email-templates';
 import { createTransport } from 'nodemailer';
 import path from 'path';
-import config from '@common/config';
+import config from 'common/src/config';
 import { UserBasic } from '../types';
-import { Config } from '@common/types';
-import { IToken } from '@common/models/tokenModel';
+import { Config } from 'common/src/types';
+import { IToken } from 'common/src/models/tokenModel';
 
 let defaultEmail: Email;
 

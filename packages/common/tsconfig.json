@@ -4,10 +4,7 @@
         "baseUrl": ".",
         "rootDir": "src",
         "outDir": "lib",
-        "moduleResolution": "node",
-        "paths": {
-            "@framework-ui/*": ["../framework-ui/src/*"]
-        }
+        "moduleResolution": "node"
     },
     "references": [{ "path": "../framework-ui" }],
     "exclude": ["./lib"]

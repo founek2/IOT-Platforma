@@ -15,7 +15,6 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import uiMessages from '../../localization/ui';
 
-
 const useClasses = makeStyles({
     list: {
         width: 250,
@@ -41,16 +40,16 @@ function createMenuListItem(location: { pathname: string }) {
 }
 
 interface SideMenuProps {
-    open: boolean
-    onClose: () => void
-    onOpen: () => void
+    open: boolean;
+    onClose: () => void;
+    onOpen: () => void;
 }
 function SideMenu({ open, onClose, onOpen }: SideMenuProps) {
-    const userGroups = useAppSelector(getGroups)
+    const userGroups = useAppSelector(getGroups);
     const userRoutes = getPaths(userGroups);
     const location = useLocation();
 
-    const classes = useClasses()
+    const classes = useClasses();
 
     return (
         <SwipeableDrawer open={open} onClose={onClose} onOpen={onOpen}>

@@ -12,7 +12,8 @@
         "hat": "^0.0.3",
         "jsonwebtoken": "^8.5.1",
         "purify-ts": "^1.2.2",
-        "ramda": "^0.27.1"
+        "ramda": "^0.27.1",
+        "node-fetch": "^2.6.0"
     },
     "main": "dist/index.js",
     "typings": "index.d.ts",

@@ -1,7 +1,7 @@
-import { JwtService } from '@common/services/jwtService';
+import { JwtService } from 'common/src/services/jwtService';
 import express from 'express';
 import { Server as serverIO, Socket } from 'socket.io';
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/src/logger';
 
 type socketWithUser = {
     request: { user?: { id: string } };

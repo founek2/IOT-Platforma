@@ -1,5 +1,5 @@
 import { is } from 'ramda';
-import { NOTIFY_INTERVALS } from '@common/constants';
+import { NOTIFY_INTERVALS } from 'common/src/constants';
 
 function getMinFromEpoch(date) {
     return date / 1000 / 60;
@@ -33,7 +33,7 @@ function isInRange(now, from, to) {
     return now > from && now < to;
 }
 
-export default function shouldSend({ interval, from, to, daysOfWeek }, tmp = {}) {
+export default function shouldSend({ interval, from, to, daysOfWeek }, tmp) {
     const now = new Date();
     const enabled = daysOfWeek.includes(now.getDay()) && isInRange(now, from, to);
 

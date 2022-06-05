@@ -1,7 +1,7 @@
-import config from '@common/config';
-import fieldDescriptors from '@common/fieldDescriptors';
-import { OAuthProvider } from '@common/models/interface/userInterface';
-import { UserService } from '@common/services/userService';
+import config from 'common/src/config';
+import fieldDescriptors from 'common/src/fieldDescriptors';
+import { OAuthProvider } from 'common/src/models/interface/userInterface';
+import { UserService } from 'common/src/services/userService';
 import { EitherAsync } from 'purify-ts/EitherAsync';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 import formDataChecker from '../middlewares/formDataChecker';

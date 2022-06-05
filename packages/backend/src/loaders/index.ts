@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import { logger } from '@framework-ui/logger';
+import { logger } from 'framework-ui/src/logger';
 import type * as types from '../types';
 import expressLoader from './express';
 import mongoLoader from './mongodb';

@@ -39,11 +39,9 @@ const menu = [
 ];
 
 function Profile({ location, match }: RouteComponentProps) {
-
     const classes = useStyles();
     const dispatch = useDispatch();
     const userId = useSelector<RootState, IUser['_id'] | undefined>((state) => state.application.user?._id);
-
 
     useEffect(() => {
         if (userId) dispatch(accessTokensActions.fetch(userId));

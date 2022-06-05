@@ -1,7 +1,7 @@
-import fieldDescriptors from '@common/fieldDescriptors';
-import { DiscoveryModel, IDiscoveryDocument } from '@common/models/deviceDiscoveryModel';
-import { DeviceModel } from '@common/models/deviceModel';
-import { DeviceStatus } from '@common/models/interface/device';
+import fieldDescriptors from 'common/src/fieldDescriptors';
+import { DiscoveryModel, IDiscoveryDocument } from 'common/src/models/deviceDiscoveryModel';
+import { DeviceModel } from 'common/src/models/deviceModel';
+import { DeviceStatus } from 'common/src/models/interface/device';
 import mongoose from 'mongoose';
 import { assocPath, map } from 'ramda';
 import checkDiscovery from '../middlewares/discovery/checkDiscovery';

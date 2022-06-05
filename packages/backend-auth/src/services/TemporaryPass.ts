@@ -1,9 +1,9 @@
-import { Security } from './SecurityService';
+import { Security } from 'common/src/services/SecurityService';
 import addMinutes from 'date-fns/addMinutes';
 import isBefore from 'date-fns/isBefore';
-import { UserModel } from '../models/userModel';
+import { UserModel } from 'common/src/models/userModel';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/src/logger';
 
 export type Pass = {
     password: string;

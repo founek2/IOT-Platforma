@@ -1,10 +1,10 @@
-import validationFactory from 'framework-ui/lib/validations/validationFactory';
+import validationFactory from 'framework-ui/src/validations/validationFactory';
 import { assocPath, isNil } from 'ramda';
 import { AuthType, NotifyIntervals } from './constants';
 import { DeviceCommand } from './models/interface/device';
 import { NotifyType } from './models/interface/notifyInterface';
-import { transformToForm } from 'framework-ui/lib/utils/transformToForm';
-import { FormFieldDescriptors, FieldDescriptor, FieldDescriptors } from 'framework-ui/lib/types';
+import { transformToForm } from 'framework-ui/src/utils/transformToForm';
+import { FormFieldDescriptors, FieldDescriptor, FieldDescriptors } from 'framework-ui/src/types';
 
 const LOGIN: FormFieldDescriptors = {
     userName: {

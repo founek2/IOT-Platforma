@@ -15,7 +15,7 @@
         "runAgenda": "ts-node src/runAgendaDash.ts"
     },
     "keywords": [],
-    "author": "Delegi",
+    "author": "Martin Skalický",
     "dependencies": {
         "@influxdata/influxdb-client": "^1.24.0",
         "@influxdata/influxdb-client-apis": "^1.24.0",
@@ -28,7 +28,7 @@
         "express-async-handler": "^1.1.4",
         "express-mongo-sanitize": "^2.0.2",
         "firebase-admin": "^9.0.0",
-        "http-proxy-middleware": "^0.19.1",
+        "http-proxy-middleware": "^2.0.6",
         "mongoose": "^5.13.2",
         "morgan": "^1.9.1",
         "node-dotify": "^1.1.0",

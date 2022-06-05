@@ -4,11 +4,7 @@
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "./dist",
-        "moduleResolution": "node",
-        "paths": {
-            "@common/*": ["../common/src/*"],
-            "@framework-ui/*": ["../framework-ui/src/*"]
-        }
+        "moduleResolution": "node"
     },
     "references": [{ "path": "../common" }, { "path": "../framework-ui" }],
     "exclude": ["./dist", "src/**/*.spec.ts", "__tests__"]

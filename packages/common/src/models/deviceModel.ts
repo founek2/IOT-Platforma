@@ -1,4 +1,4 @@
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/src/logger';
 import mongoose, { Model } from 'mongoose';
 import { IThing } from './interface/thing';
 import { deviceSchemaPlain, IDeviceDocument } from './schema/deviceSchema';

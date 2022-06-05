@@ -1,8 +1,8 @@
 import express from 'express';
 import eventEmitter from '../services/eventEmitter';
-import { getPass } from '@common/services/TemporaryPass';
-import { logger } from 'framework-ui/lib/logger';
-import { IDevice } from '@common/models/interface/device';
+import { getPass } from 'common/src/services/TemporaryPass';
+import { logger } from 'framework-ui/src/logger';
+import { IDevice } from 'common/src/models/interface/device';
 
 const router = express.Router();
 

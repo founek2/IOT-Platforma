@@ -53,7 +53,7 @@ interface UserManagementProps {
 function UserManagement({ history }: UserManagementProps) {
     const classes = useStyles();
     const dispatch = useAppDispatch();
-    const groups = useAppSelector(getGroups)
+    const groups = useAppSelector(getGroups);
     const openEditDialog = useAppSelector(isUrlHash('#editUser'));
     const userId = useAppSelector(getQueryID);
     const users = useAppSelector(getUsers) as IUser[];

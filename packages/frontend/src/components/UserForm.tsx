@@ -4,7 +4,7 @@ import React from 'react';
 
 interface UserFormProps {
     formName: string;
-    onEnter?: React.EventHandler<any>
+    onEnter?: React.EventHandler<any>;
 }
 function UserForm({ formName, onEnter }: UserFormProps) {
     return (

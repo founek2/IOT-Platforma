@@ -1,0 +1,4 @@
+dist
+db/migrations/_current*.json
+db/config/config.json
+src/generated

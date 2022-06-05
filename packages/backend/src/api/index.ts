@@ -9,8 +9,10 @@ import accessToken from './accessToken';
 import broker from './broker';
 import authorization from './authorization';
 import signOut from './signOut';
+import { Config } from 'src/types';
+import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-proxy-middleware';
 
-export default () => {
+export default ({ config }: { config: Config }) => {
     let api = Router();
     // mount the user resource
     api.use('/user', user());

@@ -36,7 +36,7 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     app.use('/api', mongoSanitize());
 
     // api router
-    app.use('/api', api());
+    app.use('/api', api({ config }));
 
     // fallback
     app.use('/api/*', (req, res) => res.sendStatus(404));

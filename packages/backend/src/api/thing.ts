@@ -1,8 +1,8 @@
-import { DeviceModel } from '@common/models/deviceModel';
-import { IDevice } from '@common/models/interface/device';
-import { getProperty } from '@common/utils/getProperty';
-import { getThing } from '@common/utils/getThing';
-import { validateValue } from '@common/utils/validateValue';
+import { DeviceModel } from 'common/src/models/deviceModel';
+import { IDevice } from 'common/src/models/interface/device';
+import { getProperty } from 'common/src/utils/getProperty';
+import { getThing } from 'common/src/utils/getThing';
+import { validateValue } from 'common/src/utils/validateValue';
 import { all, equals } from 'ramda';
 import checkControlPerm from '../middlewares/device/checkControlPerm';
 import resource from '../middlewares/resource-router-middleware';

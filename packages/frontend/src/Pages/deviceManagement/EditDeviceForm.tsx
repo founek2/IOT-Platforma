@@ -16,7 +16,7 @@ interface DiscoverySectionProps {
     deleteDiscoveryAction: any;
     updateFormField: any;
     userNames: RootState['application']['userNames'];
-    locations: Locations
+    locations: Locations;
 }
 
 function EditDeviceForm({ userNames, locations }: DiscoverySectionProps) {

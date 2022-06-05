@@ -1,8 +1,8 @@
-import { IThingProperty, IThing } from '@common/models/interface/thing';
-import { IUser } from '@common/models/interface/userInterface';
-import { INotify, INotifyThing, INotifyThingProperty } from '@common/models/interface/notifyInterface';
+import { IThingProperty, IThing } from 'common/src/models/interface/thing';
+import { IUser } from 'common/src/models/interface/userInterface';
+import { INotify, INotifyThing, INotifyThingProperty } from 'common/src/models/interface/notifyInterface';
 import { groupBy, values, map } from 'ramda';
-import { NotifyModel } from '@common/models/notifyModel';
+import { NotifyModel } from 'common/src/models/notifyModel';
 import { ObjectId } from '../utils/objectId';
 
 const prepareQuery =

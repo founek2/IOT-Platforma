@@ -1,9 +1,10 @@
 import fetch from 'node-fetch';
-import config from '@common/config';
-import { IDevice, DeviceCommand } from '@common/models/interface/device';
-import { IDiscovery } from '@common/models/interface/discovery';
-import { IThing, IThingProperty } from '@common/models/interface/thing';
+import config from 'common/src/config';
+import { IDevice, DeviceCommand } from 'common/src/models/interface/device';
+import { IDiscovery } from 'common/src/models/interface/discovery';
+import { IThing, IThingProperty } from 'common/src/models/interface/thing';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
+import { AuthConnector } from 'common/src/connectors/authConnector';
 /**
  * Service to communicate with backend-mqtt, allowing sending data directly to devices
  */
@@ -69,15 +70,11 @@ export class Actions {
         return res.status === 204;
     }
 
-    public static async getBrokerAuth(): Promise<Maybe<string>> {
-        const res = await fetch(`http://localhost:${config.portAuth}/api/actions/broker/auth`, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
+    public static async getBrokerAuth() {
+        const result = await AuthConnector(config.authUri).getPass();
+        return result.map((pass) => {
+            const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
+            return auth;
         });
-
-        return res.status === 200 ? Just((await res.json()).auth) : Nothing;
     }
 }

@@ -23,34 +23,38 @@ const compMapper = {
 };
 
 interface RoomBoxProps {
-    device: Device,
-    thingId: Thing["_id"]
+    device: Device;
+    thingId: Thing['_id'];
 }
 function RoomBox({ device, thingId }: RoomBoxProps) {
-    const thing = useAppSelector(getThing(thingId))!
+    const thing = useAppSelector(getThing(thingId))!;
     const { _id, config, state } = thing;
-    const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch();
     const Comp = compMapper[config.componentType];
     if (!Comp) {
         logger.error('Invalid component type:', config.componentType, 'of device:', device.info.name);
-        return null
+        return null;
     }
 
-    return <Grid item xs={6} md={3} key={_id}>
-        <DeviceContext.Provider value={{ _id: device._id, status: device.state?.status, metadata: device.metadata }}>
-            <ThingContext.Provider value={thing}>
-                <Comp
-                    thing={thing}
-                    onClick={(state: any) => dispatch(devicesActions.updateState(device._id, thing._id, state))}
-                    lastChange={state?.timestamp}
-                    disabled={isAfk(device.state?.status?.value)}
-                    deviceStatus={device?.state?.status}
-                    deviceId={device._id}
-                    room={device.info.location.room}
-                />
-            </ThingContext.Provider>
-        </DeviceContext.Provider>
-    </Grid>
+    return (
+        <Grid item xs={6} md={3} key={_id}>
+            <DeviceContext.Provider
+                value={{ _id: device._id, status: device.state?.status, metadata: device.metadata }}
+            >
+                <ThingContext.Provider value={thing}>
+                    <Comp
+                        thing={thing}
+                        onClick={(state: any) => dispatch(devicesActions.updateState(device._id, thing._id, state))}
+                        lastChange={state?.timestamp}
+                        disabled={isAfk(device.state?.status?.value)}
+                        deviceStatus={device?.state?.status}
+                        deviceId={device._id}
+                        room={device.info.location.room}
+                    />
+                </ThingContext.Provider>
+            </DeviceContext.Provider>
+        </Grid>
+    );
 }
 
 export default RoomBox;

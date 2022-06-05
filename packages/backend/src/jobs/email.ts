@@ -1,9 +1,9 @@
 import Agenda from 'agenda';
-import { logger } from '@framework-ui/logger';
+import { logger } from 'framework-ui/src/logger';
 import { MailerService } from '../services/mailerService';
-import { AGENDA_JOB_TYPE } from '@common/constants/agenda';
+import { AGENDA_JOB_TYPE } from 'common/src/constants/agenda';
 import { UserBasic } from '../types';
-import { IToken } from '@common/models/tokenModel';
+import { IToken } from 'common/src/models/tokenModel';
 
 export default function (agenda: Agenda) {
     /* Send SignUp email */

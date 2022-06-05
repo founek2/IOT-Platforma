@@ -7,6 +7,8 @@ export interface Config {
     bodyLimit: string;
     homepage: string;
     portAuth: number;
+    portMqtt: number;
+    authUri: string;
     firebaseAdminPath: string;
     dbUri: string;
     influxDb: {

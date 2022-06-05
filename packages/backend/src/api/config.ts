@@ -1,4 +1,4 @@
-import config from '@common/config';
+import config from 'common/src/config';
 import { compose, lensProp, over, pick } from 'ramda';
 import resource from '../middlewares/resource-router-middleware';
 import tokenAuthMIddleware from '../middlewares/tokenAuth';

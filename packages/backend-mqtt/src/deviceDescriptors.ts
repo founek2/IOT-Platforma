@@ -1,7 +1,7 @@
-import validationFactory from 'framework-ui/lib/validations/validationFactory';
-import { ComponentType, PropertyClass, PropertyDataType } from '@common/models/interface/thing';
-import { transformToForm } from 'framework-ui/lib/utils/transformToForm';
-import { FormFieldDescriptors } from 'framework-ui/lib/types';
+import validationFactory from 'framework-ui/src/validations/validationFactory';
+import { ComponentType, PropertyClass, PropertyDataType } from 'common/src/models/interface/thing';
+import { transformToForm } from 'framework-ui/src/utils/transformToForm';
+import { FormFieldDescriptors } from 'framework-ui/src/types';
 
 const PROPERTY_BASE: FormFieldDescriptors = {
     propertyId: {

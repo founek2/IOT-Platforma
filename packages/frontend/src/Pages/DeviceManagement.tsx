@@ -24,16 +24,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 interface DevicesProps {
     devices: IDevice[];
     discoveredDevices: IDiscovery[];
-    locations: Locations
+    locations: Locations;
 }
 
 function Devices({ discoveredDevices }: DevicesProps) {
-    const devices = useAppSelector(getDevices)
-    const locations = useAppSelector(locationsSelector)
+    const devices = useAppSelector(getDevices);
+    const locations = useAppSelector(locationsSelector);
     const classes = useStyles();
     const dispatch = useDispatch();
     useEffectFetchDevices();
@@ -65,12 +64,11 @@ function Devices({ discoveredDevices }: DevicesProps) {
     );
 }
 
-
 const _mapStateToProps = (state: RootState) => {
     // @ts-ignore
     const discoveredDevices = prop('data', getDiscovery(state)) as RootState['application']['discovery']['data'];
     return {
-        discoveredDevices: discoveredDevices
+        discoveredDevices: discoveredDevices,
     };
 };
 

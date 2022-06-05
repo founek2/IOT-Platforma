@@ -26,7 +26,7 @@
         "eslint-config-react-app": "^6.0.0",
         "firebase": "^8.2.1",
         "history": "^4.7.2",
-        "http-proxy-middleware": "^0.19.1",
+        "http-proxy-middleware": "^2.0.6",
         "nodemailer": "^6.4.17",
         "normalizr": "^3.6.1",
         "notistack": "^1.0.3",

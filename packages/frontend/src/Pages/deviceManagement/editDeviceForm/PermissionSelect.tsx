@@ -61,14 +61,14 @@ type UserName = {
 
 const createListItem =
     (clickHandler: (e: any, id: IUser['_id']) => void, permissions: IDevice['permissions'], classes: any) =>
-        (obj: UserName) => {
-            return (
-                <ListItem button onClick={(e) => clickHandler(e, obj._id)} key={obj._id}>
-                    <ListItemText primary={obj.userName} />
-                    <ListItemIcon className={classes.icon}>{getIcon(obj._id, permissions)}</ListItemIcon>
-                </ListItem>
-            );
-        };
+    (obj: UserName) => {
+        return (
+            <ListItem button onClick={(e) => clickHandler(e, obj._id)} key={obj._id}>
+                <ListItemText primary={obj.userName} />
+                <ListItemIcon className={classes.icon}>{getIcon(obj._id, permissions)}</ListItemIcon>
+            </ListItem>
+        );
+    };
 
 interface PermissionSelectProps {
     label: string;

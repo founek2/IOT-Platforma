@@ -1,4 +1,4 @@
-import { UserModel } from '@common/models/userModel';
+import { UserModel } from 'common/src/models/userModel';
 import express from 'express';
 import mongoose from 'mongoose';
 

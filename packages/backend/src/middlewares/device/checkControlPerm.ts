@@ -1,8 +1,8 @@
 import express from 'express';
-import { DeviceModel } from '@common/models/deviceModel';
+import { DeviceModel } from 'common/src/models/deviceModel';
 import checkDevice from './checkDevice';
 import { RequestWithAuthOpt } from '../../types';
-import { Permission } from '@common/models/interface/userInterface';
+import { Permission } from 'common/src/models/interface/userInterface';
 
 /**
  * Middleware to check if device exists and user has permission to control it

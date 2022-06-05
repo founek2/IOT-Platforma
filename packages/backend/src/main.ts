@@ -1,8 +1,8 @@
-import { allowedGroups, groupsHeritage } from '@common/constants/privileges';
-import { JwtService } from '@common/services/jwtService';
+import { allowedGroups, groupsHeritage } from 'common/src/constants/privileges';
+import { JwtService } from 'common/src/services/jwtService';
 import express, { Application } from 'express';
-import { logger } from '@framework-ui/logger';
-import initPrivileges from '@framework-ui/privileges';
+import { logger } from 'framework-ui/src/logger';
+import initPrivileges from 'framework-ui/src/privileges';
 import http from 'http';
 import loadersInit from './loaders';
 import { MailerService } from './services/mailerService';
@@ -38,15 +38,26 @@ function createApp(config: Config) {
 
     /* SocketIO proxy*/
 
-    const proxy = require('http-proxy-middleware');
-    var wsProxy = proxy('/socket.io', {
+    const { createProxyMiddleware } = require('http-proxy-middleware');
+    // const proxy = require('http-proxy-middleware');
+    var wsProxy = createProxyMiddleware('/socket.io', {
         target: `ws://localhost:${config.portAuth}`,
         changeOrigin: true, // for vhosted sites, changes host header to match to target's host
         ws: true, // enable websocket proxy
         logLevel: 'error',
     });
-
     app.use(wsProxy);
+
+    const authProxy = createProxyMiddleware({
+        target: config.authUri,
+        pathRewrite: {
+            '^/api/auth/rabbitmq': '/api/auth',
+        },
+        changeOrigin: true,
+        logLevel: 'info',
+    });
+    app.use('/api/auth/rabbitmq', authProxy);
+
     app.server.on('upgrade', wsProxy.upgrade);
     logger.info('Proxy enabled');
 

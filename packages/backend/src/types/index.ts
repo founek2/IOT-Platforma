@@ -1,6 +1,6 @@
-import { ControlRecipe } from '@common/types';
+import { ControlRecipe } from 'common/src/types';
 import type { Request } from 'express';
-import { IUser, Permission } from '@common/models/interface/userInterface';
+import { IUser, Permission } from 'common/src/models/interface/userInterface';
 
 export interface EmitterEvents {
     user_login: IUser;
@@ -27,6 +27,7 @@ export interface Config {
     bodyLimit: string;
     homepage: string;
     portAuth: number;
+    authUri: string;
     dbUri: string;
     influxDb: {
         url: string;

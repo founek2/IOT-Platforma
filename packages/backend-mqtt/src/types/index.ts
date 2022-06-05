@@ -1,6 +1,7 @@
 export interface Config {
     homepage: string;
-    portAuth: number;
+    portMqtt: number;
+    authUri: string;
     firebaseAdminPath?: string;
     dbUri: string;
     jwt: {

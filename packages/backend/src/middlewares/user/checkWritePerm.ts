@@ -1,7 +1,7 @@
 import express from 'express';
 import checkUser from './checkUser';
 import { RequestWithAuthOpt } from '../../types';
-import { Permission } from '@common/models/interface/userInterface';
+import { Permission } from 'common/src/models/interface/userInterface';
 
 /**
  * Middleware to check if user exists and initiator of request has permission to write

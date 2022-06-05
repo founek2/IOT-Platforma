@@ -23,7 +23,7 @@ interface CopyUrlContextProps {
 enum Copy {
     Url,
     Topic,
-    Value
+    Value,
 }
 
 export function CopyUrlContext({ children, propertyId, value, className }: CopyUrlContextProps) {
@@ -31,11 +31,10 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
     const { config } = useThing();
     const bind = useLongPress(mouseClick, touchClick, 700);
 
-    const [state, setState] =
-        React.useState<{
-            mouseX: null | number;
-            mouseY: null | number;
-        }>(initialState);
+    const [state, setState] = React.useState<{
+        mouseX: null | number;
+        mouseY: null | number;
+    }>(initialState);
 
     function mouseClick(event: React.MouseEvent<HTMLDivElement>) {
         event.preventDefault();
@@ -61,14 +60,14 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
             switch (action) {
                 case Copy.Url:
                     const url = `${window.location.origin}/api/device/${deviceId}/thing/${config.nodeId}?property=${propertyId}&value=${value}`;
-                    copy(url)
+                    copy(url);
                     break;
                 case Copy.Topic:
                     const topic = `v2/${metadata.realm}/${metadata.deviceId}/${config.nodeId}/${propertyId}`;
-                    copy(topic)
+                    copy(topic);
                     break;
                 case Copy.Value:
-                    copy(String(value))
+                    copy(String(value));
                     break;
             }
             setState(initialState);

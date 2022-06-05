@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 import DaysOfWeekPicker from './DaysOfWeekPicker';
 import PropertyPart from './editNotify/PropertyPart';
 
-
 const useStyles = makeStyles((theme) => ({
     quantity: {
         marginTop: 30,

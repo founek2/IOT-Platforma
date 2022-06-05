@@ -1,6 +1,6 @@
-import { validateForm } from 'framework-ui/lib/validations';
-import { checkValid } from 'framework-ui/lib/validations';
-import { State } from 'framework-ui/lib/types';
+import { validateForm } from 'framework-ui/src/validations';
+import { checkValid } from 'framework-ui/src/validations';
+import { State } from 'framework-ui/src/types';
 
 export const checkValidFormData = (
     formData: { [formName: string]: any },

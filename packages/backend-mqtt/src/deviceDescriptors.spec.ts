@@ -1,6 +1,6 @@
-import { checkValidFormData } from '@common/utils/validation';
+import { checkValidFormData } from 'common/src/utils/validation';
 import deviceDescriptors from './deviceDescriptors';
-import { ComponentType, PropertyClass, PropertyDataType } from '@common/models/interface/thing';
+import { ComponentType, PropertyClass, PropertyDataType } from 'common/src/models/interface/thing';
 
 export const DEVICE = {
     info: {

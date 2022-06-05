@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import { IUser, Permission, IAccessToken, IOauth } from '../models/interface/userInterface';
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/src/logger';
 import { UserModel } from '../models/userModel';
 import { JwtService } from '../services/jwtService';
 import { IUserDocument } from '../models/schema/userSchema';

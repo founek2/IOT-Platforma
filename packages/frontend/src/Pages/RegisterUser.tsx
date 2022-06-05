@@ -64,7 +64,7 @@ const useClasses = makeStyles((theme) => ({
 }));
 
 interface RegisterUserProps {
-    history: History
+    history: History;
 }
 function RegisterUser({ history }: RegisterUserProps) {
     const [pending, setPending] = useState(false);

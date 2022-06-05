@@ -12,22 +12,43 @@ import {
     uniq as Runiq,
     isNil,
     not,
-    compose,
     filter,
 } from 'ramda';
 
+interface Privileges {
+    groupsHeritage: { [group: string]: string[] };
+    routes: { [group: string]: { allowedGroups: string[] } };
+}
+
 // TODO rewrite + add unit tests
 const isNotNil = o(not, isNil);
-const getRoutes = prop('routes');
+const getRoutes = (privileges: Privileges) => privileges.routes;
 
-const getArrayOfPaths = (privObj) => (groupName) => {
-    return compose(prop('routes'), prop(groupName), getRoutes)(privObj) || [];
+const getArrayOfPaths = (privObj: Privileges) => (groupName: string) => {
+    // @ts-ignore
+    return (compose(prop('routes'), prop(groupName), getRoutes)(privObj) as any[]) || [];
 };
 
 // const getArray0fGroups = privObj => compose(prop('allowedGroups'), flip(prop)(privObj));
 const getArray0fGroups = (privObj) => (groupName) => o(prop('allowedGroups'), prop(groupName))(privObj);
-let privileges = {};
+let privileges: Privileges = { groupsHeritage: {}, routes: {} };
 
+// export const groupsHeritage = {
+//     root: ['user', 'admin', 'flow'],
+//     admin: ['user', 'flow'],
+// };
+
+// export const routes = {
+//     user: {
+//         allowedGroups: allowedGroups.user,
+//     },
+//     admin: {
+//         allowedGroups: allowedGroups.admin,
+//     },
+//     root: {
+//         allowedGroups: allowedGroups.root,
+//     },
+// };
 export function enrichGroups(groups) {
     const out = [...groups];
     forEach(
@@ -45,7 +66,7 @@ export function getPaths(groups) {
     const output = [];
 
     const convertPrivToPaths = compose(
-        (array) => array && output.push(...array),
+        (array: any[]) => array && output.push(...array),
         filter(o(isNotNil, prop('name'))),
         getArrayOfPaths(privileges)
     );
@@ -58,7 +79,7 @@ export function getPathsWithComp(groups) {
     const output = [];
 
     const convertPrivToPaths = compose(
-        (array) => array && output.push(...array),
+        (array: any[]) => array && output.push(...array),
         filter(o(isNotNil, prop('Component'))),
         getArrayOfPaths(privileges)
     );
@@ -92,6 +113,6 @@ export function isGroupAllowed(groupName, groups) {
 /**
  * format - {groupName: [{path: /login, component}]}
  */
-export default function (routes, groupsHeritage) {
+export default function (routes: any, groupsHeritage: Privileges['groupsHeritage']) {
     privileges = { routes, groupsHeritage };
 }

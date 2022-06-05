@@ -1,11 +1,10 @@
 import bodyParser from 'body-parser';
-import config from '@common/config';
-import { InfluxService } from '@common/services/influxService';
-import { JwtService } from '@common/services/jwtService';
-import * as TemporaryPass from '@common/services/TemporaryPass';
-import { connectMongoose } from '@common/utils/connectMongoose';
+import config from 'common/src/config';
+import { InfluxService } from 'common/src/services/influxService';
+import { JwtService } from 'common/src/services/jwtService';
+import { connectMongoose } from 'common/src/utils/connectMongoose';
 import express, { Application } from 'express';
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/src/logger';
 import http from 'http';
 import morgan from 'morgan';
 import { Server as serverIO } from 'socket.io';
@@ -16,6 +15,7 @@ import { migrate } from './services/migrations';
 import mqttService from './services/mqtt';
 import initSubscribers from './subscribers';
 import { Config } from './types';
+import { AuthConnector } from 'common/src/connectors/authConnector';
 
 interface customApp extends Application {
     server: http.Server;
@@ -49,10 +49,10 @@ async function startServer(config: Config) {
 
     app.use('/api', api({ io: app.io }));
 
-    app.server.listen(config.portAuth, () => {
+    app.server.listen(config.portMqtt, () => {
         logger.info(`Started on port ${(app.server?.address() as any).port}`);
 
-        if (app.io) setTimeout(() => mqttService(app.io, config.mqtt, TemporaryPass.getPass), 1000); //init
+        if (app.io) setTimeout(() => mqttService(app.io, config.mqtt, AuthConnector(config.authUri).getPass), 1000); //init
     });
 }
 

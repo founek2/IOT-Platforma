@@ -29,7 +29,7 @@ function EditDeviceForm({ formName, accessToken }: DiscoverySectionProps) {
                 <FieldConnector
                     fieldProps={{ fullWidth: true }}
                     deepPath={`${formName}.name`}
-                // className={classes.chipArray}
+                    // className={classes.chipArray}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -42,8 +42,8 @@ function EditDeviceForm({ formName, accessToken }: DiscoverySectionProps) {
                             {label}
                         </MenuItem>
                     ))}
-                // optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
-                // className={classes.chipArray}
+                    // optionsData={map(({ _id, userName }) => ({ value: _id, label: userName }), userNames.data)}
+                    // className={classes.chipArray}
                 />
             </Grid>
         </Grid>

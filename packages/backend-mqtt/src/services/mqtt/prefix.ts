@@ -1,8 +1,8 @@
-import { UserModel } from '@common/models/userModel';
-import { DiscoveryModel } from '@common/models/deviceDiscoveryModel';
-import { DeviceModel } from '@common/models/deviceModel';
-import { DeviceStatus } from '@common/models/interface/device';
-import { ComponentType, PropertyClass, PropertyDataType } from '@common/models/interface/thing';
+import { UserModel } from 'common/src/models/userModel';
+import { DiscoveryModel } from 'common/src/models/deviceDiscoveryModel';
+import { DeviceModel } from 'common/src/models/deviceModel';
+import { DeviceStatus } from 'common/src/models/interface/device';
+import { ComponentType, PropertyClass, PropertyDataType } from 'common/src/models/interface/thing';
 import { Server as serverIO } from 'socket.io';
 import eventEmitter from '../eventEmitter';
 

@@ -1,7 +1,7 @@
 /**
  * Transform notify form from FE to BE representation
  */
-export function transformNotifyForBE({ propertyId = [], type = [], value = [], count, advanced = {} }) {
+export function transformNotifyForBE({ propertyId = [], type = [], value = [], count, advanced }) {
     const resultArr = [];
     for (let i = 0; i < count; i++) {
         resultArr.push({
