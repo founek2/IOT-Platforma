@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import initialState from 'common/lib/fieldDescriptors';
-import { FieldDescriptors } from 'framework-ui/lib/types';
+import initialState from 'common/src/fieldDescriptors';
+import { FieldDescriptors } from 'framework-ui/src/types';
 
 // Define a type for the slice state
 export type FieldDescriptsState = FieldDescriptors;

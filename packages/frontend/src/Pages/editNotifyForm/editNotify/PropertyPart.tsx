@@ -1,11 +1,11 @@
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
-import { NotfyTypeForDataType, NotifyType, NotifyTypeText } from 'common/lib/models/interface/notifyInterface';
-import { IThing, IThingProperty, IThingPropertyEnum, PropertyDataType } from 'common/lib/models/interface/thing';
-import { isNumericDataType } from 'common/lib/utils/isNumericDataType';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { getFieldVal } from 'framework-ui/lib/utils/getters';
+import { NotfyTypeForDataType, NotifyType, NotifyTypeText } from 'common/src/models/interface/notifyInterface';
+import { IThing, IThingProperty, IThingPropertyEnum, PropertyDataType } from 'common/src/models/interface/thing';
+import { isNumericDataType } from 'common/src/utils/isNumericDataType';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
+import { getFieldVal } from 'framework-ui/src/utils/getters';
 import { RootState } from 'frontend/src/store/store';
 import React, { Fragment } from 'react';
 import { connect, useDispatch } from 'react-redux';

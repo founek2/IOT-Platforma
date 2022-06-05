@@ -1,4 +1,4 @@
-import { messageFactory } from 'framework-ui/lib/localization';
+import { messageFactory } from 'framework-ui/src/localization';
 import './successMessages';
 import './errorMessages';
 import './validationMessages';

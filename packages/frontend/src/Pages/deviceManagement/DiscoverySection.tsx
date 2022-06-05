@@ -1,12 +1,12 @@
 import { Fab, Grid, useTheme, useMediaQuery } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { DeviceStatus } from 'common/lib/models/interface/device';
-import { IDiscovery, IDiscoveryThing } from 'common/lib/models/interface/discovery';
-import Dialog from 'framework-ui/lib/Components/Dialog';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import EnchancedTable from 'framework-ui/lib/Components/Table';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { isUrlHash } from 'framework-ui/lib/utils/getters';
+import { DeviceStatus } from 'common/src/models/interface/device';
+import { IDiscovery, IDiscoveryThing } from 'common/src/models/interface/discovery';
+import Dialog from 'framework-ui/src/Components/Dialog';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
+import EnchancedTable from 'framework-ui/src/Components/Table';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
+import { isUrlHash } from 'framework-ui/src/utils/getters';
 import { DeviceForm } from 'frontend/src/components/DeviceForm';
 import { assoc, prop } from 'ramda';
 import React, { Fragment, useState } from 'react';
@@ -89,7 +89,7 @@ function DiscoverySection({
                             data={discoveredDevices.map((device: any) => assoc('id', prop('_id', device), device))}
                             toolbarHead="Přidání zařízení"
                             onDelete={deleteDiscoveryAction}
-                            orderBy="Název"
+                            orderBy="name"
                             // enableCreation={isAdmin}
                             //onAdd={() => this.updateCreateForm({ open: true })}
                             enableEdit

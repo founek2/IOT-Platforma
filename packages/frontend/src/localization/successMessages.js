@@ -1,4 +1,4 @@
-import messageFactory from 'framework-ui/lib/localization/successMessages';
+import messageFactory from 'framework-ui/src/localization/successMessages';
 
 const messages = {
     deviceCreated: 'Zařízení vytvořeno',

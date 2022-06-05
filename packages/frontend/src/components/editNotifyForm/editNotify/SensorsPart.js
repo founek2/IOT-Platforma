@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 
-import { NotifyTypes } from 'common/lib/constants';
+import { NotifyTypes } from 'common/src/constants';
 
 const styles = (theme) => ({
     // contentInner: {

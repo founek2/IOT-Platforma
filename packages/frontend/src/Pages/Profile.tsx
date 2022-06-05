@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SecurityIcon from '@material-ui/icons/Security';
-import { IUser } from 'common/lib/models/interface/userInterface';
+import { IUser } from 'common/src/models/interface/userInterface';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom';

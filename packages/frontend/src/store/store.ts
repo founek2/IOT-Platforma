@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { hydrateState } from 'framework-ui/lib/redux/actions';
-import formsData from 'framework-ui/lib/redux/reducers/formsData';
-import history from 'framework-ui/lib/redux/reducers/history';
+import { hydrateState } from 'framework-ui/src/redux/actions';
+import formsData from 'framework-ui/src/redux/reducers/formsData';
+import history from 'framework-ui/src/redux/reducers/history';
 import application from './reducers/application';
 import fieldDescriptors from './reducers/fieldDescriptors';
 import accessTokens from './reducers/accessTokens';
@@ -16,7 +16,7 @@ const store = configureStore({
         history,
         fieldDescriptors,
     },
-    devTools: process.env.NODE_ENV !== 'production',
+    // devTools: process.env.NODE_ENV !== 'production',
     preloadedState,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { userActions } from '../../store/actions/application/user';
-import { getUser } from 'framework-ui/lib/utils/getters';
+import { getUser } from 'framework-ui/src/utils/getters';
 
 const styles = (theme) => ({
     rightIcon: {

@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import InfoIcon from '@material-ui/icons/Info';
-import { getPaths } from 'framework-ui/lib/privileges';
+import { getPaths } from 'framework-ui/src/privileges';
 import { useAppSelector } from 'frontend/src/hooks';
 import { getGroups } from 'frontend/src/utils/getters';
 import React from 'react';

@@ -2,7 +2,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import copy from 'clipboard-copy';
 import clsx from 'clsx';
-import { IThingProperty } from 'common/lib/models/interface/thing';
+import { IThingProperty } from 'common/src/models/interface/thing';
 import { useDevice } from 'frontend/src/hooks/useDevice';
 import { useLongPress } from 'frontend/src/hooks/useLongPress';
 import { useThing } from 'frontend/src/hooks/useThing';

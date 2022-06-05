@@ -1,13 +1,23 @@
 const prod = process.env.NODE_ENV === 'production';
 
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
-module.exports = {
+const config = {
     mode: prod ? 'production' : 'development',
     entry: './src/index.tsx',
     output: {
         path: __dirname + '/build/',
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        fallback: {
+            stream: require.resolve('stream-browserify'),
+        },
+        plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
     },
     module: {
         rules: [
@@ -15,9 +25,12 @@ module.exports = {
                 test: /\.(ts|tsx|jsx|js)$/,
                 exclude: /node_modules/,
                 resolve: {
-                    extensions: ['.ts', '.tsx', '.js', '.json'],
+                    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
                 },
-                use: 'ts-loader',
+                loader: 'ts-loader',
+                options: {
+                    projectReferences: true,
+                },
             },
             // {
             //     test: /\.(js|jsx)$/,
@@ -40,5 +53,44 @@ module.exports = {
             template: __dirname + '/public/index.html',
         }),
         new MiniCssExtractPlugin(),
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
+        // new webpack.DefinePlugin({
+        //     'process.env.NODE_ENV': process.env.NODE_ENV,
+        // }),
     ],
+    devServer: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3000',
+                // router: () => 'http://localhost:8085',
+                router: () => 'https://iotdomu.cz',
+                // logLevel: 'debug' /*optional*/,
+                changeOrigin: true,
+            },
+            '/socket.io': {
+                target: 'http://localhost:3000',
+                // router: () => 'http://localhost:8085',
+                router: () => 'https://iotdomu.cz',
+                ws: true,
+                changeOrigin: true,
+            },
+            // '/api': 'https://iotdomu.cz',
+        },
+        historyApiFallback: {
+            rewrites: [{ from: /^\/[^\.\/]*$/, to: '/index.html' }],
+        },
+    },
 };
+
+if (prod) {
+    config.plugins.push(
+        new WorkboxPlugin.InjectManifest({
+            swSrc: './src/service-worker.ts',
+            swDest: 'service-worker.js',
+        })
+    );
+}
+
+module.exports = config;

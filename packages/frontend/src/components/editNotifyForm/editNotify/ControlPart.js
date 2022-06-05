@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux';
 
-import { getFieldVal } from 'framework-ui/lib/utils/getters';
+import { getFieldVal } from 'framework-ui/src/utils/getters';
 import { ControlStateTypes, NotifyControlTypes } from '../../../constants';
 
 const styles = (theme) => ({});

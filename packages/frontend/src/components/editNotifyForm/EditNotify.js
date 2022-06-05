@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import FormLabel from '@material-ui/core/FormLabel';
 import { withStyles } from '@material-ui/core/styles';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -9,9 +9,9 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux';
 
-import { getFieldVal } from 'framework-ui/lib/utils/getters';
+import { getFieldVal } from 'framework-ui/src/utils/getters';
 import DaysOfWeekPicker from './DaysOfWeekPicker';
-import { NotifyIntervals } from 'common/lib/constants';
+import { NotifyIntervals } from 'common/src/constants';
 import ControlPart from './editNotify/ControlPart';
 import SensorsPart from './editNotify/SensorsPart';
 

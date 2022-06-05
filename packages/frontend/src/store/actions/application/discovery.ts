@@ -1,8 +1,8 @@
-import type { IDevice } from 'common/lib/models/interface/device';
-import { IDiscovery } from 'common/lib/models/interface/discovery';
-import { logger } from 'framework-ui/lib/logger';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
+import type { IDevice } from 'common/src/models/interface/device';
+import { IDiscovery } from 'common/src/models/interface/discovery';
+import { logger } from 'framework-ui/src/logger';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
+import { getFormData, getToken } from 'framework-ui/src/utils/getters';
 import { AppThunk } from 'frontend/src/types';
 import { normalizeDevice } from 'frontend/src/utils/normalizers';
 import { addDiscoveredDevice, deleteDiscovery, fetchDiscovery } from '../../../api/discovery';

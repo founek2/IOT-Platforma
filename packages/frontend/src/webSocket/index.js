@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/src/logger';
 import { T } from 'ramda';
 
 class MySocket {

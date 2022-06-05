@@ -1,10 +1,10 @@
-import { IDevice } from 'common/lib/models/interface/device';
-import { IThing } from 'common/lib/models/interface/thing';
-import { transformNotifyForFE } from 'common/lib/utils/transform';
-import { logger } from 'framework-ui/lib/logger';
-import { dehydrateState } from 'framework-ui/lib/redux/actions';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
+import { IDevice } from 'common/src/models/interface/device';
+import { IThing } from 'common/src/models/interface/thing';
+import { transformNotifyForFE } from 'common/src/utils/transform';
+import { logger } from 'framework-ui/src/logger';
+import { dehydrateState } from 'framework-ui/src/redux/actions';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
+import { getFormData, getToken } from 'framework-ui/src/utils/getters';
 import {
     deleteDevice as deleteDeviceApi,
     fetchDevices as fetchDevicesApi,

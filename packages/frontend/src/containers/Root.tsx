@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
-import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
-import { getItem, removeItem } from 'framework-ui/lib/storage';
+import { STATE_DEHYDRATED } from 'framework-ui/src/constants/redux';
+import { getItem, removeItem } from 'framework-ui/src/storage';
 import { SnackbarProvider } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';

@@ -1,10 +1,10 @@
 import BuildIcon from '@material-ui/icons/Build';
 import DevicesIcon from '@material-ui/icons/DevicesOther';
 import CloudIcon from '@material-ui/icons/Cloud';
-import initPrivileges from 'framework-ui/lib/privileges';
+import initPrivileges from 'framework-ui/src/privileges';
 import { lazy } from 'react';
 
-import { groupsHeritage, allowedGroups } from 'common/lib/constants/privileges';
+import { groupsHeritage, allowedGroups } from 'common/src/constants/privileges';
 
 const UserManagement = lazy(() => import('../Pages/UserManagement'));
 

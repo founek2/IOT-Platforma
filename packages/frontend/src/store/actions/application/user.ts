@@ -1,13 +1,13 @@
-import { STATE_DEHYDRATED } from 'framework-ui/lib/constants/redux';
-import ErrorMessages from 'framework-ui/lib/localization/errorMessages';
-import { logger } from 'framework-ui/lib/logger';
-import { notificationsActions } from 'framework-ui/lib/redux/actions/application/notifications';
-import { userActions as userAct } from 'framework-ui/lib/redux/actions/application/user';
-import { usersActions } from 'framework-ui/lib/redux/actions/application/users';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { removeItem } from 'framework-ui/lib/storage';
-import { AppThunk } from 'framework-ui/lib/types';
-import { getFormData, getToken, getUserId } from 'framework-ui/lib/utils/getters';
+import { STATE_DEHYDRATED } from 'framework-ui/src/constants/redux';
+import ErrorMessages from 'framework-ui/src/localization/errorMessages';
+import { logger } from 'framework-ui/src/logger';
+import { notificationsActions } from 'framework-ui/src/redux/actions/application/notifications';
+import { userActions as userAct } from 'framework-ui/src/redux/actions/application/user';
+import { usersActions } from 'framework-ui/src/redux/actions/application/users';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
+import { removeItem } from 'framework-ui/src/storage';
+import { AppThunk } from 'framework-ui/src/types';
+import { getFormData, getToken, getUserId } from 'framework-ui/src/utils/getters';
 import { postSignOut } from 'frontend/src/api/authorization';
 import {
     forgotPassword as forgotPasswordApi,

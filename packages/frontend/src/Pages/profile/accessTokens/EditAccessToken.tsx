@@ -1,7 +1,7 @@
 import { Grid, MenuItem } from '@material-ui/core';
-import { IAccessToken } from 'common/lib/models/interface/userInterface';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+import { IAccessToken } from 'common/src/models/interface/userInterface';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 import { TokenPermissions } from 'frontend/src/constants';
 import { pick } from 'ramda';
 import React, { useEffect } from 'react';

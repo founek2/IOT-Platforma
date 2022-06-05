@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import clsx from 'clsx';
-import { IThingPropertyEnum } from 'common/lib/models/interface/thing';
+import { IThingPropertyEnum } from 'common/src/models/interface/thing';
 import { RootState } from 'frontend/src/store/store';
 import { getThingHistory } from 'frontend/src/utils/getters';
 import { head } from 'ramda';

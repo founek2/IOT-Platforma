@@ -1,4 +1,4 @@
-import { IDevice } from 'common/lib/models/interface/device';
+import { IDevice } from 'common/src/models/interface/device';
 import { normalize, schema } from 'normalizr';
 import { Device } from '../store/reducers/application/devices';
 import { Thing } from '../store/reducers/application/things';

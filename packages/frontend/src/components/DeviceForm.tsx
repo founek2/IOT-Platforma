@@ -1,9 +1,9 @@
-import { Grid } from "@material-ui/core";
-import FieldConnector from "framework-ui/lib/Components/FieldConnector";
-import { getFieldVal } from "framework-ui/lib/utils/getters";
-import React from "react";
-import { useAppSelector } from "../hooks";
-import { Locations } from "../types";
+import { Grid } from '@material-ui/core';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
+import { getFieldVal } from 'framework-ui/src/utils/getters';
+import React from 'react';
+import { useAppSelector } from '../hooks';
+import { Locations } from '../types';
 
 interface DeviceFormProps {
     formName: 'CREATE_DEVICE' | 'EDIT_DEVICE';
@@ -11,8 +11,7 @@ interface DeviceFormProps {
     locations: Locations;
 }
 export function DeviceForm({ formName, onEnter, locations }: DeviceFormProps) {
-    const selectedBuilding = useAppSelector(getFieldVal(`${formName}.info.location.building`)) as string
-
+    const selectedBuilding = useAppSelector(getFieldVal(`${formName}.info.location.building`)) as string;
 
     return (
         <>

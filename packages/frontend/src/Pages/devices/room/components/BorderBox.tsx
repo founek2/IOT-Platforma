@@ -1,7 +1,7 @@
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-import { DeviceStatus, IDevice, IDeviceStatus } from 'common/lib/models/interface/device';
-import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
+import { DeviceStatus, IDevice, IDeviceStatus } from 'common/src/models/interface/device';
+import { IThing, IThingProperty } from 'common/src/models/interface/thing';
 import React, { FunctionComponent, useEffect, useRef, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

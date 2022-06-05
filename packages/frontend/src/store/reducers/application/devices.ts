@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { IDevice } from 'common/lib/models/interface/device';
+import { IDevice } from 'common/src/models/interface/device';
 
 export type Device = Omit<IDevice, 'things'> & { things: string[] };
 // Define a type for the slice state

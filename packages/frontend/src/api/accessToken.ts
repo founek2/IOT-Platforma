@@ -1,4 +1,4 @@
-import { postJson, paramSender, deleteJson, patchJson } from 'framework-ui/lib/api';
+import { postJson, paramSender, deleteJson, patchJson } from 'framework-ui/src/api';
 
 const API_URL = '/api';
 

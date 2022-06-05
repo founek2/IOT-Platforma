@@ -1,9 +1,9 @@
-import type { IDevice } from 'common/lib/models/interface/device';
-import { HistoricalSensor } from 'common/lib/models/interface/history';
-import type { IThing } from 'common/lib/models/interface/thing';
+import type { IDevice } from 'common/src/models/interface/device';
+import { HistoricalSensor } from 'common/src/models/interface/history';
+import type { IThing } from 'common/src/models/interface/thing';
 import { subDays } from 'date-fns';
-import { logger } from 'framework-ui/lib/logger';
-import { getToken } from 'framework-ui/lib/utils/getters';
+import { logger } from 'framework-ui/src/logger';
+import { getToken } from 'framework-ui/src/utils/getters';
 import { AppThunk } from 'frontend/src/types';
 import { fetchHistory as fetchHistoryApi } from '../../../api/thingApi';
 import { thingHistoryReducerActions } from '../../reducers/application/thingHistory';

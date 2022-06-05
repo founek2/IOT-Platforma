@@ -34,9 +34,10 @@ function EnhancedTableHead({
     rowCount,
     rows,
     enableSelection,
+    onRequestSort,
 }: EnhancedTableHeadProps) {
     const createSortHandler = (property) => (event) => {
-        this.props.onRequestSort(event, property);
+        onRequestSort(event, property);
     };
 
     return (
@@ -67,7 +68,7 @@ function EnhancedTableHead({
                                 <TableSortLabel
                                     active={orderBy === row.path}
                                     direction={order}
-                                    onClick={this.createSortHandler(row.path)}
+                                    onClick={createSortHandler(row.path)}
                                 >
                                     {row.label}
                                 </TableSortLabel>

@@ -1,5 +1,5 @@
-import type { IDevice } from 'common/lib/models/interface/device';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import type { IDevice } from 'common/src/models/interface/device';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import { DeviceForm } from 'frontend/src/components/DeviceForm';
 import { locationsSelector } from 'frontend/src/store/selectors/deviceSelector';
 import { RootState } from 'frontend/src/store/store';

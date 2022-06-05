@@ -4,11 +4,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
-import { IAccessToken, IUser } from 'common/lib/models/interface/userInterface';
-import Dialog from 'framework-ui/lib/Components/Dialog';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import EnchancedTable from 'framework-ui/lib/Components/Table';
-import { isUrlHash } from 'framework-ui/lib/utils/getters';
+import { IAccessToken, IUser } from 'common/src/models/interface/userInterface';
+import Dialog from 'framework-ui/src/Components/Dialog';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
+import EnchancedTable from 'framework-ui/src/Components/Table';
+import { isUrlHash } from 'framework-ui/src/utils/getters';
 import { TokenPermissions } from 'frontend/src/constants';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 import { getQueryID } from 'frontend/src/utils/getters';
@@ -19,7 +19,7 @@ import { useHistory } from 'react-router-dom';
 import EditAccessToken from './accessTokens/EditAccessToken';
 import { accessTokensActions } from 'frontend/src/store/actions/accessTokens';
 import { RootState } from 'frontend/src/store/store';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 
 const useStyles = makeStyles((theme) => ({
     bold: {

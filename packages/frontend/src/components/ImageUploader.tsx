@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CardMedia from '@material-ui/core/CardMedia';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import { getFormData, getFieldVal } from 'framework-ui/lib/utils/getters';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
+import { getFormData, getFieldVal } from 'framework-ui/src/utils/getters';
 import { useSelector } from 'react-redux';
 import { IMAGES_PREFIX_FOLDER } from '../constants';
 

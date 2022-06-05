@@ -1,6 +1,6 @@
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
-import { SocketUpdateThingState } from 'common/lib/types';
+import { SocketUpdateThingState } from 'common/src/types';
 import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';

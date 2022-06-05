@@ -1,4 +1,4 @@
-import { putJson, postJson } from 'framework-ui/lib/api';
+import { putJson, postJson } from 'framework-ui/src/api';
 
 export const API_URL = '/api';
 

@@ -1,5 +1,5 @@
-import type { HistoricalGeneric, HistoricalSensor } from 'common/lib/models/interface/history';
-import type { IThingProperty } from 'common/lib/models/interface/thing';
+import type { HistoricalGeneric, HistoricalSensor } from 'common/src/models/interface/history';
+import type { IThingProperty } from 'common/src/models/interface/thing';
 
 export function convertNumericHistoryToGraphData(data: HistoricalSensor[], propertyId: IThingProperty['propertyId']) {
     let result: { x: Array<Date>; y: Array<number> } = { x: [], y: [] };

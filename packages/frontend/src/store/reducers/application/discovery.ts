@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IDiscovery } from 'common/lib/models/interface/discovery';
+import { IDiscovery } from 'common/src/models/interface/discovery';
 import { append, equals, filter, not, o, prop, propEq } from 'ramda';
 import { compose } from 'redux';
 

@@ -1,7 +1,0 @@
-{
-    "extends": "./tsconfig.build.json",
-
-    "compilerOptions": {},
-
-    "files": ["types/global.d.ts"]
-}

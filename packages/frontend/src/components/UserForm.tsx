@@ -1,5 +1,5 @@
 import Grid from '@material-ui/core/Grid';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import React from 'react';
 
 interface UserFormProps {

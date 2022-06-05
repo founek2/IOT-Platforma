@@ -1,9 +1,9 @@
-import Loader from 'framework-ui/lib/Components/Loader';
-import { getPathsWithComp } from 'framework-ui/lib/privileges';
-import { historyActions } from 'framework-ui/lib/redux/actions/history';
-import { historyReducerActions } from 'framework-ui/lib/redux/reducers/history';
-import { isUserLoggerIn } from 'framework-ui/lib/utils/getters';
-import parseQuery from 'framework-ui/lib/utils/parseQuery';
+import Loader from 'framework-ui/src/Components/Loader';
+import { getPathsWithComp } from 'framework-ui/src/privileges';
+import { historyActions } from 'framework-ui/src/redux/actions/history';
+import { historyReducerActions } from 'framework-ui/src/redux/reducers/history';
+import { isUserLoggerIn } from 'framework-ui/src/utils/getters';
+import parseQuery from 'framework-ui/src/utils/parseQuery';
 import { createBrowserHistory } from 'history';
 import { map } from 'ramda';
 import React, { Suspense, useEffect } from 'react';

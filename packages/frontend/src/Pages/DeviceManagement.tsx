@@ -1,8 +1,8 @@
 import { makeStyles } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import { IDevice } from 'common/lib/models/interface/device';
-import { IDiscovery } from 'common/lib/models/interface/discovery';
+import { IDevice } from 'common/src/models/interface/device';
+import { IDiscovery } from 'common/src/models/interface/discovery';
 import { Locations } from 'frontend/src/types';
 import { prop } from 'ramda';
 import React, { Fragment, useEffect } from 'react';

@@ -60,7 +60,7 @@ const useStyles = makeStyles({
 
 interface EnhancedTableProps<T extends { id: any }> {
     order?: 'asc' | 'desc';
-    orderBy?: string;
+    orderBy: string;
     data: T[];
     rowsPerPage?: number;
     value?: any[];
@@ -95,13 +95,15 @@ function EnhancedTable<T extends { id: string }>({
     rowsPerPageOptions = [10, 25, 50],
     customClasses = {},
     value = [],
+    onChange,
+    orderBy,
 }: EnhancedTableProps<T>) {
     const classes = useStyles();
     const [orderState, setOrder] = useState<'asc' | 'desc'>('asc');
-    const [orderByState, setOrderBy] = useState<string>();
+    const [orderByState, setOrderBy] = useState<string>(orderBy);
     const [pageState, setPage] = useState(0);
-    const [rowsPerPageState, setRowsPerPage] = useState<number>();
-    const [searchText, setSearchText] = useState<string>();
+    const [rowsPerPageState, setRowsPerPage] = useState<number>(10);
+    const [searchText, setSearchText] = useState<string>('');
 
     // componentWillReceiveProps(nextProps) {
     //     if (!equals(this.state.data, nextProps.data)) {
@@ -115,6 +117,7 @@ function EnhancedTable<T extends { id: string }>({
         } else {
             setOrderBy(property);
         }
+        console.log('handle', property, orderByState);
     }
 
     function handleSelectAllClick(event: any, checked: boolean) {
@@ -126,7 +129,7 @@ function EnhancedTable<T extends { id: string }>({
     }
 
     function handleClick(event: any, id: string) {
-        const selected = this.props.value ? this.props.value : []; // ignore
+        const selected = value ? value : []; // ignore
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
@@ -140,11 +143,10 @@ function EnhancedTable<T extends { id: string }>({
             newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
         }
 
-        this.changeSelected(newSelected);
+        changeSelected(newSelected);
     }
 
     function changeSelected(newSelected: string[]) {
-        const { onChange } = this.props;
         if (onChange) onChange({ target: { value: newSelected } });
     }
 
@@ -156,8 +158,8 @@ function EnhancedTable<T extends { id: string }>({
         setRowsPerPage(event.target.value);
     }
 
-    function isSelected(id: string) {
-        this.props.value.indexOf(id) !== -1;
+    function isSelectedFn(id: string) {
+        return value.indexOf(id) !== -1;
     }
 
     function handleDelete(e) {
@@ -170,7 +172,7 @@ function EnhancedTable<T extends { id: string }>({
     }
 
     const enableSelection = Boolean(onDelete);
-    const selected = this.props.value || [];
+    const selected = value;
     // const { data, order, orderBy, rowsPerPage, page, searchText } = this.state;
     const emptyRows = rowsPerPageState - Math.min(rowsPerPageState, data.length - pageState * rowsPerPageState);
 
@@ -179,11 +181,11 @@ function EnhancedTable<T extends { id: string }>({
             <EnhancedTableToolbar
                 numSelected={selected.length}
                 headLabel={toolbarHead}
-                onDelete={this.handleDelete}
+                onDelete={handleDelete}
                 onAdd={onAdd}
                 enableCreation={enableCreation}
                 enableSearch={enableSearch}
-                onSearchChange={this.handleSearchChange}
+                onSearchChange={handleSearchChange}
                 className={customClasses.toolbar}
             />
             <div className={clsx(classes.tableWrapper, customClasses.tableWrapper)}>
@@ -192,8 +194,8 @@ function EnhancedTable<T extends { id: string }>({
                         numSelected={selected.length}
                         order={orderState}
                         orderBy={orderByState}
-                        onSelectAllClick={this.handleSelectAllClick}
-                        onRequestSort={this.handleRequestSort}
+                        onSelectAllClick={handleSelectAllClick}
+                        onRequestSort={handleRequestSort}
                         rowCount={data.length}
                         rows={dataProps}
                         enableSelection={enableSelection}
@@ -204,7 +206,7 @@ function EnhancedTable<T extends { id: string }>({
                             .sort(getSorting(orderState, orderByState))
                             .slice(pageState * rowsPerPageState, pageState * rowsPerPageState + rowsPerPageState)
                             .map((n) => {
-                                const isSelected = this.isSelected(n.id);
+                                const isSelected = isSelectedFn(n.id);
                                 return (
                                     <TableRow
                                         hover
@@ -218,7 +220,7 @@ function EnhancedTable<T extends { id: string }>({
                                             <TableCell padding="checkbox">
                                                 <Checkbox
                                                     checked={isSelected}
-                                                    onClick={(event) => this.handleClick(event, n.id)}
+                                                    onClick={(event) => handleClick(event, n.id)}
                                                 />
                                             </TableCell>
                                         )}
@@ -273,8 +275,8 @@ function EnhancedTable<T extends { id: string }>({
                     'aria-label': 'Další stránka',
                 }}
                 labelRowsPerPage="Položek na stránku"
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
                 labelDisplayedRows={({ from, to, count }) => `${from}-${to} z ${count}`}
             />
         </div>

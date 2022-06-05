@@ -1,4 +1,4 @@
-import { logger } from 'framework-ui/lib/logger';
+import { logger } from 'framework-ui/src/logger';
 import React from 'react';
 /* global umami */
 

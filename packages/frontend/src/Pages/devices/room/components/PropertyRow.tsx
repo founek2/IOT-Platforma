@@ -9,9 +9,9 @@ import {
     IThingPropertyEnum,
     IThingPropertyNumeric,
     PropertyDataType,
-} from 'common/lib/models/interface/thing';
-import { isNumericDataType } from 'common/lib/utils/isNumericDataType';
-import { onEnterRun } from 'framework-ui/lib/utils/onEnter';
+} from 'common/src/models/interface/thing';
+import { isNumericDataType } from 'common/src/utils/isNumericDataType';
+import { onEnterRun } from 'framework-ui/src/utils/onEnter';
 import { SensorIcons } from 'frontend/src/components/SensorIcons';
 import React, { useState } from 'react';
 import SwitchMy from './Switch';
@@ -25,8 +25,8 @@ import {
     convertNumericHistoryToGraphData,
     convertBoolHistoryToGraphData,
 } from 'frontend/src/utils/convertHistoryToGraphData';
-import UpdatedBefore from 'framework-ui/lib/Components/UpdatedBefore';
-import { HistoricalGeneric } from 'common/lib/models/interface/history';
+import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore';
+import { HistoricalGeneric } from 'common/src/models/interface/history';
 import { useCallback } from 'react';
 import { format } from 'date-fns';
 

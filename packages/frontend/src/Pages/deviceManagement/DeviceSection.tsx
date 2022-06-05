@@ -5,11 +5,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { DeviceCommand, IDevice, IDeviceStatus } from 'common/lib/models/interface/device';
-import { default as AlertDialog, default as Dialog } from 'framework-ui/lib/Components/Dialog';
-import EnchancedTable from 'framework-ui/lib/Components/Table';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { isUrlHash } from 'framework-ui/lib/utils/getters';
+import { DeviceCommand, IDevice, IDeviceStatus } from 'common/src/models/interface/device';
+import { default as AlertDialog, default as Dialog } from 'framework-ui/src/Components/Dialog';
+import EnchancedTable from 'framework-ui/src/Components/Table';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
+import { isUrlHash } from 'framework-ui/src/utils/getters';
 import { useAppSelector } from 'frontend/src/hooks';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 import { Device } from 'frontend/src/store/reducers/application/devices';
@@ -129,7 +129,7 @@ function DiscoverySection({
                 enableSearch={isWide}
                 data={dataWithId}
                 toolbarHead="Správa zařízení"
-                orderBy="name"
+                orderBy="info.name"
                 enableEdit
                 customEditButton={(id: string, device: Device) =>
                     device.permissions.write?.length > 0 ? (

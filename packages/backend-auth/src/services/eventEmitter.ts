@@ -1,8 +1,8 @@
-import { EventEmitter } from "events";
-import * as types from "../types";
-import type { IDevice, DeviceCommand } from "common/lib/models/interface/device";
-import { IThing, IThingProperty } from "common/lib/models/interface/thing";
-import { IUser } from "common/lib/models/interface/userInterface";
+import { EventEmitter } from 'events';
+import * as types from '../types';
+import type { IDevice, DeviceCommand } from 'common/src/models/interface/device';
+import { IThing, IThingProperty } from 'common/src/models/interface/thing';
+import { IUser } from 'common/src/models/interface/userInterface';
 
 type EventMap = Record<string, any>;
 
@@ -32,18 +32,18 @@ class MyEmitter<T extends EventMap> implements Emitter<T> {
 
 export interface deviceSetState {
     device: IDevice;
-    nodeId: IThing["config"]["nodeId"];
-    propertyId: IThingProperty["propertyId"];
+    nodeId: IThing['config']['nodeId'];
+    propertyId: IThingProperty['propertyId'];
     value: string | number;
 }
 
 export interface EmitterEvents {
-    device_pairing_init: { deviceId: IDevice["_id"]; apiKey: IDevice["apiKey"] };
+    device_pairing_init: { deviceId: IDevice['_id']; apiKey: IDevice['apiKey'] };
     device_pairing_done: IDevice;
     device_set_state: deviceSetState;
-    device_send_command: { device: IDevice, command: DeviceCommand }
+    device_send_command: { device: IDevice; command: DeviceCommand };
 }
 
-class MyClass extends MyEmitter<EmitterEvents> { }
+class MyClass extends MyEmitter<EmitterEvents> {}
 
 export default new MyClass();

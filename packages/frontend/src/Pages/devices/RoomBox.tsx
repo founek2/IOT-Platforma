@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
-import { ComponentType } from 'common/lib/models/interface/thing';
-import { logger } from 'framework-ui/lib/logger';
+import { ComponentType } from 'common/src/models/interface/thing';
+import { logger } from 'framework-ui/src/logger';
 import { useAppDispatch, useAppSelector } from 'frontend/src/hooks';
 import { DeviceContext } from 'frontend/src/hooks/useDevice';
 import { ThingContext } from 'frontend/src/hooks/useThing';

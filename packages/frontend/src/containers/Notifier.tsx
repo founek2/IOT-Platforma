@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { notificationsActions } from 'framework-ui/lib/redux/actions/application/notifications';
-import { NotificationVariant } from 'framework-ui/lib/types';
+import { notificationsActions } from 'framework-ui/src/redux/actions/application/notifications';
+import { NotificationVariant } from 'framework-ui/src/types';
 
 type NotifyKey = number;
 

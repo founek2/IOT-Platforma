@@ -1,8 +1,8 @@
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from '../store/store';
-import { IThing } from 'common/lib/models/interface/thing';
-import { IDevice } from 'common/lib/models/interface/device';
+import { IThing } from 'common/src/models/interface/thing';
+import { IDevice } from 'common/src/models/interface/device';
 
 export interface ControlProps {
     name: string;

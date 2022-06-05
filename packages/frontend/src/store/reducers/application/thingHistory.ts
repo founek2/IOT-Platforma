@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IDevice } from 'common/lib/models/interface/device';
-import { IThing } from 'common/lib/models/interface/thing';
-import { HistoricalSensor } from 'common/lib/models/interface/history';
+import { IDevice } from 'common/src/models/interface/device';
+import { IThing } from 'common/src/models/interface/thing';
+import { HistoricalSensor } from 'common/src/models/interface/history';
 
 // Define a type for the slice state
 export interface ThingHistoryState {

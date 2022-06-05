@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import UpdatedBefore from 'framework-ui/lib/Components/UpdatedBefore';
+import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore';
 import React, { useEffect } from 'react';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';

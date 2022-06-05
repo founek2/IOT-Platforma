@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAccessToken } from 'common/lib/models/interface/userInterface';
+import { IAccessToken } from 'common/src/models/interface/userInterface';
 import { append, filter, map, mergeLeft, propEq, when } from 'ramda';
 
 // Define a type for the slice state

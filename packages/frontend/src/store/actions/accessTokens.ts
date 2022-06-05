@@ -1,7 +1,7 @@
-import { IAccessToken, IUser } from 'common/lib/models/interface/userInterface';
-import { logger } from 'framework-ui/lib/logger';
-import { formsDataActions } from 'framework-ui/lib/redux/actions/formsData';
-import { getFormData, getToken } from 'framework-ui/lib/utils/getters';
+import { IAccessToken, IUser } from 'common/src/models/interface/userInterface';
+import { logger } from 'framework-ui/src/logger';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
+import { getFormData, getToken } from 'framework-ui/src/utils/getters';
 import { AppThunk } from 'frontend/src/types';
 import {
     createAccessToken as createAccessTokenApi,

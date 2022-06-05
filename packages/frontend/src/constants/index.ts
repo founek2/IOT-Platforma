@@ -1,4 +1,4 @@
-import { CONTROL_TYPES, NOTIFY_TYPES_CONTROL, NOTIFY_TYPES, CONTROL_STATE } from 'common/lib/constants';
+import { CONTROL_TYPES, NOTIFY_TYPES_CONTROL, NOTIFY_TYPES, CONTROL_STATE } from 'common/src/constants';
 
 export const NotifyControlTypes = {
     [CONTROL_STATE.ON]: [

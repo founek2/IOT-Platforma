@@ -1,48 +1,48 @@
-import { makeStyles, Paper, Typography, useMediaQuery, useTheme } from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
-import clsx from "clsx";
-import { ComponentType, IThing, IThingProperty } from "common/lib/models/interface/thing";
-import { SensorIcons } from "frontend/src/components/SensorIcons";
-import { useAppSelector } from "frontend/src/hooks";
-import { Device } from "frontend/src/store/reducers/application/devices";
-import { Thing } from "frontend/src/store/reducers/application/things";
-import { getThing } from "frontend/src/utils/getters";
-import React from "react";
+import { makeStyles, Paper, Typography, useMediaQuery, useTheme } from '@material-ui/core';
+import { grey } from '@material-ui/core/colors';
+import clsx from 'clsx';
+import { ComponentType, IThing, IThingProperty } from 'common/src/models/interface/thing';
+import { SensorIcons } from 'frontend/src/components/SensorIcons';
+import { useAppSelector } from 'frontend/src/hooks';
+import { Device } from 'frontend/src/store/reducers/application/devices';
+import { Thing } from 'frontend/src/store/reducers/application/things';
+import { getThing } from 'frontend/src/utils/getters';
+import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
     widget: {
-        display: "flex",
+        display: 'flex',
         padding: theme.spacing(3),
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down('sm')]: {
             padding: theme.spacing(1.5),
-            flexDirection: "column"
-        }
+            flexDirection: 'column',
+        },
     },
     title: {
         color: grey[700],
         paddingRight: 10,
-        [theme.breakpoints.down("sm")]: {
-            fontSize: "3em"
-        }
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '3em',
+        },
     },
     sensorsGrid: {
-        display: "flex",
-        flexWrap: "wrap",
+        display: 'flex',
+        flexWrap: 'wrap',
         flexGrow: 1,
     },
     sensorContainer: {
-        flex: "1 0 22%",
+        flex: '1 0 22%',
         padding: 5,
     },
     sensorIcon: {
-        verticalAlign: "middle",
+        verticalAlign: 'middle',
         fontSize: 20,
         marginRight: 5,
     },
     center: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     // centerIcons: {
     //     display: "flex",
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     //     }
     // },
 }));
-type IThingPropertyWithDeviceClass = IThingProperty & { propertyClass: NonNullable<IThingProperty["propertyClass"]> };
+type IThingPropertyWithDeviceClass = IThingProperty & { propertyClass: NonNullable<IThingProperty['propertyClass']> };
 interface SimpleSensorProps {
     thing: IThing;
     property: IThingPropertyWithDeviceClass;
@@ -82,40 +82,36 @@ interface RoomProps {
 }
 
 interface SensorBadgesProps {
-    thingId: Thing["_id"]
+    thingId: Thing['_id'];
 }
 function SensorBadges({ thingId }: SensorBadgesProps) {
-    const badges: JSX.Element[] = []
-    const thing = useAppSelector(getThing(thingId))
-    if (thing?.config.componentType !== ComponentType.sensor) return badges
+    const badges: JSX.Element[] = [];
+    const thing = useAppSelector(getThing(thingId));
+    if (thing?.config.componentType !== ComponentType.sensor) return badges;
 
     thing.config.properties.forEach((property) => {
         if (property.propertyClass)
             badges.push(
-                <SimpleSensor
-                    thing={thing}
-                    property={property as IThingPropertyWithDeviceClass}
-                    key={property._id}
-                />
+                <SimpleSensor thing={thing} property={property as IThingPropertyWithDeviceClass} key={property._id} />
             );
     });
 
-    return badges
+    return badges;
 }
 
 function RoomWidget({ devices, className }: RoomProps) {
     const classes = useStyles();
     const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down("md"));
+    const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const sensorsLimit = isSmall ? 3 : 4;
     const location = devices[0].info.location;
 
     let sensors: (JSX.Element | null)[] = [];
     devices.forEach((device) => {
         device.things.forEach((thingId) => {
-            const badges = SensorBadges({ thingId })
-            sensors = [...sensors, ...badges]
-        })
+            const badges = SensorBadges({ thingId });
+            sensors = [...sensors, ...badges];
+        });
     });
     return (
         <Paper className={clsx(className, classes.widget)} elevation={3}>

@@ -21,7 +21,7 @@ import {
     yellow,
 } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
-import { InfoAlert } from 'framework-ui/lib/Components/InfoAlert';
+import { InfoAlert } from 'framework-ui/src/Components/InfoAlert';
 import { HuePicker, TwitterPicker } from 'react-color';
 import { Paper } from '@material-ui/core';
 

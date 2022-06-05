@@ -1,20 +1,20 @@
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import FieldConnector from 'framework-ui/lib/Components/FieldConnector';
-import FullScreenDialog from 'framework-ui/lib/Components/FullScreenDialog';
-import EnchancedTable from 'framework-ui/lib/Components/Table';
-import { getAllowedGroups, isGroupAllowed } from 'framework-ui/lib/privileges';
-import { usersActions } from 'framework-ui/lib/redux/actions/application/users';
-import arrToString from 'framework-ui/lib/utils/arrToString';
-import { isUrlHash } from 'framework-ui/lib/utils/getters';
+import { IUser } from 'common/src/models/interface/userInterface';
+import FieldConnector from 'framework-ui/src/Components/FieldConnector';
+import FullScreenDialog from 'framework-ui/src/Components/FullScreenDialog';
+import EnchancedTable from 'framework-ui/src/Components/Table';
+import { getAllowedGroups, isGroupAllowed } from 'framework-ui/src/privileges';
+import { usersActions } from 'framework-ui/src/redux/actions/application/users';
+import arrToString from 'framework-ui/src/utils/arrToString';
+import { isUrlHash } from 'framework-ui/src/utils/getters';
 import { History } from 'history';
 import { isEmpty, assoc, prop } from 'ramda';
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getGroups, getQueryID, getUsers } from '../utils/getters';
 import EditUser from './userManagement/EditUser';
-import { User } from 'framework-ui/lib/redux/reducers/application/user';
+import { User } from 'framework-ui/src/redux/reducers/application/user';
 
 function convertGroupIDsToName(groups: { group: string; text: string }[]) {
     return function (arr: string[]) {
@@ -80,7 +80,7 @@ function UserManagement({ history }: UserManagementProps) {
                                 data={usersWithId}
                                 toolbarHead="Správa uživatelů"
                                 onDelete={() => dispatch(usersActions.deleteUsers())}
-                                orderBy="userName"
+                                orderBy="info.userName"
                                 // enableCreation={isAdmin}
                                 enableEdit={isAdmin}
                                 onEdit={(id: string) => history.push({ hash: 'editUser', search: '?id=' + id })}

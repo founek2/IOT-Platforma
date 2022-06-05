@@ -8,12 +8,12 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
-import Loader from 'framework-ui/lib/Components/Loader';
+import Loader from 'framework-ui/src/Components/Loader';
 import { bindActionCreators } from 'redux';
 import { clone } from 'ramda';
 
-import { getFormData } from 'framework-ui/lib/utils/getters';
-import * as formsActions from 'framework-ui/lib/redux/actions/formsData';
+import { getFormData } from 'framework-ui/src/utils/getters';
+import * as formsActions from 'framework-ui/src/redux/actions/formsData';
 import EditNotify from './editNotifyForm/EditNotify';
 import Typography from '@material-ui/core/Typography';
 import * as sensorsActions from '../store/actions/application/devices/sensors';

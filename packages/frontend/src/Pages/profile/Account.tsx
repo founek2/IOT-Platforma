@@ -1,4 +1,4 @@
-import { userActions } from 'framework-ui/lib/redux/actions/application/user';
+import { userActions } from 'framework-ui/src/redux/actions/application/user';
 import { useAppDispatch } from 'frontend/src/hooks';
 import { getUser } from 'frontend/src/utils/getters';
 import React from 'react';
