@@ -38,6 +38,7 @@ function Devices({ discoveredDevices }: DevicesProps) {
     const classes = useStyles();
     const dispatch = useDispatch();
     useEffectFetchDevices();
+    // TODO fetch periodically discovery
 
     useEffect(() => {
         dispatch(discoveryActions.fetch());

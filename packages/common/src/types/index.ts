@@ -1,6 +1,7 @@
 import { CONTROL_TYPES } from '../constants';
 import { IDevice } from '../models/interface/device';
 import { IThing } from '../models/interface/thing';
+import { IUser, Permission } from '../models/interface/userInterface';
 
 export interface Config {
     port: number;
@@ -8,7 +9,8 @@ export interface Config {
     homepage: string;
     portAuth: number;
     portMqtt: number;
-    authUri: string;
+    serviceMqttUri: string;
+    serviceAuthUri: string;
     firebaseAdminPath: string;
     dbUri: string;
     influxDb: {
@@ -81,4 +83,9 @@ export type SocketUpdateThingState = {
             timestamp: Date;
         };
     };
+};
+
+export type RequestWithAuth = Request & {
+    user: IUser & { admin?: boolean; accessPermissions?: Permission[] };
+    root?: boolean;
 };

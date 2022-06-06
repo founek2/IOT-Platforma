@@ -55,6 +55,7 @@ router.post('/user', async function (req, res) {
         const success = await DeviceModel.login(topicPrefix, deviceId, password);
         return success ? res.send('allow') : sendDeny('/user device', res);
     } else if (isUser(username)) {
+        if (!password) return sendDeny('/user missing password', res);
         if (validatePass({ userName: username, password })) return res.send('allow administrator');
 
         const result = await UserService.checkCreditals({

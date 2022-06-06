@@ -38,10 +38,7 @@ export interface deviceSetState {
 }
 
 export interface EmitterEvents {
-    device_pairing_init: { deviceId: IDevice['_id']; apiKey: IDevice['apiKey'] };
-    device_pairing_done: IDevice;
-    device_set_state: deviceSetState;
-    device_send_command: { device: IDevice; command: DeviceCommand };
+    user_login: IUser;
 }
 
 class MyClass extends MyEmitter<EmitterEvents> {}

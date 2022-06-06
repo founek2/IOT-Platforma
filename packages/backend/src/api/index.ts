@@ -7,10 +7,8 @@ import history from './history';
 import thing from './thing';
 import accessToken from './accessToken';
 import broker from './broker';
-import authorization from './authorization';
 import signOut from './signOut';
-import { Config } from 'src/types';
-import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-proxy-middleware';
+import { Config } from '../types';
 
 export default ({ config }: { config: Config }) => {
     let api = Router();
@@ -31,14 +29,14 @@ export default ({ config }: { config: Config }) => {
 
     api.use('/broker', broker());
 
-    api.use('/authorization', authorization());
-
     api.use('/authorization/signOut', signOut());
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {
         res.json({ version: '0.2.0' });
     });
+
+    api.use('/*', (req, res) => res.sendStatus(404));
 
     return api;
 };

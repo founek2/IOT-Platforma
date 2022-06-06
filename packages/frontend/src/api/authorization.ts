@@ -4,14 +4,14 @@ const API_URL = '/api';
 
 export const fetchAuthorization = (object: any, dispatch: any) =>
     getJson({
-        url: API_URL + `/authorization`,
+        url: API_URL + `/auth/user`,
         ...object,
         dispatch,
     });
 
 export const postAuthorization = (object: any, dispatch: any) =>
     postJson({
-        url: API_URL + `/authorization`,
+        url: API_URL + `/auth/user`,
         ...object,
         successMessage: 'successfullyLoggedIn',
         dispatch,

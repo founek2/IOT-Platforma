@@ -28,10 +28,7 @@ function topicParser(topic: string, message: any) {
     };
 }
 
-const SECONDS_30 = 30 * 1000;
-function invert30seconds(d1: number) {
-    return d1 >= SECONDS_30 ? 0 : SECONDS_30 - d1;
-}
+const SECONDS_20 = 20 * 1000;
 
 interface MqttConf {
     url: string;
@@ -40,12 +37,16 @@ interface MqttConf {
 type GetUser = () => Promise<Maybe<{ userName: string; password: string }>>;
 type ClientCb = (client: MqttClient) => void;
 
-let lastAttemptAt: Date | null = null;
-function connect(config: MqttConf, getUser: GetUser, cb: ClientCb) {
-    const timeOut = lastAttemptAt == null ? 0 : invert30seconds(Date.now() - lastAttemptAt.getTime());
-    lastAttemptAt = new Date();
-    logger.info('Trying to connect to mqtt... timeout=', timeOut);
-    return new Promise<MqttClient>((res) => setTimeout(async () => res(await reconnect(config, getUser, cb)), timeOut));
+function connect(config: MqttConf, getUser: GetUser, cb: ClientCb, forceNow = false) {
+    return new Promise<MqttClient>((res) =>
+        setTimeout(
+            async () => {
+                logger.info('Trying to connect to mqtt...');
+                res(await reconnect(config, getUser, cb));
+            },
+            forceNow ? 0 : SECONDS_20
+        )
+    );
 }
 
 async function reconnect(config: MqttConf, getUser: GetUser, cb: ClientCb): Promise<MqttClient> {
@@ -96,5 +97,5 @@ function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser:
 
 /* Initialize MQTT client connection */
 export default async (io: serverIO, config: MqttConf, getUser: GetUser) => {
-    client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
+    client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser), true);
 };

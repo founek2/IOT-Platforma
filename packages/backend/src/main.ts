@@ -41,24 +41,22 @@ function createApp(config: Config) {
     const { createProxyMiddleware } = require('http-proxy-middleware');
     // const proxy = require('http-proxy-middleware');
     var wsProxy = createProxyMiddleware('/socket.io', {
-        target: `ws://localhost:${config.portAuth}`,
+        target: `ws://${config.serviceMqttUri}`,
         changeOrigin: true, // for vhosted sites, changes host header to match to target's host
         ws: true, // enable websocket proxy
         logLevel: 'error',
     });
     app.use(wsProxy);
+    app.server.on('upgrade', wsProxy.upgrade);
 
     const authProxy = createProxyMiddleware({
-        target: config.authUri,
-        pathRewrite: {
-            '^/api/auth/rabbitmq': '/api/auth',
-        },
+        target: `http://${config.serviceAuthUri}`,
         changeOrigin: true,
-        logLevel: 'info',
+        logLevel: 'error',
     });
     app.use('/api/auth/rabbitmq', authProxy);
+    app.use('/api/auth/user', authProxy);
 
-    app.server.on('upgrade', wsProxy.upgrade);
     logger.info('Proxy enabled');
 
     loadersInit({ app, config });

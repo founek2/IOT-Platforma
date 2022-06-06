@@ -27,7 +27,8 @@ export interface Config {
     bodyLimit: string;
     homepage: string;
     portAuth: number;
-    authUri: string;
+    serviceMqttUri: string;
+    serviceAuthUri: string;
     dbUri: string;
     influxDb: {
         url: string;

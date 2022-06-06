@@ -8,7 +8,7 @@ type SenderParamOmitted = Omit<SenderParam, 'url' | 'dispatch' | 'method'>;
 
 export const login = (object: SenderJsonOmitted, dispatch: Dispatch) =>
     postJson({
-        url: API_URL + '/authorization',
+        url: API_URL + '/auth/user',
         ...object,
         successMessage: 'successfullyLoggedIn',
         dispatch,

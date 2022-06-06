@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import config from 'common/src/config';
 import { JwtService } from 'common/src/services/jwtService';
 import { connectMongoose } from 'common/src/utils/connectMongoose';
-import express, { Application } from 'express';
+import express, { Application, RequestHandler } from 'express';
 import { logger } from 'framework-ui/src/logger';
 import http from 'http';
 import morgan from 'morgan';
@@ -28,14 +28,15 @@ async function startServer(config: Config) {
 
     const app = express();
 
-    app.use(express.urlencoded({ extended: true }));
-    app.use(morgan('dev'));
-
-    app.use('/api', (req, res, next) => {
-        return bodyParser.json({
-            limit: '100kb',
-        })(req, res, next);
+    app.use(function (req, res, next) {
+        console.log('path', req.path);
+        next();
     });
+
+    app.use(morgan('dev') as RequestHandler);
+    app.use(express.urlencoded({ extended: true }) as RequestHandler);
+
+    app.use('/api', bodyParser.json({ limit: '100kb' }) as RequestHandler);
 
     app.use('/api', api({}));
 

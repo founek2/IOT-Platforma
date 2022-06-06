@@ -4,9 +4,9 @@ import { OAuthProvider } from 'common/src/models/interface/userInterface';
 import { UserService } from 'common/src/services/userService';
 import { EitherAsync } from 'purify-ts/EitherAsync';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import formDataChecker from '../middlewares/formDataChecker';
-import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
-import resource from '../middlewares/resource-router-middleware';
+import formDataChecker from 'common/src/middlewares/formDataChecker';
+import { rateLimiterMiddleware } from 'common/src/middlewares/rateLimiter';
+import resource from 'common/src/middlewares/resource-router-middleware';
 import eventEmitter from '../services/eventEmitter';
 import { OAuthService } from '../services/oauthService';
 
@@ -65,8 +65,8 @@ export default () =>
 
                     return await fromPromise(
                         UserService.refreshAuthorization(
-                            auth.username + '@' + auth.domain,
-                            auth.username.replace(/\./g, ''),
+                            auth.email,
+                            auth.email.replace(/@.*$/, '').replace(/\./g, ''),
                             {
                                 accessToken: auth.access_token,
                                 expiresIn: auth.expires_in,
@@ -82,6 +82,13 @@ export default () =>
                     .ifJust(({ doc, token, oldOauth }) => {
                         res.send({ user: doc, token });
                         eventEmitter.emit('user_login', doc);
+                        if (oldOauth)
+                            OAuthService.revokeToken(
+                                oldOauth.accessToken,
+                                oldOauth.refreshToken,
+                                'refresh_token',
+                                oldOauth.provider
+                            );
                     })
                     .ifNothing(() => res.sendStatus(500));
             } else res.sendStatus(400);

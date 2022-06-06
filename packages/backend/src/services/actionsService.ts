@@ -59,7 +59,7 @@ export class Actions {
      * @param {DeviceCommand} command
      */
     public static async deviceSendCommand(doc: IDevice, command: DeviceCommand): Promise<boolean> {
-        const res = await fetch(`http://localhost:${config.portAuth}/api/actions/device/${doc._id}`, {
+        const res = await fetch(`http://${config.serviceAuthUri}/api/actions/device/${doc._id}`, {
             method: 'POST',
             body: JSON.stringify({ command, device: doc }),
             headers: {
@@ -71,7 +71,7 @@ export class Actions {
     }
 
     public static async getBrokerAuth() {
-        const result = await AuthConnector(config.authUri).getPass();
+        const result = await AuthConnector(`http://${config.serviceAuthUri}`).getPass();
         return result.map((pass) => {
             const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
             return auth;

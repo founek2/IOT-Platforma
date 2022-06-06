@@ -7,7 +7,7 @@ const router = express.Router();
  * URL prefix /actions
  */
 
-router.get('/pass', async function (req, res) {
+router.get('/', async function (req, res) {
     (await getPass())
         .ifJust((pass) => {
             res.send({

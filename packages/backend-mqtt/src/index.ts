@@ -3,7 +3,7 @@ import config from 'common/src/config';
 import { InfluxService } from 'common/src/services/influxService';
 import { JwtService } from 'common/src/services/jwtService';
 import { connectMongoose } from 'common/src/utils/connectMongoose';
-import express, { Application } from 'express';
+import express, { Application, RequestHandler } from 'express';
 import { logger } from 'framework-ui/src/logger';
 import http from 'http';
 import morgan from 'morgan';
@@ -38,21 +38,18 @@ async function startServer(config: Config) {
     const server = http.createServer(appInstance);
     const app: customApp = Object.assign(appInstance, { server, io: new serverIO(server, { path: '/socket.io' }) });
 
-    app.use(express.urlencoded({ extended: true }));
-    app.use(morgan('dev'));
+    app.use(express.urlencoded({ extended: true }) as RequestHandler);
+    app.use(morgan('dev') as RequestHandler);
 
-    app.use('/api', (req, res, next) =>
-        bodyParser.json({
-            limit: '100kb',
-        })(req, res, next)
-    );
+    app.use('/api', bodyParser.json({ limit: '100kb' }) as RequestHandler);
 
     app.use('/api', api({ io: app.io }));
 
     app.server.listen(config.portMqtt, () => {
         logger.info(`Started on port ${(app.server?.address() as any).port}`);
 
-        if (app.io) setTimeout(() => mqttService(app.io, config.mqtt, AuthConnector(config.authUri).getPass), 1000); //init
+        if (app.io)
+            setTimeout(() => mqttService(app.io, config.mqtt, AuthConnector(config.serviceAuthUri).getPass), 1000); //init
     });
 }
 

@@ -99,9 +99,7 @@ export const UserService = {
         userName: string,
         oauth: IOauth
     ): Promise<Maybe<{ token: string; doc: IUser; oldOauth?: IOauth }>> {
-        // : Promise<{ doc?: IUser; token?: string; error?: string }>
         let doc = await UserModel.findOneAndUpdate({ 'info.email': email }, { 'auth.oauth': oauth });
-        // if (!doc) return { error: 'unknownUser' };
         if (!doc) {
             const { doc, token } = await UserService.create({
                 info: {
