@@ -30,6 +30,7 @@ pipeline {
 
         stage ('Build') {
             steps {
+                sh "yarn lerna clean --yes"
                 sh "CI= yarn build"
             }
         }
