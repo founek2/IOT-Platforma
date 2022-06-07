@@ -27,10 +27,15 @@ pipeline {
         //         }
         //     }
         // }
-
-        stage ('Build') {
+        stage ('Prepare') {
             steps {
                 sh "yarn lerna clean --yes"
+                sh "CI= yarn build:shared"
+            }
+        }
+        
+        stage ('Build') {
+            steps {
                 sh "CI= yarn build"
             }
         }
