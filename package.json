@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "bootstrap": "lerna bootstrap",
-        "build": "lerna run --parallel --scope backend --scope frontend --scope backend-mqtt build",
+        "build": "lerna run --parallel --scope frontend --scope backend --scope backend-mqtt --scope backend-auth build",
         "clean": "lerna run --parallel clean",
         "test": "lerna run --scope backend --scope backend-mqtt --scope framework-ui test",
         "watch": "lerna run --parallel --scope common --scope framework-ui dev",

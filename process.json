@@ -9,6 +9,11 @@
             "name": "backend-mqtt",
             "script": "./packages/backend-mqtt/dist/index.js",
             "exp_backoff_restart_delay": 300
+        },
+        {
+            "name": "backend-mqtt",
+            "script": "./packages/backend-auth/dist/index.js",
+            "exp_backoff_restart_delay": 300
         }
     ]
 }

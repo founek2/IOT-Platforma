@@ -6,7 +6,7 @@
     "main": "lib/main.js",
     "scripts": {
         "dev": "ts-node-dev src/index.ts",
-        "compile": "tsc -p tsconfig-build.json",
+        "compile": "tsc -b",
         "build": "yarn clean && yarn compile && yarn copyFiles",
         "copyFiles": "copyfiles -u 1 src/templates/**/*.pug dist/",
         "clean": "rimraf tsconfig-build.tsbuildinfo dist",

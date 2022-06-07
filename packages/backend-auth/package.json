@@ -6,7 +6,7 @@
     "main": "dist/index.js",
     "scripts": {
         "dev": "ts-node-dev src/index.ts",
-        "build": "yarn clean && tsc -p .",
+        "build": "yarn clean && tsc -b",
         "clean": "rimraf tsconfig.tsbuildinfo dist",
         "test": "jest"
     },
