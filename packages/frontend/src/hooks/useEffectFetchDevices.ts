@@ -33,7 +33,7 @@ export function useEffectFetchDevices() {
         async function handler() {
             if (document.hidden) return;
 
-            const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 10 * 60 * 1000;
+            const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 5 * 60 * 1000;
 
             if (isOld || !io.getSocket().isConnected()) {
                 if ((await dispatch(devicesActions.fetch())) && mounted) setLastFetchAt(new Date());
