@@ -75,7 +75,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 
         logger.debug('saving data', message.toString());
 
-        sendToUsers(io, device, nodeId, propertyId, result.value);
+        sendToUsers(io, device, nodeId, propertyId, result.value, timestamp);
 
         HistoricalModel.saveData(device._id, thing._id, propertyId, result.value, timestamp);
         FireBaseService.processData(device, nodeId, propertyId, result.value);
@@ -94,17 +94,22 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 /**
  * Send real-time update to all users with read permission
  */
-function sendToUsers(io: serverIO, device: IDevice, nodeId: string, propertyId: string, newValue: string | number) {
+function sendToUsers(
+    io: serverIO,
+    device: IDevice,
+    nodeId: string,
+    propertyId: string,
+    newValue: string | number,
+    timestamp: Date
+) {
     let thing = getThing(device, nodeId);
-    if (thing.state) thing.state.value[propertyId] = newValue;
-    else thing.state = { timestamp: new Date(), value: { [propertyId]: newValue } };
 
     const updateData: SocketUpdateThingState = {
         _id: device._id,
         thing: {
             _id: thing._id,
-            nodeId: thing.config.nodeId,
-            state: thing.state,
+            nodeId: nodeId,
+            state: { value: { [propertyId]: newValue }, timestamp },
         },
     };
     device.permissions['read'].forEach((userId) => {
