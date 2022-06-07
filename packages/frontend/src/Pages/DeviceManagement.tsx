@@ -1,23 +1,17 @@
 import { makeStyles } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import { IDevice } from 'common/src/models/interface/device';
-import { IDiscovery } from 'common/src/models/interface/discovery';
-import { Discovery } from '../store/reducers/application/discovery';
-import { Locations } from 'frontend/src/types';
-import { prop } from 'ramda';
-import React, { Fragment, useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import React, { Fragment, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../hooks';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
 import { discoveryActions } from '../store/actions/application/discovery';
+import { Discovery } from '../store/reducers/application/discovery';
 import { locationsSelector } from '../store/selectors/deviceSelector';
-import { RootState } from '../store/store';
 import { getDevices, getDiscovery } from '../utils/getters';
 import io from '../webSocket';
 import DeviceSection from './deviceManagement/DeviceSection';
 import DiscoverySection from './deviceManagement/DiscoverySection';
-import { Device } from '../store/reducers/application/devices';
 
 const useStyles = makeStyles((theme) => ({
     cardContent: {
@@ -26,14 +20,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export interface DevicesProps {
-    devices: Device[];
-    discoveredDevices: IDiscovery[];
-    locations: Locations;
-}
-
-function Devices({ discoveredDevices }: DevicesProps) {
+function Devices() {
     const devices = useAppSelector(getDevices);
+    const discoveredDevices = useAppSelector(getDiscovery);
     const locations = useAppSelector(locationsSelector);
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -41,7 +30,6 @@ function Devices({ discoveredDevices }: DevicesProps) {
     // TODO fetch periodically discovery
 
     useEffect(() => {
-        dispatch(discoveryActions.fetch());
         function addDiscoveredDevice(device: Discovery) {
             dispatch(discoveryActions.add(device));
         }
@@ -53,13 +41,26 @@ function Devices({ discoveredDevices }: DevicesProps) {
         };
     }, [dispatch]);
 
+    useEffect(() => {
+        dispatch(discoveryActions.fetch());
+
+        const interval = setInterval(() => {
+            dispatch(discoveryActions.fetch());
+        }, 10 * 1000);
+
+        return () => clearInterval(interval);
+    }, [dispatch]);
+
+    // Memoize because of discovery interval
+    const devicesSectionMemo = useMemo(() => <DeviceSection devices={devices} />, [devices]);
+
     return (
         <Fragment>
             <Card>
                 {/* <CardHeader title="Správa zařízení" /> */}
                 <div className={classes.cardContent}>
-                    <DiscoverySection discoveredDevices={discoveredDevices} locations={locations} />
-                    <DeviceSection devices={devices} />
+                    <DiscoverySection discoveredDevices={discoveredDevices.data} locations={locations} />
+                    {devicesSectionMemo}
                 </div>
                 <CardActions />
             </Card>
@@ -67,12 +68,4 @@ function Devices({ discoveredDevices }: DevicesProps) {
     );
 }
 
-const _mapStateToProps = (state: RootState) => {
-    // @ts-ignore
-    const discoveredDevices = prop('data', getDiscovery(state)) as RootState['application']['discovery']['data'];
-    return {
-        discoveredDevices: discoveredDevices,
-    };
-};
-
-export default connect(_mapStateToProps)(Devices);
+export default Devices;

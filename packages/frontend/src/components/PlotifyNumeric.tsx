@@ -58,7 +58,7 @@ function PlotifyNumeric({ data }: ChartSimpleProps) {
 
     return (
         <div className={classes.root}>
-            <PlotlyChart data={data} layout={layout} />
+            <PlotlyChart data={data} layout={layout} config={{ displayModeBar: false }} />
         </div>
     );
 }
