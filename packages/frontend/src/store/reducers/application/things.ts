@@ -1,5 +1,6 @@
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IThing } from 'common/lib/models/interface/thing';
+import { mergeDeepLeft } from 'ramda';
 
 export type Thing = IThing;
 
@@ -21,6 +22,23 @@ export const thingsSlice = createSlice({
         },
         removeOne: thingsAdapter.removeOne,
         updateOne: thingsAdapter.updateOne,
+        updateOneState: function (state, action: PayloadAction<{ id: string; changes: Thing['state'] }>) {
+            const {
+                payload: { changes, id },
+            } = action;
+
+            const thing = state.entities[id];
+            if (thing && changes) {
+                if (!thing.state) {
+                    thing.state = { value: {} } as any;
+                }
+                thing.state!.timestamp = changes.timestamp;
+                Object.keys(changes.value).forEach((propertyId) => {
+                    const value = changes.value[propertyId];
+                    thing.state!.value[propertyId] = value;
+                });
+            }
+        },
     },
 });
 

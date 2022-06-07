@@ -59,7 +59,10 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
     useEffect(() => {
         function updateThingA(payload: SocketUpdateThingState) {
             dispatch(
-                thingsReducerActions.updateOne({ id: payload.thing._id, changes: { state: payload.thing.state } })
+                thingsReducerActions.updateOneState({
+                    id: payload.thing._id,
+                    changes: payload.thing.state,
+                })
             );
         }
 
