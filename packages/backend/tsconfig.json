@@ -1,11 +1,11 @@
 {
     "extends": "../../tsconfig-base.json",
     "compilerOptions": {
-        "baseUrl": ".",
-        "rootDir": ".",
+        "rootDir": "./src",
         "outDir": "./dist",
         "moduleResolution": "node"
     },
     "references": [{ "path": "../common" }, { "path": "../framework-ui" }],
+    "include": ["./src"],
     "exclude": ["./dist", "src/**/*.spec.ts", "__tests__"]
 }

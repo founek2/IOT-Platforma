@@ -30,8 +30,8 @@ const config: Config = {
         bucket: process.env.INFLUX_BUCKET as string,
     },
     jwt: {
-        privateKey: process.env.JWT_PRIVATE_KEY as string,
-        publicKey: process.env.JWT_PUBLIC_KEY as string,
+        privateKey: process.env.JWT_PRIVATE_KEY || '/keys/jwtRS256.key',
+        publicKey: process.env.JWT_PUBLIC_KEY || '/keys/jwtRS256.key.pub',
         expiresIn: process.env.JWT_EXPIRES_IN || '14d',
     },
     email: {

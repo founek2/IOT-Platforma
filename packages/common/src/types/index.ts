@@ -2,6 +2,7 @@ import { CONTROL_TYPES } from '../constants';
 import { IDevice } from '../models/interface/device';
 import { IThing } from '../models/interface/thing';
 import { IUser, Permission } from '../models/interface/userInterface';
+import type { Request } from 'express';
 
 export interface Config {
     port: number;
@@ -87,5 +88,10 @@ export type SocketUpdateThingState = {
 
 export type RequestWithAuth = Request & {
     user: IUser & { admin?: boolean; accessPermissions?: Permission[] };
+    root?: boolean;
+};
+
+export type RequestWithAuthOpt = Request & {
+    user?: IUser & { admin?: boolean; accessPermissions?: Permission[] };
     root?: boolean;
 };
