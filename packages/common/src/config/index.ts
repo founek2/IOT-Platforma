@@ -19,7 +19,7 @@ const config: Config = {
     homepage: process.env.HOME_PAGE as string,
     portAuth: Number(process.env.AUTH_SERVICE_PORT) || 8084,
     portMqtt: Number(process.env.MQTT_SERVICE_PORT) || 8083,
-    serviceAuthUri: (process.env.AUTH_URI as string) || 'localhost:8084',
+    serviceAuthUri: (process.env.SERVICE_AUTH_URI as string) || 'localhost:8084',
     serviceMqttUri: (process.env.SERVICE_MQTT_URI as string) || 'localhost:8083',
     firebaseAdminPath: process.env.FIREBASE_ADMIN_PATH as string,
     dbUri: process.env.DATABASE_URI as string,
