@@ -1,6 +1,6 @@
 import setInPath from '../../utils/setInPath';
 import validationFactory from '../../validations/validationFactory';
-import { State, FieldDescriptors } from 'framework-ui/src/types';
+import { State, FieldDescriptors } from '../../types';
 
 const fieldDescriptors: FieldDescriptors = {
     REGISTRATION: {
