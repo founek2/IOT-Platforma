@@ -20,7 +20,7 @@ function handleError() {
     if (getItem(STATE_DEHYDRATED)) {
         removeItem(STATE_DEHYDRATED);
         removeItem('history');
-        document.location.reload(true);
+        document.location.reload();
     }
 }
 
@@ -38,7 +38,7 @@ function Root({ component }: { component: React.FunctionComponent }) {
                     const installingWorker = registration.waiting;
                     installingWorker?.postMessage({ type: 'SKIP_WAITING' });
                     setNewVersion(false);
-                    window.location.reload(true);
+                    window.location.reload();
                 });
             },
         };

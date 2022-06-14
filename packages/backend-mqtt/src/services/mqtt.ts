@@ -41,7 +41,7 @@ function connect(config: MqttConf, getUser: GetUser, cb: ClientCb, forceNow = fa
     return new Promise<MqttClient>((res) =>
         setTimeout(
             async () => {
-                logger.info('Trying to connect to mqtt...');
+                logger.info('Trying to connect to mqtt...', `${config.url}:${config.port}`);
                 res(await reconnect(config, getUser, cb));
             },
             forceNow ? 0 : SECONDS_20

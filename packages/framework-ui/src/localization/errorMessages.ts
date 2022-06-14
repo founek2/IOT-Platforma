@@ -7,7 +7,7 @@ export const messages: types.messages = {
     passwordMissmatch: 'Nesprávné heslo',
     unknownUser: 'Neznámý uživatel',
     userNotExist: 'Uživatel neexistuje',
-    invalidToken: 'Neplatný token',
+    invalidToken: 'Platnost přihlášení vypršela',
     tokenNotProvided: 'Token nebyl v hlavičce',
     lowPermissionsForThatGroups: 'Nízké oprávnění pro nastavení těchto skupin',
     unexpectedError: 'Nastala neočekávaná chyba',
