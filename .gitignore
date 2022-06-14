@@ -46,17 +46,14 @@ typings/
 .yarn-integrity
 
 # End of https://www.gitignore.io/api/node
-
-**/tsconfig.tsbuildinfo
+packages/*/*.tsbuildinfo
 **/.DS_Store
 **/dist
 **/lib
 !**/src/**/lib
-**/*.env
+**/*.env 
 **/package-lock.json
 #**/yarn.lock
 .history
 .VSCodeCounter
 build.zip
-
-/packages/*/tsconfig-build.tsbuildinfo
