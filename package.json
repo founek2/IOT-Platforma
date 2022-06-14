@@ -13,8 +13,7 @@
         "dev:be": "yarn workspace backend dev",
         "dev:fe": "yarn workspace frontend dev",
         "dev:be-mqtt": "yarn workspace backend-mqtt dev",
-        "prepare": "ts-patch install -s",
-        "ts-patch": "^2.0.1"
+        "prepare": "ts-patch install -s"
     },
     "dependencies": {
         "caniuse-lite": "^1.0.30001346"
@@ -23,7 +22,8 @@
         "@types/node": "^16.11.7",
         "lerna": "^3.22.1",
         "rimraf": "^3.0.2",
-        "typescript": "^4.7.3"
+        "typescript": "^4.7.3",
+        "ts-patch": "^2.0.1"
     },
     "workspaces": [
         "packages/*"
