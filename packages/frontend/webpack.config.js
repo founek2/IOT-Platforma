@@ -1,5 +1,6 @@
 const prod = process.env.NODE_ENV === 'production';
 
+const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -10,7 +11,8 @@ const config = {
     mode: prod ? 'production' : 'development',
     entry: './src/index.tsx',
     output: {
-        path: __dirname + '/build/',
+        path: path.resolve(__dirname, 'build'),
+        filename: '[name].[hash].js',
         publicPath: '/',
     },
     resolve: {
@@ -90,6 +92,7 @@ if (prod) {
         new WorkboxPlugin.InjectManifest({
             swSrc: './src/service-worker.ts',
             swDest: 'service-worker.js',
+            maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         })
     );
 }

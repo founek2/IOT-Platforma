@@ -40,9 +40,8 @@ function createApp(config: Config) {
 
     const { createProxyMiddleware } = require('http-proxy-middleware');
     // const proxy = require('http-proxy-middleware');
-    const mqttUrl = new URL(config.serviceMqttUri);
     var wsProxy = createProxyMiddleware('/socket.io', {
-        target: `ws://${mqttUrl.host}`,
+        target: config.serviceMqttUri,
         changeOrigin: true, // for vhosted sites, changes host header to match to target's host
         ws: true, // enable websocket proxy
         logLevel: 'error',
@@ -51,7 +50,7 @@ function createApp(config: Config) {
     app.server.on('upgrade', wsProxy.upgrade);
 
     const authProxy = createProxyMiddleware({
-        target: `http://${mqttUrl.host}`,
+        target: config.serviceAuthUri,
         changeOrigin: true,
         logLevel: 'error',
     });
