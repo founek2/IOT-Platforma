@@ -1,5 +1,5 @@
 import { logger } from 'framework-ui/src/logger';
-import { checkValidFormData } from 'common/src/utils/validation';
+import { checkValidFormData } from '../utils/validation';
 import { trimData } from 'framework-ui/src/utils/trimData';
 import express from 'express';
 
