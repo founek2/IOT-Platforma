@@ -12,7 +12,9 @@
         "build:shared": "tsc -b packages/framework-ui packages/common",
         "dev:be": "yarn workspace backend dev",
         "dev:fe": "yarn workspace frontend dev",
-        "dev:be-mqtt": "yarn workspace backend-mqtt dev"
+        "dev:be-mqtt": "yarn workspace backend-mqtt dev",
+        "prepare": "ts-patch install -s",
+        "ts-patch": "^2.0.1"
     },
     "dependencies": {
         "caniuse-lite": "^1.0.30001346"
