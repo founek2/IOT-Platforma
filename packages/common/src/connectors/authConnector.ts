@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import { Just, Nothing, Maybe } from 'purify-ts/Maybe';
-
 // /api/auth/rabbitmq/pass
 export function AuthConnector(endpointUri: string) {
     return {
