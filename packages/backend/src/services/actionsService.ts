@@ -15,17 +15,14 @@ export class Actions {
      * @param {IDevice["apiKey"]} apiKey
      */
     public static async deviceInitPairing(deviceId: IDiscovery['_id'], apiKey: string): Promise<boolean> {
-        const res = await fetch(
-            'http://localhost:' + config.portAuth + '/api/actions/device/' + deviceId + '/pairing/init',
-            {
-                method: 'PUT',
-                body: JSON.stringify({ apiKey }),
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+        const res = await fetch(config.serviceMqttUri + '/api/actions/device/' + deviceId + '/pairing/init', {
+            method: 'PUT',
+            body: JSON.stringify({ apiKey }),
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
         return res.status === 204;
     }
 
@@ -40,7 +37,7 @@ export class Actions {
         device: IDevice
     ): Promise<boolean> {
         const res = await fetch(
-            `http://localhost:${config.portAuth}/api/actions/device/${deviceId}/thing/${nodeId}/property/${propertyId}`,
+            `${config.serviceMqttUri}/api/actions/device/${deviceId}/thing/${nodeId}/property/${propertyId}`,
             {
                 method: 'PATCH',
                 body: JSON.stringify({ value, device }),
@@ -59,7 +56,7 @@ export class Actions {
      * @param {DeviceCommand} command
      */
     public static async deviceSendCommand(doc: IDevice, command: DeviceCommand): Promise<boolean> {
-        const res = await fetch(`http://${config.serviceAuthUri}/api/actions/device/${doc._id}`, {
+        const res = await fetch(`${config.serviceMqttUri}/api/actions/device/${doc._id}`, {
             method: 'POST',
             body: JSON.stringify({ command, device: doc }),
             headers: {
@@ -71,7 +68,7 @@ export class Actions {
     }
 
     public static async getBrokerAuth() {
-        const result = await AuthConnector(`http://${config.serviceAuthUri}`).getPass();
+        const result = await AuthConnector(`${config.serviceAuthUri}`).getPass();
         return result.map((pass) => {
             const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
             return auth;
