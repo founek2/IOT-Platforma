@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IThing } from 'common/lib/models/interface/thing';
+import { IThing } from 'common/src/models/interface/thing';
 
 export type Thing = IThing;
 
