@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-unzip assets.zip
-rm assets.zip
+unzip -q assets.zip
 
 # backport compatibility for react-scripts v3
 cp packages/frontend/build/service-worker.js packages/frontend/build/sw.js

@@ -57,3 +57,4 @@ packages/*/*.tsbuildinfo
 .history
 .VSCodeCounter
 build.zip
+assets.zip
