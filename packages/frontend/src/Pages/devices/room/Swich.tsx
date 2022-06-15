@@ -92,6 +92,7 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
                             key={property.propertyId}
                             property={property}
                             value={thing.state?.value[property.propertyId]}
+                            timestamp={thing.state?.timestamp && new Date(thing.state.timestamp)}
                             onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
                             history={historyData?.deviceId === deviceId ? historyData : undefined}
                             defaultShowDetail={i === 0}

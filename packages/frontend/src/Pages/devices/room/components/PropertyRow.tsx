@@ -209,7 +209,7 @@ function PropertyRow({ property, value, onChange, history, timestamp, defaultSho
             {showDetail && timestamp ? (
                 <UpdatedBefore
                     gutterBottom
-                    time={new Date(timestamp)}
+                    time={timestamp}
                     variant="body2"
                     prefix="Aktualizováno před"
                     className={classes.updatedBefore}

@@ -12,7 +12,7 @@ const config = {
     entry: './src/index.tsx',
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: '[name].[hash].js',
+        filename: '[name].[chunkhash].js',
         publicPath: '/',
     },
     resolve: {
@@ -67,15 +67,15 @@ const config = {
         proxy: {
             '/api': {
                 target: 'http://localhost:3000',
-                router: () => 'http://localhost:8085',
-                // router: () => 'https://iotdomu.cz',
+                // router: () => 'http://localhost:8085',
+                router: () => 'https://dev.iotdomu.cz',
                 // logLevel: 'debug' /*optional*/,
                 changeOrigin: true,
             },
             '/socket.io': {
                 target: 'http://localhost:3000',
-                router: () => 'http://localhost:8085',
-                // router: () => 'https://iotdomu.cz',
+                // router: () => 'http://localhost:8085',
+                router: () => 'https://dev.iotdomu.cz',
                 ws: true,
                 changeOrigin: true,
             },

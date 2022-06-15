@@ -2,6 +2,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore';
 import React, { useEffect } from 'react';
+import { useAppSelector } from 'src/hooks';
+import { getThingHistory } from 'src/utils/getters';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';
 import { SimpleDialog } from './components/Dialog';
@@ -41,6 +43,7 @@ const useStyles = makeStyles({
 function Generic({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProps) {
     const classes = useStyles();
     const [openDialog, setOpenDialog] = React.useState(false);
+    const historyData = useAppSelector(getThingHistory);
     const title = room + ' - ' + thing.config.name!;
 
     useEffect(() => {
@@ -60,12 +63,15 @@ function Generic({ onClick, deviceId, thing, room, fetchHistory }: BoxWidgetProp
                 thing={thing}
             >
                 <div>
-                    {thing.config.properties.map((property) => (
+                    {thing.config.properties.map((property, i) => (
                         <PropertyRow
                             key={property.propertyId}
                             property={property}
                             value={thing.state?.value[property.propertyId]}
+                            timestamp={thing.state?.timestamp && new Date(thing.state.timestamp)}
                             onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
+                            history={historyData?.deviceId === deviceId ? historyData : undefined}
+                            defaultShowDetail={i === 0}
                         />
                     ))}
                 </div>

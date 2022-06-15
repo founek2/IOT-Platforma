@@ -92,7 +92,8 @@ function EnhancedTable<T extends { _id: string }>({
     enableSearch,
     customEditButton,
     onDelete,
-    rowsPerPageOptions = [10, 25, 50],
+    rowsPerPageOptions = [5, 10, 25, 50],
+    rowsPerPage = 10,
     customClasses = {},
     value = [],
     onChange,
@@ -102,7 +103,7 @@ function EnhancedTable<T extends { _id: string }>({
     const [orderState, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderByState, setOrderBy] = useState<string>(orderBy);
     const [pageState, setPage] = useState(0);
-    const [rowsPerPageState, setRowsPerPage] = useState<number>(10);
+    const [rowsPerPageState, setRowsPerPage] = useState<number>(rowsPerPage);
     const [searchText, setSearchText] = useState<string>('');
 
     // componentWillReceiveProps(nextProps) {

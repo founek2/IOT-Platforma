@@ -11,6 +11,7 @@ import { getThingHistory } from 'frontend/src/utils/getters';
 import { head } from 'ramda';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useAppSelector } from 'src/hooks';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';
 import { SimpleDialog } from './components/Dialog';
@@ -52,7 +53,7 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
     const classes = useStyles();
     const property = head(thing.config.properties)! as IThingPropertyEnum;
     const value = (thing.state?.value || { [property.propertyId]: 'false' })[property.propertyId];
-    const historyData = useSelector<RootState, RootState['application']['thingHistory']>(getThingHistory as any);
+    const historyData = useAppSelector(getThingHistory);
     const [openDialog, setOpenDialog] = React.useState(false);
     const title = room + ' - ' + thing.config.name!;
 
@@ -117,6 +118,7 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
                             key={property.propertyId}
                             property={property}
                             value={thing.state?.value[property.propertyId]}
+                            timestamp={thing.state?.timestamp && new Date(thing.state.timestamp)}
                             onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
                             history={historyData?.deviceId === deviceId ? historyData : undefined}
                             defaultShowDetail={i === 0}

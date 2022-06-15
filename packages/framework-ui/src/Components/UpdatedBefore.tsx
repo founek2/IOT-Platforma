@@ -5,6 +5,7 @@ import forceUpdateHoc from './forceUpdateHoc';
 
 // TODO Tests
 function UpdatedBefore({ time, prefix, forceUpdate, forwardRef, ...other }) {
+    console.log('time', time);
     const [text] = getLastUpdateText(time, prefix);
     return (
         <div className="textCenter">
