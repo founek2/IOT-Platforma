@@ -36,7 +36,7 @@ pipeline {
             }
         }
           
-        stage('Release') {
+        stage('Release prod') {
             when { branch "release*" }
 
             environment {
@@ -46,6 +46,20 @@ pipeline {
             steps {
                 script {
                     sh "ci/jenkins/release.sh"
+                }
+            }
+        }
+
+        stage('Release dev') {
+            when { branch "develop*" }
+
+            environment {
+                USER_CREDENTIALS = credentials('Jenkins - iot')
+            }
+   
+            steps {
+                script {
+                    sh "ci/jenkins/release-dev.sh"
                 }
             }
         }
