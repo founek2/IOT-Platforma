@@ -12,5 +12,10 @@ export default ({}) => {
 
     api.use('/auth/user', user());
 
+    // expose some API metadata at the root
+    api.get('/', (req, res) => {
+        res.json({ version: '2.0.0' });
+    });
+
     return api;
 };

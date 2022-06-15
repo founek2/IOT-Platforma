@@ -33,7 +33,7 @@ export default ({ config }: { config: Config }) => {
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {
-        res.json({ version: '0.2.0' });
+        res.json({ version: '2.0.0' });
     });
 
     api.use('/*', (req, res) => res.sendStatus(404));
