@@ -12,22 +12,6 @@ pipeline {
             }
         }
 
-        // stage ('Tests') {
-        //     steps {
-        //         // parallel 'static': {
-        //         //     sh "yarn lerna run --scope backend --scope common coverage"
-        //         // },
-        //         // 'unit': {
-        //         //     sh "echo 'shell scripts to run unit tests...'"
-        //         // },
-        //         // 'integration': {
-        //         //     sh "echo 'shell scripts to run integration tests...'"
-        //         // }
-        //         script {
-        //             sh "yarn test"
-        //         }
-        //     }
-        // }
         stage ('Prepare') {
             steps {
                 sh "yarn clean"
@@ -38,6 +22,7 @@ pipeline {
         stage ('Build') {
             steps {
                 sh "yarn build"
+                sh "ci/jenkins/bundle-zip.sh"
             }
         }
 
@@ -66,7 +51,7 @@ pipeline {
         }
 
 
-        stage('Building image') {
+        stage('Building image prod') {
             agent { label 'java-docker-slave' }
             when { branch "release*" }
 
@@ -77,7 +62,18 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Building image dev') {
+            agent { label 'java-docker-slave' }
+            when { branch "develop*" }
+
+            steps{
+                script {
+                    sh "ci/jenkins/docker-publish-dev.sh"
+                }
+            }
+        }
+
+        stage('Deploy prod') {
             when { branch "release*" }
             environment {
                 TRIGGER_API_KEY = credentials('docker-compose-trigger-api-key-free')
@@ -85,6 +81,19 @@ pipeline {
 
             steps {
                 sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://free.iotplatforma.cloud:9020/trigger/IOT-Platforma-hosting/platform'
+            }
+        }
+
+        stage('Deploy dev') {
+            when { branch "develop*" }
+            environment {
+                TRIGGER_API_KEY = credentials('docker-compose-trigger-api-key-free')
+            }
+
+            steps {
+                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://free.iotplatforma.cloud:9020/trigger/IOT-hosting-dev/iot-mqtt'
+                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://free.iotplatforma.cloud:9020/trigger/IOT-hosting-dev/iot-auth'
+                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://free.iotplatforma.cloud:9020/trigger/IOT-hosting-dev/iot-server'
             }
         }
     }
