@@ -153,13 +153,7 @@ function showDetailVisualization(
     if (isNumericDataType(property.dataType))
         return <PlotifyNumeric data={[convertNumericHistoryToGraphData(historyData, property.propertyId)]} />;
     if (property.dataType === PropertyDataType.boolean)
-        return (
-            <PlotifyBoolean
-                data={[
-                    convertBoolHistoryToGraphData(historyData as unknown as HistoricalGeneric[], property.propertyId),
-                ]}
-            />
-        );
+        return <PlotifyBoolean data={[convertBoolHistoryToGraphData(historyData, property.propertyId)]} />;
     if (property.dataType === PropertyDataType.enum) {
         const data = convertNumericHistoryToGraphData(historyData, property.propertyId);
         return (

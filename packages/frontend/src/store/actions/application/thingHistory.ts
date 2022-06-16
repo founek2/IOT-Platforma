@@ -1,6 +1,7 @@
 import type { IDevice } from 'common/src/models/interface/device';
 import { HistoricalSensor } from 'common/src/models/interface/history';
 import type { IThing } from 'common/src/models/interface/thing';
+import { Measurement } from 'common/src/types';
 import { subDays } from 'date-fns';
 import { logger } from 'framework-ui/src/logger';
 import { getToken } from 'framework-ui/src/utils/getters';
@@ -22,7 +23,7 @@ export const thingHistoryActions = {
                     params: {
                         from: subDays(new Date(), 1).getTime(),
                     },
-                    onSuccess: (json: { docs: HistoricalSensor[] }) => {
+                    onSuccess: (json: { docs: Measurement[] }) => {
                         dispatch(thingHistoryActions.set({ data: json.docs, deviceId, thingId }));
                     },
                 },

@@ -2,10 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IDevice } from 'common/src/models/interface/device';
 import { IThing } from 'common/src/models/interface/thing';
 import { HistoricalSensor } from 'common/src/models/interface/history';
+import { Measurement } from 'common/src/types';
 
 // Define a type for the slice state
 export interface ThingHistoryState {
-    data: HistoricalSensor[];
+    data: Measurement[];
     lastFetch?: Date;
     lastUpdate?: Date;
     deviceId?: IDevice['_id'];
@@ -25,7 +26,7 @@ export const thingHistorySlice = createSlice({
         set: (
             state,
             action: PayloadAction<{
-                data: HistoricalSensor[];
+                data: Measurement[];
                 deviceId: IDevice['_id'];
                 thingId: IThing['config']['nodeId'];
             }>

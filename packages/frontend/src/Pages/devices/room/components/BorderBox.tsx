@@ -80,7 +80,7 @@ function BorderBox({
     const [inTransition, setInTransition] = useState(false);
     const ref: React.MutableRefObject<NodeJS.Timeout | null> = useRef(null);
     const fetchHistory = useCallback(
-        () => dispatch(thingHistoryActions.fetchHistory(deviceId, thing._id)),
+        () => dispatch(thingHistoryActions.fetchHistory(deviceId, thing.config.nodeId)),
         [deviceId, thing._id]
     );
 
