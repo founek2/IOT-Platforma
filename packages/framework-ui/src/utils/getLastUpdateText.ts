@@ -13,7 +13,7 @@ export default function getLastUpdateText(
 ): [string, number] {
     if (String(time) === 'Invalid Date') {
         logger.error('invalid date', time);
-        return ['', -1];
+        return ['', 10]; // 10s default, otherwise performance issues
     }
 
     const now = new Date();

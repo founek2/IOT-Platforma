@@ -1,11 +1,14 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import Typography, { TypographyProps } from '@material-ui/core/Typography';
 import getLastUpdateText from '../utils/getLastUpdateText';
-import forceUpdateHoc from './forceUpdateHoc';
+import ForceUpdate from './forceUpdateHoc';
 
-// TODO Tests
-function UpdatedBefore({ time, prefix, forceUpdate, forwardRef, ...other }) {
-    console.log('time', time);
+type UpdatedBeforeProps = {
+    time: Date;
+    prefix: string;
+    forwardRef: React.ForwardedRef<any>;
+} & TypographyProps;
+function UpdatedBefore({ time, prefix, forwardRef, ...other }: UpdatedBeforeProps) {
     const [text] = getLastUpdateText(time, prefix);
     return (
         <div className="textCenter">
@@ -21,4 +24,8 @@ function UpdatedBefore({ time, prefix, forceUpdate, forwardRef, ...other }) {
     );
 }
 
-export default React.forwardRef(forceUpdateHoc(UpdatedBefore));
+export default React.forwardRef(({ time, ...other }: Omit<UpdatedBeforeProps, 'forwardRef'>, ref) => (
+    <ForceUpdate updateTime={time}>
+        <UpdatedBefore time={time} {...other} forwardRef={ref} />
+    </ForceUpdate>
+));
