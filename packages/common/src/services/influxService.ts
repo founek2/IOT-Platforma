@@ -1,17 +1,25 @@
 import { IThing, IThingProperty, PropertyDataType } from '../models/interface/thing';
-import { OrgsAPI, BucketsAPI, Organization } from '@influxdata/influxdb-client-apis';
-import { InfluxDB, Point, WriteApi } from '@influxdata/influxdb-client';
-import { Config } from '../types';
+import { OrgsAPI, BucketsAPI, Organization, QueryAPI } from '@influxdata/influxdb-client-apis';
+import { InfluxDB, Point, WriteApi, QueryApi } from '@influxdata/influxdb-client';
+import { Config, Measurement } from '../types';
+import { IDevice } from '../models/interface/device';
 
 export let influxDB: InfluxDB;
 export let bucketsApi: BucketsAPI;
 export let writeApi: WriteApi;
+export let queryApi: QueryApi;
+
+let BUCKET: string;
 
 export class InfluxService {
     public static init(config: Config['influxDb']) {
+        BUCKET = config.bucket;
+
         influxDB = new InfluxDB({ url: config.url, token: config.apiKey });
-        writeApi = influxDB.getWriteApi(config.organization, config.bucket);
+        writeApi = influxDB.getWriteApi(config.organization, BUCKET);
         bucketsApi = new BucketsAPI(influxDB);
+        queryApi = influxDB.getQueryApi(config.organization);
+        // console.log(writeApi, queryApi);
     }
 
     public static createMeasurement(
@@ -73,5 +81,36 @@ export class InfluxService {
         }
 
         await bucketsApi.postBuckets({ body: { orgID: organization.id!, name, retentionRules: [] } });
+    }
+
+    public static async getMeasurements(deviceId: IDevice['_id'], thingId: IThing['_id'], from: Date, to: Date) {
+        const fluxQuery = `
+        from(bucket: "${BUCKET}")
+        |> range(start: ${from.toISOString()}, stop: ${to.toISOString()})
+        |> filter(fn: (r) => r["deviceId"] == "${deviceId}")
+        |> filter(fn: (r) => r["thingId"] == "${thingId}")
+        |> filter(fn: (r) => r["_field"] == "value_float" or r["_field"] == "value_int")
+        |> aggregateWindow(every: 5m, fn: mean, createEmpty: false)
+       `;
+        console.log('query', fluxQuery);
+
+        const rows: Measurement[] = [];
+
+        return new Promise<Measurement[]>((resolve, reject) =>
+            queryApi.queryRows(fluxQuery, {
+                next(row, tableMeta) {
+                    const o = tableMeta.toObject(row) as Measurement;
+                    rows.push(o);
+                },
+                error(error) {
+                    console.log('QUERY FAILED', error);
+                    reject(error);
+                },
+                complete() {
+                    console.log('QUERY FINISHED');
+                    resolve(rows);
+                },
+            })
+        );
     }
 }

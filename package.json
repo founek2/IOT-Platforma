@@ -11,8 +11,9 @@
         "watch": "lerna run --parallel --scope common --scope framework-ui dev",
         "build:shared": "tsc -b packages/framework-ui packages/common/tsconfig.build.json",
         "dev:be": "yarn workspace backend dev",
+        "dev:mqtt": "yarn workspace backend-mqtt dev",
+        "dev:auth": "yarn workspace backend-auth dev",
         "dev:fe": "yarn workspace frontend dev",
-        "dev:be-mqtt": "yarn workspace backend-mqtt dev",
         "prepare": "ts-patch install -s"
     },
     "dependencies": {

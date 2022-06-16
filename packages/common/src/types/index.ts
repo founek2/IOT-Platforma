@@ -95,3 +95,31 @@ export type RequestWithAuthOpt = Request & {
     user?: IUser & { admin?: boolean; accessPermissions?: Permission[] };
     root?: boolean;
 };
+
+export type Measurement = {
+    _table: number;
+    _field: 'value_float' | 'value_int' | 'value_bool' | 'value_string';
+    _value: number | boolean | string;
+    _start: Date;
+    _stop: Date;
+    _time: Date;
+    deviceId: string;
+    deviceName: string;
+    propertyId: string;
+    thingId: string;
+};
+
+export type MeasurementNumber = Measurement & {
+    _field: 'value_float' | 'value_int';
+    _value: number;
+};
+
+export type MeasurementBool = Measurement & {
+    _field: 'value_bool' | 'value_int';
+    _value: boolean;
+};
+
+export type MeasurementString = Measurement & {
+    _field: 'value_string';
+    _value: string;
+};

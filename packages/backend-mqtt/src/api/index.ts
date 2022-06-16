@@ -2,9 +2,12 @@ import { Router } from 'express';
 import actions from './actions';
 import webSocket from './socket';
 import { Server as serverIO } from 'socket.io';
+import history from './history';
 
 export default ({ io }: { io: serverIO }) => {
     let api = Router();
+
+    api.use('/device/:deviceId/thing/:thingId/history', history());
 
     api.use('/actions', actions);
 

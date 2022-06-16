@@ -1,8 +1,8 @@
 import { HistoricalModel } from 'common/src/models/historyModel';
 import express from 'express';
-import resource from '../middlewares/resource-router-middleware';
-import tokenAuthMIddleware from '../middlewares/tokenAuth';
-import checkReadPerm from '../middlewares/device/checkReadPerm';
+import resource from 'common/src/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import checkReadPerm from 'common/src/middlewares/device/checkReadPerm';
 import { InfluxService } from 'common/src/services/influxService';
 
 /**
@@ -24,19 +24,19 @@ export default () =>
         async index({ params, query: { from, to } }, res) {
             const { deviceId, thingId } = params;
 
-            InfluxService.getMeasurements(
+            const rows = await InfluxService.getMeasurements(
                 deviceId,
                 thingId,
                 new Date(Number(from)),
                 new Date(to ? Number(to) : new Date())
             );
 
-            const docs = await HistoricalModel.getData(
-                deviceId,
-                thingId,
-                new Date(Number(from)),
-                new Date(to ? Number(to) : new Date())
-            );
-            res.send({ docs });
+            // const docs = await HistoricalModel.getData(
+            //     deviceId,
+            //     thingId,
+            //     new Date(Number(from)),
+            //     new Date(to ? Number(to) : new Date())
+            // );
+            res.send({ docs: rows });
         },
     });
