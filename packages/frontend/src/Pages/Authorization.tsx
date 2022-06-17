@@ -40,9 +40,9 @@ export function Authorization() {
     }, [error, setPending, setMessage]);
 
     return (
-        <>
-            <Typography>{message}</Typography>
+        <div className="utils--center">
+            <Typography component="span">{message}</Typography>
             <Loader open={pending} />
-        </>
+        </div>
     );
 }

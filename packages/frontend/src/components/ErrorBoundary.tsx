@@ -36,7 +36,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
 
             // You can render any custom fallback UI
             return (
-                <div className="error-boundary">
+                <div className="utils--center">
                     <h1>Nastala chyba při vytváření rozhraní.</h1>
                     <br />
                     <a className="pure-material-button-contained" onClick={() => document.location.reload()}>

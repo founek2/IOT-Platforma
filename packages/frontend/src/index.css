@@ -34,7 +34,7 @@ a {
     text-align: center;
 }
 
-.error-boundary {
+.utils--center {
     display: flex;
     align-items: center;
     flex-direction: column;
