@@ -19,8 +19,8 @@ const config: Config = {
     homepage: process.env.HOME_PAGE as string,
     portAuth: Number(process.env.AUTH_SERVICE_PORT) || 8084,
     portMqtt: Number(process.env.MQTT_SERVICE_PORT) || 8083,
-    serviceAuthUri: (process.env.SERVICE_AUTH_URI as string) || 'localhost:8084',
-    serviceMqttUri: (process.env.SERVICE_MQTT_URI as string) || 'localhost:8083',
+    serviceAuthUri: (process.env.SERVICE_AUTH_URI as string) || 'http://localhost:8084',
+    serviceMqttUri: (process.env.SERVICE_MQTT_URI as string) || 'http://localhost:8083',
     firebaseAdminPath: process.env.FIREBASE_ADMIN_PATH as string,
     dbUri: process.env.DATABASE_URI as string,
     influxDb: {
@@ -54,7 +54,7 @@ const config: Config = {
         seznam: {
             clientSecret: process.env.OAUTH_SEZNAM_CLIENT_SECRET as string,
             clientId: process.env.OAUTH_SEZNAM_CLIENT_ID as string,
-            iconUrl: '/images/seznamLogo.svg',
+            iconUrl: '/assets/images/seznamLogo.svg',
             endpoint: 'https://login.szn.cz/api/v1/oauth/auth',
             scopes: ['identity'],
         },

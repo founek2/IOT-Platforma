@@ -1,4 +1,4 @@
-const prod = process.env.NODE_ENV === 'production';
+const isEnvProduction = process.env.NODE_ENV === 'production';
 
 const path = require('path');
 const webpack = require('webpack');
@@ -6,14 +6,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const config = {
-    mode: prod ? 'production' : 'development',
+    mode: isEnvProduction ? 'production' : 'development',
     entry: './src/index.tsx',
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: '[name].[chunkhash].js',
+        filename: isEnvProduction ? 'assets/js/[name].[contenthash:8].js' : 'static/js/bundle.js',
+        chunkFilename: isEnvProduction ? 'assets/js/[name].[contenthash:8].chunk.js' : 'static/js/[name].chunk.js',
+        assetModuleFilename: 'assets/media/[name].[hash][ext]',
         publicPath: '/',
+        clean: true,
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -40,9 +44,19 @@ const config = {
             //     exclude: /node_modules/,
             //     use: ['babel-loader'],
             // },
+            // {
+            //     test: /\.(woff|woff2|eot|otf|ttf)$/,
+            //     type: 'asset/resource',
+            //     generator: {
+            //         filename: 'assets/fonts/[hash][ext]',
+            //     },
+            // },
             {
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader'],
+                // use: {
+                //     loader: MiniCssExtractPlugin.loader,
+                // },
             },
             {
                 test: /\.svg$/,
@@ -50,12 +64,24 @@ const config = {
             },
         ],
     },
-    devtool: prod ? undefined : 'source-map',
+    devtool: isEnvProduction ? undefined : 'source-map',
     plugins: [
-        new HtmlWebpackPlugin({
-            template: __dirname + '/public/index.html',
+        new CopyPlugin({
+            patterns: [
+                { from: path.join(__dirname, 'public/assets'), to: 'assets' },
+                { from: 'public/*.js', to: '' },
+                { from: 'public/*.png', to: '' },
+                'public/robots.txt',
+                'public/manifest.json',
+            ],
         }),
-        new MiniCssExtractPlugin(),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, 'public/index.html'),
+        }),
+        new MiniCssExtractPlugin({
+            filename: 'assets/css/[name].[contenthash:8].css',
+            chunkFilename: 'assets/css/[name].[contenthash:8].chunk.css',
+        }),
         new webpack.ProvidePlugin({
             process: 'process/browser',
         }),
@@ -67,15 +93,15 @@ const config = {
         proxy: {
             '/api': {
                 target: 'http://localhost:3000',
-                // router: () => 'http://localhost:8085',
-                router: () => 'https://dev.iotdomu.cz',
+                router: () => 'http://localhost:8085',
+                // router: () => 'https://dev.iotdomu.cz',
                 // logLevel: 'debug' /*optional*/,
                 changeOrigin: true,
             },
             '/socket.io': {
                 target: 'http://localhost:3000',
-                // router: () => 'http://localhost:8085',
-                router: () => 'https://dev.iotdomu.cz',
+                router: () => 'http://localhost:8085',
+                // router: () => 'https://dev.iotdomu.cz',
                 ws: true,
                 changeOrigin: true,
             },
@@ -87,7 +113,7 @@ const config = {
     },
 };
 
-if (prod) {
+if (isEnvProduction) {
     config.plugins.push(
         new WorkboxPlugin.InjectManifest({
             swSrc: './src/service-worker.ts',

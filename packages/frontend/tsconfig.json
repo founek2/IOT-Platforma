@@ -3,23 +3,19 @@
     "compilerOptions": {
         "baseUrl": ".",
         "rootDir": "../",
-        "outDir": "dist",
+        "outDir": "build",
         "lib": ["dom", "dom.iterable", "esnext"],
         "moduleResolution": "node",
         "allowJs": true,
         "skipLibCheck": true,
-        // "forceConsistentCasingInFileNames": true,
+        "forceConsistentCasingInFileNames": true,
         "module": "esnext",
-        // "moduleResolution": "node",
-        // "resolveJsonModule": true,
-        // "isolatedModules": true,
-        // "esModuleInterop": true,
         "jsx": "react"
         // "allowSyntheticDefaultImports": true,
         // "noFallthroughCasesInSwitch": true,
         // "strict": true
     },
-    // "references": [{ "path": "../framework-ui" }, { "path": "../common" }],
+    "references": [{ "path": "../framework-ui" }, { "path": "../common" }],
     "include": ["src", "custom.d.ts"],
     "exclude": ["node_modules"]
 }

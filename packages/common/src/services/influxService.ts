@@ -3,6 +3,7 @@ import { OrgsAPI, BucketsAPI, Organization, QueryAPI } from '@influxdata/influxd
 import { InfluxDB, Point, WriteApi, QueryApi } from '@influxdata/influxdb-client';
 import { Config, Measurement } from '../types';
 import { IDevice } from '../models/interface/device';
+import { logger } from 'framework-ui/src/logger';
 
 export let influxDB: InfluxDB;
 export let bucketsApi: BucketsAPI;
@@ -19,7 +20,6 @@ export class InfluxService {
         writeApi = influxDB.getWriteApi(config.organization, BUCKET);
         bucketsApi = new BucketsAPI(influxDB);
         queryApi = influxDB.getQueryApi(config.organization);
-        // console.log(writeApi, queryApi);
     }
 
     public static createMeasurement(
@@ -70,13 +70,13 @@ export class InfluxService {
         const organization = await InfluxService.getOrg(org);
         if (!organization) return null;
 
-        console.log(`Using organization "${org}" identified by "${organization.id}"`);
+        logger.info(`Using organization "${org}" identified by "${organization.id}"`);
 
         const buckets = await bucketsApi.getBuckets({ orgID: organization.id, name });
         if (buckets && buckets.buckets && buckets.buckets.length) {
-            console.log(`Bucket named "${name}" already exists"`);
+            logger.info(`Bucket named "${name}" already exists"`);
             const bucketID = buckets.buckets[0].id!;
-            console.log(`*** Delete Bucket "${name}" identified by "${bucketID}" ***`);
+            logger.info(`*** Delete Bucket "${name}" identified by "${bucketID}" ***`);
             await bucketsApi.deleteBucketsID({ bucketID });
         }
 
@@ -89,10 +89,9 @@ export class InfluxService {
         |> range(start: ${from.toISOString()}, stop: ${to.toISOString()})
         |> filter(fn: (r) => r["deviceId"] == "${deviceId}")
         |> filter(fn: (r) => r["thingId"] == "${thingId}")
-        |> filter(fn: (r) => r["_field"] == "value_float" or r["_field"] == "value_int")
-        |> aggregateWindow(every: 5m, fn: mean, createEmpty: false)
        `;
-        console.log('query', fluxQuery);
+        //    |> filter(fn: (r) => r["_field"] == "value_float" or r["_field"] == "value_int")
+        //            |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
 
         const rows: Measurement[] = [];
 
@@ -103,11 +102,10 @@ export class InfluxService {
                     rows.push(o);
                 },
                 error(error) {
-                    console.log('QUERY FAILED', error);
+                    logger.error('QUERY FAILED', error);
                     reject(error);
                 },
                 complete() {
-                    console.log('QUERY FINISHED');
                     resolve(rows);
                 },
             })

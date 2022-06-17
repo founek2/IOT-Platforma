@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "webpack serve --port 3000",
         "build": "NODE_ENV=production webpack",
-        "clean": "rimraf tsconfig.tsbuildinfo build dist",
+        "clean": "rimraf tsconfig.tsbuildinfo build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "gen:watch": "yarn gen --watch",
@@ -71,6 +71,7 @@
         "@types/reselect": "^2.2.0",
         "assert": "^2.0.0",
         "babel-loader": "^8.2.5",
+        "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.1",
         "html-webpack-plugin": "^5.5.0",
         "mini-css-extract-plugin": "^2.6.0",
