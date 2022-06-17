@@ -1,4 +1,4 @@
-import { makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
+import { makeStyles, ThemeProvider, useMediaQuery, useTheme } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,7 +18,7 @@ import LoginDialog from './layout/LoginDialog';
 import SideMenu from './layout/SideMenu';
 import UserMenu from './layout/UserMenu';
 
-const useClasses = makeStyles({
+const useClasses = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
@@ -36,14 +36,20 @@ const useClasses = makeStyles({
         color: 'inherit',
         textDecoration: 'none',
     },
-});
+    body: {
+        padding: theme.spacing(2),
+        height: 'calc(100% - 64px)',
+        overflowY: 'auto',
+    },
+}));
 
 interface LayoutProps {
     userPresence: boolean;
     loginOpen: boolean;
     forgotOpen: boolean;
+    children: JSX.Element | null;
 }
-function Layout({ userPresence, loginOpen, forgotOpen }: LayoutProps) {
+function Layout({ userPresence, loginOpen, forgotOpen, children }: LayoutProps) {
     const history = useHistory();
     const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool: boolean) => () => setMainMenuO(bool);
@@ -102,6 +108,7 @@ function Layout({ userPresence, loginOpen, forgotOpen }: LayoutProps) {
                     dispatch(formsDataActions.removeForm('FORGOT_PASSWORD'));
                 }}
             />
+            <div className={classes.body}>{children}</div>
         </Fragment>
     );
 }

@@ -67,28 +67,26 @@ function UserManagement({ history }: UserManagementProps) {
 
     return (
         <div>
-            <Card>
-                <div className={classes.cardContent}>
-                    <FieldConnector
-                        deepPath="USER_MANAGEMENT.selected"
-                        component={({ onChange, value }) => (
-                            <EnchancedTable
-                                dataProps={userProps(getAllowedGroups(groups)) as unknown as any}
-                                data={users as unknown as (IUser & { _id: string })[]}
-                                toolbarHead="Správa uživatelů"
-                                onDelete={() => dispatch(usersActions.deleteUsers())}
-                                orderBy="info.userName"
-                                // enableCreation={isAdmin}
-                                enableEdit={isAdmin}
-                                onEdit={(id: string) => history.push({ hash: 'editUser', search: '?id=' + id })}
-                                rowsPerPage={10}
-                                onChange={onChange}
-                                value={value}
-                            />
-                        )}
-                    />
-                </div>
-            </Card>
+            <div className={classes.cardContent}>
+                <FieldConnector
+                    deepPath="USER_MANAGEMENT.selected"
+                    component={({ onChange, value }) => (
+                        <EnchancedTable
+                            dataProps={userProps(getAllowedGroups(groups)) as unknown as any}
+                            data={users as unknown as (IUser & { _id: string })[]}
+                            toolbarHead="Správa uživatelů"
+                            onDelete={() => dispatch(usersActions.deleteUsers())}
+                            orderBy="info.userName"
+                            // enableCreation={isAdmin}
+                            enableEdit={isAdmin}
+                            onEdit={(id: string) => history.push({ hash: 'editUser', search: '?id=' + id })}
+                            rowsPerPage={10}
+                            onChange={onChange}
+                            value={value}
+                        />
+                    )}
+                />
+            </div>
             <FullScreenDialog
                 open={Boolean(openEditDialog && userToEdit)}
                 onClose={() => history.push({ hash: '', search: '' })}

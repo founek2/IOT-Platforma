@@ -64,7 +64,7 @@ const config = {
             },
         ],
     },
-    devtool: isEnvProduction ? undefined : 'source-map',
+    devtool: isEnvProduction ? undefined : 'inline-source-map',
     plugins: [
         new CopyPlugin({
             patterns: [

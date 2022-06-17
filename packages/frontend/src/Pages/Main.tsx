@@ -3,13 +3,8 @@ import React from 'react';
 
 function Main() {
     return (
-        <div style={{ height: 'calc(100% - 64px)' }}>
-            <iframe
-                src="https://docs.iotdomu.cz"
-                title="Dokumentace IOT Platformy"
-                width="100%"
-                height="100%"
-            ></iframe>
+        <div style={{ height: 'calc(100% + 32px)', margin: '-16px' }}>
+            <iframe src="https://docs.iotdomu.cz" title="Dokumentace IOT Platformy" width="100%" height="100%"></iframe>
         </div>
     );
 }

@@ -4,6 +4,7 @@ import React from 'react';
 
 interface ErrorBoundaryProps {
     onError?: () => void;
+    actionText?: string;
 }
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasError: boolean }> {
     constructor(props: ErrorBoundaryProps) {
@@ -35,16 +36,21 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
 
             // You can render any custom fallback UI
             return (
-                <div>
+                <div className="error-boundary">
                     <h1>Nastala chyba při vytváření rozhraní.</h1>
-                    <a style={{ color: 'blue' }} href="#" onClick={() => document.location.reload()}>
-                        Kliknutím na tento odkaz rozhraní restartujete
+                    <br />
+                    <a className="pure-material-button-contained" onClick={() => document.location.reload()}>
+                        Restartovat rozhraní
                     </a>
                     <br />
                     <br />
                     {this.props.onError && (
-                        <a href="#" style={{ color: 'red' }} onClick={this.props.onError}>
-                            Pokud restart nepomohl, tímto odkazem se provede pokročilejší akce
+                        <a
+                            className="pure-material-button-contained"
+                            style={{ backgroundColor: '#ff1744' }}
+                            onClick={this.props.onError}
+                        >
+                            {this.props.actionText}
                         </a>
                     )}
                 </div>

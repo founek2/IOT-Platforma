@@ -21,8 +21,11 @@ export function Authorization() {
             setPending(true);
             const result = await dispatch(authorizationActions.sendCode(code, buildRedirectUri()));
             if (result) history.push('/devices');
-            else history.push({ search: '', hash: 'login' });
-            setPending(false);
+            else {
+                setMessage('Při přihlašování nastala chyba, akci opakujte');
+                history.push({ search: '' }); // clear code
+                setPending(false);
+            }
         }
         if (code && !pending) {
             send(code);

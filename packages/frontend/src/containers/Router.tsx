@@ -72,23 +72,24 @@ function Router({ userPresence, userGroups }: RouterProps) {
 
     return (
         <RouterReact history={history}>
-            <Layout />
-            <Suspense fallback={<Loader open center />}>
-                <Switch>
-                    {/* <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} /> */}
+            <Layout>
+                <Suspense fallback={<Loader open center />}>
+                    <Switch>
+                        {/* <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} /> */}
 
-                    {additionRoutes}
-                    <Route path="/registerUser" component={RegisterUser} />
-                    {/* <Route path="/sensor/:deviceId" component={SensorHistoryLazy} /> */}
-                    {/* <Route path="/device/:deviceId/thing/:nodeId/notify" component={EditNotifyFormLazy} /> */}
-                    {/* <Route
+                        {additionRoutes}
+                        <Route path="/registerUser" component={RegisterUser} />
+                        {/* <Route path="/sensor/:deviceId" component={SensorHistoryLazy} /> */}
+                        {/* <Route path="/device/:deviceId/thing/:nodeId/notify" component={EditNotifyFormLazy} /> */}
+                        {/* <Route
                             path={[ '/devices/:building/:room', '/devices/:building', '/devices' ]}
                             component={Devices}
                         /> */}
-                    <Route path="/authorization" component={Authorization} />
-                    <Route path="/" component={Main} />
-                </Switch>
-            </Suspense>
+                        <Route path="/authorization" component={Authorization} />
+                        <Route path="/" component={Main} />
+                    </Switch>
+                </Suspense>
+            </Layout>
         </RouterReact>
     );
 }

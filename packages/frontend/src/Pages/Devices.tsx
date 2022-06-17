@@ -16,9 +16,6 @@ import Room from './devices/Room';
 import RoomWidget from './devices/RoomWidget';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        padding: theme.spacing(2),
-    },
     item: {
         width: 150,
         [theme.breakpoints.down('sm')]: {
@@ -75,61 +72,50 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
     const selectedRoom = selectedLocation.room ? selectedBuilding?.get(selectedLocation.room) : null;
 
     return (
-        <div className={classes.root}>
-            <Grid container justify="center">
-                <Grid xs={12} md={10} lg={8} item>
-                    {!selectedRoom ? (
-                        buildings.size === 0 ? (
-                            <Typography>Nebyla nalezena žádná zařízení</Typography>
-                        ) : (
-                            <div className={classes.widgetContainer}>
-                                {(selectedLocation.building && selectedBuilding
-                                    ? [[selectedLocation.building, selectedBuilding] as [string, Map<string, Device[]>]]
-                                    : [...buildings.entries()]
-                                )
-                                    .sort(([name1], [name2]) => name1.localeCompare(name2))
-                                    .map(([building, rooms], idx) => {
-                                        return (
-                                            <Fragment key={building}>
-                                                <LocationTypography
-                                                    location={{ building }}
-                                                    linkBuilding={Boolean(!selectedBuilding)}
-                                                    className={clsx(idx > 0 && classes.buildingContainer)}
-                                                />
-                                                <Grid container spacing={2}>
-                                                    {[...rooms.entries()]
-                                                        .sort(([name1], [name2]) => name1.localeCompare(name2))
-                                                        .map(([room, devices]) => (
-                                                            <Grid
-                                                                item
-                                                                xs={12}
-                                                                md={6}
-                                                                lg={6}
-                                                                key={building + '/' + room}
-                                                            >
-                                                                <Link to={`/devices/${building}/${room}`}>
-                                                                    <RoomWidget
-                                                                        devices={devices}
-                                                                        className={classes.widget}
-                                                                    />
-                                                                </Link>
-                                                            </Grid>
-                                                        ))}
-                                                </Grid>
-                                            </Fragment>
-                                        );
-                                    })}
-                            </div>
-                        )
+        <Grid container justify="center">
+            <Grid xs={12} md={10} lg={8} item>
+                {!selectedRoom ? (
+                    buildings.size === 0 ? (
+                        <Typography>Nebyla nalezena žádná zařízení</Typography>
                     ) : (
-                        <Room
-                            location={selectedLocation as { building: string; room: string }}
-                            devices={selectedRoom}
-                        />
-                    )}
-                </Grid>
+                        <div className={classes.widgetContainer}>
+                            {(selectedLocation.building && selectedBuilding
+                                ? [[selectedLocation.building, selectedBuilding] as [string, Map<string, Device[]>]]
+                                : [...buildings.entries()]
+                            )
+                                .sort(([name1], [name2]) => name1.localeCompare(name2))
+                                .map(([building, rooms], idx) => {
+                                    return (
+                                        <Fragment key={building}>
+                                            <LocationTypography
+                                                location={{ building }}
+                                                linkBuilding={Boolean(!selectedBuilding)}
+                                                className={clsx(idx > 0 && classes.buildingContainer)}
+                                            />
+                                            <Grid container spacing={2}>
+                                                {[...rooms.entries()]
+                                                    .sort(([name1], [name2]) => name1.localeCompare(name2))
+                                                    .map(([room, devices]) => (
+                                                        <Grid item xs={12} md={6} lg={6} key={building + '/' + room}>
+                                                            <Link to={`/devices/${building}/${room}`}>
+                                                                <RoomWidget
+                                                                    devices={devices}
+                                                                    className={classes.widget}
+                                                                />
+                                                            </Link>
+                                                        </Grid>
+                                                    ))}
+                                            </Grid>
+                                        </Fragment>
+                                    );
+                                })}
+                        </div>
+                    )
+                ) : (
+                    <Room location={selectedLocation as { building: string; room: string }} devices={selectedRoom} />
+                )}
             </Grid>
-        </div>
+        </Grid>
     );
 }
 

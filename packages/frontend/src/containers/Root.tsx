@@ -17,11 +17,9 @@ import withTheme from './withTheme';
 // registerFunctions(fns); // register custom validation functions
 
 function handleError() {
-    if (getItem(STATE_DEHYDRATED)) {
-        removeItem(STATE_DEHYDRATED);
-        removeItem('history');
-        document.location.reload();
-    }
+    removeItem(STATE_DEHYDRATED);
+    removeItem('history');
+    document.location.reload();
 }
 
 let place_holder = () => console.log('nothing to install');
@@ -48,7 +46,7 @@ function Root({ component }: { component: React.FunctionComponent }) {
 
     const Component = component;
     return (
-        <ErrorBoundary onError={() => handleError()}>
+        <ErrorBoundary onError={() => handleError()} actionText="Odhlásit a restartovat rozhraní">
             <Provider store={store}>
                 <SnackbarProvider
                     anchorOrigin={{

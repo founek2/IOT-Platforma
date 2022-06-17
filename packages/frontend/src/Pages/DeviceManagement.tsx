@@ -56,14 +56,11 @@ function Devices() {
 
     return (
         <Fragment>
-            <Card>
-                {/* <CardHeader title="Správa zařízení" /> */}
-                <div className={classes.cardContent}>
-                    <DiscoverySection discoveredDevices={discoveredDevices.data} locations={locations} />
-                    {devicesSectionMemo}
-                </div>
-                <CardActions />
-            </Card>
+            {/* <CardHeader title="Správa zařízení" /> */}
+            <div className={classes.cardContent}>
+                <DiscoverySection discoveredDevices={discoveredDevices.data} locations={locations} />
+                {devicesSectionMemo}
+            </div>
         </Fragment>
     );
 }
