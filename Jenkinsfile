@@ -94,7 +94,7 @@ pipeline {
             }
 
             steps {
-                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://free.iotplatforma.cloud:9020/trigger/IOT-Platforma-hosting/platform'
+                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://free.iotplatforma.cloud:9020/trigger/IOT-hosting-prod/iot-server'
             }
         }
 
