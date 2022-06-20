@@ -26,7 +26,7 @@ export async function migrate(config: Config) {
             logger.info('Running migration', fileName);
 
             const { up } = await loadMigration(fileName);
-            up(config);
+            await up(config);
             migrations.applied.push(migrationNumber);
         }
     }

@@ -1,17 +1,14 @@
-import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import clsx from 'clsx';
 import { IThingPropertyEnum } from 'common/src/models/interface/thing';
-import { RootState } from 'frontend/src/store/store';
 import { getThingHistory } from 'frontend/src/utils/getters';
 import { head } from 'ramda';
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useAppSelector } from 'src/hooks';
+import { ActivatorButton } from './components/ActivatorButton';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';
 import { SimpleDialog } from './components/Dialog';
@@ -41,9 +38,6 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'flex-end',
         justifyContent: 'center',
     },
-    button: {
-        padding: '6px 18px 6px 18px',
-    },
     select: {
         paddingLeft: 5,
     },
@@ -70,18 +64,14 @@ function Activator({ onClick, deviceId, thing, className, room, fetchHistory, di
                 {property.format.length === 1 ? (
                     <div className={classes.switchContainer}>
                         <CopyUrlContext propertyId={property.propertyId} value={head(property.format) as string}>
-                            <IconButton
-                                aria-label="delete"
-                                className={classes.button}
+                            <ActivatorButton
                                 disabled={disabled}
                                 onClick={() =>
                                     onClick({
                                         [property.propertyId]: head(property.format),
                                     })
                                 }
-                            >
-                                <PowerSettingsNewIcon fontSize="large" />
-                            </IconButton>
+                            />
                         </CopyUrlContext>
                     </div>
                 ) : (

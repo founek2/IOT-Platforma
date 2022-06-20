@@ -11,24 +11,23 @@ import {
     PropertyDataType,
 } from 'common/src/models/interface/thing';
 import { isNumericDataType } from 'common/src/utils/isNumericDataType';
+import { format } from 'date-fns';
+import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore';
 import { onEnterRun } from 'framework-ui/src/utils/onEnter';
-import { SensorIcons } from 'frontend/src/components/SensorIcons';
-import React, { useState } from 'react';
-import SwitchMy from './Switch';
-import { CopyUrlContext } from './helpers/CopyUrl';
-import { toogleSwitchVal } from './helpers/toogleSwitchVal';
-import ColorPicker from './ColorPicker';
-import { RootState } from 'frontend/src/store/store';
 import PlotifyBoolean from 'frontend/src/components/PlotifyBoolean';
 import PlotifyNumeric from 'frontend/src/components/PlotifyNumeric';
+import { SensorIcons } from 'frontend/src/components/SensorIcons';
+import { RootState } from 'frontend/src/store/store';
 import {
-    convertNumericHistoryToGraphData,
     convertBoolHistoryToGraphData,
+    convertNumericHistoryToGraphData,
 } from 'frontend/src/utils/convertHistoryToGraphData';
-import UpdatedBefore from 'framework-ui/src/Components/UpdatedBefore';
-import { HistoricalGeneric } from 'common/src/models/interface/history';
-import { useCallback } from 'react';
-import { format } from 'date-fns';
+import React, { useCallback, useState } from 'react';
+import { ActivatorButton } from './ActivatorButton';
+import ColorPicker from './ColorPicker';
+import { CopyUrlContext } from './helpers/CopyUrl';
+import { toogleSwitchVal } from './helpers/toogleSwitchVal';
+import SwitchMy from './Switch';
 
 const useStyles = makeStyles({
     root: {
@@ -75,7 +74,13 @@ function ValueComponent({
 
     if (property.settable) {
         if (property.dataType === PropertyDataType.enum) {
-            return (
+            const propertyEnum = property as IThingPropertyEnum;
+
+            return propertyEnum.format.length === 1 ? (
+                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                    <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} />
+                </CopyUrlContext>
+            ) : (
                 <CopyUrlContext propertyId={property.propertyId} value={value as string}>
                     <Select value={value || ''} onChange={(e) => onChange(e.target.value as string)} disableUnderline>
                         {(property as IThingPropertyEnum).format.map((label) => (
