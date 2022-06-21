@@ -118,6 +118,7 @@ if (isEnvProduction) {
             swSrc: './src/service-worker.ts',
             swDest: 'service-worker.js',
             maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+            exclude: [/\.map$/, /^manifest.*\.js$/, /\/dist\//],
         })
     );
 }

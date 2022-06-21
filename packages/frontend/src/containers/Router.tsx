@@ -56,7 +56,7 @@ function Router({ userPresence, userGroups }: RouterProps) {
                             component={Devices}
                         /> */}
                         <Route path="/authorization" element={<Authorization />} />
-                        <Route path="/" element={<Main />} />
+                        <Route path="/*" element={<Main />} />
                     </Routes>
                 </Suspense>
             </Layout>
