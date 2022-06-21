@@ -1,7 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
-import React, { Suspense, lazy } from 'react';
-
-const PlotlyChart = lazy(() => import(/* webpackChunkName: 'PlotifyChart' */ './PlotifyChart'));
+import React from 'react';
+import PlotlyChart from 'react-plotlyjs-ts';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -59,9 +58,7 @@ function PlotifyNumeric({ data }: ChartSimpleProps) {
 
     return (
         <div className={classes.root}>
-            <Suspense fallback={<div>Loading...</div>}>
-                <PlotlyChart data={data} layout={layout} config={{ displayModeBar: false }} />
-            </Suspense>
+            <PlotlyChart data={data} layout={layout} config={{ displayModeBar: false }} />
         </div>
     );
 }

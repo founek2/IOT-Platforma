@@ -52,8 +52,8 @@ const config = {
             },
         ],
     },
-    devtool: isEnvProduction ? undefined : 'inline-source-map',
-    // devtool: 'source-map',
+    // devtool: isEnvProduction ? undefined : 'inline-source-map',
+    devtool: 'source-map',
     plugins: [
         new CopyPlugin({
             patterns: [
@@ -110,6 +110,17 @@ const config = {
             rewrites: [{ from: /^\/(?!api\/)/, to: '/index.html' }],
         },
     },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                reactVendor: {
+                    test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom)[\\/]/,
+                    name: 'vendor-react',
+                    chunks: 'all',
+                },
+            },
+        },
+    },
 };
 
 if (isEnvProduction) {
@@ -117,7 +128,7 @@ if (isEnvProduction) {
         new WorkboxPlugin.InjectManifest({
             swSrc: './src/service-worker.ts',
             swDest: 'service-worker.js',
-            maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+            maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
             exclude: [/\.map$/, /^manifest.*\.js$/, /\/dist\//],
         })
     );

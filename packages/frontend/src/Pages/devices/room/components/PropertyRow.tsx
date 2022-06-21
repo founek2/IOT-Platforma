@@ -157,25 +157,25 @@ function showDetailVisualization(
 ) {
     if (isNumericDataType(property.dataType))
         return <PlotifyNumeric data={[convertNumericHistoryToGraphData(historyData, property.propertyId)]} />;
-    // if (property.dataType === PropertyDataType.boolean)
-    //     return <PlotifyBoolean data={[convertBoolHistoryToGraphData(historyData, property.propertyId)]} />;
-    // if (property.dataType === PropertyDataType.enum) {
-    //     const data = convertNumericHistoryToGraphData(historyData, property.propertyId);
-    //     return (
-    //         <div style={{ textAlign: 'center' }}>
-    //             {data.x
-    //                 .slice(-3)
-    //                 .reverse()
-    //                 .map((date, i) => {
-    //                     return (
-    //                         <Typography key={date.getTime()}>
-    //                             {format(date, 'd. L. HH:mm')} - {data.y[i]}
-    //                         </Typography>
-    //                     );
-    //                 })}
-    //         </div>
-    //     );
-    // }
+    if (property.dataType === PropertyDataType.boolean)
+        return <PlotifyBoolean data={[convertBoolHistoryToGraphData(historyData, property.propertyId)]} />;
+    if (property.dataType === PropertyDataType.enum) {
+        const data = convertNumericHistoryToGraphData(historyData, property.propertyId);
+        return (
+            <div style={{ textAlign: 'center' }}>
+                {data.x
+                    .slice(-3)
+                    .reverse()
+                    .map((date, i) => {
+                        return (
+                            <Typography key={date.getTime()}>
+                                {format(date, 'd. L. HH:mm')} - {data.y[i]}
+                            </Typography>
+                        );
+                    })}
+            </div>
+        );
+    }
 
     return null;
 }
