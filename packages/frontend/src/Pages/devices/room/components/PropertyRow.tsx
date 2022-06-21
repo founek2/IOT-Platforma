@@ -168,7 +168,7 @@ function showDetailVisualization(
                     .reverse()
                     .map((date, i) => {
                         return (
-                            <Typography>
+                            <Typography key={date.getTime()}>
                                 {format(date, 'd. L. HH:mm')} - {data.y[i]}
                             </Typography>
                         );
@@ -217,7 +217,9 @@ function PropertyRow({ property, value, onChange, history, timestamp, defaultSho
                     className={classes.updatedBefore}
                 />
             ) : null}
-            {showDetail && history && history ? showDetailVisualization(property, history.data) : null}
+            {showDetail && history?.data.some((v) => v.propertyId === property.propertyId)
+                ? showDetailVisualization(property, history.data)
+                : null}
         </div>
     );
 }

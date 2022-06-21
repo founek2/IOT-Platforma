@@ -82,12 +82,10 @@ function Devices() {
         return () => io.getSocket().off('control', listener);
     }, [dispatch]);
 
-    // const paths = [...params['*'].split('/'), undefined, undefined];
     const selectedLocation = {
         building: params.building,
         room: params.room,
     };
-    console.log('selectedLocation', selectedLocation);
 
     const selectedBuilding = selectedLocation.building ? buildings.get(selectedLocation.building) : null;
     const selectedRoom = selectedLocation.room ? selectedBuilding?.get(selectedLocation.room) : null;

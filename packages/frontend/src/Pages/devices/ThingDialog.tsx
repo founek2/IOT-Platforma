@@ -45,7 +45,6 @@ export function ThingDialog({ room }: ThingDialogProps) {
         setSearchParams({});
     }
 
-    console.log('history data', historyData);
     return (
         <SimpleDialog
             open={openDialog}
