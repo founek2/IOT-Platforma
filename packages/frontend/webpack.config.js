@@ -1,4 +1,5 @@
 const isEnvProduction = process.env.NODE_ENV === 'production';
+const sourceMapEnv = process.env.SOURCE_MAP;
 
 const path = require('path');
 const webpack = require('webpack');
@@ -52,8 +53,8 @@ const config = {
             },
         ],
     },
-    // devtool: isEnvProduction ? undefined : 'inline-source-map',
-    devtool: 'source-map',
+    devtool: sourceMapEnv ? sourceMapEnv : isEnvProduction ? undefined : 'inline-source-map',
+    // devtool: 'source-map',
     plugins: [
         new CopyPlugin({
             patterns: [
@@ -112,6 +113,7 @@ const config = {
     },
     optimization: {
         splitChunks: {
+            chunks: 'all',
             cacheGroups: {
                 reactVendor: {
                     test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom)[\\/]/,

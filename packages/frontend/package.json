@@ -8,7 +8,7 @@
         "build": "NODE_ENV=production webpack",
         "clean": "rimraf tsconfig.tsbuildinfo build dist",
         "gen:watch": "yarn gen --watch",
-        "analyze": "source-map-explorer 'build/assets/js/*.js'"
+        "analyze": "SOURCE_MAP=source-map yarn build && source-map-explorer 'build/assets/js/*.js'"
     },
     "dependencies": {
         "@date-io/date-fns": "1.x",

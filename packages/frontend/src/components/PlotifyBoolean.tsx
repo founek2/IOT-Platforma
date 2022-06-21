@@ -1,9 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { subDays } from 'date-fns';
 import Loader from 'framework-ui/src/Components/Loader';
-import React, { Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 
-const PlotlyChart = React.lazy(() => import('react-plotlyjs-ts'));
+const PlotlyChart = lazy(() => import(/* webpackChunkName: 'PlotifyChart' */ './PlotifyChart'));
 
 const useStyles = makeStyles((theme) => ({
     root: {
