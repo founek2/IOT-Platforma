@@ -83,6 +83,7 @@ export function getPathsWithComp(groups) {
         filter(o(isNotNil, prop('Component'))),
         getArrayOfPaths(privileges)
     );
+
     forEach(convertPrivToPaths, enrichGroups(groups));
     const uniq = uniqBy(prop('path'), output);
     return uniq;

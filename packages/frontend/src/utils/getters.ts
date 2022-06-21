@@ -1,3 +1,4 @@
+import { IThing } from 'common/src/models/interface/thing';
 import { curry, o, prop } from 'ramda';
 import { Device, deviceSelectors } from '../store/reducers/application/devices';
 import { thingSelectors } from '../store/reducers/application/things';
@@ -6,13 +7,14 @@ import { RootState } from '../store/store';
 export const getApplication = (state: RootState) => state.application;
 
 export const getHistory = (state: RootState) => state.history;
+export const getQuery = (state: RootState) => state.history.query;
 
 export const getDevices = o((app) => deviceSelectors.selectAll(app.devices), getApplication);
 export const getDevice = (deviceId: Device['_id']) => (state: RootState) =>
     deviceSelectors.selectById(getApplication(state).devices, deviceId);
 
 export const getThingEntities = o((app) => thingSelectors.selectEntities(app.things), getApplication);
-export const getThing = (thingId: Device['_id']) => (state: RootState) =>
+export const getThing = (thingId: IThing['_id']) => (state: RootState) =>
     thingSelectors.selectById(getApplication(state).things, thingId);
 // export const getThingsForDevice = (deviceId: Device['_id']) => (state: RootState) =>
 //     deviceSelectors.selectById(getApplication(state).devices, deviceId);

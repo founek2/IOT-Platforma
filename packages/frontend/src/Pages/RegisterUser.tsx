@@ -11,6 +11,7 @@ import { userActions } from 'framework-ui/src/redux/actions/application/user';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 import { History } from 'history';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import UserForm from '../components/UserForm';
 import { useAppDispatch } from '../hooks';
 
@@ -63,14 +64,12 @@ const useClasses = makeStyles((theme) => ({
     },
 }));
 
-interface RegisterUserProps {
-    history: History;
-}
-function RegisterUser({ history }: RegisterUserProps) {
+function RegisterUser() {
     const [pending, setPending] = useState(false);
     const [autoLogin, setAutoLogin] = useState(true);
     const classes = useClasses();
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const handleRegister = async () => {
         setPending(true);
@@ -78,7 +77,7 @@ function RegisterUser({ history }: RegisterUserProps) {
             ? () => dispatch(userActions.registerAngLogin())
             : () => dispatch(userActions.register());
         const success = await action();
-        if (autoLogin && success) history.push('/');
+        if (autoLogin && success) navigate('/');
         if (success) dispatch(formsDataActions.removeForm('REGISTRATION'));
 
         setPending(false);

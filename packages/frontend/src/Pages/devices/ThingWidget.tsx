@@ -22,11 +22,11 @@ const compMapper = {
     [ComponentType.activator]: Activator,
 };
 
-interface RoomBoxProps {
+interface ThingWidgetProps {
     device: Device;
     thingId: Thing['_id'];
 }
-function RoomBox({ device, thingId }: RoomBoxProps) {
+export function ThingWidget({ device, thingId }: ThingWidgetProps) {
     const thing = useAppSelector(getThing(thingId))!;
     const { _id, config, state } = thing;
     const dispatch = useAppDispatch();
@@ -49,12 +49,9 @@ function RoomBox({ device, thingId }: RoomBoxProps) {
                         disabled={isAfk(device.state?.status?.value)}
                         deviceStatus={device?.state?.status}
                         deviceId={device._id}
-                        room={device.info.location.room}
                     />
                 </ThingContext.Provider>
             </DeviceContext.Provider>
         </Grid>
     );
 }
-
-export default RoomBox;

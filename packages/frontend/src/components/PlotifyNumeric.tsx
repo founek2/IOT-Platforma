@@ -4,7 +4,7 @@ import PlotlyChart from 'react-plotlyjs-ts';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        paddingBottom: theme.spacing(2),
+        marginBottom: theme.spacing(2),
         // marginLeft: "10%"
 
         [theme.breakpoints.up('sm')]: {

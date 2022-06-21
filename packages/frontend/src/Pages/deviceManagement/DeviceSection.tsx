@@ -17,7 +17,7 @@ import { getDevice, getQueryID, getThingEntities } from 'frontend/src/utils/gett
 import { assoc, pick, prop } from 'ramda';
 import React, { Fragment, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../components/OnlineCircle';
 import { devicesActions } from '../../store/actions/application/devices';
@@ -51,7 +51,7 @@ function DiscoverySection({
     const [menuForId, setMenuForId] = useState('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [openAlertDialog, setOpenAlertDialog] = useState(false);
-    const history = useHistory();
+    const navigate = useNavigate();
     const theme = useTheme();
     const isWide = useMediaQuery(theme.breakpoints.up('md'));
     const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
@@ -72,7 +72,7 @@ function DiscoverySection({
     function closeDialog() {
         resetFormAction('EDIT_DEVICE');
         setMenuForId('');
-        history.push({ hash: '' });
+        navigate({ hash: '' });
     }
 
     async function onAgree() {
@@ -86,7 +86,7 @@ function DiscoverySection({
         const result = await deleteDeviceAction(menuForId);
         if (result) {
             setOpenAlertDialog(false);
-            history.push({ hash: '' });
+            navigate({ hash: '' });
         }
     }
 

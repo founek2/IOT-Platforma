@@ -3,8 +3,9 @@ import clsx from 'clsx';
 import { SocketUpdateThingState } from 'common/src/types';
 import React, { Fragment, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { createSelector } from 'reselect';
+import { useAppSelector } from 'src/hooks';
 import { LocationTypography } from '../components/LocationTypography';
 import { useEffectFetchDevices } from '../hooks/useEffectFetchDevices';
 import { Device } from '../store/reducers/application/devices';
@@ -14,6 +15,18 @@ import { getDevices } from '../utils/getters';
 import io from '../webSocket';
 import Room from './devices/Room';
 import RoomWidget from './devices/RoomWidget';
+
+const buildingsSelector = createSelector(getDevices, (devices) => {
+    const buildings: Buildings = new Map();
+    devices.forEach((device) => {
+        const { building, room } = device.info.location;
+        if (!buildings.has(building)) buildings.set(building, new Map());
+        const roomMap = buildings.get(building)!;
+        roomMap.set(room, [...(roomMap.get(room) || []), device]);
+    });
+
+    return buildings;
+});
 
 const useStyles = makeStyles((theme) => ({
     item: {
@@ -46,11 +59,12 @@ function updateControl(updateThingA: any) {
 type Buildings = Map<string, Map<string, Device[]>>;
 
 export interface DeviceControlProps {
-    buildings: Buildings;
     selectedLocation: { building?: string; room?: string };
 }
-function Devices({ buildings, selectedLocation }: DeviceControlProps) {
+function Devices() {
+    const params = useParams();
     const classes = useStyles();
+    const buildings = useAppSelector(buildingsSelector);
     useEffectFetchDevices();
     const dispatch = useDispatch();
     useEffect(() => {
@@ -67,6 +81,13 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
         io.getSocket().on('control', listener);
         return () => io.getSocket().off('control', listener);
     }, [dispatch]);
+
+    // const paths = [...params['*'].split('/'), undefined, undefined];
+    const selectedLocation = {
+        building: params.building,
+        room: params.room,
+    };
+    console.log('selectedLocation', selectedLocation);
 
     const selectedBuilding = selectedLocation.building ? buildings.get(selectedLocation.building) : null;
     const selectedRoom = selectedLocation.room ? selectedBuilding?.get(selectedLocation.room) : null;
@@ -119,21 +140,8 @@ function Devices({ buildings, selectedLocation }: DeviceControlProps) {
     );
 }
 
-const buildingsSelector = createSelector(getDevices, (devices) => {
-    const buildings: Buildings = new Map();
-    devices.forEach((device) => {
-        const { building, room } = device.info.location;
-        if (!buildings.has(building)) buildings.set(building, new Map());
-        const roomMap = buildings.get(building)!;
-        roomMap.set(room, [...(roomMap.get(room) || []), device]);
-    });
-
-    return buildings;
-});
-
 const _mapStateToProps = (state: RootState, { match }: { match: { params: { building?: string; room?: string } } }) => {
     return {
-        buildings: buildingsSelector(state),
         selectedLocation: {
             building: match.params.building,
             room: match.params.room,
@@ -141,4 +149,4 @@ const _mapStateToProps = (state: RootState, { match }: { match: { params: { buil
     };
 };
 
-export default connect(_mapStateToProps)(Devices);
+export default Devices;

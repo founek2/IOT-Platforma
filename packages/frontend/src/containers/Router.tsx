@@ -8,20 +8,21 @@ import { createBrowserHistory } from 'history';
 import { map } from 'ramda';
 import React, { Suspense, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Route, Router as RouterReact, Switch } from 'react-router-dom';
+import { Route, Router as RouterReact, Routes } from 'react-router-dom';
 import Layout from '../components/Layout';
 import '../firebase'; // init
 import { Authorization } from '../Pages/Authorization';
 import Main from '../Pages/Main';
 import RegisterUser from '../Pages/RegisterUser';
 import { getGroups } from '../utils/getters';
+import { CustomRouter } from './CustomRouter';
 
 const history = createBrowserHistory();
 
 const defLocation = history.location;
 
 function createRoute({ path, Component }: { path: string; Component: any }) {
-    return <Route path={path} key={path} component={Component} />;
+    return <Route path={path} key={path} element={<Component />} />;
 }
 
 interface RouterProps {
@@ -33,37 +34,6 @@ interface RouterProps {
 }
 
 function Router({ userPresence, userGroups }: RouterProps) {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        // this.props.hydrateStateAction(); // must be done before rendering
-
-        dispatch(
-            historyActions.set({
-                pathname: defLocation.pathname,
-                hash: defLocation.hash,
-                search: defLocation.search,
-                query: parseQuery(defLocation.search),
-            })
-        );
-
-        const lastHistory = localStorage.getItem('history');
-
-        if (lastHistory && history.location.pathname === '/') history.push(JSON.parse(lastHistory));
-
-        history.listen(({ key, state, ...rest }, action) => {
-            dispatch(
-                historyReducerActions.set({
-                    ...rest,
-                    query: parseQuery(rest.search),
-                })
-            );
-
-            // updateTmpDataAction({ dialog: {} });
-
-            localStorage.setItem('history', JSON.stringify(rest));
-        });
-    }, [dispatch]);
-
     let additionRoutes = null;
     if (userPresence) {
         const paths = getPathsWithComp(userGroups);
@@ -71,26 +41,26 @@ function Router({ userPresence, userGroups }: RouterProps) {
     }
 
     return (
-        <RouterReact history={history}>
+        <CustomRouter history={history}>
             <Layout>
                 <Suspense fallback={<Loader open center />}>
-                    <Switch>
+                    <Routes>
                         {/* <Route path="/deviceControl/:deviceId" component={ControlHistoryLazy} /> */}
 
                         {additionRoutes}
-                        <Route path="/registerUser" component={RegisterUser} />
+                        <Route path="/registerUser" element={<RegisterUser />} />
                         {/* <Route path="/sensor/:deviceId" component={SensorHistoryLazy} /> */}
                         {/* <Route path="/device/:deviceId/thing/:nodeId/notify" component={EditNotifyFormLazy} /> */}
                         {/* <Route
                             path={[ '/devices/:building/:room', '/devices/:building', '/devices' ]}
                             component={Devices}
                         /> */}
-                        <Route path="/authorization" component={Authorization} />
-                        <Route path="/" component={Main} />
-                    </Switch>
+                        <Route path="/authorization" element={<Authorization />} />
+                        <Route path="/" element={<Main />} />
+                    </Routes>
                 </Suspense>
             </Layout>
-        </RouterReact>
+        </CustomRouter>
     );
 }
 const _mapStateToProps = (state: any) => ({

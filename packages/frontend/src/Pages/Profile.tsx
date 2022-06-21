@@ -7,7 +7,7 @@ import SecurityIcon from '@material-ui/icons/Security';
 import { IUser } from 'common/src/models/interface/userInterface';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { Link, Route, PathRouteProps, Routes, useLocation } from 'react-router-dom';
 import { accessTokensActions } from '../store/actions/accessTokens';
 import { RootState } from '../store/store';
 import Account from './profile/Account';
@@ -38,7 +38,9 @@ const menu = [
     // { icon: PersonAddIcon, text: "Vytvořit uživatele", link: "/profile/addUser", role: "ENTITY_MANAGER" }
 ];
 
-function Profile({ location, match }: RouteComponentProps) {
+//TODO fix props
+function Profile() {
+    const location = useLocation();
     const classes = useStyles();
     const dispatch = useDispatch();
     const userId = useSelector<RootState, IUser['_id'] | undefined>((state) => state.application.user?._id);
@@ -62,11 +64,11 @@ function Profile({ location, match }: RouteComponentProps) {
                     </Link>
                 ))}
             </Breadcrumbs>
-            <Switch>
-                <Route component={Security} path={`${match.path}/security`} />
-                <Route component={AccessTokens} path={`${match.path}/accessTokens`} />
-                <Route component={Account} path={match.path} exact />
-            </Switch>
+            <Routes>
+                <Route element={<Security />} path="security" />
+                <Route element={<AccessTokens />} path="accessTokens" />
+                <Route element={<Account />} path="/" />
+            </Routes>
         </div>
     );
 }

@@ -10,7 +10,7 @@ import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 import { isUrlHash, isUserLoggerIn } from 'framework-ui/src/utils/getters';
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../hooks';
 import { getGroups } from '../utils/getters';
 import ForgotDialog from './layout/ForgotDialog';
@@ -50,7 +50,7 @@ interface LayoutProps {
     children: JSX.Element | null;
 }
 function Layout({ userPresence, loginOpen, forgotOpen, children }: LayoutProps) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool: boolean) => () => setMainMenuO(bool);
     const classes = useClasses();
@@ -96,15 +96,15 @@ function Layout({ userPresence, loginOpen, forgotOpen, children }: LayoutProps) 
             <LoginDialog
                 open={loginOpen}
                 onClose={() => {
-                    history.push({ hash: '' });
+                    navigate({ hash: '' });
                     dispatch(formsDataActions.removeForm('LOGIN'));
                 }}
-                onSuccess={() => history.push('/devices')}
+                onSuccess={() => navigate('/devices')}
             />
             <ForgotDialog
                 open={forgotOpen}
                 onClose={() => {
-                    history.push({ hash: '' });
+                    navigate({ hash: '' });
                     dispatch(formsDataActions.removeForm('FORGOT_PASSWORD'));
                 }}
             />

@@ -36,12 +36,12 @@ export interface SimpleDialogProps {
     onClose: (value: any) => void;
     title: string;
     deviceId: IDevice['_id'];
-    thing: IThing;
+    thingId: IThing['_id'];
     children: (JSX.Element | null)[] | JSX.Element | null;
     classContent?: string;
 }
 
-export function SimpleDialog({ onClose, open, title, children, deviceId, thing, classContent }: SimpleDialogProps) {
+export function SimpleDialog({ onClose, open, title, children, deviceId, thingId, classContent }: SimpleDialogProps) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const theme = useTheme();
@@ -67,7 +67,7 @@ export function SimpleDialog({ onClose, open, title, children, deviceId, thing, 
             </DialogTitle>
             <DialogContent className={clsx(classContent, classes.content)}>{children}</DialogContent>
             <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleMoreClose}>
-                <Link to={'/device/' + deviceId + '/thing/' + thing._id + '/notify'}>
+                <Link to={'/device/' + deviceId + '/thing/' + thingId + '/notify'}>
                     <MenuItem onClick={handleMoreClose}>Notifikace</MenuItem>
                 </Link>
                 {/* <MenuItem onClick={handleMoreClose}>My account</MenuItem>

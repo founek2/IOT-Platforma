@@ -2,13 +2,10 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import { DeviceStatus, IDevice, IDeviceStatus } from 'common/src/models/interface/device';
 import { IThing, IThingProperty } from 'common/src/models/interface/thing';
-import React, { FunctionComponent, useEffect, useRef, useState, useCallback } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useAppDispatch } from 'frontend/src/hooks';
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import OnlineCircle from '../../../../components/OnlineCircle';
 import { devicesActions } from '../../../../store/actions/application/devices';
-import { thingHistoryActions } from '../../../../store/actions/application/thingHistory';
-import { useAppDispatch } from 'frontend/src/hooks';
 
 const useStyles = makeStyles({
     circle: {
@@ -39,8 +36,6 @@ export interface BoxWidgetProps {
     deviceStatus: IDeviceStatus;
     deviceId: IDevice['_id'];
     disabled?: boolean;
-    fetchHistory: () => Promise<any>;
-    room: string;
     property?: IThingProperty;
 }
 export interface GeneralBoxProps {
@@ -50,7 +45,6 @@ export interface GeneralBoxProps {
     onClick: (newState: any) => Promise<any>;
     deviceStatus: IDeviceStatus;
     deviceId: IDevice['_id'];
-    room: string;
     property?: IThingProperty;
     disabled?: boolean;
 }
@@ -79,10 +73,6 @@ function BorderBox({
     const dispatch = useAppDispatch();
     const [inTransition, setInTransition] = useState(false);
     const ref: React.MutableRefObject<NodeJS.Timeout | null> = useRef(null);
-    const fetchHistory = useCallback(
-        () => dispatch(thingHistoryActions.fetchHistory(deviceId, thing.config.nodeId)),
-        [deviceId, thing._id]
-    );
 
     useEffect(() => {
         if (inTransition) {
@@ -126,7 +116,6 @@ function BorderBox({
                 deviceStatus={deviceStatus}
                 thing={thing}
                 deviceId={deviceId}
-                fetchHistory={fetchHistory}
                 {...other}
             />
         </Paper>

@@ -1,16 +1,13 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
-import { useAppSelector } from 'frontend/src/hooks';
-import { getThingHistory } from 'frontend/src/utils/getters';
 import { head } from 'ramda';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import type { BoxWidgetProps } from './components/BorderBox';
 import boxHoc from './components/boxHoc';
-import { SimpleDialog } from './components/Dialog';
 import { CopyUrlContext } from './components/helpers/CopyUrl';
 import { toogleSwitchVal } from './components/helpers/toogleSwitchVal';
-import PropertyRow from './components/PropertyRow';
 import Switch from './components/Switch';
 import switchCss from './components/switch/css';
 
@@ -40,28 +37,18 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'flex-end',
         justifyContent: 'center',
     },
-    dialogContent: {
-        minHeight: 150,
-    },
 }));
 
-function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled, room }: BoxWidgetProps) {
+function MySwitch({ onClick, deviceId, thing, className, disabled }: BoxWidgetProps) {
     const classes = useStyles();
     const property = head(thing.config.properties)!;
     const value = (thing.state?.value || { [property.propertyId]: 'false' })[property.propertyId];
-    const historyData = useAppSelector(getThingHistory);
-    const [openDialog, setOpenDialog] = React.useState(false);
-    const title = room + ' - ' + thing.config.name!;
-
-    useEffect(() => {
-        if (openDialog) fetchHistory();
-    }, [openDialog, fetchHistory]);
 
     return (
         <div className={clsx(className, classes.root)}>
-            <div className={classes.header} onClick={() => setOpenDialog(true)}>
-                <Typography component="span">{thing.config.name}</Typography>
-            </div>
+            <Link to={{ search: `?thingId=${thing._id}&deviceId=${deviceId}` }}>
+                <Typography className={classes.header}>{thing.config.name}</Typography>
+            </Link>
             <div className={classes.verticalAlign}>
                 <div
                     className={classes.switchContainer}
@@ -77,29 +64,6 @@ function MySwitch({ onClick, deviceId, thing, className, fetchHistory, disabled,
                     </CopyUrlContext>
                 </div>
             </div>
-
-            <SimpleDialog
-                open={openDialog}
-                onClose={() => setOpenDialog(false)}
-                title={title}
-                deviceId={deviceId}
-                thing={thing}
-                classContent={classes.dialogContent}
-            >
-                <div>
-                    {thing.config.properties.map((property, i) => (
-                        <PropertyRow
-                            key={property.propertyId}
-                            property={property}
-                            value={thing.state?.value[property.propertyId]}
-                            timestamp={thing.state?.timestamp && new Date(thing.state.timestamp)}
-                            onChange={(newValue) => onClick({ [property.propertyId]: newValue })}
-                            history={historyData?.deviceId === deviceId ? historyData : undefined}
-                            defaultShowDetail={i === 0}
-                        />
-                    ))}
-                </div>
-            </SimpleDialog>
         </div>
     );
 }

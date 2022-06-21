@@ -15,7 +15,7 @@ import { getQueryID } from 'frontend/src/utils/getters';
 import { assoc, prop } from 'ramda';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import EditAccessToken from './accessTokens/EditAccessToken';
 import { accessTokensActions } from 'frontend/src/store/actions/accessTokens';
 import { RootState } from 'frontend/src/store/store';
@@ -35,7 +35,7 @@ function AccessTokens() {
     const selectedId = useSelector<RootState, string | undefined>(getQueryID);
     const openAddDialog = useSelector<RootState, boolean>(isUrlHash('#addToken'));
     const openEditDialog = useSelector<RootState, boolean>(isUrlHash('#editToken'));
-    const history = useHistory();
+    const navigate = useNavigate();
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
     const dispatch = useDispatch();
@@ -52,7 +52,7 @@ function AccessTokens() {
         if (token) {
             setApiToken(token as unknown as string);
             dispatch(formsDataActions.resetForm('ADD_ACCESS_TOKEN'));
-            history.push({ hash: '' });
+            navigate({ hash: '' });
         }
     }
 
@@ -109,15 +109,13 @@ function AccessTokens() {
                                         )}
                                         onDelete={deleteTokens}
                                         orderBy="Název"
-                                        onAdd={() => history.push({ hash: '#addToken' })}
+                                        onAdd={() => navigate({ hash: '#addToken' })}
                                         enableCreation
                                         enableEdit
                                         customEditButton={(id: string, item: IAccessToken) => (
                                             <IconButton
                                                 size="small"
-                                                onClick={() =>
-                                                    history.push({ hash: '#editToken', search: '?id=' + id })
-                                                }
+                                                onClick={() => navigate({ hash: '#editToken', search: '?id=' + id })}
                                             >
                                                 <EditIcon />
                                             </IconButton>
@@ -137,7 +135,7 @@ function AccessTokens() {
                 cancelText="Zrušit"
                 agreeText="Uložit"
                 onAgree={createToken}
-                onClose={() => history.push({ hash: '' })}
+                onClose={() => navigate({ hash: '' })}
                 fullScreen={isSmall}
                 content={<EditAccessToken formName="ADD_ACCESS_TOKEN" />}
             />
@@ -148,9 +146,9 @@ function AccessTokens() {
                 agreeText="Uložit"
                 onAgree={() => {
                     editToken();
-                    history.push({ hash: '', search: '' });
+                    navigate({ hash: '', search: '' });
                 }}
-                onClose={() => history.push({ hash: '', search: '' })}
+                onClose={() => navigate({ hash: '', search: '' })}
                 fullScreen={isSmall}
                 content={<EditAccessToken formName="EDIT_ACCESS_TOKEN" accessToken={selectedToken} />}
             />

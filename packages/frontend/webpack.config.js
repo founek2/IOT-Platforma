@@ -93,15 +93,15 @@ const config = {
         proxy: {
             '/api': {
                 target: 'http://localhost:3000',
-                router: () => 'http://localhost:8085',
-                // router: () => 'https://dev.iotdomu.cz',
+                // router: () => 'http://localhost:8085',
+                router: () => 'https://dev.iotdomu.cz',
                 // logLevel: 'debug' /*optional*/,
                 changeOrigin: true,
             },
             '/socket.io': {
                 target: 'http://localhost:3000',
-                router: () => 'http://localhost:8085',
-                // router: () => 'https://dev.iotdomu.cz',
+                // router: () => 'http://localhost:8085',
+                router: () => 'https://dev.iotdomu.cz',
                 ws: true,
                 changeOrigin: true,
             },

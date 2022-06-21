@@ -20,11 +20,20 @@ export const routes = {
     user: {
         routes: [
             {
-                path: ['/devices/:building/:room', '/devices/:building', '/devices'],
+                // path: ['/devices/:building/:room', '/devices/:building', '/devices'],
+                path: '/devices/:building/:room',
                 Component: DevicesLazy,
             },
             {
-                path: '/profile',
+                path: '/devices/:building',
+                Component: DevicesLazy,
+            },
+            {
+                path: '/devices',
+                Component: DevicesLazy,
+            },
+            {
+                path: '/profile/*',
                 Component: ProfileLazy,
             },
             { path: '/devices', name: 'deviceControl', Icon: CloudIcon },

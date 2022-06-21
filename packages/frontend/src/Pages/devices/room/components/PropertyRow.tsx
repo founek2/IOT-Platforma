@@ -163,13 +163,16 @@ function showDetailVisualization(
         const data = convertNumericHistoryToGraphData(historyData, property.propertyId);
         return (
             <div style={{ textAlign: 'center' }}>
-                {data.x.slice(-3).map((date, i) => {
-                    return (
-                        <Typography>
-                            {format(date, 'd. L. HH:mm')} - {data.y[i]}
-                        </Typography>
-                    );
-                })}
+                {data.x
+                    .slice(-3)
+                    .reverse()
+                    .map((date, i) => {
+                        return (
+                            <Typography>
+                                {format(date, 'd. L. HH:mm')} - {data.y[i]}
+                            </Typography>
+                        );
+                    })}
             </div>
         );
     }
