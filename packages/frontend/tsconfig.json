@@ -3,7 +3,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "rootDir": "../",
-        "outDir": "build",
+        "outDir": "dist",
         "lib": ["dom", "dom.iterable", "esnext"],
         "sourceMap": true,
         "moduleResolution": "node",

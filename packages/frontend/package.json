@@ -6,11 +6,9 @@
     "scripts": {
         "dev": "webpack serve --port 3000",
         "build": "NODE_ENV=production webpack",
-        "clean": "rimraf tsconfig.tsbuildinfo build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject",
+        "clean": "rimraf tsconfig.tsbuildinfo build dist",
         "gen:watch": "yarn gen --watch",
-        "analyze": "source-map-explorer 'build/static/js/*.js'"
+        "analyze": "source-map-explorer 'build/assets/js/*.js'"
     },
     "dependencies": {
         "@date-io/date-fns": "1.x",
@@ -18,17 +16,14 @@
         "@material-ui/icons": "^4.9.1",
         "@material-ui/pickers": "^3.2.10",
         "@reduxjs/toolkit": "^1.6.1",
-        "@testing-library/jest-dom": "^4.2.4",
-        "@testing-library/user-event": "^7.1.2",
         "clipboard-copy": "^3.1.0",
         "clsx": "^1.1.1",
         "date-fns": "^2.15.0",
         "firebase": "^8.2.1",
         "history": "^5.3.0",
-        "nodemailer": "^6.4.17",
         "normalizr": "^3.6.1",
         "notistack": "^1.0.3",
-        "plotly.js": "^2.9.0",
+        "plotly.js": "^2.12.1",
         "ramda": "^0.27.1",
         "react": "^17.0.2",
         "react-color": "^2.18.0",
@@ -41,8 +36,7 @@
         "redux-thunk": "^2.3.0",
         "reselect": "^4.0.0",
         "socket.io-client": "^3.0.4",
-        "web-vitals": "^1.0.1",
-        "yarn": "^1.22.4"
+        "web-vitals": "^2.1.4"
     },
     "browserslist": {
         "production": [
@@ -76,7 +70,7 @@
         "html-webpack-plugin": "^5.5.0",
         "mini-css-extract-plugin": "^2.6.0",
         "process": "^0.11.10",
-        "source-map-explorer": "^2.4.2",
+        "source-map-explorer": "^2.5.2",
         "stream-browserify": "^3.0.0",
         "ts-loader": "^9.3.0",
         "tsconfig-paths-webpack-plugin": "^3.5.2",

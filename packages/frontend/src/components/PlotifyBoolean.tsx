@@ -1,7 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { subDays } from 'date-fns';
-import React from 'react';
-import PlotlyChart from 'react-plotlyjs-ts';
+import Loader from 'framework-ui/src/Components/Loader';
+import React, { Suspense } from 'react';
+
+const PlotlyChart = React.lazy(() => import('react-plotlyjs-ts'));
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,7 +63,9 @@ function PlotifyBoolean({ data }: ChartSimpleProps) {
 
     return (
         <div className={classes.root}>
-            <PlotlyChart data={data} layout={layout} config={{ displayModeBar: false }} />
+            <Suspense fallback={<Loader open center />}>
+                <PlotlyChart data={data} layout={layout} config={{ displayModeBar: false }} />
+            </Suspense>
         </div>
     );
 }

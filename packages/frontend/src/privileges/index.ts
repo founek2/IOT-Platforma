@@ -6,15 +6,15 @@ import { lazy } from 'react';
 
 import { groupsHeritage, allowedGroups } from 'common/src/constants/privileges';
 
-const UserManagement = lazy(() => import('../Pages/UserManagement'));
+const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement'));
 
-const DeviceManagement = lazy(() => import('../Pages/DeviceManagement'));
+const DeviceManagement = lazy(() => import(/* webpackChunkName: 'DeviceManagement' */ '../Pages/DeviceManagement'));
 
-const DevicesLazy = lazy(() => import('../Pages/Devices'));
+const DevicesLazy = lazy(() => import(/* webpackChunkName: 'Devices' */ '../Pages/Devices'));
 
-const EditNotifyFormLazy = lazy(() => import('../Pages/EditNotifyForm'));
+const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'EditNotifyForm' */ '../Pages/EditNotifyForm'));
 
-const ProfileLazy = lazy(() => import('../Pages/Profile'));
+const ProfileLazy = lazy(() => import(/* webpackChunkName: 'Profile' */ '../Pages/Profile'));
 
 export const routes = {
     user: {

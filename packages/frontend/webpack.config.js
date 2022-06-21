@@ -39,18 +39,6 @@ const config = {
                     projectReferences: true,
                 },
             },
-            // {
-            //     test: /\.(js|jsx)$/,
-            //     exclude: /node_modules/,
-            //     use: ['babel-loader'],
-            // },
-            // {
-            //     test: /\.(woff|woff2|eot|otf|ttf)$/,
-            //     type: 'asset/resource',
-            //     generator: {
-            //         filename: 'assets/fonts/[hash][ext]',
-            //     },
-            // },
             {
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader'],
@@ -65,12 +53,23 @@ const config = {
         ],
     },
     devtool: isEnvProduction ? undefined : 'inline-source-map',
+    // devtool: 'source-map',
     plugins: [
         new CopyPlugin({
             patterns: [
                 { from: path.join(__dirname, 'public/assets'), to: 'assets' },
-                { from: 'public/*.js', to: '' },
-                { from: 'public/*.png', to: '' },
+                {
+                    from: 'public/*.js',
+                    to() {
+                        return '[name][ext]';
+                    },
+                },
+                {
+                    from: 'public/*.png',
+                    to() {
+                        return '[name][ext]';
+                    },
+                },
                 'public/robots.txt',
                 'public/manifest.json',
             ],
