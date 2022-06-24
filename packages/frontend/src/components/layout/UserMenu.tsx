@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { useAppSelector } from 'src/hooks';
 import { getUser } from 'src/utils/getters';
 import { userActions } from '../../store/actions/application/user';
+import { User } from '../../store/reducers/application/user';
 
 const useStyles = makeStyles((theme) => ({
     rightIcon: {
@@ -24,19 +25,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 // const isNotMobile = document.body.clientWidth > 600;
-
-function UserMenu() {
+interface UserMenuProps {
+    user: User;
+}
+function UserMenu({ user }: UserMenuProps) {
     const [ancholEl, setAnchorEl] = useState(null);
-    const dispatch = useDispatch()
-    const classes = useStyles()
-    const user = useAppSelector(getUser)
+    const dispatch = useDispatch();
+    const classes = useStyles();
 
     return (
         <Fragment>
-            <Button
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-                variant="contained"
-            >
+            <Button onClick={(e) => setAnchorEl(e.currentTarget)} variant="contained">
                 <span className={classes.hideOnMobile}>{user.info.userName}</span>
                 <AccountCircle className={classes.rightIcon} />
             </Button>
@@ -48,7 +47,7 @@ function UserMenu() {
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        dispatch(userActions.logOut())
+                        dispatch(userActions.logOut());
                     }}
                 >
                     Odhlásit
@@ -57,7 +56,5 @@ function UserMenu() {
         </Fragment>
     );
 }
-
-
 
 export default UserMenu;

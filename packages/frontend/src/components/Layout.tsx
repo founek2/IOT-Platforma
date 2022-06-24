@@ -1,4 +1,4 @@
-import { makeStyles, ThemeProvider, useMediaQuery, useTheme } from '@material-ui/core';
+import { makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,12 +7,11 @@ import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
-import { isUrlHash, isUserLoggerIn } from 'framework-ui/src/utils/getters';
+import { isUrlHash } from 'framework-ui/src/utils/getters';
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../hooks';
-import { getGroups } from '../utils/getters';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { getUser } from '../utils/getters';
 import ForgotDialog from './layout/ForgotDialog';
 import LoginDialog from './layout/LoginDialog';
 import SideMenu from './layout/SideMenu';
@@ -44,12 +43,9 @@ const useClasses = makeStyles((theme) => ({
 }));
 
 interface LayoutProps {
-    userPresence: boolean;
-    loginOpen: boolean;
-    forgotOpen: boolean;
     children: JSX.Element | null;
 }
-function Layout({ userPresence, loginOpen, forgotOpen, children }: LayoutProps) {
+function Layout({ children }: LayoutProps) {
     const navigate = useNavigate();
     const [mainMenuOpen, setMainMenuO] = useState(false);
     const setMainMenuOpen = (bool: boolean) => () => setMainMenuO(bool);
@@ -57,6 +53,10 @@ function Layout({ userPresence, loginOpen, forgotOpen, children }: LayoutProps) 
     const theme = useTheme();
     const isWide = useMediaQuery(theme.breakpoints.up('sm'));
     const dispatch = useAppDispatch();
+
+    const user = useAppSelector(getUser);
+    const loginOpen = useAppSelector(isUrlHash('#login'));
+    const forgotOpen = useAppSelector(isUrlHash('#forgot'));
 
     return (
         <Fragment>
@@ -75,8 +75,8 @@ function Layout({ userPresence, loginOpen, forgotOpen, children }: LayoutProps) 
                             {isWide ? 'IoT' : ''} Domu
                         </Typography>
                     </Link>
-                    {userPresence ? (
-                        <UserMenu />
+                    {user ? (
+                        <UserMenu user={user} />
                     ) : (
                         <Link to={{ hash: 'login' }}>
                             {isWide ? (
@@ -113,13 +113,4 @@ function Layout({ userPresence, loginOpen, forgotOpen, children }: LayoutProps) 
     );
 }
 
-const _mapStateToProps = (state: any) => {
-    return {
-        groups: getGroups(state),
-        userPresence: isUserLoggerIn(state),
-        loginOpen: isUrlHash('#login')(state),
-        forgotOpen: isUrlHash('#forgot')(state),
-    };
-};
-
-export default connect(_mapStateToProps)(Layout);
+export default Layout;
