@@ -48,9 +48,7 @@ const fieldDescriptors: FieldDescriptors = {
 
 export const stateValid: State = {
     application: {
-        user: {},
         notifications: [],
-        users: [],
         authorization: {
             loggedIn: false,
             accessToken: '',
@@ -120,9 +118,7 @@ export const stateValid: State = {
 
 export const stateInvalidPassword: State = {
     application: {
-        user: {},
         notifications: [],
-        users: [],
         authorization: {
             loggedIn: false,
             accessToken: '',
