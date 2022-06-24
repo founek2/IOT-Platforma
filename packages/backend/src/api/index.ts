@@ -6,7 +6,6 @@ import discovery from './discovery';
 import thing from './thing';
 import accessToken from './accessToken';
 import broker from './broker';
-import signOut from './signOut';
 import { Config } from '../types';
 
 export default ({ config }: { config: Config }) => {
@@ -20,13 +19,11 @@ export default ({ config }: { config: Config }) => {
 
     api.use('/device', device());
 
-    api.use('/device/:deviceId/thing/:thingId', thing());
+    api.use('/device/:deviceId/thing/:nodeId', thing());
 
     api.use('/discovery', discovery());
 
     api.use('/broker', broker());
-
-    api.use('/authorization/signOut', signOut());
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {

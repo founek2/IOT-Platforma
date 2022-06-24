@@ -1,6 +1,6 @@
 import { logger } from 'framework-ui/src/logger';
 import { dehydrateState } from 'framework-ui/src/redux/actions';
-import { userActions } from 'framework-ui/src/redux/actions/application/user';
+import { userActions } from './user';
 import { authorizationReducerActions } from 'framework-ui/src/redux/reducers/application/authorization';
 import { AppThunk } from 'frontend/src/types';
 import { postAuthorization } from '../../../api/authorization';

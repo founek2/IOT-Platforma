@@ -19,6 +19,7 @@ export const discoveryActions = {
             return fetchDiscovery(
                 {
                     token: getToken(getState()),
+                    params: {},
                     onSuccess: (json: { docs: Discovery[] }) => {
                         dispatch(discoveryActions.set(json.docs));
                     },

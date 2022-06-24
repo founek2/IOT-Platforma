@@ -1,6 +1,6 @@
-import { getUsers } from 'framework-ui/src/api/userApi';
 import { logger } from 'framework-ui/src/logger';
 import { getToken } from 'framework-ui/src/utils/getters';
+import { getUsers } from 'src/api/userApi';
 import { AppThunk } from '../../../types';
 import { userNamesReducerActions } from '../../reducers/application/userNames';
 

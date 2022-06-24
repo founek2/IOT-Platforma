@@ -32,8 +32,6 @@ export const getApplication = (state: State) => state.application;
 
 export const getNotifications = o(prop('notifications'), getApplication);
 
-export const getUser = o(prop('user'), getApplication);
-
 export const getAuthorization = o(prop('authorization'), getApplication) as (state: any) => AuthorizationState;
 
 // export const getUserAuthType = o(prop('authType'), getUser);
@@ -48,10 +46,6 @@ export const getToken = o(prop('accessToken'), getAuthorization);
 
 // export const getUserPresence = o(Boolean, getToken);
 export const isUserLoggerIn = o(prop('loggedIn'), getAuthorization);
-
-export const getUsers = o(prop('users'), getApplication);
-
-export const getUserId = o(prop('_id'), getUser as (state: State) => { _id: string });
 
 export const getHistory: (state: State) => State['history'] = prop('history');
 

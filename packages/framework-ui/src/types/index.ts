@@ -1,8 +1,6 @@
-import { ThunkAction, AnyAction, Action } from '@reduxjs/toolkit';
-import { NotificationsState } from '../redux/reducers/application/notifications';
-import { UserState } from '../redux/reducers/application/user';
-import { UsersState } from '../redux/reducers/application/users';
+import { Action, ThunkAction } from '@reduxjs/toolkit';
 import { AuthorizationState } from '../redux/reducers/application/authorization';
+import { NotificationsState } from '../redux/reducers/application/notifications';
 import { HistoryState } from '../redux/reducers/history';
 
 export type errorMessage = string;
@@ -33,7 +31,7 @@ export type RegisteredFields = { [formName: string]: FormRegisteredFields };
 export type FormFieldDescriptors = { [fieldPath: string]: FormFieldDescriptors | FieldDescriptor };
 export type FieldDescriptors = { [formName: string]: { [name: string]: FormFieldDescriptors | FieldDescriptor } };
 
-export type FormData = { [formName: string]: any }
+export type FormData = { [formName: string]: any };
 export type formsData = {
     registeredFields: RegisteredFields;
     [formName: string]: any;
@@ -47,8 +45,6 @@ export type NotificationVariant = 'default' | 'error' | 'success' | 'warning' | 
 
 export type Application = {
     notifications: NotificationsState;
-    user: UserState;
-    users: UsersState;
     authorization: AuthorizationState;
 };
 export type State = {

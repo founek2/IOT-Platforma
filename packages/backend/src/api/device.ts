@@ -1,13 +1,17 @@
 import fieldDescriptors from 'common/src/fieldDescriptors';
 import { DeviceModel } from 'common/src/models/deviceModel';
-import checkWritePerm from '../middlewares/device/checkWritePerm';
-import formDataChecker from '../middlewares/formDataChecker';
-import resource from '../middlewares/resource-router-middleware';
-import tokenAuthMIddleware from '../middlewares/tokenAuth';
+import checkWritePerm from 'common/src/middlewares/device/checkWritePerm';
+import formDataChecker from 'common/src/middlewares/formDataChecker';
+import resource from 'common/src/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import { DeviceService } from '../services/deviceService';
 import eventEmitter from '../services/eventEmitter';
 import { IDevice } from 'common/src/models/interface/device';
+import { RequestWithAuth } from 'common/src/types';
+
+type Request = RequestWithAuth;
+type RequestId = RequestWithAuth & { params: { id: string } };
 
 /**
  * URL prefix /device
@@ -29,8 +33,8 @@ export default () =>
          * @header Authorization-JWT
          * @return json { docs: IDevice[] }
          */
-        async index({ user }: any, res) {
-            const docs = await DeviceModel.findForUser(user.id);
+        async index({ user }: Request, res) {
+            const docs = await DeviceModel.findForUser(user._id);
             res.send({ docs });
         },
 
@@ -39,7 +43,7 @@ export default () =>
          * @header Authorization-JWT
          * @body form DEVICE_SEND
          */
-        async createId({ body, params }, res) {
+        async createId({ body, params }: RequestId, res) {
             const { formData } = body;
             const doc: IDevice = await DeviceModel.findById(params.id).lean();
 
@@ -53,7 +57,7 @@ export default () =>
          * @header Authorization-JWT
          * @body form EDIT_DEVICE
          */
-        async modifyId({ body, params: { id } }, res) {
+        async modifyId({ body, params: { id } }: RequestId, res) {
             const { formData } = body;
 
             const form = formData.EDIT_DEVICE;
@@ -65,7 +69,7 @@ export default () =>
          * @restriction user needs write permission
          * @header Authorization-JWT
          */
-        async deleteId({ params }, res) {
+        async deleteId({ params }: RequestId, res) {
             const result = await DeviceService.deleteById(params.id);
             if (result) res.sendStatus(204);
             else res.sendStatus(404);

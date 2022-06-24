@@ -85,13 +85,13 @@ export type SocketUpdateThingState = {
         };
     };
 };
-
-export type RequestWithAuth = Request & {
+type Dict = { [key: string]: any };
+export type RequestWithAuth<P = {}, ReqQuery = {}> = Request<P, any, any, ReqQuery> & {
     user: IUser & { admin?: boolean; accessPermissions?: Permission[] };
     root?: boolean;
 };
 
-export type RequestWithAuthOpt = Request & {
+export type RequestWithAuthOpt<P = Dict> = Request<P> & {
     user?: IUser & { admin?: boolean; accessPermissions?: Permission[] };
     root?: boolean;
 };

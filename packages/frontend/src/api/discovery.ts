@@ -1,13 +1,15 @@
-import { deleteJson, paramSender, postJson } from 'framework-ui/src/api';
+import { deleteJson, paramSender, postJson, SenderParam } from 'framework-ui/src/api';
+import { Dispatch } from 'redux';
+import { API_URL, SenderParamNoUrl } from './setup';
 
-export const API_URL = '/api';
-
-export const fetchDiscovery = (object, dispatch) =>
-    paramSender({
-        url: API_URL + '/discovery',
-        ...object,
-        dispatch,
-    });
+export const fetchDiscovery = (object: SenderParamNoUrl, dispatch: Dispatch) =>
+    paramSender(
+        {
+            url: API_URL + '/discovery',
+            ...object,
+        },
+        dispatch
+    );
 
 export const deleteDiscovery = ({ id, ...object }, dispatch) =>
     deleteJson({

@@ -7,11 +7,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles } from '@material-ui/core/styles';
 import Loader from 'framework-ui/src/Components/Loader';
-import { userActions } from 'framework-ui/src/redux/actions/application/user';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
-import { History } from 'history';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { userActions } from 'src/store/actions/application/user';
 import UserForm from '../components/UserForm';
 import { useAppDispatch } from '../hooks';
 

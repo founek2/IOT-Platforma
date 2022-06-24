@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import auth from './auth';
 import pass from './pass';
-import user from './user';
+import signIn from './signIn';
+import signOut from './signOut';
 
 export default ({}) => {
     let api = Router();
@@ -10,7 +11,9 @@ export default ({}) => {
 
     api.use('/auth/temporaryPass', pass);
 
-    api.use('/auth/user', user());
+    api.use('/auth/user/signIn', signIn());
+
+    api.use('/auth/user/signOut', signOut());
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {

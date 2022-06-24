@@ -64,9 +64,12 @@ export function ThingDialog({ room }: ThingDialogProps) {
                               timestamp={thing.state?.timestamp && new Date(thing.state.timestamp)}
                               onChange={(newValue: any) =>
                                   dispatch(
-                                      devicesActions.updateState(queryParams.deviceId, thing._id, {
-                                          [property.propertyId]: newValue,
-                                      })
+                                      devicesActions.updateState(
+                                          queryParams.deviceId,
+                                          thing._id,
+                                          property.propertyId,
+                                          newValue
+                                      )
                                   )
                               }
                               history={historyData?.deviceId === queryParams.deviceId ? historyData : undefined}

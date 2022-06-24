@@ -3,12 +3,12 @@ import {
     deleteUser as deleteUserApi,
     getUsers as fetchUsers,
     updateUser as updateUserApi,
-} from '../../../api/userApi';
-import { logger } from '../../../logger';
+} from '../../../../../frontend/src/api/userApi';
+import { logger } from 'framework-ui/src/logger';
 import { AppThunk } from '../../../types';
-import { getFormData, getToken } from '../../../utils/getters';
+import { getFormData, getToken } from 'framework-ui/src/utils/getters';
 import { usersReducerActions } from '../../reducers/application/users';
-import { formsDataActions } from '../formsData';
+import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 
 export const usersActions = {
     ...usersReducerActions,
@@ -18,6 +18,7 @@ export const usersActions = {
             return fetchUsers(
                 {
                     token: getToken(getState()),
+                    params: {},
                     onSuccess: (json: any) => dispatch(usersActions.set(json.docs)),
                 },
                 dispatch

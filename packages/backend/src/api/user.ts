@@ -3,21 +3,25 @@ import { IUser } from 'common/src/models/interface/userInterface';
 import { TokenModel } from 'common/src/models/tokenModel';
 import { UserModel } from 'common/src/models/userModel';
 import { UserService } from 'common/src/services/userService';
+import { RequestWithAuth } from 'common/src/types';
 import { getAllowedGroups } from 'framework-ui/src/privileges';
-import formDataChecker from '../middlewares/formDataChecker';
-import { rateLimiterMiddleware } from '../middlewares/rateLimiter';
-import resource from '../middlewares/resource-router-middleware';
-import tokenAuthMIddleware from '../middlewares/tokenAuth';
-import checkWritePerm from '../middlewares/user/checkWritePerm';
+import formDataChecker from 'common/src/middlewares/formDataChecker';
+import { rateLimiterMiddleware } from 'common/src/middlewares/rateLimiter';
+import resource from 'common/src/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import checkWritePerm from 'common/src/middlewares/user/checkWritePerm';
 import eventEmitter from '../services/eventEmitter';
-import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import { EitherAsync } from 'purify-ts/EitherAsync';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
         return doc._id != id; // dont change to !==
     };
 }
+
+type Request = RequestWithAuth;
+type RequestIndex = RequestWithAuth<{}, { type?: string }>;
+type RequestRead = RequestWithAuth<{ id: string }, { attribute?: string }>;
+type RequestId = RequestWithAuth<{ id: string }>;
 
 /**
  * URL prefix /user
@@ -47,18 +51,18 @@ export default () =>
          *              - type == userName { data: { _id: string, userName: string }[] }
          *              - default { users: IUser[] }
          */
-        async index({ user, root, query: { type } }: any, res) {
+        async index({ user, root, query: { type } }: RequestIndex, res) {
             if (user && type === 'userName') {
                 // tested
                 const docs = await UserModel.findAllUserNames();
                 res.send({ data: docs.map(({ _id, info: { userName } }) => ({ _id, userName })) });
             } else if (root) {
                 const docs = await UserModel.findAll();
-                res.send({ docs: docs.filter(removeUserItself(user.id)).map((obj) => obj.toObject()) });
+                res.send({ docs: docs.filter(removeUserItself(user._id)).map((obj) => obj.toObject()) });
             } else if (user && user.admin) {
                 // tested
                 const docs = await UserModel.findAllNotRoot();
-                res.send({ docs: docs.filter(removeUserItself(user.id)).map((obj) => obj.toObject()) });
+                res.send({ docs: docs.filter(removeUserItself(user._id)).map((obj) => obj.toObject()) });
             } else if (user && !user.admin) {
                 res.status(403).send({ error: 'InvalidPermissions' });
             } else res.sendStatus(500);
@@ -68,7 +72,7 @@ export default () =>
          * @param attribute specify an user atribute, supported: AuthType
          * @return json { authType: AuthType }
          */
-        async read({ params, query }, res) {
+        async read({ params, query }: RequestRead, res) {
             const { id } = params;
             const { attribute } = query;
 
@@ -90,7 +94,7 @@ export default () =>
          * @return json
          * - LOGIN | REGISTRATION { user: IUser, token: JwtToken }
          */
-        async create(req, res) {
+        async create(req: Request, res) {
             const { formData } = req.body;
 
             if (formData.REGISTRATION) {
@@ -127,12 +131,12 @@ export default () =>
          * @restriction user is admin or is deleting himself
          * @header Authorization-JWT
          */
-        async deleteId({ params }, res) {
+        async deleteId({ params }: RequestId, res) {
             await UserService.deleteById(params.id);
             res.sendStatus(204);
         },
 
-        async replaceId({ body, params, user }: any, res) {
+        async replaceId({ body, params, user }: RequestId, res) {
             const { id } = params;
             if (body.formData.EDIT_USER) {
                 const allowedGroups = getAllowedGroups(user.groups).map((obj: any) => obj.name);

@@ -1,17 +1,16 @@
 import { postJson, getJson } from 'framework-ui/src/api';
-
-const API_URL = '/api';
+import { API_URL } from './setup';
 
 export const fetchAuthorization = (object: any, dispatch: any) =>
     getJson({
-        url: API_URL + `/auth/user`,
+        url: API_URL + `/auth/user/signIn`,
         ...object,
         dispatch,
     });
 
 export const postAuthorization = (object: any, dispatch: any) =>
     postJson({
-        url: API_URL + `/auth/user`,
+        url: API_URL + `/auth/user/signIn`,
         ...object,
         successMessage: 'successfullyLoggedIn',
         dispatch,
@@ -19,7 +18,7 @@ export const postAuthorization = (object: any, dispatch: any) =>
 
 export const postSignOut = (object: any, dispatch: any) =>
     postJson({
-        url: API_URL + `/authorization/signOut`,
+        url: API_URL + `/auth/user/signOut`,
         ...object,
         successMessage: 'successfullySignedOut',
         dispatch,

@@ -1,8 +1,11 @@
 import { OAuthProvider } from 'common/src/models/interface/userInterface';
 import { UserService } from 'common/src/services/userService';
-import resource from '../middlewares/resource-router-middleware';
-import tokenAuthMIddleware from '../middlewares/tokenAuth';
+import { RequestWithAuth } from 'common/src/types';
+import resource from 'common/src/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import { OAuthService } from '../services/oauthService';
+
+type Request = RequestWithAuth;
 
 /**
  * URL prefix /authorization/signOut
@@ -14,8 +17,8 @@ export default () =>
             create: [tokenAuthMIddleware()],
         },
 
-        async create({ user }: any, res) {
-            (await UserService.getAuthorization(user.id))
+        async create({ user }: Request, res) {
+            (await UserService.getAuthorization(user._id))
                 .ifNothing(() => res.sendStatus(204))
                 .ifJust(async (oauth) => {
                     (
@@ -26,7 +29,7 @@ export default () =>
                             OAuthProvider.seznam
                         )
                     ).ifJust(() => {
-                        UserService.removeAuthorization(user.id);
+                        UserService.removeAuthorization(user._id);
                         res.sendStatus(204);
                     });
                 });

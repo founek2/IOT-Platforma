@@ -44,3 +44,5 @@ export const getUsers = o((app) => app.users, getApplication);
 export const getUserInfo = o((user) => user?.info, getUser);
 
 export const getGroups = o((user) => user?.groups || [], getUser);
+
+export const getUserId = o((user) => user._id, getUser);

@@ -32,7 +32,7 @@ const useStyles = makeStyles({
 export interface BoxWidgetProps {
     className?: string;
     thing: IThing;
-    onClick: (newState: any) => Promise<void>;
+    onClick: (propertyId: string, newValue: any) => Promise<void>;
     deviceStatus: IDeviceStatus;
     deviceId: IDevice['_id'];
     disabled?: boolean;
@@ -42,7 +42,7 @@ export interface GeneralBoxProps {
     lastChange?: Date;
     className?: string;
     thing: IThing;
-    onClick: (newState: any) => Promise<any>;
+    onClick: (propertyId: string, newValue: any) => Promise<any>;
     deviceStatus: IDeviceStatus;
     deviceId: IDevice['_id'];
     property?: IThingProperty;
@@ -82,9 +82,9 @@ function BorderBox({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [lastChange, setInTransition]);
 
-    async function handleClick(newState: any) {
+    async function handleClick(propertyId: string, newValue: string) {
         setInTransition(true);
-        await onClick(newState);
+        await onClick(propertyId, newValue);
         ref.current = setTimeout(() => {
             dispatch(
                 devicesActions.updateOne({

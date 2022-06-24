@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mongoSanitize from 'express-mongo-sanitize';
 import api from '../api';
+import api2 from '../api/v2';
 import { Config } from '../types';
 import path from 'path';
 
@@ -37,6 +38,8 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
     app.use('/api', mongoSanitize());
 
     // api router
+    app.use('/api/v2', api2({ config }));
+
     app.use('/api', api({ config }));
 
     // fallback

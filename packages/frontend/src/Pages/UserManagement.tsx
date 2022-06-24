@@ -1,20 +1,18 @@
-import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
 import { IUser } from 'common/src/models/interface/userInterface';
 import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import FullScreenDialog from 'framework-ui/src/Components/FullScreenDialog';
 import EnchancedTable from 'framework-ui/src/Components/Table';
 import { getAllowedGroups, isGroupAllowed } from 'framework-ui/src/privileges';
-import { usersActions } from 'framework-ui/src/redux/actions/application/users';
 import arrToString from 'framework-ui/src/utils/arrToString';
 import { isUrlHash } from 'framework-ui/src/utils/getters';
 import { History } from 'history';
-import { isEmpty, assoc, prop } from 'ramda';
+import { isEmpty } from 'ramda';
 import React, { useEffect } from 'react';
+import { usersActions } from 'src/store/actions/application/users';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getGroups, getQueryID, getUsers } from '../utils/getters';
 import EditUser from './userManagement/EditUser';
-import { User } from 'framework-ui/src/redux/reducers/application/user';
 
 function convertGroupIDsToName(groups: { group: string; text: string }[]) {
     return function (arr: string[]) {

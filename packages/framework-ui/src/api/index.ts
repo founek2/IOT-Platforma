@@ -1,11 +1,10 @@
-import { merge, flip, o, toPairs, forEach } from 'ramda';
-import { notificationsActions } from '../redux/actions/application/notifications';
+import { Dispatch } from '@reduxjs/toolkit';
+import { forEach, toPairs } from 'ramda';
 import ErrorMessages from '../localization/errorMessages';
 import SuccessMessages from '../localization/successMessages';
 import { logger } from '../logger';
-import { userActions } from '../redux/actions/application/user';
 import { dehydrateState } from '../redux/actions/';
-import { Dispatch } from '@reduxjs/toolkit';
+import { notificationsActions } from '../redux/actions/application/notifications';
 
 const addNotification = notificationsActions.add;
 const processResponse = (dispatch: Dispatch, successMessage: string) => async (response) => {
@@ -21,8 +20,8 @@ const processResponse = (dispatch: Dispatch, successMessage: string) => async (r
 
     const newToken = response.headers.get('authorization-jwt-new');
     if (newToken) {
-        logger.info('Setting resigned token');
-        dispatch(userActions.update({ token: newToken }));
+        logger.error('Unable to set resigned token, actions moved to FE');
+        // dispatch(userActions.update({ token: newToken }));
         // @ts-ignore
         dispatch(dehydrateState());
     }
@@ -132,17 +131,17 @@ function buildParams(params) {
     return result.slice(0, -1);
 }
 
-interface SenderParams {
+interface GeneralSenderParams {
     url: string;
     token?: string;
     onSuccess?: (data: any) => boolean | any;
     onError?: (err: any) => any;
     onFinish?: () => void;
-    method: 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'GET';
-    dispatch: Dispatch;
+    method?: 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'GET';
+    dispatch?: Dispatch;
     successMessage?: string;
 }
-type JsonSenderParams = SenderParams & { body?: any };
+type JsonSenderParams = GeneralSenderParams & { body?: any };
 export const jsonSender = async ({
     url,
     token = '',
@@ -176,18 +175,11 @@ export const jsonSender = async ({
     return successValue ?? !catched;
 };
 
-export type SenderParam = SenderParams & { params?: any };
-export const paramSender = async ({
-    url,
-    token = '',
-    onSuccess,
-    onError,
-    onFinish,
-    method = 'GET',
-    dispatch,
-    params,
-    successMessage,
-}: SenderParam) => {
+export type SenderParam<T = any> = GeneralSenderParams & { params: T };
+export const paramSender = async (
+    { url, token = '', onSuccess, onError, onFinish, method = 'GET', params, successMessage }: SenderParam,
+    dispatch: Dispatch
+) => {
     let catched = false;
     try {
         const response = await fetch(url + (params ? buildParams(params) : ''), {

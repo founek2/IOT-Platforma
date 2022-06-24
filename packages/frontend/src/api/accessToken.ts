@@ -1,6 +1,7 @@
-import { postJson, paramSender, deleteJson, patchJson } from 'framework-ui/src/api';
-
-const API_URL = '/api';
+import { IUser } from 'common/src/models/interface/userInterface';
+import { postJson, paramSender, deleteJson, patchJson, SenderParam } from 'framework-ui/src/api';
+import { Dispatch } from 'redux';
+import { API_URL, SenderParamNoUrl } from './setup';
 
 export const updateAccessToken = ({ userId, tokenId, ...object }: any, dispatch: any) =>
     patchJson({
@@ -26,9 +27,12 @@ export const createAccessToken = ({ userId, ...object }: any, dispatch: any) =>
         dispatch,
     });
 
-export const fetchAccessToken = ({ userId, ...object }: any, dispatch: any) =>
-    paramSender({
-        url: API_URL + '/user/' + userId + '/accessToken',
-        ...object,
-        dispatch,
-    });
+type fetchAccessTokenParams = SenderParamNoUrl & { userId: string };
+export const fetchAccessToken = ({ userId, ...object }: fetchAccessTokenParams, dispatch: Dispatch) =>
+    paramSender(
+        {
+            url: API_URL + '/user/' + userId + '/accessToken',
+            ...object,
+        },
+        dispatch
+    );

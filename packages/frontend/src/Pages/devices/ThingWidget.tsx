@@ -44,7 +44,9 @@ export function ThingWidget({ device, thingId }: ThingWidgetProps) {
                 <ThingContext.Provider value={thing}>
                     <Comp
                         thing={thing}
-                        onClick={(state: any) => dispatch(devicesActions.updateState(device._id, thing._id, state))}
+                        onClick={(propertyId, newValue) =>
+                            dispatch(devicesActions.updateState(device._id, thing._id, propertyId, newValue))
+                        }
                         lastChange={state?.timestamp}
                         disabled={isAfk(device.state?.status?.value)}
                         deviceStatus={device?.state?.status}

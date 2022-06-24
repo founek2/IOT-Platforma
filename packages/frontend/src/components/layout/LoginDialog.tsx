@@ -10,12 +10,12 @@ import Typography from '@material-ui/core/Typography';
 import { AuthType } from 'common/src/constants';
 import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import Loader from 'framework-ui/src/Components/Loader';
-import { userActions } from 'framework-ui/src/redux/actions/application/user';
 import { getFieldVal, isUserLoggerIn } from 'framework-ui/src/utils/getters';
 import { RootState } from 'frontend/src/store/store';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { userActions } from 'src/store/actions/application/user';
 import { useAppDispatch } from '../../hooks';
 import OAuthButtons from './OAuthButtons';
 

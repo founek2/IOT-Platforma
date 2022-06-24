@@ -52,12 +52,7 @@ function MySwitch({ onClick, deviceId, thing, className, disabled }: BoxWidgetPr
             <div className={classes.verticalAlign}>
                 <div
                     className={classes.switchContainer}
-                    onClick={(e) =>
-                        !disabled &&
-                        onClick({
-                            [property.propertyId]: toogleSwitchVal(value),
-                        })
-                    }
+                    onClick={(e) => !disabled && onClick(property.propertyId, toogleSwitchVal(value))}
                 >
                     <CopyUrlContext propertyId={property.propertyId} value={value}>
                         <Switch disabled={disabled} checked={value === 'true'} />

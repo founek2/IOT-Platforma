@@ -2,17 +2,21 @@ import fieldDescriptors from 'common/src/fieldDescriptors';
 import { DiscoveryModel, IDiscoveryDocument } from 'common/src/models/deviceDiscoveryModel';
 import { DeviceModel } from 'common/src/models/deviceModel';
 import { DeviceStatus } from 'common/src/models/interface/device';
+import { RequestWithAuth } from 'common/src/types';
 import mongoose from 'mongoose';
 import { assocPath, map } from 'ramda';
-import checkDiscovery from '../middlewares/discovery/checkDiscovery';
-import formDataChecker from '../middlewares/formDataChecker';
-import resource from '../middlewares/resource-router-middleware';
-import tokenAuthMIddleware from '../middlewares/tokenAuth';
+import checkDiscovery from 'common/src/middlewares/discovery/checkDiscovery';
+import formDataChecker from 'common/src/middlewares/formDataChecker';
+import resource from 'common/src/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import eventEmitter from '../services/eventEmitter';
 import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
 
 const ObjectId = mongoose.Types.ObjectId;
+
+type Request = RequestWithAuth;
+type RequestId = RequestWithAuth & { params: { id: string } };
 
 /**
  * URL prefix /discovery
@@ -33,7 +37,7 @@ export default () =>
          * @header Authorization-JWT
          * @return json { docs: IDiscovery[] }
          */
-        async index({ user }: any, res) {
+        async index({ user }: Request, res) {
             const docs = await DiscoveryModel.find({
                 'state.status.value': {
                     $exists: true,
@@ -49,7 +53,7 @@ export default () =>
          * @restriction device was discovered for this user
          * @header Authorization-JWT
          */
-        async deleteId({ params }, res) {
+        async deleteId({ params }: RequestId, res) {
             const { id } = params;
 
             const result = await DiscoveryModel.deleteMany({
@@ -66,7 +70,7 @@ export default () =>
          * @body form CREATE_DEVICE
          * @return json { doc: IDevice }
          */
-        async createId({ body, user, params }: any, res) {
+        async createId({ body, user, params }: RequestId, res) {
             // TODO permission check
             const { formData } = body;
             const _id = params.id;
@@ -96,7 +100,7 @@ export default () =>
                     ),
                     metadata,
                 },
-                user.id
+                user._id
             );
 
             const suuccess = await Actions.deviceInitPairing(doc.deviceId, newDevice.apiKey); // initialize pairing proccess

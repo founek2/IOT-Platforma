@@ -8,12 +8,11 @@ import { all, equals } from 'ramda';
 import checkControlPerm from 'common/src/middlewares/device/checkControlPerm';
 import resource from 'common/src/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
-import { Actions } from '../services/actionsService';
+import { Actions } from '../../services/actionsService';
 
-type Params = { nodeId: string; deviceId: string };
+type Params = { realm: string; deviceId: string; nodeId: string };
 type Request = RequestWithAuth<Params>;
 type RequestQuery = RequestWithAuth<Params, { property?: string; value?: string }>;
-
 /**
  * URL prefix /device/:deviceId/thing/:nodeId
  */
@@ -21,8 +20,7 @@ export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            create: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
-            modify: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
+            modify: [tokenAuthMIddleware()],
         },
 
         async index(req: Request, res) {
@@ -30,14 +28,16 @@ export default () =>
         },
 
         async create({ params, query }: RequestQuery, res) {
-            const { deviceId, nodeId } = params;
-            console.log('property', params, query);
+            const { realm, deviceId, nodeId } = params;
 
-            const doc: IDevice = await DeviceModel.findById(deviceId).lean();
+            const doc = await DeviceModel.findByRealm(realm, deviceId);
+            if (!doc) return res.sendStatus(404);
+
             const thing = getThing(doc, nodeId);
 
             const propertyId = query.property;
             const value = query.value;
+
             if (!propertyId || !value) return res.sendStatus(400);
 
             const property = getProperty(thing, propertyId);

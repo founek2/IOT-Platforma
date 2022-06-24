@@ -1,16 +1,16 @@
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
+import { useAppSelector } from 'src/hooks';
+import { getUser } from 'src/utils/getters';
 import { userActions } from '../../store/actions/application/user';
-import { getUser } from 'framework-ui/src/utils/getters';
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
     rightIcon: {
         marginLeft: 0,
         [theme.breakpoints.up('sm')]: {
@@ -22,18 +22,19 @@ const styles = (theme) => ({
             display: 'none',
         },
     },
-});
+}));
 // const isNotMobile = document.body.clientWidth > 600;
 
-function UserMenu({ classes, logOutAction, user }) {
+function UserMenu() {
     const [ancholEl, setAnchorEl] = useState(null);
-    // const curriedSetOpen = bool => () => setOpen(bool)
+    const dispatch = useDispatch()
+    const classes = useStyles()
+    const user = useAppSelector(getUser)
 
     return (
         <Fragment>
             <Button
                 onClick={(e) => setAnchorEl(e.currentTarget)}
-                //color="inherit"
                 variant="contained"
             >
                 <span className={classes.hideOnMobile}>{user.info.userName}</span>
@@ -47,7 +48,7 @@ function UserMenu({ classes, logOutAction, user }) {
                 <MenuItem
                     onClick={() => {
                         setAnchorEl(null);
-                        logOutAction();
+                        dispatch(userActions.logOut())
                     }}
                 >
                     Odhlásit
@@ -57,15 +58,6 @@ function UserMenu({ classes, logOutAction, user }) {
     );
 }
 
-const _mapStateToProps = (state) => ({
-    user: getUser(state),
-});
 
-const _mapDispatchToProps = (dispatch) =>
-    bindActionCreators(
-        {
-            logOutAction: userActions.logOut,
-        },
-        dispatch
-    );
-export default connect(_mapStateToProps, _mapDispatchToProps)(withStyles(styles)(UserMenu));
+
+export default UserMenu;

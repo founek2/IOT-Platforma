@@ -14,7 +14,7 @@ const config = {
     entry: './src/index.tsx',
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: isEnvProduction ? 'assets/js/[name].[contenthash:8].js' : 'static/js/bundle.js',
+        filename: isEnvProduction ? 'assets/js/[name].[contenthash:8].js' : 'static/js/[name].js',
         chunkFilename: isEnvProduction ? 'assets/js/[name].[contenthash:8].chunk.js' : 'static/js/[name].chunk.js',
         assetModuleFilename: 'assets/media/[name].[hash][ext]',
         publicPath: '/',
@@ -93,8 +93,8 @@ const config = {
         proxy: {
             '/api': {
                 target: 'http://localhost:3000',
-                // router: () => 'http://localhost:8085',
-                router: () => 'https://dev.iotdomu.cz',
+                router: () => 'http://localhost:8085',
+                // router: () => 'https://dev.iotdomu.cz',
                 // logLevel: 'debug' /*optional*/,
                 changeOrigin: true,
             },

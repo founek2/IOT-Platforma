@@ -1,7 +1,10 @@
-import resource from '../middlewares/resource-router-middleware';
-import tokenAuthMIddleware from '../middlewares/tokenAuth';
-import { checkIsRoot } from '../middlewares/user/checkIsRoot';
+import { RequestWithAuth } from 'common/src/types';
+import resource from 'common/src/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import { checkIsRoot } from 'common/src/middlewares/user/checkIsRoot';
 import { BrokerService } from '../services/brokerService';
+
+type Request = RequestWithAuth;
 
 /**
  * URL prefix /user
@@ -16,7 +19,7 @@ export default () =>
          * @restriction regular user - list only userNames, admin - list all users
          * @header Authorization-JWT
          */
-        async index(req, res) {
+        async index(req: Request, res) {
             res.send(await BrokerService.getOverView());
         },
 

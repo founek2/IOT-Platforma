@@ -56,11 +56,7 @@ function Activator({ onClick, deviceId, thing, className, disabled }: BoxWidgetP
                         <CopyUrlContext propertyId={property.propertyId} value={head(property.format) as string}>
                             <ActivatorButton
                                 disabled={disabled}
-                                onClick={() =>
-                                    onClick({
-                                        [property.propertyId]: head(property.format),
-                                    })
-                                }
+                                onClick={() => onClick(property.propertyId, head(property.format))}
                             />
                         </CopyUrlContext>
                     </div>
@@ -71,7 +67,7 @@ function Activator({ onClick, deviceId, thing, className, disabled }: BoxWidgetP
                             value={value}
                             disabled={disabled}
                             onChange={(e) => {
-                                onClick({ [property.propertyId]: e.target.value as string });
+                                onClick(property.propertyId, e.target.value as string);
                             }}
                             disableUnderline
                         >

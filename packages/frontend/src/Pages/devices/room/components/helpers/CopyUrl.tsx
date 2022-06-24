@@ -59,7 +59,7 @@ export function CopyUrlContext({ children, propertyId, value, className }: CopyU
             e.stopPropagation();
             switch (action) {
                 case Copy.Url:
-                    const url = `${window.location.origin}/api/device/${deviceId}/thing/${config.nodeId}?property=${propertyId}&value=${value}`;
+                    const url = `${window.location.origin}/api/v2/realm/${metadata.realm}/device/${metadata.deviceId}/thing/${config.nodeId}?property=${propertyId}&value=${value}`;
                     copy(url);
                     break;
                 case Copy.Topic:

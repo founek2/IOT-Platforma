@@ -1,5 +1,5 @@
 import { IDevice } from 'common/src/models/interface/device';
-import { IThing } from 'common/src/models/interface/thing';
+import { IThing, IThingProperty } from 'common/src/models/interface/thing';
 import { transformNotifyForFE } from 'common/src/utils/transform';
 import { logger } from 'framework-ui/src/logger';
 import { dehydrateState } from 'framework-ui/src/redux/actions';
@@ -82,7 +82,12 @@ export const devicesActions = {
         };
     },
 
-    updateState(deviceId: IDevice['_id'], thingId: IThing['_id'], state: any): AppThunk<Promise<boolean>> {
+    updateState(
+        deviceId: IDevice['_id'],
+        thingId: IThing['_id'],
+        propertyId: IThingProperty['propertyId'],
+        newValue: any
+    ): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const EDIT_CONTROL = 'UPDATE_STATE_DEVICE';
             logger.info(EDIT_CONTROL);
@@ -95,13 +100,16 @@ export const devicesActions = {
                     token: getToken(getState()),
                     deviceId,
                     nodeId,
-                    body: { state },
+                    params: {
+                        property: propertyId,
+                        value: newValue,
+                    },
                     onSuccess: () => {
                         const thing = getThing(thingId)(getState())!;
                         const mergedState = thing.state
                             ? mergeDeepLeft(
                                   {
-                                      value: state,
+                                      value: { [propertyId]: newValue },
                                   },
                                   thing.state
                               )
@@ -126,6 +134,7 @@ export const devicesActions = {
             return getNotifyApi(
                 {
                     token: getToken(getState()),
+                    params: {},
                     id: deviceId,
                     nodeId,
                     onSuccess: (json: any) => {

@@ -8,6 +8,10 @@ import { IUser } from './interface/userInterface';
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
 
+interface Realm {
+    name: string;
+}
+
 export const deviceSchema = new Schema<IDeviceDocument, IDeviceModel>(deviceSchemaPlain, {
     toObject: {
         transform: function (doc, ret) {
@@ -30,6 +34,9 @@ export interface IDeviceModel extends Model<IDeviceDocument> {
     checkReadPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
     checkControlPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
     updateByFormData(id: IDevice['_id'], object: Partial<IDevice>): Promise<void>;
+
+    findAllRealms(): Promise<Realm[]>;
+    findByRealm(realm: string, deviceId: string): Promise<IDevice | null>;
 }
 
 deviceSchema.statics.checkIdTaken = async function (metadata) {
@@ -152,6 +159,18 @@ deviceSchema.statics.updateByFormData = function (id: IDevice['_id'], object: Pa
         },
         object
     );
+};
+
+deviceSchema.statics.findAllRealms = async function (): Promise<Realm[]> {
+    const realmArray = await this.find({}).distinct('metadata.realm').lean<string[]>();
+
+    return realmArray.map((name) => ({ name }));
+};
+deviceSchema.statics.findByRealm = function (realm: string, deviceId: string) {
+    return this.findOne({
+        'metadata.realm': realm,
+        'metadata.deviceId': deviceId,
+    }).lean();
 };
 
 export const DeviceModel = mongoose.model<IDeviceDocument, IDeviceModel>('DeviceAdded', deviceSchema);

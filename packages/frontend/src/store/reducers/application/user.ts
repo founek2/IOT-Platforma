@@ -1,8 +1,9 @@
-import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IUser } from 'common/src/models/interface/userInterface';
 import { merge } from 'ramda';
 
 // Define a type for the slice state
-export type User = { _id?: any };
+export type User = IUser;
 export type UserState = User | null;
 
 // Define the initial state using that type

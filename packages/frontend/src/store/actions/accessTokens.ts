@@ -72,6 +72,7 @@ export const accessTokensActions = {
                 {
                     userId,
                     token: getToken(getState()),
+                    params: {},
                     onSuccess: (json: { docs: IAccessToken[] }) => {
                         dispatch(accessTokensActions.set(json.docs));
                     },

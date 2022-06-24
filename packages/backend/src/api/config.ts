@@ -1,8 +1,8 @@
 import config from 'common/src/config';
 import { compose, lensProp, over, pick } from 'ramda';
-import resource from '../middlewares/resource-router-middleware';
-import tokenAuthMIddleware from '../middlewares/tokenAuth';
-import { checkIsRoot } from '../middlewares/user/checkIsRoot';
+import resource from 'common/src/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import { checkIsRoot } from 'common/src/middlewares/user/checkIsRoot';
 
 /**
  * URL prefix /user

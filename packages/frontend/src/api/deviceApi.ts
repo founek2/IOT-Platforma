@@ -1,6 +1,6 @@
-import { postJson, paramSender, deleteJson, patchJson, putJson } from 'framework-ui/src/api';
-
-export const API_URL = '/api';
+import { postJson, paramSender, deleteJson, patchJson, putJson, SenderParam } from 'framework-ui/src/api';
+import { Dispatch } from 'redux';
+import { API_URL, SenderParamNoUrl } from './setup';
 
 export const postDevice = ({ id, ...object }, dispatch) =>
     postJson({
@@ -19,11 +19,13 @@ export const updateState = ({ id, ...object }, dispatch) =>
     });
 
 export const fetchDevices = (object, dispatch) =>
-    paramSender({
-        url: API_URL + '/device',
-        ...object,
-        dispatch,
-    });
+    paramSender(
+        {
+            url: API_URL + '/device',
+            ...object,
+        },
+        dispatch
+    );
 
 export const updateDevice = ({ id, ...object }, dispatch) =>
     patchJson({
@@ -41,12 +43,15 @@ export const deleteDevice = ({ id, ...object }, dispatch) =>
         dispatch,
     });
 
-export const fetchDeviceData = ({ id, ...object }, dispatch) =>
-    paramSender({
-        url: API_URL + `/device/${id}`,
-        ...object,
-        dispatch,
-    });
+type fetchDeviceDataParams = SenderParamNoUrl & { id: string };
+export const fetchDeviceData = ({ id, ...object }: fetchDeviceDataParams, dispatch: Dispatch) =>
+    paramSender(
+        {
+            url: API_URL + `/device/${id}`,
+            ...object,
+        },
+        dispatch
+    );
 
 export const updateNotify = ({ id, nodeId, ...object }, dispatch) =>
     putJson({
@@ -56,9 +61,12 @@ export const updateNotify = ({ id, nodeId, ...object }, dispatch) =>
         dispatch,
     });
 
-export const getNotify = ({ id, nodeId, ...object }, dispatch) =>
-    paramSender({
-        url: API_URL + `/device/${id}/thing/${nodeId}/notify`,
-        ...object,
-        dispatch,
-    });
+type getNotifyParams = SenderParamNoUrl & { id: string; nodeId: string };
+export const getNotify = ({ id, nodeId, ...object }: getNotifyParams, dispatch: Dispatch) =>
+    paramSender(
+        {
+            url: API_URL + `/device/${id}/thing/${nodeId}/notify`,
+            ...object,
+        },
+        dispatch
+    );
