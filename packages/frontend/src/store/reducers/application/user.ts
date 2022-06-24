@@ -3,11 +3,10 @@ import { IUser } from 'common/src/models/interface/userInterface';
 import { merge } from 'ramda';
 
 // Define a type for the slice state
-export type User = IUser;
-export type UserState = User | null;
+export type User = IUser | null;
 
 // Define the initial state using that type
-const initialState = null as UserState;
+const initialState = null as User;
 
 export const userSlice = createSlice({
     name: 'user',
