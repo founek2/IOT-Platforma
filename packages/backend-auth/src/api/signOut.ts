@@ -4,6 +4,7 @@ import { RequestWithAuth } from 'common/src/types';
 import resource from 'common/src/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import { OAuthService } from '../services/oauthService';
+import { logger } from 'framework-ui/src/logger';
 
 type Request = RequestWithAuth;
 
@@ -21,16 +22,17 @@ export default () =>
             (await UserService.getAuthorization(user._id))
                 .ifNothing(() => res.sendStatus(204))
                 .ifJust(async (oauth) => {
-                    (
-                        await OAuthService.revokeToken(
-                            oauth.accessToken,
-                            oauth.refreshToken,
-                            'refresh_token',
-                            OAuthProvider.seznam
-                        )
-                    ).ifJust(() => {
-                        UserService.removeAuthorization(user._id);
-                        res.sendStatus(204);
+                    UserService.removeAuthorization(user._id);
+                    res.sendStatus(204);
+
+                    const result = await OAuthService.revokeToken(
+                        oauth.accessToken,
+                        oauth.refreshToken,
+                        'refresh_token',
+                        OAuthProvider.seznam
+                    );
+                    result.ifNothing(() => {
+                        logger.warning('signOut: Unable to revoke', oauth);
                     });
                 });
         },
