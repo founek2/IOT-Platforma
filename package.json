@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "bootstrap": "lerna bootstrap",
-        "build": "tsc -b packages/backend/tsconfig.build.json packages/backend-mqtt/tsconfig.build.json packages/backend-auth/tsconfig.build.json && lerna run --scope frontend build",
+        "build": "tsc -b packages/backend/tsconfig.build.json packages/backend-mqtt/tsconfig.build.json packages/backend-auth/tsconfig.build.json && lerna run copyFiles && lerna run --scope frontend build",
         "clean": "lerna run --parallel clean",
         "test": "lerna run --scope backend --scope backend-mqtt --scope framework-ui test",
         "watch": "lerna run --parallel --scope common --scope framework-ui dev",
