@@ -10,11 +10,9 @@ import Typography from '@material-ui/core/Typography';
 import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import Loader from 'framework-ui/src/Components/Loader';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
-import { RootState } from 'frontend/src/store/store';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { userActions } from '../../store/actions/application/user';
 import { getQueryField } from '../../utils/getters';
 
@@ -56,18 +54,18 @@ const useClasses = makeStyles((theme) => ({
 }));
 
 interface LoginDialogProps {
-    token?: string;
     open: boolean;
     onClose: any;
 }
-function ForgotDialog({ open, onClose, token }: LoginDialogProps) {
+function ForgotDialog({ open, onClose }: LoginDialogProps) {
     const classes = useClasses();
     const [pending, setPending] = useState(false);
     const dispatch = useAppDispatch();
+    const token = useAppSelector(getQueryField('token'));
 
     useEffect(() => {
-        if (token) formsDataActions.setFormField({ deepPath: 'FORGOT_PASSWORD.token', value: token });
-    }, [token]);
+        if (token) dispatch(formsDataActions.setFormField({ deepPath: 'FORGOT_PASSWORD.token', value: token }));
+    }, [token, dispatch]);
 
     const forgotHandler = async () => {
         setPending(true);
@@ -135,8 +133,4 @@ function ForgotDialog({ open, onClose, token }: LoginDialogProps) {
     );
 }
 
-const _mapStateToProps = (state: RootState) => ({
-    token: getQueryField('token', state),
-});
-
-export default connect(_mapStateToProps)(ForgotDialog);
+export default ForgotDialog;

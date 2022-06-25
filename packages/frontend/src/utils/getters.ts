@@ -25,9 +25,7 @@ export const getThing = (thingId: IThing['_id']) => (state: RootState) =>
 export const getQueryID = o((app) => app.query.id, getHistory);
 
 // export const getQueryField = curry((name, state) => o(path(['query', name]), getHistory)(state));
-export const getQueryField = curry((field: string, state: RootState) =>
-    o((history) => history.query[field], getHistory)(state)
-);
+export const getQueryField = (field: string) => o((history) => history.query[field], getHistory);
 
 export const getUserNames = o((app) => app.userNames, getApplication);
 
