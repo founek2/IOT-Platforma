@@ -20,6 +20,7 @@ export default () =>
     resource({
         mergeParams: true,
         middlewares: {
+            // TODO FIXME checkControl perm
             modify: [tokenAuthMIddleware()],
         },
 

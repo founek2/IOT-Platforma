@@ -7,12 +7,14 @@ echo "Publishing on Github..."
 token="$USER_CREDENTIALS_PSW"
 # Get the last tag name
 tag=$(git describe --abbrev=0)
+prev_tag=$(git describe --abbrev=0 $tag^)
 # Get the full message associated with this tag
 message="$(git for-each-ref refs/tags/$tag --format='%(contents)' | awk '{ if ($0 == "-----BEGIN PGP SIGNATURE-----") { exit 0 } print }')"
 # Get the title and the description as separated variables
 name=$(echo "$message" | head -n1)
 description=$(echo "$message" | tail -n +3)
-description=$(echo "$description" | sed 's/\n/\\n/g') # Escape line breaks to prevent json parsing problems
+diff_commits=$(git log --pretty=oneline HEAD...$prev_tag)
+description=$(echo "$description\n\n" "$diff_commits" | perl -pe 's/\n/\\n/g') # Escape line breaks to prevent json parsing problems
 
 # Create a release
 echo "Creating releasing with tag_name=$tag"
