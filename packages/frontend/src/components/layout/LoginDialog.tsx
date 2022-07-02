@@ -39,6 +39,7 @@ const useClasses = makeStyles((theme) => ({
         textAlign: 'center',
         paddingBottom: theme.spacing(2),
         overflowY: 'visible',
+        marginTop: -theme.spacing(2),
     },
     registerButton: {
         cursor: 'pointer',
@@ -167,15 +168,13 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
                 <Loader open={pending} />
             </DialogActions>
             {invalidLogin && (
-                <DialogContent className={classes.loginFooter}>
-                    <Typography component="div">
-                        <Link to={{ hash: 'forgot' }}>
-                            <Typography display="inline" className={classes.registerButton}>
-                                Zapomenuté heslo?
-                            </Typography>
-                        </Link>
-                    </Typography>
-                </DialogContent>
+                <Typography component="div" className={classes.loginFooter}>
+                    <Link to={{ hash: 'forgot' }}>
+                        <Typography display="inline" className={classes.registerButton}>
+                            Zapomenuté heslo?
+                        </Typography>
+                    </Link>
+                </Typography>
             )}
         </Dialog>
     );
