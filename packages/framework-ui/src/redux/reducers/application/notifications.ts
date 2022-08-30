@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { append, filter, not, o, propEq } from 'ramda';
+import { append } from 'ramda';
 import { NotificationVariant } from '../../../types';
 
 // Define a type for the slice state

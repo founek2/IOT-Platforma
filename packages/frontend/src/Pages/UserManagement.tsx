@@ -9,7 +9,7 @@ import { isUrlHash } from 'framework-ui/src/utils/getters';
 import { History } from 'history';
 import { isEmpty } from 'ramda';
 import React, { useEffect } from 'react';
-import { usersActions } from 'src/store/actions/application/users';
+import { usersActions } from '../store/actions/application/users';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { getGroups, getQueryID, getUsers } from '../utils/getters';
 import EditUser from './userManagement/EditUser';

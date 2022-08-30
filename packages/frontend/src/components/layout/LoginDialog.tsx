@@ -15,7 +15,7 @@ import { RootState } from 'frontend/src/store/store';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { userActions } from 'src/store/actions/application/user';
+import { userActions } from '../../store/actions/application/user';
 import { useAppDispatch } from '../../hooks';
 import OAuthButtons from './OAuthButtons';
 

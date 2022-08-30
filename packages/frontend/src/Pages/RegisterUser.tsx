@@ -10,7 +10,7 @@ import Loader from 'framework-ui/src/Components/Loader';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userActions } from 'src/store/actions/application/user';
+import { userActions } from '../store/actions/application/user';
 import UserForm from '../components/UserForm';
 import { useAppDispatch } from '../hooks';
 

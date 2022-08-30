@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles, createStyles, makeStyles } from '@material-ui/core/styles';
+import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Checkbox from '@material-ui/core/Checkbox';
-import EnhancedTableToolbar from './EnhancedTableToolbar';
-import EnhancedTableHead, { DataProp } from './EnhancedTableHead';
-import { equals, when } from 'ramda';
 import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
-import getInPath from '../../utils/getInPath';
 import clsx from 'clsx';
+import { when } from 'ramda';
+import React, { useState } from 'react';
+import getInPath from '../../utils/getInPath';
 import isNotNil from '../../utils/isNotNil';
+import EnhancedTableHead, { DataProp } from './EnhancedTableHead';
+import EnhancedTableToolbar from './EnhancedTableToolbar';
 
 function desc(a: any, b: any, orderBy: string) {
     if (getInPath(orderBy, b) < getInPath(orderBy, a)) {

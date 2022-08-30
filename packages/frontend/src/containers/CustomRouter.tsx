@@ -4,7 +4,7 @@ import parseQuery from 'framework-ui/src/utils/parseQuery';
 import { BrowserHistory } from 'history';
 import React, { ReactNode } from 'react';
 import { Router } from 'react-router-dom';
-import { useAppDispatch } from 'src/hooks';
+import { useAppDispatch } from '../hooks';
 import '../firebase'; // init
 
 interface CustomRouterProps {

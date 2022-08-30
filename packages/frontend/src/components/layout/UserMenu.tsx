@@ -6,8 +6,6 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import React, { Fragment, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useAppSelector } from 'src/hooks';
-import { getUser } from 'src/utils/getters';
 import { userActions } from '../../store/actions/application/user';
 import { User } from '../../store/reducers/application/user';
 

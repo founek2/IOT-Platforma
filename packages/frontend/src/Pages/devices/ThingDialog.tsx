@@ -1,12 +1,11 @@
 import { makeStyles } from '@material-ui/core';
 import { IThing } from 'common/src/models/interface/thing';
-import { head } from 'ramda';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from 'src/hooks';
-import { devicesActions } from 'src/store/actions/application/devices';
-import { thingHistoryActions } from 'src/store/actions/application/thingHistory';
-import { getHistory, getQuery, getThing, getThingHistory } from 'src/utils/getters';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { devicesActions } from '../../store/actions/application/devices';
+import { thingHistoryActions } from '../../store/actions/application/thingHistory';
+import { getQuery, getThing, getThingHistory } from '../../utils/getters';
 import { SimpleDialog } from './room/components/Dialog';
 import PropertyRow from './room/components/PropertyRow';
 

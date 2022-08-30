@@ -3,7 +3,7 @@ import { getUser } from 'frontend/src/utils/getters';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { userActions } from 'src/store/actions/application/user';
+import { userActions } from '../../store/actions/application/user';
 import EditUser from '../userManagement/EditUser';
 
 function Account() {

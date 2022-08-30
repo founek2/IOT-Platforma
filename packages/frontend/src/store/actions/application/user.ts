@@ -3,7 +3,7 @@ import errorMessages from 'framework-ui/src/localization/errorMessages';
 import { logger } from 'framework-ui/src/logger';
 import { removeItem } from 'framework-ui/src/storage';
 import { head, prop } from 'ramda';
-import { postSignOut } from 'src/api/authorization';
+import { postSignOut } from '../../../api/authorization';
 import { dehydrateState } from 'framework-ui/src/redux/actions';
 import {
     create as createUserApi,
@@ -27,7 +27,7 @@ import { notificationsActions } from 'framework-ui/src/redux/actions/application
 import { thingHistoryActions } from './thingHistory';
 import { userNamesActions } from './userNames';
 import { usersActions } from './users';
-import { getUserId } from 'src/utils/getters';
+import { getUserId } from '../../../utils/getters';
 
 const LOGIN = 'LOGIN';
 
