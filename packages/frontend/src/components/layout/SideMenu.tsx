@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -8,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import InfoIcon from '@material-ui/icons/Info';
-import { getPaths } from 'framework-ui/src/privileges';
+import { getMenuPaths } from 'framework-ui/src/privileges';
 import { useAppSelector } from 'frontend/src/hooks';
 import { getGroups } from 'frontend/src/utils/getters';
 import React from 'react';
@@ -24,10 +25,19 @@ const useClasses = makeStyles({
     },
 });
 
+function externalRedirect(path: string) {
+    return (e: any) => {
+        if (!path.startsWith('http')) return;
+
+        e.preventDefault();
+        window.open(path, '_blank');
+    };
+}
+
 function createMenuListItem(location: { pathname: string }) {
     return ({ path, name, Icon }: any) => {
         return (
-            <Link to={path} key={path}>
+            <Link to={path} key={path} onClick={externalRedirect(path)}>
                 <ListItem button selected={location.pathname === path}>
                     <ListItemIcon>
                         <Icon />
@@ -46,7 +56,7 @@ interface SideMenuProps {
 }
 function SideMenu({ open, onClose, onOpen }: SideMenuProps) {
     const userGroups = useAppSelector(getGroups);
-    const userRoutes = getPaths(userGroups);
+    const userRoutes = getMenuPaths(userGroups);
     const location = useLocation();
 
     const classes = useClasses();

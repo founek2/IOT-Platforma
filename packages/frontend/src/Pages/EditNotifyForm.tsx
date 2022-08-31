@@ -8,18 +8,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { NOTIFY_INTERVALS } from 'common/src/constants';
-import { IDevice } from 'common/src/models/interface/device';
-import { IThing } from 'common/src/models/interface/thing';
 import Loader from 'framework-ui/src/Components/Loader';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 import { getFormData } from 'framework-ui/src/utils/getters';
 import { clone } from 'ramda';
 import React, { useEffect, useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
 import { getToken } from '../firebase';
-import { useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { devicesActions } from '../store/actions/application/devices';
 import { userActions } from '../store/actions/application/user';
 import { getThing } from '../utils/getters';
@@ -90,34 +86,21 @@ const useStyles = makeStyles((theme) => ({
 const FIELDS = ['propertyId', 'type', 'value', 'interval'];
 const FIELDS_ADVANCED = ['interval', 'from', 'to', 'daysOfWeek'];
 
-export interface EditDeviceDialogProps {
-    editForm: any;
-    sensorCount?: number;
-    preFillForm: any;
-    onUpdate: any;
-    registerTokenAction: any;
-    match: { params: { deviceId: IDevice['_id']; nodeId: IThing['config']['nodeId'] } };
-    device?: IDevice;
-    thing?: IThing;
-    onSaveAction: any;
-}
-
-function EditDeviceDialog({ registerTokenAction, preFillForm, onSaveAction }: EditDeviceDialogProps) {
+function EditDeviceDialog() {
     const params = useParams<{ deviceId?: string; nodeId?: string }>();
     const editForm = useAppSelector(getFormData('EDIT_NOTIFY'));
     const sensorCount = editForm ? editForm.count : 0;
     const thing = useAppSelector(getThing(params.nodeId));
-    console.log('thing', thing, params);
 
     const [pending, setPending] = useState(false);
     const [loaded, setLoaded] = useState(false);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const classes = useStyles();
 
     useEffect(() => {
         async function preFill() {
             setPending(true);
-            const success = await preFillForm(params.deviceId, params.nodeId);
+            const success = await dispatch(devicesActions.prefillNotify(params.deviceId, params.nodeId));
             if (success) setLoaded(true);
             setPending(false);
         }
@@ -125,7 +108,7 @@ function EditDeviceDialog({ registerTokenAction, preFillForm, onSaveAction }: Ed
         async function sendToken() {
             const token = await getToken();
             console.log('getting token: ', token);
-            registerTokenAction(token);
+            dispatch(userActions.registerToken(token));
         }
         preFill();
         sendToken();
@@ -173,7 +156,7 @@ function EditDeviceDialog({ registerTokenAction, preFillForm, onSaveAction }: Ed
 
     const handleSave = async () => {
         setPending(true);
-        await onSaveAction(params.deviceId, params.nodeId);
+        await dispatch(devicesActions.updateNotify(params.deviceId, params.nodeId));
         setPending(false);
     };
 
@@ -206,15 +189,4 @@ function EditDeviceDialog({ registerTokenAction, preFillForm, onSaveAction }: Ed
     );
 }
 
-const _mapDispatchToProps = (dispatch: any) => ({
-    ...bindActionCreators(
-        {
-            preFillForm: devicesActions.prefillNotify,
-            onSaveAction: devicesActions.updateNotify,
-            registerTokenAction: userActions.registerToken,
-        },
-        dispatch
-    ),
-});
-
-export default connect(null, _mapDispatchToProps)(EditDeviceDialog);
+export default EditDeviceDialog;

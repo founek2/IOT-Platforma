@@ -1,119 +1,72 @@
-import {
-    pick,
-    prop,
-    forEach,
-    map,
-    o,
-    compose,
-    when,
-    uniqBy,
-    flip,
-    equals,
-    uniq as Runiq,
-    isNil,
-    not,
-    filter,
-} from 'ramda';
+import { mergeDeepRight, mergeRight, prop, uniqBy } from 'ramda';
+import React from 'react';
 
-interface Privileges {
-    groupsHeritage: { [group: string]: string[] };
-    routes: { [group: string]: { allowedGroups: string[] } };
+export interface AllowedGroup {
+    text: string;
+    name: string;
 }
 
-// TODO rewrite + add unit tests
-const isNotNil = o(not, isNil);
-const getRoutes = (privileges: Privileges) => privileges.routes;
-
-const getArrayOfPaths = (privObj: Privileges) => (groupName: string) => {
-    // @ts-ignore
-    return (compose(prop('routes'), prop(groupName), getRoutes)(privObj) as any[]) || [];
-};
-
-// const getArray0fGroups = privObj => compose(prop('allowedGroups'), flip(prop)(privObj));
-const getArray0fGroups = (privObj) => (groupName) => o(prop('allowedGroups'), prop(groupName))(privObj);
-let privileges: Privileges = { groupsHeritage: {}, routes: {} };
-
-// export const groupsHeritage = {
-//     root: ['user', 'admin', 'flow'],
-//     admin: ['user', 'flow'],
-// };
-
-// export const routes = {
-//     user: {
-//         allowedGroups: allowedGroups.user,
-//     },
-//     admin: {
-//         allowedGroups: allowedGroups.admin,
-//     },
-//     root: {
-//         allowedGroups: allowedGroups.root,
-//     },
-// };
-export function enrichGroups(groups) {
-    const out = [...groups];
-    forEach(
-        o(
-            when(isNotNil, (arrOfGroups) => out.push(...arrOfGroups)),
-            flip(prop)(privileges.groupsHeritage)
-        ),
-        groups
-    );
-    return Runiq(out);
+export interface AllowedGroups {
+    [groupName: string]: { allowedGroups: AllowedGroup[] };
 }
 
-export function getPaths(groups) {
-    const enrichedGroups = enrichGroups(groups);
-    const output = [];
-
-    const convertPrivToPaths = compose(
-        (array: any[]) => array && output.push(...array),
-        filter(o(isNotNil, prop('name'))),
-        getArrayOfPaths(privileges)
-    );
-    forEach(convertPrivToPaths, enrichedGroups);
-    const uniq = uniqBy(prop('path'), output);
-    return uniq;
+export interface Route {
+    path: string;
+    Component?: React.LazyExoticComponent<() => JSX.Element>;
+    name?: string;
+    Icon?: React.ReactNode;
 }
 
-export function getPathsWithComp(groups) {
-    const output = [];
-
-    const convertPrivToPaths = compose(
-        (array: any[]) => array && output.push(...array),
-        filter(o(isNotNil, prop('Component'))),
-        getArrayOfPaths(privileges)
-    );
-
-    forEach(convertPrivToPaths, enrichGroups(groups));
-    const uniq = uniqBy(prop('path'), output);
-    return uniq;
+export interface RouteWithComponent {
+    path: string;
+    Component: React.LazyExoticComponent<() => JSX.Element>;
+    name?: string;
+    Icon?: React.ReactNode;
 }
 
-export function getAllowedGroups(groups) {
-    const output = [];
-    const convertPrivToPaths = o(
-        when(isNotNil, (array) => output.push(...array)),
-        getArray0fGroups(privileges.routes)
-    );
-    forEach(convertPrivToPaths, enrichGroups(groups));
-    const uniq = uniqBy(prop('name'), output);
-    return uniq;
+export interface RouteMenu {
+    path: string;
+    name: string;
+    Icon: React.ReactNode;
 }
 
-// export function areGroupsAllowed(groups, userGroups) {
-//      const allowedGroups = getAllowedGroups(userGroups).map(obj => obj.group);
-//      console.log("allowed groups", allowedGroups)
-//      const diff = difference(enrichGroups(groups), allowedGroups);
-//      return diff.length === 0;
-// }
+export interface AllowedRoutes {
+    [groupName: string]: { routes: Route[] };
+}
 
-export function isGroupAllowed(groupName, groups) {
-    return enrichGroups(groups).some(equals(groupName));
+export interface Privileges {
+    [groupName: string]: { routes: Route[]; allowedGroups: AllowedGroup[] };
+}
+
+let privileges: Privileges;
+
+export function getMenuPaths(groups: string[]): RouteMenu[] {
+    const allowedRoutes = groups
+        .map((group) => privileges[group].routes)
+        .flat()
+        .filter((r) => r.name && r.Icon);
+
+    return uniqBy(prop('path'), allowedRoutes) as RouteMenu[];
+}
+
+export function getPathsWithComp(groups: string[]): RouteWithComponent[] {
+    console.log('privileges', privileges, groups);
+    const allowedRoutes = groups
+        .map((group) => privileges[group].routes)
+        .flat()
+        .filter((r) => Boolean(r.Component));
+    return uniqBy(prop('path'), allowedRoutes) as RouteWithComponent[];
+}
+
+export function getAllowedGroups(groups: string[]) {
+    const allowedGroups = groups.map((group) => privileges[group].allowedGroups).flat();
+
+    return uniqBy(prop('name'), allowedGroups);
 }
 
 /**
  * format - {groupName: [{path: /login, component}]}
  */
-export default function (routes: any, groupsHeritage: Privileges['groupsHeritage']) {
-    privileges = { routes, groupsHeritage };
+export default function (routes: AllowedRoutes, allowedGroups: AllowedGroups) {
+    privileges = mergeDeepRight(routes, allowedGroups) as Privileges;
 }

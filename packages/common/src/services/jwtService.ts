@@ -41,7 +41,7 @@ function sign(object: any): Promise<string> {
 
         jwt.sign(object, privKey, { algorithm: 'RS256', expiresIn }, function (err, token) {
             if (!err) {
-                resolve(token);
+                resolve(token!);
             } else {
                 reject(err);
             }

@@ -9,6 +9,7 @@ const mainMenu = {
     deviceControl: 'Zařízení',
     devices: 'Správa zařízení',
     about: 'Informace',
+    visualProgramming: 'Visuální prog.',
 };
 
 export default messageFactory(mainMenu);

@@ -27,7 +27,7 @@ function createRoute({ path, Component }: { path: string; Component: any }) {
 
 interface RouterProps {
     userPresence: boolean;
-    userGroups: String[];
+    userGroups: string[];
     setHistoryAction: any;
     updateTmpDataAction: any;
     hydrateStateAction: any;
@@ -56,6 +56,13 @@ function Router({ userPresence, userGroups }: RouterProps) {
                             component={Devices}
                         /> */}
                         <Route path="/authorization/*" element={<Authorization />} />
+                        {/* <Route
+                            path="/http(s?)://*"
+                            ={() => {
+                                window.location.href = 'https://example.com/1234';
+                                return null;
+                            }}
+                        /> */}
                         <Route path="/*" element={<Main />} />
                     </Routes>
                 </Suspense>

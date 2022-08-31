@@ -1,12 +1,10 @@
 import { JwtService } from 'common/src/services/jwtService';
-import mongoose from 'mongoose';
-import { equals, T, not } from 'ramda';
 import { logger } from 'framework-ui/src/logger';
+import { equals, not } from 'ramda';
 
-import { enrichGroups } from 'framework-ui/src/privileges';
-import express from 'express';
-import { IUser, Permission } from 'common/src/models/interface/userInterface';
+import { Permission } from 'common/src/models/interface/userInterface';
 import { UserModel } from 'common/src/models/userModel';
+import express from 'express';
 import { RequestWithAuth } from '../types';
 
 /**
@@ -48,7 +46,6 @@ export default function (
                     logger.debug(`Verified user=${user.info.userName}, groups=${user.groups.join(',')}`);
                     req2.user = user.toObject();
                     req2.user.accessPermissions = [Permission.write, Permission.read, Permission.control];
-                    req2.user.groups = enrichGroups(req2.user.groups);
                     if (req2.user.groups.some(equals('root'))) req2.root = true;
                     if (req2.user.groups.some(equals('admin'))) req2.user.admin = true;
                     next();
@@ -74,7 +71,6 @@ export default function (
             const req2 = req as RequestWithAuth;
             req2.user = user;
             req2.user.accessPermissions = user.accessTokens[0].permissions;
-            req2.user.groups = enrichGroups(req2.user.groups);
 
             // full access
             if (req2.user.accessPermissions.some((b) => b === Permission.write)) {

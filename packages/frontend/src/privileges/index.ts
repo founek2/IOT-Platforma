@@ -1,10 +1,12 @@
-import BuildIcon from '@material-ui/icons/Build';
-import DevicesIcon from '@material-ui/icons/DevicesOther';
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import CloudIcon from '@material-ui/icons/Cloud';
-import initPrivileges from 'framework-ui/src/privileges';
+import DevicesIcon from '@material-ui/icons/DevicesOther';
+import PeopleIcon from '@material-ui/icons/People';
+import initPrivileges, { AllowedRoutes } from 'framework-ui/src/privileges';
 import { lazy } from 'react';
 
-import { groupsHeritage, allowedGroups } from 'common/src/constants/privileges';
+import { allowedGroups } from 'common/src/constants/privileges';
+import { append } from 'ramda';
 
 const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement'));
 
@@ -16,42 +18,47 @@ const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'EditNotifyFor
 
 const ProfileLazy = lazy(() => import(/* webpackChunkName: 'Profile' */ '../Pages/Profile'));
 
-export const routes = {
+const userRoutes = [
+    {
+        // path: ['/devices/:building/:room', '/devices/:building', '/devices'],
+        path: '/devices/:building/:room',
+        Component: DevicesLazy,
+    },
+    {
+        path: '/devices/:building',
+        Component: DevicesLazy,
+    },
+    {
+        path: '/devices',
+        Component: DevicesLazy,
+        name: 'deviceControl',
+        Icon: CloudIcon,
+    },
+    {
+        path: '/profile/*',
+        Component: ProfileLazy,
+    },
+    { path: '/deviceManagement', Component: DeviceManagement, name: 'devices', Icon: DevicesIcon },
+    { path: '/device/:deviceId/thing/:nodeId/notify', Component: EditNotifyFormLazy },
+];
+const adminRoutes = append(
+    { path: '/userManagement', Component: UserManagement, name: 'userManagement', Icon: PeopleIcon },
+    userRoutes
+);
+
+export const routes: AllowedRoutes = {
     user: {
-        routes: [
-            {
-                // path: ['/devices/:building/:room', '/devices/:building', '/devices'],
-                path: '/devices/:building/:room',
-                Component: DevicesLazy,
-            },
-            {
-                path: '/devices/:building',
-                Component: DevicesLazy,
-            },
-            {
-                path: '/devices',
-                Component: DevicesLazy,
-            },
-            {
-                path: '/profile/*',
-                Component: ProfileLazy,
-            },
-            { path: '/devices', name: 'deviceControl', Icon: CloudIcon },
-            { path: '/deviceManagement', Component: DeviceManagement, name: 'devices', Icon: DevicesIcon },
-            { path: '/device/:deviceId/thing/:nodeId/notify', Component: EditNotifyFormLazy },
-        ],
+        routes: userRoutes,
     },
     admin: {
-        routes: [{ path: '/userManagement', Component: UserManagement, name: 'userManagement', Icon: BuildIcon }],
-        allowedGroups: allowedGroups.admin,
+        routes: adminRoutes,
     },
     root: {
-        routes: [],
-        allowedGroups: allowedGroups.root,
+        routes: adminRoutes,
     },
-    // flow: {
-    //     routers: [],
-    // },
+    flow: {
+        routes: [{ path: 'https://flow.iotdomu.cz', name: 'visualProgramming', Icon: AllInclusiveIcon }],
+    },
 };
 
-initPrivileges(routes, groupsHeritage);
+initPrivileges(routes, allowedGroups);

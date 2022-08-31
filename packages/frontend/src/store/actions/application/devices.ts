@@ -23,7 +23,7 @@ import { mergeDeepLeft } from 'ramda';
 
 export const devicesActions = {
     ...devicesReducerActions,
-    updateDevice(id: IDevice['_id']): AppThunk {
+    updateDevice(id: IDevice['_id']): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const EDIT_DEVICE = 'EDIT_DEVICE';
             logger.info(EDIT_DEVICE);
@@ -48,7 +48,7 @@ export const devicesActions = {
         };
     },
 
-    deleteDevice(id: IDevice['_id']): AppThunk {
+    deleteDevice(id: IDevice['_id']): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             logger.info('DELETE_DEVICE');
             return deleteDeviceApi(
@@ -129,7 +129,7 @@ export const devicesActions = {
         };
     },
 
-    prefillNotify(deviceId: IDevice['_id'], nodeId: IThing['config']['nodeId']): AppThunk {
+    prefillNotify(deviceId: IDevice['_id'], nodeId: IThing['config']['nodeId']): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             return getNotifyApi(
                 {
@@ -147,7 +147,7 @@ export const devicesActions = {
         };
     },
 
-    updateNotify(id: IDevice['_id'], nodeId: IThing['config']['nodeId']): AppThunk {
+    updateNotify(id: IDevice['_id'], nodeId: IThing['config']['nodeId']): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const EDIT_NOTIFY = 'EDIT_NOTIFY';
             logger.info(EDIT_NOTIFY);
@@ -171,7 +171,7 @@ export const devicesActions = {
         };
     },
 
-    sendCommand(deviceId: IDevice['_id']): AppThunk {
+    sendCommand(deviceId: IDevice['_id']): AppThunk<Promise<boolean>> {
         return async function (dispatch, getState) {
             const DEVICE_SEND = 'DEVICE_SEND';
             logger.info(DEVICE_SEND);

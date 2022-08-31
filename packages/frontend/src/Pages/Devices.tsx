@@ -138,13 +138,4 @@ function Devices() {
     );
 }
 
-const _mapStateToProps = (state: RootState, { match }: { match: { params: { building?: string; room?: string } } }) => {
-    return {
-        selectedLocation: {
-            building: match.params.building,
-            room: match.params.room,
-        },
-    };
-};
-
 export default Devices;

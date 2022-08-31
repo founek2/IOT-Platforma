@@ -1,5 +1,6 @@
 import { logger as loggerFn } from './fn';
 
+// @ts-ignore
 const isNode = typeof window === 'undefined';
 
 const loggerCSS = loggerFn(!isNode);
