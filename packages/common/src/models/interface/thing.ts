@@ -21,6 +21,10 @@ export enum PropertyDataType {
     enum = 'enum',
 }
 
+export enum StringFormat {
+    httpStream = 'httpStream',
+}
+
 export interface IThing {
     _id?: any;
     config: {
@@ -46,8 +50,13 @@ export interface IThingPropertyBase {
     dataType: PropertyDataType;
     settable: boolean;
     retained?: boolean;
+    format?: any;
 }
 
+export interface IThingPropertyString extends IThingPropertyBase {
+    dataType: PropertyDataType.string;
+    format?: StringFormat;
+}
 export interface IThingPropertyNumeric extends IThingPropertyBase {
     dataType: PropertyDataType.integer | PropertyDataType.float;
     format?: { min: number; max: number };

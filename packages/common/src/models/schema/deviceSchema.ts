@@ -1,14 +1,14 @@
-import mongoose, { Document, Model } from "mongoose";
-import hat from "hat";
-import { IDevice } from "../interface/device";
-import { IUser } from "../interface/userInterface";
-import { thingSchema } from "./thingSchema";
+import mongoose, { Document, Model } from 'mongoose';
+import hat from 'hat';
+import { IDevice } from '../interface/device';
+import { IUser } from '../interface/userInterface';
+import { thingSchema } from './thingSchema';
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
 
 export interface IDeviceDocument extends IDevice, Document {
-    createdBy: IUser["_id"];
+    createdBy: IUser['_id'];
 }
 
 export const deviceSchemaPlain = {
@@ -23,11 +23,11 @@ export const deviceSchemaPlain = {
     },
     apiKey: { type: String, default: hat as any, index: { unique: true } },
     permissions: {
-        read: [{ type: ObjectId, ref: "User" }],
-        write: [{ type: ObjectId, ref: "User" }],
-        control: [{ type: ObjectId, ref: "User" }],
+        read: [{ type: ObjectId, ref: 'User' }],
+        write: [{ type: ObjectId, ref: 'User' }],
+        control: [{ type: ObjectId, ref: 'User' }],
     },
-    createdBy: { type: ObjectId, ref: "User" },
+    createdBy: { type: ObjectId, ref: 'User' },
     things: [thingSchema],
     state: {
         status: {
