@@ -12,6 +12,7 @@ import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import eventEmitter from '../services/eventEmitter';
 import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
+import { IThing } from 'common/src/models/interface/thing';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -71,7 +72,6 @@ export default () =>
          * @return json { doc: IDevice }
          */
         async createId({ body, user, params }: RequestId, res) {
-            // TODO permission check
             const { formData } = body;
             const _id = params.id;
             const form = formData.CREATE_DEVICE;
@@ -84,24 +84,41 @@ export default () =>
             })) as IDiscoveryDocument;
             if (!doc) return res.status(400).send({ error: 'deviceNotReady' });
 
+            // convert discovered device to new device
             const convertThings = map(convertDiscoveryThing);
-            const metadata = {
-                realm: doc.realm,
-                deviceId: doc.deviceId,
-            };
-
-            if (await DeviceModel.checkIdTaken(metadata)) return res.status(400).send({ error: 'deviceIdTaken' });
-            const newDevice = await DeviceModel.createNew(
-                // convert discovered device to new device
-                {
-                    info: { ...form.info },
-                    things: convertThings(
-                        map((nodeId) => assocPath(['config', 'nodeId'], nodeId, doc.things[nodeId]), doc.nodeIds)
-                    ),
-                    metadata,
-                },
-                user._id
+            const things = convertThings(
+                map((nodeId) => assocPath(['config', 'nodeId'], nodeId, doc.things[nodeId]), doc.nodeIds)
             );
+
+            async function getOrCreateDevice(doc: IDiscoveryDocument, things: IThing[], form: any) {
+                const metadata = {
+                    realm: doc.realm,
+                    deviceId: doc.deviceId,
+                };
+
+                const alreadyExist = await DeviceModel.findOne(metadata);
+                if (alreadyExist) {
+                    if (JSON.stringify(alreadyExist.things) === JSON.stringify(things)) {
+                        // device exists with same config -> reuse it!
+                        return alreadyExist;
+                    } else {
+                        // different config -> don`t reuse
+                        return null;
+                    }
+                }
+
+                return DeviceModel.createNew(
+                    {
+                        info: { ...form.info },
+                        things,
+                        metadata,
+                    },
+                    user._id
+                );
+            }
+
+            const newDevice = await getOrCreateDevice(doc, things, form);
+            if (!newDevice) return res.status(400).send({ error: 'deviceIdTaken' });
 
             const suuccess = await Actions.deviceInitPairing(doc.deviceId, newDevice.apiKey); // initialize pairing proccess
 

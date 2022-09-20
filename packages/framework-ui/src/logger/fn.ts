@@ -8,7 +8,7 @@ const styleArray = {
     blue: ['color:#4095ec', '\x1b[34m'],
 };
 
-export function logger(useCss = true, styles = styleArray) {
+export function loggerFn(useCss = true, styles = styleArray) {
     let entry;
     return function configLogger(logger: any, logMethod = 'log') {
         const log = logger[logMethod];

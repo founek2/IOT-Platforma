@@ -1,4 +1,4 @@
-import { logger as loggerFn } from './fn';
+import { loggerFn } from './fn';
 
 const isNode = typeof window === 'undefined';
 
