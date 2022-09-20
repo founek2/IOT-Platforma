@@ -27,7 +27,7 @@ const map: { [key in keyes]: 'get' | 'post' | 'put' | 'delete' | 'patch' } = {
     deleteId: 'delete',
 };
 
-type middleware = (req: Express.Request, res: Express.Response, next: Express.NextFunction) => any;
+type middleware = (req: any, res: Express.Response, next: Express.NextFunction) => any;
 type IRouteBase = {
     [key in keyes]?: middleware;
 };

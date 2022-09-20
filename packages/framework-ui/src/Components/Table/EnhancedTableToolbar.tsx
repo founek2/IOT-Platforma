@@ -44,9 +44,8 @@ interface EnhancedTableToolbarProps {
     numSelected: number;
     headLabel: string;
     onDelete: (id: any) => void | Promise<any>;
-    onAdd: (e: any) => void;
-    enableCreation: boolean;
-    onSearchChange;
+    onAdd?: (e: any) => void;
+    onSearchChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> | undefined;
     enableSearch: boolean;
     className?: string;
 }
@@ -55,7 +54,6 @@ function EnhancedTableToolbar({
     headLabel,
     onDelete,
     onAdd,
-    enableCreation,
     onSearchChange,
     enableSearch,
     className,
@@ -108,7 +106,7 @@ function EnhancedTableToolbar({
                         </Tooltip>
                     ) : (
                         <Fragment>
-                            {enableCreation && (
+                            {onAdd && (
                                 <IconButton aria-label="Add" size="medium" onClick={onAdd}>
                                     <AddIcon />
                                 </IconButton>

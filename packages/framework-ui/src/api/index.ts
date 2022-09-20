@@ -7,7 +7,7 @@ import { dehydrateState } from '../redux/actions/';
 import { notificationsActions } from '../redux/actions/application/notifications';
 
 const addNotification = notificationsActions.add;
-const processResponse = (dispatch: Dispatch, successMessage: string) => async (response) => {
+const processResponse = (dispatch: Dispatch, successMessage?: string) => async (response: Response) => {
     const { status } = response;
     // set new jwt token, when provided from backend
 
@@ -114,16 +114,16 @@ const processResponse = (dispatch: Dispatch, successMessage: string) => async (r
     }
 };
 
-const checkError = (Fn, error) => {
+const checkError = (Fn: undefined | ((err: Error) => any), error: any) => {
     logger.warning('API catch> ' + error, error.stack);
     // if (error.message !== 'breakChain' && Fn)
     if (Fn) Fn(error);
 };
 
-function buildParams(params) {
+function buildParams<S>(params: { [k: string]: S }) {
     let result = '?';
     if (params) {
-        const toString = ([key, value]) => {
+        const toString = ([key, value]: [string, any]) => {
             result += key + '=' + value + '&';
         };
         forEach(toString, toPairs(params));
@@ -138,21 +138,13 @@ interface GeneralSenderParams {
     onError?: (err: any) => any;
     onFinish?: () => void;
     method?: 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'GET';
-    dispatch?: Dispatch;
     successMessage?: string;
 }
 type JsonSenderParams = GeneralSenderParams & { body?: any };
-export const jsonSender = async ({
-    url,
-    token = '',
-    onSuccess,
-    onError,
-    onFinish,
-    method,
-    body,
-    dispatch,
-    successMessage,
-}: JsonSenderParams) => {
+export async function jsonSender(
+    { url, token = '', onSuccess, onError, onFinish, method, body, successMessage }: JsonSenderParams,
+    dispatch: Dispatch
+): Promise<boolean | any> {
     let catched = false;
     let successValue = undefined;
     try {
@@ -173,7 +165,7 @@ export const jsonSender = async ({
     }
     onFinish && onFinish();
     return successValue ?? !catched;
-};
+}
 
 export type SenderParam<T = any> = GeneralSenderParams & { params: T };
 export const paramSender = async (
@@ -191,7 +183,7 @@ export const paramSender = async (
             },
         });
         const json = await processResponse(dispatch, successMessage)(response);
-        onSuccess(json);
+        if (onSuccess) onSuccess(json);
     } catch (e) {
         catched = true;
         checkError(onError, e);
@@ -201,24 +193,24 @@ export const paramSender = async (
 };
 
 export type SenderJson = Omit<JsonSenderParams, 'method'>;
-export const postJson = function (props: SenderJson) {
-    return jsonSender({ ...props, method: 'POST' });
+export const postJson = function (props: SenderJson, dispatch: Dispatch) {
+    return jsonSender({ ...props, method: 'POST' }, dispatch);
 };
 
-export const putJson = function (props: SenderJson) {
-    return jsonSender({ ...props, method: 'PUT' });
+export const putJson = function (props: SenderJson, dispatch: Dispatch) {
+    return jsonSender({ ...props, method: 'PUT' }, dispatch);
 };
 
-export const deleteJson = function (props: SenderJson) {
-    return jsonSender({ ...props, method: 'DELETE' });
+export const deleteJson = function (props: SenderJson, dispatch: Dispatch) {
+    return jsonSender({ ...props, method: 'DELETE' }, dispatch);
 };
 
-export const patchJson = function (props: SenderJson) {
-    return jsonSender({ ...props, method: 'PATCH' });
+export const patchJson = function (props: SenderJson, dispatch: Dispatch) {
+    return jsonSender({ ...props, method: 'PATCH' }, dispatch);
 };
 
-export const getJson = function (props: SenderJson) {
-    return jsonSender({ ...props, method: 'GET' });
+export const getJson = function (props: SenderJson, dispatch: Dispatch) {
+    return jsonSender({ ...props, method: 'GET' }, dispatch);
 };
 // export const postJson = o(jsonSender, flip(merge)({ method: 'POST' }));
 

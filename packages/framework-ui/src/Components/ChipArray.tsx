@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import { map, indexOf, remove, append, concat, equals, difference, clone } from 'ramda';
 import List from '@material-ui/core/List';
@@ -7,67 +7,69 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
+import { WithStyles } from '@material-ui/styles';
 
-const styles = (theme) => ({
-    root: {
-        display: 'flex',
-        // flexWrap: "wrap"
-    },
-    chip: {
-        margin: theme.spacing(0.5),
-    },
-    list: {
-        // width: "10%",
-        backgroundColor: theme.palette.background.paper,
-        position: 'relative',
-        overflowY: 'auto',
-        // overflowX: 'visible',
-        // maxHeight: 300,
-        // borderRight: '1px solid rgba(0, 0, 0, 0.42)',
-    },
-    listSection: {
-        backgroundColor: 'inherit',
-    },
-    ul: {
-        backgroundColor: 'inherit',
-        paddingRight: 10,
-        paddingLeft: 0,
-    },
-    itemText: {
-        fontSize: 14,
-    },
-    listItem: {
-        paddingLeft: 0,
-        paddingRight: theme.spacing(3),
-        paddingTop: 2,
-        paddingBottom: 2,
-        cursor: 'pointer',
-    },
-    listHeader: {
-        paddingLeft: 0,
-        paddingRight: theme.spacing(1),
-        height: 40,
-        fontSize: 16,
-        whiteSpace: 'pre',
-    },
-    chipContainer: {
-        padding: theme.spacing(1),
-        // maxWidth: 370,
-        overflowY: 'auto',
-        overflowX: 'hidden',
-    },
-    errorColor: {
-        color: '#f44336',
-    },
-    listWrapper: {
-        // maxWidth: '45%',
-        overflowX: 'visible',
-        display: 'flex',
-    },
-});
+const styles = (theme: Theme) =>
+    createStyles({
+        root: {
+            display: 'flex',
+            // flexWrap: "wrap"
+        },
+        chip: {
+            margin: theme.spacing(0.5),
+        },
+        list: {
+            // width: "10%",
+            backgroundColor: theme.palette.background.paper,
+            position: 'relative',
+            overflowY: 'auto',
+            // overflowX: 'visible',
+            // maxHeight: 300,
+            // borderRight: '1px solid rgba(0, 0, 0, 0.42)',
+        },
+        listSection: {
+            backgroundColor: 'inherit',
+        },
+        ul: {
+            backgroundColor: 'inherit',
+            paddingRight: 10,
+            paddingLeft: 0,
+        },
+        itemText: {
+            fontSize: 14,
+        },
+        listItem: {
+            paddingLeft: 0,
+            paddingRight: theme.spacing(3),
+            paddingTop: 2,
+            paddingBottom: 2,
+            cursor: 'pointer',
+        },
+        listHeader: {
+            paddingLeft: 0,
+            paddingRight: theme.spacing(1),
+            height: 40,
+            fontSize: 16,
+            whiteSpace: 'pre',
+        },
+        chipContainer: {
+            padding: theme.spacing(1),
+            // maxWidth: 370,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+        },
+        errorColor: {
+            color: '#f44336',
+        },
+        listWrapper: {
+            // maxWidth: '45%',
+            overflowX: 'visible',
+            display: 'flex',
+        },
+    });
 
-const createListItems = (array, clickHandler, classes) => {
-    const createOption = (obj) => (
+const createListItems = (array: Option[], clickHandler: (v: any) => any, classes: any) => {
+    const createOption = (obj: Option) => (
         <ListItem key={obj.value} className={classes.listItem} onClick={() => clickHandler(obj)}>
             <ListItemText primary={obj.label} classes={{ primary: classes.itemText }} />
         </ListItem>
@@ -75,8 +77,26 @@ const createListItems = (array, clickHandler, classes) => {
     return map(createOption, array);
 };
 
-class ChipArray extends Component {
-    constructor(props) {
+interface Option {
+    value: string;
+    label: string;
+}
+interface ChipArrayProps extends WithStyles<typeof styles> {
+    optionsData: Option[];
+    value: any[];
+    onChange: (event: any) => any;
+    label: string;
+    required: boolean;
+    error: boolean;
+    className?: string;
+}
+interface MyState {
+    gotValue?: boolean;
+    chipData: Option[];
+    options: Option[];
+}
+class ChipArray extends Component<ChipArrayProps, MyState> {
+    constructor(props: ChipArrayProps) {
         super(props);
         this.state = {
             chipData: [],
@@ -84,28 +104,23 @@ class ChipArray extends Component {
             // optionsData: props.optionsData,
         };
     }
-    componentWillReceiveProps({ optionsData, value }) {
-        //@ts-ignore
+    componentWillReceiveProps({ optionsData, value }: ChipArrayProps) {
         const prevOptionsData = this.props.optionsData;
         if (!equals(prevOptionsData, optionsData)) {
             this.syncOptions(optionsData);
         }
         if (
-            //@ts-ignore
             !this.state.gotValue &&
             !equals(
-                //@ts-ignore
                 this.state.chipData.map(({ value }) => value),
                 value
             )
         ) {
             if (value) {
-                //@ts-ignore
                 const { options, chipData } = this.state;
                 let newChipData = clone(chipData);
                 let newOptions = clone(options);
                 value.forEach((val) => {
-                    //@ts-ignore
                     const option = this.state.options.find((obj) => obj.value === val);
                     if (option) {
                         const index = indexOf(option, newOptions);
@@ -128,17 +143,14 @@ class ChipArray extends Component {
             }
         }
     }
-    syncOptions = (newOptionsData) => {
-        //@ts-ignore
+    syncOptions = (newOptionsData: Option[]) => {
         const { options, chipData } = this.state;
         const diff = difference(newOptionsData, [...options, ...chipData]);
         this.setState({
             options: concat(options, diff),
-            // optionsData: newOptionsData,
         });
     };
-    handleDelete = (data) => () => {
-        //@ts-ignore
+    handleDelete = (data: Option) => () => {
         const { chipData, options } = this.state;
         const index = indexOf(data, chipData);
         const newChipData = remove(index, 1, chipData);
@@ -146,13 +158,11 @@ class ChipArray extends Component {
             chipData: newChipData,
             options: append(data, options),
         });
-        //@ts-ignore
+
         const { onChange } = this.props;
-        //@ts-ignore
         onChange({ target: { value: newChipData.map((obj) => obj.value) } });
     };
-    handleAddChip = (option, sync = false) => {
-        //@ts-ignore
+    handleAddChip = (option: Option, sync = false) => {
         const { options, chipData } = this.state;
         const index = indexOf(option, options);
         const newChipData = append(option, chipData);
@@ -161,18 +171,16 @@ class ChipArray extends Component {
             chipData: newChipData,
         });
         if (!sync) {
-            //@ts-ignore
             const { onChange } = this.props;
             onChange({ target: { value: newChipData.map((obj) => obj.value) } });
         }
     };
 
     render() {
-        //@ts-ignore
         const { classes, label, required, error, className } = this.props;
-        //@ts-ignore
+
         const { chipData, options } = this.state;
-        const createChip = (data) => (
+        const createChip = (data: Option) => (
             <Chip
                 key={data.value}
                 label={data.label}
@@ -206,5 +214,4 @@ class ChipArray extends Component {
     }
 }
 
-//@ts-ignore
 export default withStyles(styles)(ChipArray);

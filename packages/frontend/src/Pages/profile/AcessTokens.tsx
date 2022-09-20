@@ -110,8 +110,6 @@ function AccessTokens() {
                                         onDelete={deleteTokens}
                                         orderBy="Název"
                                         onAdd={() => navigate({ hash: '#addToken' })}
-                                        enableCreation
-                                        enableEdit
                                         customEditButton={(id: string, item: IAccessToken) => (
                                             <IconButton
                                                 size="small"

@@ -11,6 +11,7 @@ import resource from 'common/src/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import checkWritePerm from 'common/src/middlewares/user/checkWritePerm';
 import eventEmitter from '../services/eventEmitter';
+import { Request } from 'express';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
@@ -18,7 +19,6 @@ function removeUserItself(id: IUser['_id']) {
     };
 }
 
-type Request = RequestWithAuth;
 type RequestIndex = RequestWithAuth<{}, { type?: string }>;
 type RequestRead = RequestWithAuth<{ id: string }, { attribute?: string }>;
 type RequestId = RequestWithAuth<{ id: string }>;

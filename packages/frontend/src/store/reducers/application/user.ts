@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IUser } from 'common/src/models/interface/userInterface';
-import { merge } from 'ramda';
+import { mergeDeepRight } from 'ramda';
 
 // Define a type for the slice state
 export type User = IUser | null;
@@ -18,8 +18,9 @@ export const userSlice = createSlice({
         },
         update: (state, action: PayloadAction<User>) => {
             if (!state) return action.payload;
+            if (action.payload === null) return action.payload;
 
-            return merge(state, action.payload);
+            return mergeDeepRight(state, action.payload) as any;
         },
         toDefault: () => {
             return initialState;

@@ -1,7 +1,21 @@
+import { INotifyThingProperty, NotifyType } from '../models/interface/notifyInterface';
+
+interface INotifyFE {
+    propertyId: string[];
+    type: NotifyType[];
+    value: any[];
+    count: number;
+    advanced: {
+        interval: number[];
+        from: string[];
+        to: string[];
+        daysOfWeek: number[][];
+    };
+}
 /**
  * Transform notify form from FE to BE representation
  */
-export function transformNotifyForBE({ propertyId = [], type = [], value = [], count, advanced }) {
+export function transformNotifyForBE({ propertyId = [], type = [], value = [], count, advanced }: INotifyFE) {
     const resultArr = [];
     for (let i = 0; i < count; i++) {
         resultArr.push({
@@ -23,9 +37,9 @@ export function transformNotifyForBE({ propertyId = [], type = [], value = [], c
 /**
  * Transform notify BE representation to FE form
  */
-export function transformNotifyForFE(arrayOfNotify) {
+export function transformNotifyForFE(arrayOfNotify: INotifyThingProperty[]) {
     const len = arrayOfNotify.length;
-    const resultObj = {
+    const resultObj: INotifyFE = {
         propertyId: [],
         type: [],
         value: [],

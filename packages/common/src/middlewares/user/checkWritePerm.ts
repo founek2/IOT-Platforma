@@ -13,7 +13,7 @@ export default function (options: { paramKey: string } = { paramKey: 'id' }) {
             const { params, user } = req;
             const userId = params[options.paramKey];
 
-            if (user?.admin || (userId == user?._id && user.accessPermissions?.some((b) => b === Permission.write)))
+            if (user?.admin || (userId == user?._id && user?.accessPermissions?.includes(Permission.write)))
                 return next();
 
             res.status(403).send({ error: 'InvalidPermissions' });

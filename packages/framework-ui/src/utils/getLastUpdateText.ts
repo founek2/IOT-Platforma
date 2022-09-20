@@ -10,7 +10,7 @@ export default function getLastUpdateText(
     time: Date,
     prefix = 'Poslední aktualizace před',
     nowText = 'Aktuální'
-): [string, number] {
+): [string, number | null] {
     if (String(time) === 'Invalid Date') {
         logger.error('invalid date', time);
         return ['', 10]; // 10s default, otherwise performance issues

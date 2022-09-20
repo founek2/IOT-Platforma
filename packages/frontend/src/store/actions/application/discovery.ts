@@ -54,7 +54,7 @@ export const discoveryActions = {
     },
 
     addDevice(id: IDiscovery['_id']): AppThunk<Promise<boolean>> {
-        return function (dispatch, getState) {
+        return async function (dispatch, getState) {
             logger.info('CREATE_DEVICE');
 
             const CREATE_DEVICE = 'CREATE_DEVICE';
@@ -76,6 +76,8 @@ export const discoveryActions = {
                     dispatch
                 );
             }
+
+            return false;
         };
     },
 };

@@ -1,19 +1,18 @@
 import argon2 from 'argon2';
-import { IUser, Permission, IAccessToken, IOauth } from '../models/interface/userInterface';
+import addHours from 'date-fns/addHours';
 import { logger } from 'framework-ui/src/logger';
+import mongoose from 'mongoose';
+import dotify from 'node-dotify';
+import { Either, Left, Right } from 'purify-ts/Either';
+import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
+import { AuthType } from '../constants';
+import { DeviceModel } from '../models/deviceModel';
+import { IAccessToken, IOauth, IUser, Permission } from '../models/interface/userInterface';
+import { NotifyModel } from '../models/notifyModel';
+import { IToken, TokenModel, TokenType } from '../models/tokenModel';
 import { UserModel } from '../models/userModel';
 import { JwtService } from '../services/jwtService';
-import { IUserDocument } from '../models/schema/userSchema';
-import mongoose from 'mongoose';
-import { AuthType } from '../constants';
-import { NotifyModel } from '../models/notifyModel';
-import { DeviceModel } from '../models/deviceModel';
-import { TokenModel, TokenType, IToken } from '../models/tokenModel';
 import { Security } from './SecurityService';
-import addHours from 'date-fns/addHours';
-import { Either, Left, Right } from 'purify-ts/Either';
-import dotify from 'node-dotify';
-import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 
 const ObjectId = mongoose.Types.ObjectId;
 

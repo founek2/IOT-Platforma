@@ -5,7 +5,7 @@ import { getItem, removeItem, setItem } from '../../storage';
 import parseJwtToken from '../../utils/parseJwtToken';
 
 export function dehydrateState() {
-    return function (dispatch, getState) {
+    return function (dispatch: any, getState: any) {
         logger.warning(STATE_DEHYDRATED);
 
         const { formsData, application } = clone(getState());

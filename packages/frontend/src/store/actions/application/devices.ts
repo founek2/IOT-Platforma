@@ -76,6 +76,7 @@ export const devicesActions = {
                         dispatch(thingsReducerActions.setAll(normilized.entities.things as any));
                         dispatch(dehydrateState());
                     },
+                    params: undefined,
                 },
                 dispatch
             );
@@ -93,7 +94,10 @@ export const devicesActions = {
             logger.info(EDIT_CONTROL);
 
             const nodeId = getThing(thingId)(getState())?.config.nodeId;
-            if (!nodeId) logger.error('Invalid thingId', thingId);
+            if (!nodeId) {
+                logger.error('Invalid thingId', thingId);
+                return false;
+            }
 
             return updateStateThingApi(
                 {

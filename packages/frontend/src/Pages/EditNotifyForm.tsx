@@ -86,8 +86,8 @@ const useStyles = makeStyles((theme) => ({
 const FIELDS = ['propertyId', 'type', 'value', 'interval'];
 const FIELDS_ADVANCED = ['interval', 'from', 'to', 'daysOfWeek'];
 
-function EditDeviceDialog() {
-    const params = useParams<{ deviceId?: string; nodeId?: string }>();
+function EditNotifyForm() {
+    const params = useParams<{ deviceId: string; nodeId: string }>();
     const editForm = useAppSelector(getFormData('EDIT_NOTIFY'));
     const sensorCount = editForm ? editForm.count : 0;
     const thing = useAppSelector(getThing(params.nodeId));
@@ -99,6 +99,8 @@ function EditDeviceDialog() {
 
     useEffect(() => {
         async function preFill() {
+            if (!params.nodeId) return;
+
             setPending(true);
             const success = await dispatch(devicesActions.prefillNotify(params.deviceId, params.nodeId));
             if (success) setLoaded(true);
@@ -108,7 +110,7 @@ function EditDeviceDialog() {
         async function sendToken() {
             const token = await getToken();
             console.log('getting token: ', token);
-            dispatch(userActions.registerToken(token));
+            if (token) dispatch(userActions.registerToken(token));
         }
         preFill();
         sendToken();
@@ -155,6 +157,7 @@ function EditDeviceDialog() {
     }
 
     const handleSave = async () => {
+        if (!params.nodeId) return;
         setPending(true);
         await dispatch(devicesActions.updateNotify(params.deviceId, params.nodeId));
         setPending(false);
@@ -189,4 +192,4 @@ function EditDeviceDialog() {
     );
 }
 
-export default EditDeviceDialog;
+export default EditNotifyForm;

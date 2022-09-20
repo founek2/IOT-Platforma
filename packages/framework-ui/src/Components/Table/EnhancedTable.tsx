@@ -26,11 +26,11 @@ function desc(a: any, b: any, orderBy: string) {
 }
 
 function getSorting(order: 'asc' | 'desc', orderBy: string) {
-    return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+    return order === 'desc' ? (a: any, b: any) => desc(a, b, orderBy) : (a: any, b: any) => -desc(a, b, orderBy);
 }
 
 function mustContain(searchText: string, dataProps: DataProp[]) {
-    return (obj) => {
+    return (obj: any) => {
         for (const { path, convertor } of dataProps) {
             const value = convertor ? convertor(getInPath(path, obj)) : getInPath(path, obj);
             if (value && String(value).includes(searchText)) {
@@ -69,8 +69,6 @@ interface EnhancedTableProps<T extends { _id: any }> {
     onEdit?: (id: any) => any;
     dataProps: DataProp[];
     toolbarHead: string;
-    enableCreation?: boolean;
-    enableEdit?: boolean;
     enableSearch?: boolean;
     customClasses?: {
         toolbar?: string;
@@ -85,8 +83,6 @@ function EnhancedTable<T extends { _id: string }>({
     data,
     toolbarHead,
     onAdd,
-    enableCreation,
-    enableEdit,
     onEdit,
     enableSearch,
     customEditButton,
@@ -123,7 +119,7 @@ function EnhancedTable<T extends { _id: string }>({
     function handleSelectAllClick(event: any, checked: boolean) {
         if (checked) {
             // this.setState(state => ({ selected: state.data.map(n => n.id) }));
-            const newSelected = this.state.data.map((n) => n.id);
+            const newSelected = value.map((n) => n.id);
             changeSelected(newSelected);
         } else changeSelected([]);
     }
@@ -131,7 +127,7 @@ function EnhancedTable<T extends { _id: string }>({
     function handleClick(event: any, id: string) {
         const selected = value ? value : []; // ignore
         const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
+        let newSelected: any[] = [];
 
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, id);
@@ -162,12 +158,12 @@ function EnhancedTable<T extends { _id: string }>({
         return value.indexOf(id) !== -1;
     }
 
-    function handleDelete(e) {
-        onDelete(value);
+    function handleDelete(e: any) {
+        if (onDelete) onDelete(value);
         handleSelectAllClick(null, false);
     }
 
-    function handleSearchChange(e) {
+    function handleSearchChange(e: any) {
         setSearchText(e.target.value);
     }
 
@@ -183,8 +179,7 @@ function EnhancedTable<T extends { _id: string }>({
                 headLabel={toolbarHead}
                 onDelete={handleDelete}
                 onAdd={onAdd}
-                enableCreation={enableCreation}
-                enableSearch={enableSearch}
+                enableSearch={Boolean(enableSearch)}
                 onSearchChange={handleSearchChange}
                 className={customClasses.toolbar}
             />
@@ -236,13 +231,15 @@ function EnhancedTable<T extends { _id: string }>({
                                             </TableCell>
                                         ))}
                                         <TableCell className={classes.editCell}>
-                                            {enableEdit &&
+                                            {customEditButton &&
                                                 (!customEditButton ? (
                                                     <IconButton
                                                         // color="primary"
                                                         aria-label="Edit"
                                                         size="small"
-                                                        onClick={() => onEdit(n._id)}
+                                                        onClick={() => {
+                                                            if (onEdit) onEdit(n._id);
+                                                        }}
                                                     >
                                                         <EditIcon />
                                                     </IconButton>

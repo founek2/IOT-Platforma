@@ -1,11 +1,12 @@
 import { is } from 'ramda';
 import { NOTIFY_INTERVALS } from 'common/src/constants';
+import { INotifyThingProperty } from 'common/src/models/interface/notifyInterface';
 
-function getMinFromEpoch(date) {
-    return date / 1000 / 60;
+function getMinFromEpoch(date: Date) {
+    return date.getTime() / 1000 / 60;
 }
 
-function getMinDiff(d1, d2) {
+function getMinDiff(d1: Date, d2: Date) {
     return getMinFromEpoch(d1) - getMinFromEpoch(d2);
 }
 
@@ -13,8 +14,8 @@ function getMinDiff(d1, d2) {
  *
  * @param {String|Date} time in format: "HH:MM" or Date instance
  */
-function timeToNumeric(time) {
-    if (is(String, time)) {
+function timeToNumeric(time: Date | string) {
+    if (typeof time === 'string') {
         const [hours, mins] = time.split(':');
         return Number(hours) * 60 + Number(mins);
     }
@@ -26,14 +27,15 @@ function timeToNumeric(time) {
     throw Error('Invalid type - only supported String|Date');
 }
 
-function isInRange(now, from, to) {
-    now = timeToNumeric(now);
-    from = from ? timeToNumeric(from) : 0;
-    to = to ? timeToNumeric(to) : Number.MAX_SAFE_INTEGER;
-    return now > from && now < to;
+// check if is in time range (compare hours and minutes)
+function isInRange(now: Date | string, from: Date | string, to: Date | string) {
+    const nowNumeric = timeToNumeric(now);
+    const fromNumeric = from ? timeToNumeric(from) : 0;
+    const toNumberic = to ? timeToNumeric(to) : Number.MAX_SAFE_INTEGER;
+    return nowNumeric > fromNumeric && nowNumeric < toNumberic;
 }
 
-export default function shouldSend({ interval, from, to, daysOfWeek }, tmp) {
+export default function shouldSend({ interval, from, to, daysOfWeek }: INotifyThingProperty['advanced'], tmp: any) {
     const now = new Date();
     const enabled = daysOfWeek.includes(now.getDay()) && isInRange(now, from, to);
 

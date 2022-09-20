@@ -83,7 +83,6 @@ function DiscoverySection({ discoveredDevices, locations }: DiscoverySectionProp
                             orderBy="name"
                             // enableCreation={isAdmin}
                             //onAdd={() => this.updateCreateForm({ open: true })}
-                            enableEdit
                             customEditButton={(id: string, item: IDiscovery) => (
                                 <Fab
                                     color="primary"

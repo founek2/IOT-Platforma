@@ -24,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 // const isNotMobile = document.body.clientWidth > 600;
 interface UserMenuProps {
-    user: User;
+    user: NonNullable<User>;
 }
 function UserMenu({ user }: UserMenuProps) {
-    const [ancholEl, setAnchorEl] = useState(null);
+    const [ancholEl, setAnchorEl] = useState<(EventTarget & HTMLButtonElement) | null>(null);
     const dispatch = useDispatch();
     const classes = useStyles();
 

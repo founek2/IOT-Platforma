@@ -29,7 +29,7 @@ export function ThingDialog({ room }: ThingDialogProps) {
     const [title, setTitle] = useState('');
 
     useEffect(() => {
-        if (queryParams.thingId && !openDialog) {
+        if (queryParams.thingId && !openDialog && thing) {
             setOpenDialog(true);
             dispatch(thingHistoryActions.fetchHistory(queryParams.deviceId, thing.config.nodeId));
         } else if (!queryParams.thingId) setOpenDialog(false);

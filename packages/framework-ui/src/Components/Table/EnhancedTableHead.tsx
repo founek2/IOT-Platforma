@@ -35,7 +35,7 @@ function EnhancedTableHead({
     enableSelection,
     onRequestSort,
 }: EnhancedTableHeadProps) {
-    const createSortHandler = (property) => (event) => {
+    const createSortHandler = (property: any) => (event: any) => {
         onRequestSort(event, property);
     };
 
@@ -74,7 +74,7 @@ function EnhancedTableHead({
                             </Tooltip>
                         </TableCell>
                     );
-                }, this)}
+                })}
             </TableRow>
         </TableHead>
     );

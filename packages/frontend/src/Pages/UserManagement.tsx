@@ -73,8 +73,11 @@ function UserManagement() {
                             toolbarHead="Správa uživatelů"
                             onDelete={() => dispatch(usersActions.deleteUsers())}
                             orderBy="info.userName"
-                            enableEdit={isAdmin}
-                            onEdit={(id: string) => navigate({ hash: 'editUser', search: '?id=' + id })}
+                            onEdit={
+                                isAdmin
+                                    ? (id: string) => navigate({ hash: 'editUser', search: '?id=' + id })
+                                    : undefined
+                            }
                             rowsPerPage={10}
                             onChange={onChange}
                             value={value}

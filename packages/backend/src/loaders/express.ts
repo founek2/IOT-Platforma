@@ -16,7 +16,7 @@ function getMaxSize(req: Request) {
 const sizeLimitter: RequestHandler = (req, res, next) => {
     bodyParser.json({
         limit: getMaxSize(req),
-    })(req, res as any, next);
+    })(req, res, next);
 };
 export default async ({ app, config }: { app: Application; config: Config }) => {
     app.disable('x-powered-by');

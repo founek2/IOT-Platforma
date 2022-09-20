@@ -1,4 +1,4 @@
-import { allowedGroups, groupsHeritage } from 'common/src/constants/privileges';
+import { allowedGroups } from 'common/src/constants/privileges';
 import { JwtService } from 'common/src/services/jwtService';
 import express, { Application } from 'express';
 import { logger } from 'framework-ui/src/logger';
@@ -8,19 +8,7 @@ import loadersInit from './loaders';
 import { MailerService } from './services/mailerService';
 import { Config } from './types';
 
-export const routes = {
-    user: {
-        allowedGroups: allowedGroups.user,
-    },
-    admin: {
-        allowedGroups: allowedGroups.admin,
-    },
-    root: {
-        allowedGroups: allowedGroups.root,
-    },
-};
-
-initPrivileges(routes, groupsHeritage);
+initPrivileges({}, allowedGroups);
 
 export interface MyApp extends Application {
     server: http.Server;

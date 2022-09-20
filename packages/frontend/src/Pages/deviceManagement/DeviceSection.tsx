@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { DeviceCommand, IDevice, IDeviceStatus } from 'common/src/models/interface/device';
+import { DeviceCommand, IDeviceStatus } from 'common/src/models/interface/device';
 import { default as AlertDialog, default as Dialog } from 'framework-ui/src/Components/Dialog';
 import EnchancedTable from 'framework-ui/src/Components/Table';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
@@ -14,11 +14,9 @@ import { useAppDispatch, useAppSelector } from 'frontend/src/hooks';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 import { Device } from 'frontend/src/store/reducers/application/devices';
 import { getDevice, getQueryID, getThingEntities } from 'frontend/src/utils/getters';
-import { assoc, pick, prop } from 'ramda';
+import { pick } from 'ramda';
 import React, { Fragment, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
 import OnlineCircle from '../../components/OnlineCircle';
 import { devicesActions } from '../../store/actions/application/devices';
 import EditDeviceForm from './EditDeviceForm';
@@ -119,7 +117,6 @@ function DiscoverySection({ devices = [] }: DiscoverySectionProps) {
                 data={devices}
                 toolbarHead="Správa zařízení"
                 orderBy="info.name"
-                enableEdit
                 customEditButton={(id: string, device: Device) =>
                     device.permissions.write?.length > 0 ? (
                         <IconButton aria-label="add" size="small" onClick={(e) => handleClick(e, id)}>

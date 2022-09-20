@@ -1,4 +1,1 @@
-
-
-
-export const IMAGES_DEVICES_FOLDER = `devices`
+export const IMAGES_DEVICES_FOLDER = `devices`;

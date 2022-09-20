@@ -1,13 +1,12 @@
 import fieldDescriptors from 'common/src/fieldDescriptors';
-import { IUser } from 'common/src/models/interface/userInterface';
-import { UserModel } from 'common/src/models/userModel';
-import { UserService } from 'common/src/services/userService';
-import { RequestWithAuth } from 'common/src/types';
-import { map, omit } from 'ramda';
 import formDataChecker from 'common/src/middlewares/formDataChecker';
 import resource from 'common/src/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import checkWritePerm from 'common/src/middlewares/user/checkWritePerm';
+import { UserModel } from 'common/src/models/userModel';
+import { UserService } from 'common/src/services/userService';
+import { RequestWithAuth } from 'common/src/types';
+import { map, omit } from 'ramda';
 import { ObjectId } from '../utils/objectId';
 
 type Params = { userId: string };

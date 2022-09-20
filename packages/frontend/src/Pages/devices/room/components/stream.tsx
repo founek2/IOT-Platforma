@@ -5,7 +5,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 const useStyles = makeStyles((theme) => ({}));
 
-async function fetchContentType(url): Promise<string | undefined | void> {
+async function fetchContentType(url: string): Promise<string | undefined | void> {
     return fetch(url, {
         method: 'HEAD',
     })

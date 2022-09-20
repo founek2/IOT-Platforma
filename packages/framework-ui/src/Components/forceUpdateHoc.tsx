@@ -13,6 +13,8 @@ export default function ({ updateTime, children }: { updateTime: Date; children:
 
     useEffect(() => {
         // console.log("timeout", timeOut, "s")
+        if (!timeOut) return;
+
         let timeout = setTimeout(forceUpdate, timeOut * 1000);
         return () => clearTimeout(timeout);
     }, [val]);
