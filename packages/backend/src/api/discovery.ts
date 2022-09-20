@@ -76,18 +76,21 @@ export default () =>
             const _id = params.id;
             const form = formData.CREATE_DEVICE;
 
-            const doc = (await DiscoveryModel.findOne({
+            const discoverdDevice = (await DiscoveryModel.findOne({
                 // check if discovered device is Ready and not already pairing
                 _id: ObjectId(_id),
                 pairing: { $ne: true },
                 'state.status.value': DeviceStatus.ready,
             })) as IDiscoveryDocument;
-            if (!doc) return res.status(400).send({ error: 'deviceNotReady' });
+            if (!discoverdDevice) return res.status(400).send({ error: 'deviceNotReady' });
 
             // convert discovered device to new device
             const convertThings = map(convertDiscoveryThing);
             const things = convertThings(
-                map((nodeId) => assocPath(['config', 'nodeId'], nodeId, doc.things[nodeId]), doc.nodeIds)
+                map(
+                    (nodeId) => assocPath(['config', 'nodeId'], nodeId, discoverdDevice.things[nodeId]),
+                    discoverdDevice.nodeIds
+                )
             );
 
             async function getOrCreateDevice(doc: IDiscoveryDocument, things: IThing[], form: any) {
@@ -117,14 +120,14 @@ export default () =>
                 );
             }
 
-            const newDevice = await getOrCreateDevice(doc, things, form);
+            const newDevice = await getOrCreateDevice(discoverdDevice, things, form);
             if (!newDevice) return res.status(400).send({ error: 'deviceIdTaken' });
 
-            const suuccess = await Actions.deviceInitPairing(doc.deviceId, newDevice.apiKey); // initialize pairing proccess
+            const suuccess = await Actions.deviceInitPairing(discoverdDevice.deviceId, newDevice.apiKey); // initialize pairing proccess
 
             if (suuccess) {
-                doc.pairing = true;
-                doc.save();
+                discoverdDevice.pairing = true;
+                discoverdDevice.save();
                 res.send({ doc: newDevice });
             } else {
                 newDevice.remove();
