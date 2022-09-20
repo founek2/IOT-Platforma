@@ -9,6 +9,13 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
+const proxyTarget =
+    process.env.PROXY === 'dev'
+        ? 'https://dev.iotdomu.cz'
+        : process.env.PROXY === 'prod'
+        ? 'https://iotdomu.cz'
+        : 'http://localhost:8085';
+
 const config = {
     mode: isEnvProduction ? 'production' : 'development',
     entry: './src/index.tsx',
@@ -93,15 +100,14 @@ const config = {
         proxy: {
             '/api': {
                 target: 'http://localhost:3000',
-                router: () => 'http://localhost:8085',
+                router: () => proxyTarget,
                 // router: () => 'https://dev.iotdomu.cz',
                 // logLevel: 'debug' /*optional*/,
                 changeOrigin: true,
             },
             '/socket.io': {
                 target: 'http://localhost:3000',
-                // router: () => 'http://localhost:8085',
-                router: () => 'https://dev.iotdomu.cz',
+                router: () => proxyTarget,
                 ws: true,
                 changeOrigin: true,
             },
