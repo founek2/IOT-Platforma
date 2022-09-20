@@ -6,6 +6,8 @@ import { RootState } from '../store/store';
 
 export const getApplication = (state: RootState) => state.application;
 
+export const getFormsData = (state: RootState) => state.formsData;
+
 export const getHistory = (state: RootState) => state.history;
 export const getQuery = (state: RootState) => state.history.query;
 
@@ -16,12 +18,9 @@ export const getDevice = (deviceId: Device['_id']) => (state: RootState) =>
 export const getThingEntities = o((app) => thingSelectors.selectEntities(app.things), getApplication);
 export const getThing = (thingId: IThing['_id']) => (state: RootState) =>
     thingSelectors.selectById(getApplication(state).things, thingId);
-// export const getThingsForDevice = (deviceId: Device['_id']) => (state: RootState) =>
-//     deviceSelectors.selectById(getApplication(state).devices, deviceId);
 
-// export const getDevices = o(path(['devices', 'data']), getApplication);
+export const getFormData = (formName: string) => (state: RootState) => o(prop(formName), getFormsData)(state);
 
-// export const getQueryID = o(path(['query', 'id']), getHistory);
 export const getQueryID = o((app) => app.query.id, getHistory);
 
 // export const getQueryField = curry((name, state) => o(path(['query', name]), getHistory)(state));

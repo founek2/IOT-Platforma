@@ -81,7 +81,7 @@ interface Option {
     value: string;
     label: string;
 }
-interface ChipArrayProps extends WithStyles<typeof styles> {
+export interface ChipArrayProps extends WithStyles<typeof styles> {
     optionsData: Option[];
     value: any[];
     onChange: (event: any) => any;
