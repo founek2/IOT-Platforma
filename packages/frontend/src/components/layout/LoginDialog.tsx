@@ -15,8 +15,8 @@ import { RootState } from 'frontend/src/store/store';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { userActions } from '../../store/actions/application/user';
-import { useAppDispatch } from '../../hooks';
 import OAuthButtons from './OAuthButtons';
 
 const useClasses = makeStyles((theme) => ({
@@ -84,14 +84,14 @@ function onStopTyping(callback: (...args: any[]) => void) {
 interface LoginDialogProps {
     open: boolean;
     onClose?: DialogProps['onClose'];
-    authType: AuthType;
     onSuccess?: () => void;
 }
-function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
+function LoginDialog({ open, onClose, onSuccess }: LoginDialogProps) {
     const [pending, setPending] = useState(false);
     const [invalidLogin, setInvalidLogin] = useState(false);
     const classes = useClasses();
     const dispatch = useAppDispatch();
+    const authType: AuthType = useAppSelector(getFieldVal('LOGIN.authType'));
 
     async function fetchAuthType() {
         if (pending) return;
@@ -181,9 +181,4 @@ function LoginDialog({ open, onClose, authType, onSuccess }: LoginDialogProps) {
     );
 }
 
-const _mapStateToProps = (state: RootState) => ({
-    authType: getFieldVal('LOGIN.authType')(state) as AuthType,
-    userPresence: isUserLoggerIn(state),
-});
-
-export default connect(_mapStateToProps)(LoginDialog);
+export default LoginDialog;

@@ -10,7 +10,7 @@ import { default as AlertDialog, default as Dialog } from 'framework-ui/src/Comp
 import EnchancedTable from 'framework-ui/src/Components/Table';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 import { isUrlHash } from 'framework-ui/src/utils/getters';
-import { useAppSelector } from 'frontend/src/hooks';
+import { useAppDispatch, useAppSelector } from 'frontend/src/hooks';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 import { Device } from 'frontend/src/store/reducers/application/devices';
 import { getDevice, getQueryID, getThingEntities } from 'frontend/src/utils/getters';
@@ -25,23 +25,9 @@ import EditDeviceForm from './EditDeviceForm';
 
 interface DiscoverySectionProps {
     devices?: Device[];
-    resetFormAction: any;
-    setFormDataAction: any;
-    updateDeviceAction: any;
-    deleteDeviceAction: any;
-    setFormField: any;
-    sendDeviceCommandA: any;
 }
 
-function DiscoverySection({
-    devices = [],
-    resetFormAction,
-    setFormDataAction,
-    updateDeviceAction,
-    deleteDeviceAction,
-    setFormField,
-    sendDeviceCommandA,
-}: DiscoverySectionProps) {
+function DiscoverySection({ devices = [] }: DiscoverySectionProps) {
     const deviceId = useAppSelector(getQueryID);
     const selectedDevice = useAppSelector(getDevice(deviceId));
     const openEditDialog = useAppSelector(isUrlHash('#edit'));
@@ -55,11 +41,17 @@ function DiscoverySection({
     const theme = useTheme();
     const isWide = useMediaQuery(theme.breakpoints.up('md'));
     const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (selectedDevice)
-            setFormDataAction({ formName: 'EDIT_DEVICE', data: pick(['info', 'permissions'], selectedDevice) });
-    }, [selectedDevice, setFormDataAction]);
+            dispatch(
+                formsDataActions.setFormData({
+                    formName: 'EDIT_DEVICE',
+                    data: pick(['info', 'permissions'], selectedDevice),
+                })
+            );
+    }, [selectedDevice, dispatch]);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>, deviceId: string) => {
         setAnchorEl(event.currentTarget);
@@ -70,20 +62,20 @@ function DiscoverySection({
     };
 
     function closeDialog() {
-        resetFormAction('EDIT_DEVICE');
+        dispatch(formsDataActions.removeForm('EDIT_DEVICE'));
         setMenuForId('');
         navigate({ hash: '' });
     }
 
     async function onAgree() {
-        const result = await updateDeviceAction(selectedDevice?._id);
+        const result = await dispatch(devicesActions.updateDevice(selectedDevice?._id));
         if (result) closeDialog();
     }
 
     async function onAgreeDelete() {
-        setFormField({ deepPath: 'DEVICE_SEND.command', value: DeviceCommand.reset });
-        await sendDeviceCommandA(menuForId);
-        const result = await deleteDeviceAction(menuForId);
+        dispatch(formsDataActions.setFormField({ deepPath: 'DEVICE_SEND.command', value: DeviceCommand.reset }));
+        await dispatch(devicesActions.sendCommand(menuForId));
+        const result = await dispatch(devicesActions.deleteDevice(menuForId));
         if (result) {
             setOpenAlertDialog(false);
             navigate({ hash: '' });
@@ -144,8 +136,13 @@ function DiscoverySection({
                 </Link>
                 <MenuItem
                     onClick={() => {
-                        setFormField({ deepPath: 'DEVICE_SEND.command', value: DeviceCommand.restart });
-                        sendDeviceCommandA(menuForId);
+                        dispatch(
+                            formsDataActions.setFormField({
+                                deepPath: 'DEVICE_SEND.command',
+                                value: DeviceCommand.restart,
+                            })
+                        );
+                        dispatch(devicesActions.sendCommand(menuForId));
                         handleClose();
                     }}
                 >
@@ -161,14 +158,6 @@ function DiscoverySection({
                     Smazat
                 </MenuItem>
             </Menu>
-            {/* <FullScreenForm
-                open={openEditDialog}
-                heading="Editace zařízení"
-                onAgree={onAgree}
-                onClose={closeDialog}
-            >
-                <EditDeviceForm />
-            </FullScreenForm> */}
             <Dialog
                 open={openEditDialog}
                 title="Editace zařízení"
@@ -195,19 +184,4 @@ function DiscoverySection({
     );
 }
 
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            resetFormAction: formsDataActions.removeForm,
-            // resetEditDeviceAction: formsActions.removeForm('EDIT_DEVICE'),
-            // prefillEditForm: formsActions.fillForm('EDIT_DEVICE'),
-            setFormDataAction: formsDataActions.setFormData,
-            updateDeviceAction: devicesActions.updateDevice,
-            deleteDeviceAction: devicesActions.deleteDevice,
-            sendDeviceCommandA: devicesActions.sendCommand,
-            setFormField: formsDataActions.setFormField,
-        },
-        dispatch
-    );
-
-export default connect(null, _mapDispatchToProps)(DiscoverySection);
+export default DiscoverySection;

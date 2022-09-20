@@ -60,7 +60,7 @@ const styles = (theme) => ({
         color: '#f44336',
     },
     listWrapper: {
-        maxWidth: '45%',
+        // maxWidth: '45%',
         overflowX: 'visible',
         display: 'flex',
     },

@@ -73,7 +73,7 @@ interface EditUserProps {
 }
 function EditUser({ user, onButtonClick }: EditUserProps) {
     const [pending, setPending] = useState(false);
-    const groups = useAppSelector(getGroups);
+
     const classes = useStyles();
     const dispatch = useDispatch();
 
@@ -91,13 +91,7 @@ function EditUser({ user, onButtonClick }: EditUserProps) {
         <Card className={classes.card}>
             <CardHeader className={classes.header} title="Editace uživatele" />
             <CardContent className={classes.content}>
-                <UserForm formName="EDIT_USER" />
-                <FieldConnector
-                    deepPath="EDIT_USER.groups"
-                    component="ChipArray"
-                    optionsData={map(({ name, text }) => ({ value: name, label: text }), getAllowedGroups(groups))}
-                    className={classes.chipArray}
-                />
+                <UserForm formName="EDIT_USER" editGroups />
             </CardContent>
             <CardActions className={classes.actions}>
                 <Button color="primary" variant="contained" onClick={handleSave} disabled={pending}>

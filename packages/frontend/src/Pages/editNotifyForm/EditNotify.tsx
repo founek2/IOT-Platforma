@@ -9,9 +9,8 @@ import { NotifyIntervals } from 'common/src/constants';
 import { IThing } from 'common/src/models/interface/thing';
 import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import { getFieldVal } from 'framework-ui/src/utils/getters';
-import { RootState } from 'frontend/src/store/store';
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
+import { useAppSelector } from 'src/hooks';
 import DaysOfWeekPicker from './DaysOfWeekPicker';
 import PropertyPart from './editNotify/PropertyPart';
 
@@ -43,13 +42,20 @@ interface EditNotifyProps {
     id: number;
     onDelete: (id: number) => void;
     config: IThing['config'];
-    editedAdvanced: boolean;
 }
 
-function EditNotify({ id, onDelete, config, editedAdvanced }: EditNotifyProps) {
+function EditNotify({ id, onDelete, config }: EditNotifyProps) {
     const [openAdvanced, setOpen] = useState(false);
     const classes = useStyles();
+    const editedAdvanced = useAppSelector((state) => {
+        const days = getFieldVal(`EDIT_NOTIFY.advanced.daysOfWeek.${id}`)(state);
+        const result =
+            getFieldVal(`EDIT_NOTIFY.advanced.to.${id}`)(state) ||
+            getFieldVal(`EDIT_NOTIFY.advanced.from.${id}`)(state) ||
+            (days && days.length < 7);
 
+        return Boolean(result);
+    });
     return (
         <Grid container key={id} spacing={2} className={classes.quantity}>
             <Grid item md={12}>
@@ -127,16 +133,4 @@ function EditNotify({ id, onDelete, config, editedAdvanced }: EditNotifyProps) {
     );
 }
 
-const _mapStateToProps = (state: RootState, { id }: { id: number }) => {
-    const days = getFieldVal(`EDIT_NOTIFY.advanced.daysOfWeek.${id}`, state);
-    const editedAdvanced =
-        getFieldVal(`EDIT_NOTIFY.advanced.to.${id}`, state) ||
-        getFieldVal(`EDIT_NOTIFY.advanced.from.${id}`, state) ||
-        (days && days.length < 7);
-
-    return {
-        editedAdvanced: !!editedAdvanced,
-    };
-};
-
-export default connect(_mapStateToProps)(EditNotify);
+export default EditNotify;

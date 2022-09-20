@@ -6,9 +6,9 @@ import { isNumericDataType } from 'common/src/utils/isNumericDataType';
 import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 import { getFieldVal } from 'framework-ui/src/utils/getters';
-import { RootState } from 'frontend/src/store/store';
 import React, { Fragment } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from 'src/hooks';
 
 interface PropertyPartProps {
     id: number;
@@ -17,10 +17,15 @@ interface PropertyPartProps {
     selectedType?: NotifyType;
 }
 
-function PropertyPart({ id, config, selectedProperty, selectedType }: PropertyPartProps) {
+function PropertyPart({ id, config }: PropertyPartProps) {
+    const selectedPropId = useAppSelector<string | undefined>(getFieldVal(`EDIT_NOTIFY.propertyId.${id}`));
+    const selectedProperty: IThingProperty | undefined = selectedPropId
+        ? config.properties.find(({ propertyId }) => propertyId === selectedPropId)
+        : undefined;
     const isEnum = selectedProperty ? selectedProperty.dataType === PropertyDataType.enum : false;
     const isNumerical = selectedProperty ? isNumericDataType(selectedProperty.dataType) : false;
     const dispatch = useDispatch();
+    const selectedType = useAppSelector<NotifyType | undefined>(getFieldVal(`EDIT_NOTIFY.type.${id}`));
 
     function updateFormField(deepPath: string, value: any) {
         dispatch(formsDataActions.setFormField({ deepPath, value }));
@@ -58,11 +63,6 @@ function PropertyPart({ id, config, selectedProperty, selectedType }: PropertyPa
                             onChange={() => {
                                 updateFormField(`EDIT_NOTIFY.value.${id}`, '');
                             }}
-                            // selectOptions={NotifyControlTypes[selectedJSONkey].map(({ value, label }) => (
-                            // 	<MenuItem value={value} key={value}>
-                            // 		{label}
-                            // 	</MenuItem>
-                            // ))}
                             selectOptions={Object.values(NotfyTypeForDataType[selectedProperty.dataType]).map(
                                 (value) => (
                                     <MenuItem value={value} key={value}>
@@ -90,36 +90,13 @@ function PropertyPart({ id, config, selectedProperty, selectedType }: PropertyPa
                                           ))
                                         : undefined
                                 }
-                                // selectOptions={selectedProperty?.format.map((value) => (
-                                // 	<MenuItem value={value} key={value}>
-                                // 		{value}
-                                // 	</MenuItem>
-                                // ))}
                             />
                         </Grid>
                     ) : null}
                 </Fragment>
             ) : null}
-            {/* <FieldConnector
-                deepPath={`EDIT_NOTIFY.value.${id}`}
-            /> */}
         </Fragment>
     );
 }
 
-const _mapStateToProps = (state: RootState, { id, config }: { id: number; config: IThing['config'] }) => {
-    const selectedPropId = getFieldVal(`EDIT_NOTIFY.propertyId.${id}`, state) as
-        | IThingProperty['propertyId']
-        | undefined;
-
-    const selectedProperty: IThingProperty | undefined = selectedPropId
-        ? config.properties.find(({ propertyId }) => propertyId === selectedPropId)
-        : undefined;
-
-    return {
-        selectedProperty,
-        selectedType: getFieldVal(`EDIT_NOTIFY.type.${id}`, state) as NotifyType | undefined,
-    };
-};
-
-export default connect(_mapStateToProps)(PropertyPart);
+export default PropertyPart;

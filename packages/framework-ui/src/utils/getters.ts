@@ -40,7 +40,7 @@ export const getAuthorization = o(prop('authorization'), getApplication) as (sta
 
 // export const getGroups = o(prop('groups'), getUser);
 
-export const getFieldVal = curry((deepPath, state) => o(getInPath(deepPath), getFormsData)(state));
+export const getFieldVal = (deepPath: string) => (state: State) => getInPath(deepPath, getFormsData(state));
 
 export const getToken = o(prop('accessToken'), getAuthorization);
 

@@ -1,12 +1,19 @@
 import Grid from '@material-ui/core/Grid';
 import FieldConnector from 'framework-ui/src/Components/FieldConnector';
+import { getAllowedGroups } from 'framework-ui/src/privileges';
+import { map } from 'ramda';
 import React from 'react';
+import { useAppSelector } from 'src/hooks';
+import { getGroups } from 'src/utils/getters';
 
 interface UserFormProps {
     formName: string;
     onEnter?: React.EventHandler<any>;
+    editGroups?: boolean;
 }
-function UserForm({ formName, onEnter }: UserFormProps) {
+function UserForm({ formName, onEnter, editGroups }: UserFormProps) {
+    const groups = useAppSelector(getGroups);
+
     return (
         <Grid container spacing={2}>
             <Grid item md={6} xs={12}>
@@ -52,6 +59,16 @@ function UserForm({ formName, onEnter }: UserFormProps) {
                     }}
                 />
             </Grid>
+            {editGroups ? (
+                <Grid item>
+                    <FieldConnector
+                        deepPath={`${formName}.groups`}
+                        component="ChipArray"
+                        optionsData={map(({ name, text }) => ({ value: name, label: text }), getAllowedGroups(groups))}
+                        // className={classes.chipArray}
+                    />
+                </Grid>
+            ) : null}
         </Grid>
     );
 }

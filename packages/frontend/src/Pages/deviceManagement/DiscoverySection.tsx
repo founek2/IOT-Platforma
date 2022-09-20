@@ -1,4 +1,4 @@
-import { Fab, Grid, useTheme, useMediaQuery } from '@material-ui/core';
+import { Fab, Grid, useMediaQuery, useTheme } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { DeviceStatus } from 'common/src/models/interface/device';
 import { IDiscovery, IDiscoveryThing } from 'common/src/models/interface/discovery';
@@ -6,34 +6,25 @@ import Dialog from 'framework-ui/src/Components/Dialog';
 import FieldConnector from 'framework-ui/src/Components/FieldConnector';
 import EnchancedTable from 'framework-ui/src/Components/Table';
 import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
-import { isUrlHash } from 'framework-ui/src/utils/getters';
 import { DeviceForm } from 'frontend/src/components/DeviceForm';
-import { assoc, prop } from 'ramda';
-import React, { Fragment, useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import OnlineCircle from '../../components/OnlineCircle';
-import { discoveryActions } from '../../store/actions/application/discovery';
 import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
 import { Locations } from 'frontend/src/types';
+import { assoc, prop } from 'ramda';
+import React, { Fragment, useState } from 'react';
+import { useAppDispatch } from 'src/hooks';
+import OnlineCircle from '../../components/OnlineCircle';
+import { discoveryActions } from '../../store/actions/application/discovery';
 
 interface DiscoverySectionProps {
     discoveredDevices?: IDiscovery[];
-    addDiscoveryAction: any;
-    deleteDiscoveryAction: any;
     locations: Locations;
 }
 
-function DiscoverySection({
-    discoveredDevices,
-    addDiscoveryAction,
-    deleteDiscoveryAction,
-    locations,
-}: DiscoverySectionProps) {
+function DiscoverySection({ discoveredDevices, locations }: DiscoverySectionProps) {
     const classes = useManagementStyles();
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [selectedId, setSelectedId] = useState<null | string>(null);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -43,7 +34,7 @@ function DiscoverySection({
     }
 
     async function onAgree() {
-        const result = await addDiscoveryAction(selectedId);
+        const result = await dispatch(discoveryActions.addDevice(selectedId));
         if (result) closeDialog();
     }
 
@@ -88,7 +79,7 @@ function DiscoverySection({
                             ]}
                             data={discoveredDevices.map((device: any) => assoc('id', prop('_id', device), device))}
                             toolbarHead="Přidání zařízení"
-                            onDelete={deleteDiscoveryAction}
+                            onDelete={() => dispatch(discoveryActions.deleteDevices())}
                             orderBy="name"
                             // enableCreation={isAdmin}
                             //onAdd={() => this.updateCreateForm({ open: true })}
@@ -137,21 +128,4 @@ function DiscoverySection({
     );
 }
 
-const _mapStateToProps = (state: any) => {
-    return {
-        openAddDialog: isUrlHash('#addDevice')(state),
-    };
-};
-
-const _mapDispatchToProps = (dispatch: any) =>
-    bindActionCreators(
-        {
-            deleteDiscoveryAction: discoveryActions.deleteDevices,
-            addDiscoveryAction: discoveryActions.addDevice,
-            // resetCreateDeviceAction: formsActions.removeForm('CREATE_DEVICE'),
-            // updateFormField: formsActions.updateFormField,
-        },
-        dispatch
-    );
-
-export default connect(_mapStateToProps, _mapDispatchToProps)(DiscoverySection);
+export default DiscoverySection;

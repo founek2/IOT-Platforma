@@ -50,7 +50,6 @@ export function getMenuPaths(groups: string[]): RouteMenu[] {
 }
 
 export function getPathsWithComp(groups: string[]): RouteWithComponent[] {
-    console.log('privileges', privileges, groups);
     const allowedRoutes = groups
         .map((group) => privileges[group].routes)
         .flat()

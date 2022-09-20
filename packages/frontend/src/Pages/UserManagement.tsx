@@ -59,7 +59,7 @@ function UserManagement() {
     useEffect(() => {
         dispatch(usersActions.fetchAll());
     }, [dispatch]);
-    const isAdmin = groups.includes('admin');
+    const isAdmin = groups.includes('admin') || groups.includes('root');
 
     return (
         <div>
@@ -73,7 +73,6 @@ function UserManagement() {
                             toolbarHead="Správa uživatelů"
                             onDelete={() => dispatch(usersActions.deleteUsers())}
                             orderBy="info.userName"
-                            // enableCreation={isAdmin}
                             enableEdit={isAdmin}
                             onEdit={(id: string) => navigate({ hash: 'editUser', search: '?id=' + id })}
                             rowsPerPage={10}
