@@ -8911,10 +8911,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clipboard-copy@npm:^3.1.0":
-  version: 3.2.0
-  resolution: "clipboard-copy@npm:3.2.0"
-  checksum: f908842945a0c6b38fe513f559e8905519f24c1f287fc8d5f03fcf79d52172a09b6fdaf760377c84ad22b587b95060ebb782344e2c526490935db295398572bd
+"clipboard-copy@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "clipboard-copy@npm:4.0.1"
+  checksum: 530a09de80dfd0536793fdefb6559a2dfb6c2706b027c41c672a0f18debafd420e69111224f3265555afcd73f9cd97517dcaf494aa25996a58a8f550a3426080
   languageName: node
   linkType: hard
 
@@ -12265,7 +12265,7 @@ __metadata:
     "@types/reselect": ^2.2.0
     assert: ^2.0.0
     babel-loader: ^8.2.5
-    clipboard-copy: ^3.1.0
+    clipboard-copy: ^4.0.1
     clsx: ^1.1.1
     copy-webpack-plugin: ^11.0.0
     css-loader: ^6.7.1

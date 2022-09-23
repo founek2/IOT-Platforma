@@ -7,7 +7,7 @@
     "typings": "index.d.ts",
     "scripts": {
         "build": "tsc -b && yarn copyFiles",
-        "copyFiles": "copyfiles -u 1 src/**/*.html src/**/*.css lib/",
+        "copyFiles": "copyfiles -u 1 src/**/*.css lib/",
         "clean": "rimraf tsconfig.tsbuildinfo lib",
         "dev": "yarn copyFiles && tsc -w",
         "test": "jest",
