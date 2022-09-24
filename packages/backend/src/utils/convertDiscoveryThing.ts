@@ -6,9 +6,11 @@ import {
     IThingPropertyEnum,
     IThing,
 } from 'common/src/models/interface/thing';
-import { assoc, assocPath, map, o } from 'ramda';
+import { assoc, assocPath, dissocPath, map, o } from 'ramda';
 
 export function convertProperty(property: IThingProperty): IThingProperty {
+    property = assoc('settable', Boolean(property.settable), property);
+
     if (!('format' in property)) return property;
 
     if (
@@ -28,14 +30,16 @@ export function convertProperty(property: IThingProperty): IThingProperty {
 }
 
 export function convertDiscoveryThing(thing: IDiscoveryThing): IThing {
-    return assocPath(
-        ['config', 'properties'],
-        map(
-            o(convertProperty, (propertyId) =>
-                assocPath(['propertyId'], propertyId, thing.config.properties[propertyId])
-            ),
-            thing.config.propertyIds!
-        ),
-        thing
-    ) as unknown as IThing;
+    return o(
+        dissocPath(['config', 'propertyIds']),
+        assocPath(
+            ['config', 'properties'],
+            map(
+                o(convertProperty, (propertyId) =>
+                    assocPath(['propertyId'], propertyId, thing.config.properties[propertyId])
+                ),
+                thing.config.propertyIds!
+            )
+        )
+    )(thing) as unknown as IThing;
 }

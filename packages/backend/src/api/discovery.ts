@@ -4,7 +4,7 @@ import { DeviceModel } from 'common/src/models/deviceModel';
 import { DeviceStatus } from 'common/src/models/interface/device';
 import { RequestWithAuth } from 'common/src/types';
 import mongoose from 'mongoose';
-import { assocPath, map } from 'ramda';
+import { assocPath, equals, map } from 'ramda';
 import checkDiscovery from 'common/src/middlewares/discovery/checkDiscovery';
 import formDataChecker from 'common/src/middlewares/formDataChecker';
 import resource from 'common/src/middlewares/resource-router-middleware';
@@ -13,6 +13,7 @@ import { Actions } from '../services/actionsService';
 import eventEmitter from '../services/eventEmitter';
 import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
 import { IThing } from 'common/src/models/interface/thing';
+import { extractPlainConfig } from '../utils/extractPlainConfig';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -99,9 +100,11 @@ export default () =>
                     deviceId: doc.deviceId,
                 };
 
-                const alreadyExist = await DeviceModel.findOne(metadata);
+                const alreadyExist = await DeviceModel.findOne({ metadata }).lean();
                 if (alreadyExist) {
-                    if (JSON.stringify(alreadyExist.things) === JSON.stringify(things)) {
+                    const existingConfig = alreadyExist.things.map(extractPlainConfig);
+                    const newConfig = things.map(extractPlainConfig);
+                    if (equals(existingConfig, newConfig)) {
                         // device exists with same config -> reuse it!
                         return alreadyExist;
                     } else {
@@ -130,7 +133,7 @@ export default () =>
                 discoverdDevice.save();
                 res.send({ doc: newDevice });
             } else {
-                newDevice.remove();
+                DeviceModel.deleteOne({ _id: newDevice._id });
                 res.sendStatus(500);
             }
         },
