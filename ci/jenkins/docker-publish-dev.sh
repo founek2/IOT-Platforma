@@ -3,7 +3,7 @@ set -e
 
 tag=$(git describe --abbrev=0)
 name=founek2/iot-platform
-name_private="docker-registry.iotdomu.cz/iot-platform/server"
+name_private="docker-registry-write.iotdomu.cz/iot-platform/server"
 
 wget https://github.com/founek2/IOT-Platforma/releases/download/v2.0.0-beta/assets.zip -O assets.zip
 
