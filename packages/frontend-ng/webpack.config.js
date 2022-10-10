@@ -92,11 +92,13 @@ const config = {
         new webpack.ProvidePlugin({
             process: 'process/browser',
         }),
+        new webpack.HotModuleReplacementPlugin(),
         // new webpack.DefinePlugin({
         //     'process.env.NODE_ENV': process.env.NODE_ENV,
         // }),
     ],
     devServer: {
+        hot: true,
         proxy: {
             '/api': {
                 target: 'http://localhost:3000',

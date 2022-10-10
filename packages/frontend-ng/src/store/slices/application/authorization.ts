@@ -1,0 +1,43 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IUser } from 'common/src/models/interface/userInterface';
+
+export interface AuthorizationState {
+    loggedIn: boolean;
+    accessToken: string;
+    accessTokenExpiresAt: string;
+    refreshToken: string;
+    refreshTokenExpiresAt: string;
+    currentUser: IUser | null;
+}
+
+const initialState: AuthorizationState = {
+    loggedIn: false,
+    accessToken: '',
+    accessTokenExpiresAt: '',
+    refreshToken: '',
+    refreshTokenExpiresAt: '',
+    currentUser: null,
+};
+
+export const authorizationSlice = createSlice({
+    name: 'authorization',
+    initialState,
+    reducers: {
+        setCurrentUser: (state, action: PayloadAction<IUser>) => {
+            state.loggedIn = action.payload ? true : false;
+            state.currentUser = action.payload;
+        },
+        setAccessToken: (state, action: PayloadAction<{ token: string; expiresAt: string }>) => {
+            state.accessToken = action.payload.token;
+            state.accessTokenExpiresAt = action.payload.expiresAt;
+        },
+        setRefreshToken: (state, action: PayloadAction<{ token: string; expiresAt: string }>) => {
+            state.refreshToken = action.payload.token;
+            state.refreshTokenExpiresAt = action.payload.expiresAt;
+        },
+    },
+});
+
+export const authorizationReducerActions = authorizationSlice.actions;
+
+export default authorizationSlice.reducer;
