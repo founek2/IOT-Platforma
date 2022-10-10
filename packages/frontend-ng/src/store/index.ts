@@ -1,7 +1,17 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, isRejectedWithValue, Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
 import { api } from '../services/api';
 import application from './slices/application';
 import notifications from './slices/notifications';
+
+export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) => (action) => {
+    // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
+    if (isRejectedWithValue(action)) {
+        console.warn('We got a rejected action!');
+        //   toast.warn({ title: 'Async error!', message: action.error.data.message })
+    }
+
+    return next(action);
+};
 
 export const store = configureStore({
     reducer: {
@@ -9,7 +19,7 @@ export const store = configureStore({
         application,
         notifications,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware).concat(rtkQueryErrorLogger),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

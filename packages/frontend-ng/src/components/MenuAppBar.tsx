@@ -17,6 +17,8 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { ListSubheader, useMediaQuery, useTheme } from '@mui/material';
 import LoginDialog from './LoginDialog';
+import { useAppSelector } from '../hooks';
+import { isLoggedIn } from '../utils/getters';
 
 function createList(closeDrawer: (event: React.KeyboardEvent | React.MouseEvent) => void) {
     return (
@@ -57,6 +59,7 @@ export function MenuAppBar() {
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
     const [isMenuOpen, setMenuOpen] = React.useState(false);
     const [isLoginOpen, setLoginOpen] = React.useState(false);
+    const isUserLoggedIn = useAppSelector(isLoggedIn);
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (
@@ -89,7 +92,7 @@ export function MenuAppBar() {
                             {isDesktop ? 'IoT Domu' : 'Domu'}
                         </Typography>
                         <Button onClick={() => setLoginOpen(true)} color="inherit">
-                            Login
+                            {isUserLoggedIn ? 'Přihlášen' : 'Login'}
                         </Button>
                     </Toolbar>
                 </AppBar>
@@ -97,7 +100,7 @@ export function MenuAppBar() {
             <SwipeableDrawer anchor="left" open={isMenuOpen} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
                 {createList(toggleDrawer(false))}
             </SwipeableDrawer>
-            <LoginDialog open={isLoginOpen} onClose={() => setLoginOpen(false)} />
+            <LoginDialog open={isLoginOpen && !isUserLoggedIn} onClose={() => setLoginOpen(false)} />
         </>
     );
 }

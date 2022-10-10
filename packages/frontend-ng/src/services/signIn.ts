@@ -1,8 +1,11 @@
 import { AuthType } from 'common/src/constants';
+import { IUser } from 'common/src/models/interface/userInterface';
 import { api } from './api';
 
 export interface SignInResponse {
-    token: string;
+    accessToken: string;
+    refreshToken: string;
+    user: IUser;
 }
 
 export interface AuthTypesResponse {

@@ -14,7 +14,7 @@ const baseQuery = fetchBaseQuery({
     },
 });
 
-const baseQueryWithRetry = retry(baseQuery, { maxRetries: 6 });
+// const baseQueryWithRetry = retry(baseQuery, { maxRetries: 6 });
 
 /**
  * Create a base API to inject endpoints into elsewhere.
@@ -26,7 +26,7 @@ export const api = createApi({
     /**
      * A bare bones base query would just be `baseQuery: fetchBaseQuery({ baseUrl: '/' })`
      */
-    baseQuery: baseQueryWithRetry,
+    baseQuery,
     /**
      * Tag types must be defined in the original API definition
      * for any tags that would be provided by injected endpoints

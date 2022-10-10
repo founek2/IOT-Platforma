@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { CircularProgress, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,9 +7,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-import { CircularProgress, TextField } from '@mui/material';
-import { useLazyGetAuthTypesQuery, useSignInMutation } from '../services/signIn';
 import { AuthType } from 'common/src/constants';
+import * as React from 'react';
+import { useLazyGetAuthTypesQuery, useSignInMutation } from '../services/signIn';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -17,7 +17,7 @@ const Transition = React.forwardRef(function Transition(
     },
     ref: React.Ref<unknown>
 ) {
-    return <Slide direction="up" ref={ref} {...props} />;
+    return <Slide direction="down" ref={ref} {...props} />;
 });
 
 let timer: NodeJS.Timeout;
@@ -36,8 +36,6 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
     const [getAuthTypes, { isLoading: isLoadingAuthTypes, data, error, isError }] = useLazyGetAuthTypesQuery();
     const [signIn, { isLoading: isLoadingSignIn }] = useSignInMutation();
 
-    console.log('error', error, isError);
-
     return (
         <Dialog
             open={open}
@@ -54,7 +52,8 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
                 </DialogContentText>
                 <TextField
                     autoFocus
-                    id="name"
+                    id="username"
+                    name="username"
                     label="Uživatelské jméno"
                     type="text"
                     fullWidth
@@ -65,18 +64,19 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
                         onStopTyping(() => getAuthTypes(e.target.value));
                     }}
                 />
-                {data?.authTypes.includes(AuthType.passwd) ? (
-                    <TextField
-                        autoFocus
-                        id="password"
-                        label="Heslo"
-                        type="password"
-                        fullWidth
-                        variant="standard"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                ) : null}
+
+                <TextField
+                    autoFocus
+                    id="password"
+                    name="password"
+                    label="Heslo"
+                    type="password"
+                    fullWidth
+                    variant="standard"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    sx={{ display: data?.authTypes.includes(AuthType.passwd) ? 'initial' : 'none' }}
+                />
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
                 {!data?.authTypes.length ? (
