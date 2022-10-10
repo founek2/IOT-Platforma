@@ -78,7 +78,7 @@ export default () =>
 
             if (attribute === 'authType') {
                 const doc = await UserModel.findByUserName(id);
-                if (!doc) res.status(404).send({ error: 'unknownUser' });
+                if (!doc) res.send({ authTypes: [] });
                 else res.send({ authTypes: doc.auth.types });
             } else {
                 res.sendStatus(400);
