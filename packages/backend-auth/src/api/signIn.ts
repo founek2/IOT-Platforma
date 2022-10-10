@@ -50,7 +50,12 @@ export default () =>
                 (await processLogin.run())
                     .ifLeft((error) => res.status(401).send({ error }))
                     .ifRight(({ doc, token }) => {
-                        res.send({ user: doc, token });
+                        res.send({
+                            user: doc,
+                            token,
+                            accessToken: token,
+                            refreshToken: token,
+                        });
                         eventEmitter.emit('user_login', doc);
                     });
             } else if (formData.AUTHORIZATION) {
