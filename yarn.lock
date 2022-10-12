@@ -14714,6 +14714,7 @@ __metadata:
     react-redux: ^8.0.4
     react-router-dom: ^6.4.2
     redux: ^4.2.0
+    redux-persist: ^6.0.0
     redux-thunk: ^2.4.1
     reselect: ^4.1.6
     socket.io-client: ^4.5.2
@@ -23546,6 +23547,15 @@ __metadata:
     reduce-reducers: ^0.4.3
     to-camel-case: ^1.0.0
   checksum: 677a727d0be42aa1cbdb4c8d6296b4167c0c4ce4f28d36453764edba3c4dc5f82064290ce494209fa56eeb245262b4cdc58e7e6a50fe2f17e1d94d79c387e9e3
+  languageName: node
+  linkType: hard
+
+"redux-persist@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "redux-persist@npm:6.0.0"
+  peerDependencies:
+    redux: ">4.0.0"
+  checksum: edaf10dbf17351ce8058d0802357adae8665b3a1ff39371834e37838ddbe1a79cccbc717b8ba54acb5307651ccf51d0f7dc1cbc8dbae0726ff952d11ef61c6b8
   languageName: node
   linkType: hard
 

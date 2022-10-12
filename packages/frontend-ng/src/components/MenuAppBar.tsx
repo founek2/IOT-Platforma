@@ -15,10 +15,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { ListSubheader, useMediaQuery, useTheme } from '@mui/material';
+import { ListSubheader, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import LoginDialog from './LoginDialog';
 import { useAppSelector } from '../hooks';
 import { isLoggedIn } from '../utils/getters';
+import { UserMenu } from './menuAppBar/UserMenu';
 
 function createList(closeDrawer: (event: React.KeyboardEvent | React.MouseEvent) => void) {
     return (
@@ -91,9 +92,13 @@ export function MenuAppBar() {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             {isDesktop ? 'IoT Domu' : 'Domu'}
                         </Typography>
-                        <Button onClick={() => setLoginOpen(true)} color="inherit">
-                            {isUserLoggedIn ? 'Přihlášen' : 'Login'}
-                        </Button>
+                        {isUserLoggedIn ? (
+                            <UserMenu />
+                        ) : (
+                            <Button onClick={() => setLoginOpen(true)} color="inherit">
+                                Login
+                            </Button>
+                        )}
                     </Toolbar>
                 </AppBar>
             </Box>

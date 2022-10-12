@@ -1,29 +1,29 @@
-import { CircularProgress, TextField } from '@mui/material';
+import { Box, CircularProgress, Grid, useTheme } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
 import { AuthType } from 'common/src/constants';
+import { getFieldVal } from 'common/src/utils/getters';
+import { head } from 'ramda';
 import * as React from 'react';
-import { useLazyGetAuthTypesQuery, useSignInMutation } from '../services/signIn';
+import { useAppSelector } from '../hooks';
+import { useForm } from '../hooks/useForm';
+import { useGetAuthProvidersQuery, useLazyGetAuthTypesQuery, useSignInMutation } from '../services/signIn';
+import FieldConnector from './FieldConnector';
+import AuthProviderButtons from './loginDialog/AuthProviderButtons';
 
-const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement<any, any>;
-    },
-    ref: React.Ref<unknown>
-) {
-    return <Slide direction="down" ref={ref} {...props} />;
-});
+interface LoginForm {
+    userName: string;
+    password: string;
+    authType: string;
+}
 
 let timer: NodeJS.Timeout;
 function onStopTyping(callback: () => void) {
     clearTimeout(timer);
-    timer = setTimeout(callback, 800);
+    timer = setTimeout(callback, 400);
 }
 
 interface LoginDialogProps {
@@ -31,62 +31,105 @@ interface LoginDialogProps {
     onClose: () => void;
 }
 export default function LoginDialog({ onClose, open }: LoginDialogProps) {
-    const [userName, setUserName] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [getAuthTypes, { isLoading: isLoadingAuthTypes, data, error, isError }] = useLazyGetAuthTypesQuery();
+    const theme = useTheme();
+    const { data: dataProviders } = useGetAuthProvidersQuery();
+    const { validateField, validateForm, setFieldValue, resetForm } = useForm<LoginForm>('LOGIN');
+    const [getAuthTypes, { isLoading: isLoadingAuthTypes, data: authTypesData, error, isError }] =
+        useLazyGetAuthTypesQuery();
     const [signIn, { isLoading: isLoadingSignIn }] = useSignInMutation();
+    const authTypeSelected = useAppSelector(getFieldVal('LOGIN.authType'));
+
+    function handleNext() {
+        const { value, valid } = validateField(['userName']);
+        if (valid) getAuthTypes(value);
+    }
+
+    function handleSignIn() {
+        const { valid, data } = validateForm();
+        if (valid) {
+            signIn(data).unwrap().then(handleClose).then(resetForm);
+        }
+    }
+    function handleClose() {
+        onClose();
+        resetForm();
+    }
 
     return (
         <Dialog
             open={open}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={onClose}
+            // keepMounted
+            onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
+            PaperProps={{
+                sx: {
+                    overflowY: 'visible',
+                    [theme.breakpoints.up('lg')]: {
+                        width: 500,
+                    },
+                    [theme.breakpoints.up('md')]: {
+                        width: 400,
+                    },
+                },
+            }}
         >
-            <DialogTitle>{'Přihlášení'}</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description">
-                    Let Google help apps determine location. This means sending anonymous location data to Google, even
-                    when no apps are running
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    id="username"
-                    name="username"
-                    label="Uživatelské jméno"
-                    type="text"
-                    fullWidth
-                    variant="standard"
-                    value={userName}
-                    onChange={(e) => {
-                        setUserName(e.target.value);
-                        onStopTyping(() => getAuthTypes(e.target.value));
-                    }}
-                />
-
-                <TextField
-                    autoFocus
-                    id="password"
-                    name="password"
-                    label="Heslo"
-                    type="password"
-                    fullWidth
-                    variant="standard"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    sx={{ display: data?.authTypes.includes(AuthType.passwd) ? 'initial' : 'none' }}
-                />
+            <Box
+                sx={{
+                    display: 'flex',
+                    width: '100%',
+                    justifyContent: 'center',
+                    top: -20,
+                    position: 'absolute',
+                }}
+            >
+                {dataProviders?.oauth ? <AuthProviderButtons providers={dataProviders.oauth} /> : null}
+            </Box>
+            <DialogTitle align="center" mt={7}>
+                {'Přihlášení'}
+            </DialogTitle>
+            <DialogContent
+                sx={(theme) => ({
+                    [theme.breakpoints.up('sm')]: {
+                        pl: 7,
+                        pr: 7,
+                    },
+                })}
+            >
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <FieldConnector
+                            autoFocus
+                            deepPath="LOGIN.userName"
+                            fullWidth
+                            onChange={(e) =>
+                                onStopTyping(async () => {
+                                    const res = await getAuthTypes(e.target.value);
+                                    const type = head(res.data?.authTypes || []);
+                                    if (type) setFieldValue(type, ['authType']);
+                                })
+                            }
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FieldConnector
+                            autoFocus
+                            deepPath="LOGIN.password"
+                            fieldProps={{ type: 'password' }}
+                            fullWidth
+                            sx={authTypeSelected === AuthType.passwd ? undefined : { display: 'none' }}
+                        />
+                    </Grid>
+                </Grid>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
-                {!data?.authTypes.length ? (
+                {!authTypesData?.authTypes.length ? (
                     isLoadingAuthTypes || isLoadingSignIn ? (
                         <CircularProgress />
                     ) : (
-                        <Button onClick={() => getAuthTypes(userName)}>Další</Button>
+                        <Button onClick={handleNext}>Další</Button>
                     )
                 ) : (
-                    <Button onClick={() => signIn({ userName, password })}>Přihlásit</Button>
+                    <Button onClick={handleSignIn}>Přihlásit</Button>
                 )}
             </DialogActions>
         </Dialog>

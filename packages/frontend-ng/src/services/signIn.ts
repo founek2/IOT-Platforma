@@ -12,6 +12,12 @@ export interface AuthTypesResponse {
     authTypes: AuthType[];
 }
 
+export type AuthProvider = {
+    provider: string;
+    authUrl: string;
+    iconUrl: string;
+};
+
 export const signInApi = api.injectEndpoints({
     endpoints: (build) => ({
         signIn: build.mutation<SignInResponse, { userName: string; password: string }>({
@@ -26,9 +32,13 @@ export const signInApi = api.injectEndpoints({
         }),
         getAuthTypes: build.query<AuthTypesResponse, string>({
             query: (userName) => `user/${userName}?attribute=authType`,
+            providesTags: ['UserAuthTypes'],
+        }),
+        getAuthProviders: build.query<{ oauth: AuthProvider[] }, void>({
+            query: () => `/auth/user/signIn`,
             providesTags: ['AuthTypes'],
         }),
     }),
 });
 
-export const { useSignInMutation, useLazyGetAuthTypesQuery } = signInApi;
+export const { useSignInMutation, useLazyGetAuthTypesQuery, useGetAuthProvidersQuery } = signInApi;

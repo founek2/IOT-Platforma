@@ -16,7 +16,7 @@
         // "noFallthroughCasesInSwitch": true,
         // "strict": true
     },
-    // "references": [{ "path": "../framework-ui" }, { "path": "../common" }],
+    "references": [{ "path": "../common" }],
     "include": ["src", "custom.d.ts"],
     "exclude": ["node_modules"]
 }
