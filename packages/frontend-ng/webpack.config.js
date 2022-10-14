@@ -8,6 +8,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ReactRefreshTypeScript = require('react-refresh-typescript');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const proxyTarget =
     process.env.PROXY === 'dev'
@@ -16,9 +19,10 @@ const proxyTarget =
         ? 'https://iotdomu.cz'
         : 'http://localhost:8085';
 
+console.log('Proxy target: ', proxyTarget);
 const config = {
     mode: isEnvProduction ? 'production' : 'development',
-    entry: './src/index.tsx',
+    entry: ['./src/index.tsx'],
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: isEnvProduction ? 'assets/js/[name].[contenthash:8].js' : 'static/js/[name].js',
@@ -44,6 +48,10 @@ const config = {
                 },
                 loader: 'ts-loader',
                 options: {
+                    getCustomTransformers: () => ({
+                        before: [!isEnvProduction && ReactRefreshTypeScript()].filter(Boolean),
+                    }),
+                    transpileOnly: !isEnvProduction,
                     projectReferences: true,
                 },
             },
@@ -63,6 +71,8 @@ const config = {
     devtool: sourceMapEnv ? sourceMapEnv : isEnvProduction ? undefined : 'inline-source-map',
     // devtool: 'source-map',
     plugins: [
+        !isEnvProduction && new ReactRefreshWebpackPlugin(),
+        new ForkTsCheckerWebpackPlugin(),
         new CopyPlugin({
             patterns: [
                 { from: path.join(__dirname, 'public/assets'), to: 'assets' },
@@ -96,7 +106,7 @@ const config = {
         // new webpack.DefinePlugin({
         //     'process.env.NODE_ENV': process.env.NODE_ENV,
         // }),
-    ],
+    ].filter(Boolean),
     devServer: {
         proxy: {
             '/api': {

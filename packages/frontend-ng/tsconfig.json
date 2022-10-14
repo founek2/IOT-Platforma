@@ -2,7 +2,7 @@
     "extends": "../../tsconfig-base.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "rootDir": "../",
+        "rootDir": "./",
         "outDir": "dist",
         "lib": ["dom", "dom.iterable", "esnext"],
         "sourceMap": true,
