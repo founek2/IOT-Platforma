@@ -1,32 +1,8 @@
-import {
-    AnyAction,
-    combineReducers,
-    configureStore,
-    isRejectedWithValue,
-    Middleware,
-    MiddlewareAPI,
-} from '@reduxjs/toolkit';
+import { configureStore, isRejectedWithValue, Middleware } from '@reduxjs/toolkit';
+import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import { api } from '../services/api';
-import application from './slices/application';
-import formsData from './slices/formDataSlice';
-import notifications, { notificationActions } from './slices/notificationSlice';
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-
-const rootReducer = combineReducers({
-    [api.reducerPath]: api.reducer,
-    application,
-    formsData,
-    notifications,
-});
-
-const persistConfig = {
-    key: 'application',
-    storage,
-    blacklist: [api.reducerPath],
-};
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+import rootReducer from './slices';
+import { notificationActions } from './slices/notificationSlice';
 
 export const rtkQueryErrorLogger: Middleware =
     ({ dispatch }) =>
@@ -43,7 +19,7 @@ export const rtkQueryErrorLogger: Middleware =
     };
 
 export const store = configureStore({
-    reducer: persistedReducer,
+    reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
@@ -53,6 +29,11 @@ export const store = configureStore({
             .concat(api.middleware)
             .concat(rtkQueryErrorLogger),
 });
+
+// Hot reload support
+if (process.env.NODE_ENV !== 'production' && module.hot) {
+    module.hot.accept('./slices', () => store.replaceReducer(rootReducer));
+}
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

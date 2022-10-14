@@ -14,7 +14,7 @@ export interface Route {
     path: string;
     Component?: React.LazyExoticComponent<() => JSX.Element>;
     name?: string;
-    Icon?: React.ReactNode;
+    Icon?: any;
 }
 
 export interface RouteWithComponent {
@@ -27,7 +27,7 @@ export interface RouteWithComponent {
 export interface RouteMenu {
     path: string;
     name: string;
-    Icon: React.ReactNode;
+    Icon: any;
 }
 
 export interface AllowedRoutes {
@@ -38,34 +38,31 @@ export interface Privileges {
     [groupName: string]: { routes: Route[]; allowedGroups: AllowedGroup[] };
 }
 
-let privileges: Privileges;
+export class PrivilegesContainer {
+    privileges: Privileges;
+    constructor(routes: AllowedRoutes, allowedGroups: AllowedGroups) {
+        this.privileges = mergeDeepRight(routes, allowedGroups);
+    }
+    getMenuPaths = (groups: string[]): RouteMenu[] => {
+        const allowedRoutes = groups
+            .map((group) => this.privileges[group].routes)
+            .flat()
+            .filter((r) => r.name && r.Icon);
 
-export function getMenuPaths(groups: string[]): RouteMenu[] {
-    const allowedRoutes = groups
-        .map((group) => privileges[group].routes)
-        .flat()
-        .filter((r) => r.name && r.Icon);
+        return uniqBy(prop('path'), allowedRoutes) as RouteMenu[];
+    };
 
-    return uniqBy(prop('path'), allowedRoutes) as RouteMenu[];
-}
+    getPathsWithComp = (groups: string[]): RouteWithComponent[] => {
+        const allowedRoutes = groups
+            .map((group) => this.privileges[group].routes)
+            .flat()
+            .filter((r) => Boolean(r.Component));
+        return uniqBy(prop('path'), allowedRoutes) as RouteWithComponent[];
+    };
 
-export function getPathsWithComp(groups: string[]): RouteWithComponent[] {
-    const allowedRoutes = groups
-        .map((group) => privileges[group].routes)
-        .flat()
-        .filter((r) => Boolean(r.Component));
-    return uniqBy(prop('path'), allowedRoutes) as RouteWithComponent[];
-}
+    getAllowedGroups = (groups: string[]) => {
+        const allowedGroups = groups.map((group) => this.privileges[group].allowedGroups).flat();
 
-export function getAllowedGroups(groups: string[]) {
-    const allowedGroups = groups.map((group) => privileges[group].allowedGroups).flat();
-
-    return uniqBy(prop('name'), allowedGroups);
-}
-
-/**
- * format - {groupName: [{path: /login, component}]}
- */
-export default function (routes: AllowedRoutes, allowedGroups: AllowedGroups) {
-    privileges = mergeDeepRight(routes, allowedGroups) as Privileges;
+        return uniqBy(prop('name'), allowedGroups);
+    };
 }

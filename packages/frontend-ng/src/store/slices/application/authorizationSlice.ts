@@ -41,7 +41,12 @@ export const authorizationSlice = createSlice({
         builder.addCase('store/reset', (state) => initialState);
         builder.addMatcher(signInApi.endpoints.signIn.matchFulfilled, (state, { payload }) => {
             state.loggedIn = true;
-            state.accessToken = payload.accessToken;
+            state.accessToken = payload.accessToken || payload.token;
+            state.currentUser = payload.user;
+        });
+        builder.addMatcher(signInApi.endpoints.signInOauth.matchFulfilled, (state, { payload }) => {
+            state.loggedIn = true;
+            state.accessToken = payload.accessToken || payload.token;
             state.currentUser = payload.user;
         });
     },

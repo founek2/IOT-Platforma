@@ -20,40 +20,7 @@ import LoginDialog from './LoginDialog';
 import { useAppSelector } from '../hooks';
 import { isLoggedIn } from '../utils/getters';
 import { UserMenu } from './menuAppBar/UserMenu';
-
-function createList(closeDrawer: (event: React.KeyboardEvent | React.MouseEvent) => void) {
-    return (
-        <Box sx={{ width: 250 }} role="presentation" onClick={closeDrawer} onKeyDown={closeDrawer}>
-            <List
-                subheader={
-                    <ListSubheader component="div" id="nested-list-subheader">
-                        Menu
-                    </ListSubheader>
-                }
-            >
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-            <Divider />
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    );
-}
+import { SideMenu } from './menuAppBar/SideMenu';
 
 export function MenuAppBar() {
     const theme = useTheme();
@@ -102,9 +69,7 @@ export function MenuAppBar() {
                     </Toolbar>
                 </AppBar>
             </Box>
-            <SwipeableDrawer anchor="left" open={isMenuOpen} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
-                {createList(toggleDrawer(false))}
-            </SwipeableDrawer>
+            <SideMenu open={isMenuOpen} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)} />
             <LoginDialog open={isLoginOpen && !isUserLoggedIn} onClose={() => setLoginOpen(false)} />
         </>
     );
