@@ -28,3 +28,5 @@ type Leaves<T, D extends number = 10> = [D] extends [never]
     : T extends object
     ? { [K in keyof T]-?: Cons<K, Leaves<T[K], Prev[D]>> }[keyof T]
     : [];
+
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };

@@ -20,12 +20,12 @@ export function NotificationReduxConnect() {
     };
 
     React.useEffect(() => {
-        notifications.forEach(({ message, options: { key, autoHideDuration = 3000, onExited, ...props } }) => {
+        notifications.forEach(({ message, options: { key, autoHideDuration = 3000, onExited, persist, variant } }) => {
             // do nothing if snackbar is already displayed
             if (displayed.includes(key)) return;
 
             // display snackbar using notistack
-            enqueueSnackbar(message, {
+            enqueueSnackbar(message as string, {
                 key,
                 autoHideDuration,
                 onExited: (event, myKey) => {
@@ -33,10 +33,11 @@ export function NotificationReduxConnect() {
                     // remove this snackbar from redux store
                     dispatch(notificationActions.remove(myKey));
                     // removeDisplayed(myKey);
-                    if (onExited) onExited(event, myKey);
+                    if (typeof onExited === 'function') onExited(event, myKey);
                     // closeSnackbar(key);
                 },
-                ...props,
+                persist,
+                variant,
             });
 
             // keep track of snackbars that we've displayed

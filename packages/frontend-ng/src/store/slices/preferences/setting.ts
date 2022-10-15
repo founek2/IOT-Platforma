@@ -1,12 +1,14 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, EntityState, PayloadAction, createEntityAdapter } from '@reduxjs/toolkit';
 
 export interface PreferencesState {
     colorMode: 'light' | 'dark';
 }
-const initialState: PreferencesState = { colorMode: 'dark' };
+const initialState: PreferencesState = {
+    colorMode: 'dark',
+};
 
 export const preferencesSlice = createSlice({
-    name: 'preferences',
+    name: 'setting',
     initialState,
     reducers: {
         setColorMode: (state, action: PayloadAction<PreferencesState['colorMode']>) => {

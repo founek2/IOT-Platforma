@@ -4,16 +4,8 @@ import React, { useCallback, useRef, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-type Item = { id: number; text: string };
-const defaultCards = [
-    { id: 1, text: 'ahok\nsdakjdak\ndasd' },
-    { id: 2, text: 'balbla\ndasdad\nsdasdě' },
-    { id: 3, text: 'sas' },
-    { id: 4, text: 'saaaa' },
-];
-
 interface DragItem {
-    id: number | string;
+    id: string;
     index: number;
 }
 
@@ -21,20 +13,22 @@ const ItemTypes = {
     CARD: 'CARD',
 };
 
-function Dragable({
+export function Draggable({
     id,
     index,
     onMove,
     render,
+    type,
 }: {
-    id: string | number;
-    index: number | number;
-    onMove: (dragIndex: number, hoverIndex: number) => void;
-    render: (isDraggin: boolean) => JSX.Element | JSX.Element[];
+    id: string;
+    index: number;
+    onMove: (dragId: string, hoverId: string) => void;
+    render: (isDraggin: boolean, ref: React.RefObject<HTMLDivElement>) => JSX.Element;
+    type: string;
 }) {
     const ref = useRef<HTMLDivElement>(null);
     const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
-        accept: ItemTypes.CARD,
+        accept: type,
         collect(monitor) {
             return {
                 handlerId: monitor.getHandlerId(),
@@ -79,7 +73,7 @@ function Dragable({
             }
 
             // Time to actually perform the action
-            onMove(dragIndex, hoverIndex);
+            onMove(item.id, id);
 
             // Note: we're mutating the monitor item here!
             // Generally it's better to avoid mutations,
@@ -90,7 +84,7 @@ function Dragable({
     });
 
     const [{ isDragging }, drag] = useDrag({
-        type: ItemTypes.CARD,
+        type,
         item: () => {
             return { id, index };
         },
@@ -100,39 +94,5 @@ function Dragable({
     });
 
     drag(drop(ref));
-    return <Box ref={ref}>{render(isDragging)}</Box>;
-}
-
-export function HomePage() {
-    const [cards, setCards] = useState(defaultCards);
-
-    const moveCard = useCallback(
-        (dragIndex: number, hoverIndex: number) =>
-            setCards((prevCards: Item[]) => {
-                const newCards = [...prevCards];
-                const tmp = newCards[hoverIndex];
-                newCards[hoverIndex] = newCards[dragIndex];
-                newCards[dragIndex] = tmp;
-
-                return newCards;
-            }),
-        []
-    );
-
-    return (
-        <DndProvider backend={HTML5Backend}>
-            <Grid container spacing={{ xs: 2 }}>
-                {cards.map((card, idx) => (
-                    <Grid item xs={2} key={card.id}>
-                        <Dragable
-                            id={card.id}
-                            index={idx}
-                            onMove={moveCard}
-                            render={(isDragging) => <Paper sx={{ opacity: isDragging ? 0.3 : 1 }}>{card.text}</Paper>}
-                        />
-                    </Grid>
-                ))}
-            </Grid>
-        </DndProvider>
-    );
+    return render(isDragging, ref);
 }

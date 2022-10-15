@@ -1,0 +1,45 @@
+import { logger } from 'common/src/logger';
+import { createSelectorCreator, defaultMemoize } from 'reselect';
+import { Device } from '../../store/slices/application/devicesSlice';
+import { findOrPush } from '../../utils/findOrPush';
+import { getAllDevices } from '../../utils/getters';
+
+export type Buildings = { id: string; name: string; rooms: { name: string; id: string; deviceIDs: string[] }[] }[];
+
+function sameLocations(a: Device, b: Device) {
+    return a.info.location.building === b.info.location.building && a.info.location.room === b.info.location.room;
+}
+
+const customSelectorCreator = createSelectorCreator(defaultMemoize, (a: Device[], b: Device[]) => {
+    if (
+        a.length !== b.length ||
+        a.some((value, index) => value._id !== b[index]._id || !sameLocations(value, b[index]))
+    ) {
+        return false;
+    }
+
+    return true;
+});
+
+export const buildingsCachedSelector = customSelectorCreator(getAllDevices, (devices) => {
+    const buildings: Buildings = [];
+
+    devices.forEach((device) => {
+        const { building, room } = device.info.location;
+        const buildingObj = findOrPush(
+            (buildingObj) => buildingObj.name === building,
+            { id: building, name: building, rooms: [] },
+            buildings
+        );
+
+        const roomObj = findOrPush(
+            (roomObj) => roomObj.name === room,
+            { id: `${building}/${room}`, name: room, deviceIDs: [] },
+            buildingObj.rooms
+        );
+
+        roomObj.deviceIDs.push(device._id);
+    });
+    logger.debug('Creating list of buildings and rooms...');
+    return buildings;
+});

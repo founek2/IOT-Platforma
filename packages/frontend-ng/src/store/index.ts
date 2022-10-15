@@ -1,8 +1,9 @@
-import { configureStore, isRejectedWithValue, Middleware } from '@reduxjs/toolkit';
+import { CombinedState, configureStore, isRejectedWithValue, Middleware } from '@reduxjs/toolkit';
 import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import { api } from '../services/api';
 import rootReducer from './slices';
 import { notificationActions } from './slices/notificationSlice';
+import { $CombinedState } from '@reduxjs/toolkit';
 
 export const rtkQueryErrorLogger: Middleware =
     ({ dispatch }) =>
@@ -36,7 +37,7 @@ if (process.env.NODE_ENV !== 'production' && module.hot) {
 }
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
 

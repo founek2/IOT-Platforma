@@ -1,18 +1,30 @@
 import { Box, Paper } from '@mui/material';
 import React from 'react';
 
-export function Background({ children }: { children?: React.ReactNode }) {
+export function Background({
+    children,
+    onContextMenu,
+    onClick,
+}: {
+    children?: React.ReactNode;
+    onContextMenu?: (event: React.MouseEvent) => any;
+    onClick?: (event: React.MouseEvent) => any;
+}) {
     return (
         <Box
             sx={(theme) => ({
-                backgroundColor: theme.palette.mode === 'light' ? 'white' : 'rgba(0, 0, 0, 0.1)',
-                height: 'calc(100% - 64px)',
+                backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : 'rgb(5 0 0 / 70%)',
+                minHeight: 'calc(100% - 64px)',
+                paddingBottom: '64px',
                 [theme.breakpoints.down('sm')]: {
-                    height: 'calc(100% - 56px)',
+                    minHeight: 'calc(100% - 56px)',
+                    paddingBottom: '56px',
                 },
             })}
         >
-            {children}
+            <div style={{ minHeight: '100%' }} onContextMenu={onContextMenu} onClick={onClick}>
+                {children}
+            </div>
         </Box>
     );
 }

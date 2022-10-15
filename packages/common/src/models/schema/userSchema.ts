@@ -27,6 +27,7 @@ export const userSchemaPlain = {
     },
     groups: { type: [String], default: ['user'] },
     devices: Object, // {sensors: {order: [id, id, id]}, }
+    // preferences: {colorMode: light, devices: [{_id: xxx, order: 10, {things: [{_id: xxx, order: 11}]}}]}
     notifyTokens: [],
     accessTokens: [
         {

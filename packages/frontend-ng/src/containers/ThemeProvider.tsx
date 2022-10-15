@@ -3,6 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { orange } from '@mui/material/colors';
 import { useAppSelector } from '../hooks';
+import { getColorMode } from '../utils/getters';
 
 declare module '@mui/material/styles' {
     interface Theme {
@@ -19,7 +20,7 @@ declare module '@mui/material/styles' {
 }
 
 export function MyThemeProvider({ children }: { children: React.ReactNode }) {
-    const colorMode = useAppSelector((state) => state.application.preferences.colorMode);
+    const colorMode = useAppSelector(getColorMode);
     const theme = useMemo(
         () =>
             createTheme({

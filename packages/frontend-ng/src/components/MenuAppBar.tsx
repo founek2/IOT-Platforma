@@ -21,6 +21,7 @@ import { useAppSelector } from '../hooks';
 import { isLoggedIn } from '../utils/getters';
 import { UserMenu } from './menuAppBar/UserMenu';
 import { SideMenu } from './menuAppBar/SideMenu';
+import { Link } from 'react-router-dom';
 
 export function MenuAppBar() {
     const theme = useTheme();
@@ -56,9 +57,11 @@ export function MenuAppBar() {
                         >
                             <MenuIcon />
                         </IconButton>
+
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            {isDesktop ? 'IoT Domu' : 'Domu'}
+                            <Link to="/devices">{isDesktop ? 'IoT Domu' : 'Domu'}</Link>
                         </Typography>
+
                         {isUserLoggedIn ? (
                             <UserMenu />
                         ) : (

@@ -4,15 +4,15 @@ import { Button, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material'
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { authorizationActions } from '../../store/slices/application/authorizationActions';
-import { preferencesActions } from '../../store/slices/application/preferencesSlice';
-import { getCurrentUserName } from '../../utils/getters';
+import { preferencesActions } from '../../store/slices/preferences/setting';
+import { getColorMode, getCurrentUserName } from '../../utils/getters';
 
 export function UserMenu() {
     const userName = useAppSelector(getCurrentUserName);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const dispatch = useAppDispatch();
     const open = Boolean(anchorEl);
-    const colorMode = useAppSelector((state) => state.application.preferences.colorMode);
+    const colorMode = useAppSelector(getColorMode);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);

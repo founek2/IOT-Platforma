@@ -35,6 +35,7 @@ const config = {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         fallback: {
             stream: require.resolve('stream-browserify'),
+            process: require.resolve('process'),
         },
         plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
     },
@@ -66,13 +67,16 @@ const config = {
                 test: /\.svg$/,
                 use: ['@svgr/webpack'],
             },
+            {
+                test: /\.m?js$/,
+            },
         ],
     },
     devtool: sourceMapEnv ? sourceMapEnv : isEnvProduction ? undefined : 'inline-source-map',
     // devtool: 'source-map',
     plugins: [
         !isEnvProduction && new ReactRefreshWebpackPlugin(),
-        new ForkTsCheckerWebpackPlugin(),
+        // new ForkTsCheckerWebpackPlugin(),
         new CopyPlugin({
             patterns: [
                 { from: path.join(__dirname, 'public/assets'), to: 'assets' },
@@ -99,6 +103,7 @@ const config = {
             filename: 'assets/css/[name].[contenthash:8].css',
             chunkFilename: 'assets/css/[name].[contenthash:8].chunk.css',
         }),
+        new webpack.EnvironmentPlugin({ ...process.env }),
         new webpack.ProvidePlugin({
             process: 'process/browser',
         }),
