@@ -1,8 +1,9 @@
+import { logger } from 'common/src/logger/index';
 import type { Identifier, XYCoord } from 'dnd-core';
-import { Box, Grid, Paper, TextField } from '@mui/material';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
 
 interface DragItem {
     id: string;
@@ -13,19 +14,14 @@ const ItemTypes = {
     CARD: 'CARD',
 };
 
-export function Draggable({
-    id,
-    index,
-    onMove,
-    render,
-    type,
-}: {
+export interface DraggableComponentProps {
     id: string;
     index: number;
     onMove: (dragId: string, hoverId: string) => void;
     render: (isDraggin: boolean, ref: React.RefObject<HTMLDivElement>) => JSX.Element;
     type: string;
-}) {
+}
+export function DraggableComponent({ id, index, onMove, render, type }: DraggableComponentProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
         accept: type,
@@ -95,4 +91,35 @@ export function Draggable({
 
     drag(drop(ref));
     return render(isDragging, ref);
+}
+
+export function Draggable({ dragDisabled, render, ...props }: DraggableComponentProps & { dragDisabled?: boolean }) {
+    if (dragDisabled) return render(false, { current: null });
+
+    return <DraggableComponent {...props} render={render} />;
+}
+
+const checkIfTouchScreen = () => matchMedia('(hover: none), (pointer: coarse)').matches;
+
+export function DraggableProvider({ children }: { children: React.ReactElement | React.ReactElement[] }) {
+    const [isTouchScreen, setIsTouchScreen] = React.useState(checkIfTouchScreen());
+    React.useEffect(() => {
+        function handleResize() {
+            setIsTouchScreen(checkIfTouchScreen());
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    if (isTouchScreen) {
+        logger.info('Using TouchBackend');
+        return <DndProvider backend={TouchBackend}>{children}</DndProvider>;
+    }
+
+    logger.info('Using HTML5Backend');
+    return <DndProvider backend={HTML5Backend}>{children}</DndProvider>;
 }

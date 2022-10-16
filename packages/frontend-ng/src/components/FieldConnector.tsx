@@ -1,16 +1,15 @@
-import { SxProps, TextField, Theme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import fieldDescriptors from 'common/src/fieldDescriptors';
 import { logger } from 'common/src/logger';
+import chainHandler from 'common/src/utils/chainHandler';
+import getInPath from 'common/src/utils/getInPath';
+import { getFieldVal, getFormData, getRegisteredField } from 'common/src/utils/getters';
 import { onEnterRun } from 'common/src/utils/onEnter';
 import { isRequired } from 'common/src/validations';
-import { is } from 'ramda';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { formsDataActions as formsActions } from '../store/slices/formDataActions';
-import chainHandler from 'common/src/utils/chainHandler';
-import { getFieldDescriptor, getFieldVal, getFormData, getRegisteredField } from 'common/src/utils/getters';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import fieldDescriptors from 'common/src/fieldDescriptors';
-import getInPath from 'common/src/utils/getInPath';
+import { formsDataActions as formsActions } from '../store/slices/formDataActions';
 
 const { registerField, unregisterField, setFormField, validateField, validateForm, updateRegisteredField } =
     formsActions;
@@ -121,7 +120,7 @@ function FieldConnector({
         const required = isRequired(descriptor, formData, deepPath); // check when condition
         const finalLabel = label ? label : descriptor.label;
 
-        const Component = is(String, component) ? Components[component] : component;
+        const Component = typeof component === 'string' ? Components[component] : component;
 
         return (
             <Component

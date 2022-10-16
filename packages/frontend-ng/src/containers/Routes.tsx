@@ -4,7 +4,7 @@ import { useAppSelector } from '../hooks';
 import { Authorization } from '../Pages/Authorization';
 import { HomePage } from '../Pages/Home';
 import { privileges } from '../services/privileges';
-import { getCurrentGroups } from '../utils/getters';
+import { getCurrentGroups } from '../selectors/getters';
 
 export default function MyRoutes() {
     const userGroups = useAppSelector(getCurrentGroups);

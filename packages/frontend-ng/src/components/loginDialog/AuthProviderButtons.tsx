@@ -1,4 +1,5 @@
-import { Box, Container, IconButton, Paper } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
 import React from 'react';
 import { AuthProvider } from '../../services/signIn';
 

@@ -1,15 +1,18 @@
 import React from 'react';
-import { Box, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { useAppSelector } from '../../hooks';
-import { Device, deviceSelectors } from '../../store/slices/application/devicesSlice';
-import { getDevicesById, getThing } from '../../utils/getters';
-import { Thing } from '../../store/slices/application/thingsSlice';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/material/styles/useTheme';
+import { useAppSelector } from '../../../hooks';
+import { Device, deviceSelectors } from '../../../store/slices/application/devicesSlice';
+import { getDevicesById, getThing } from '../../../selectors/getters';
+import { Thing } from '../../../store/slices/application/thingsSlice';
 import { ComponentType, IThingPropertyBase } from 'common/src/models/interface/thing';
-import { SimpleSensor } from './roomWidget/SimpleSensor';
-import { WithRequired } from '../../types';
+import { SimpleSensor } from '../roomWidget/SimpleSensor';
+import { WithRequired } from '../../../types';
 import { Link } from 'react-router-dom';
-import { SxProps } from '@mui/material';
-import { Theme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 interface SensorBadgesProps {
     thingId: Thing['_id'];
@@ -36,8 +39,9 @@ function SensorBadges({ thingId }: SensorBadgesProps) {
 interface RoomWidgetProps {
     deviceIDs: Array<Device['_id']>;
     sx?: SxProps<Theme>;
+    className?: string;
 }
-const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({ deviceIDs, sx }, ref) {
+const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({ deviceIDs, sx, className }, ref) {
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const devices = useAppSelector(getDevicesById(deviceIDs));
@@ -55,6 +59,7 @@ const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({
         <Paper
             elevation={3}
             ref={ref}
+            className={className}
             sx={[
                 (theme) => ({
                     padding: 3,

@@ -1,4 +1,4 @@
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { SnackbarProvider } from 'notistack';
 import React, { Suspense } from 'react';
 import { Provider } from 'react-redux';

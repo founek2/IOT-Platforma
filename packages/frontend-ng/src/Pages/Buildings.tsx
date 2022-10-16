@@ -1,4 +1,5 @@
-import { Grid, MenuItem } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import Grid from '@mui/material/Grid';
 import { logger } from 'common/src/logger';
 import React, { useCallback, useState } from 'react';
 import { DndProvider } from 'react-dnd';
@@ -11,8 +12,10 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { useDevicesQuery } from '../services/devices';
 import { locationPreferencesReducerActions } from '../store/slices/preferences/locationSlice';
 import { byPreferences } from '../utils/sort';
-import { BuildingWidget } from './devices/BuildingWidget';
-import { Buildings, buildingsCachedSelector } from './devices/devicesSelector';
+import { BuildingWidget } from './buildings/BuildingWidget';
+import { Buildings, buildingsCachedSelector } from '../selectors/devicesSelector';
+import clsx from 'clsx';
+import { not } from '../utils/ramda';
 
 interface DevicesContentProps {
     buildingsData: Buildings;
@@ -23,40 +26,31 @@ function DevicesContent({ buildingsData, editMode, onMove }: DevicesContentProps
     const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
 
     return (
-        <>
+        <Grid container justifyContent="center">
             {buildingsData.sort(byPreferences(locationPreferences)).map((building, idx) => {
-                if (editMode === 'buildings')
-                    return (
-                        <Draggable
-                            id={building.id}
-                            key={building.id}
-                            index={idx}
-                            onMove={onMove}
-                            type="building"
-                            render={(isDragable: boolean, ref) => (
-                                <BuildingWidget
-                                    building={building}
-                                    isDragable={isDragable}
-                                    ref={ref}
-                                    editMode={editMode}
-                                    onMove={onMove}
-                                    isSingle={buildingsData.length === 1}
-                                />
-                            )}
-                        />
-                    );
-
                 return (
-                    <BuildingWidget
+                    <Draggable
+                        id={building.id}
                         key={building.id}
-                        building={building}
-                        editMode={editMode}
+                        index={idx}
                         onMove={onMove}
-                        isSingle={buildingsData.length === 1}
+                        type="building"
+                        dragDisabled={not(editMode === 'buildings')}
+                        render={(isDragable: boolean, ref) => (
+                            <BuildingWidget
+                                building={building}
+                                isDragable={isDragable}
+                                ref={ref}
+                                editMode={editMode}
+                                onMove={onMove}
+                                isSingle={buildingsData.length === 1}
+                                className={clsx({ floating: editMode === 'buildings' })}
+                            />
+                        )}
                     />
                 );
             })}
-        </>
+        </Grid>
     );
 }
 
@@ -126,9 +120,7 @@ export default function Devices() {
             }
             render={({ onContextMenu, menuList }) => (
                 <Background onContextMenu={onContextMenu}>
-                    <Grid container justifyContent="center">
-                        <DevicesContent buildingsData={data} editMode={editMode} onMove={onMove} />
-                    </Grid>
+                    <DevicesContent buildingsData={data} editMode={editMode} onMove={onMove} />
                     {menuList}
                 </Background>
             )}

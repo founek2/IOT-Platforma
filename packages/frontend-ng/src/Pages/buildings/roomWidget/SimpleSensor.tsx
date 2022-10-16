@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import { IThingProperty } from 'common/src/models/interface/thing';
 import React from 'react';
 import { SensorIcons } from '../../../components/sensorIcons';

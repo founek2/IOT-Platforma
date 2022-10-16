@@ -1,11 +1,15 @@
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { Button, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { authorizationActions } from '../../store/slices/application/authorizationActions';
 import { preferencesActions } from '../../store/slices/preferences/setting';
-import { getColorMode, getCurrentUserName } from '../../utils/getters';
+import { getColorMode, getCurrentUserName } from '../../selectors/getters';
 
 export function UserMenu() {
     const userName = useAppSelector(getCurrentUserName);

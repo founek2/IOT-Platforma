@@ -1,5 +1,7 @@
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import type { Identifier, XYCoord } from 'dnd-core';
-import { Box, Grid, Paper, TextField } from '@mui/material';
 import React, { useCallback, useRef, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';

@@ -30,7 +30,6 @@ export const locationPreferencesSlice = createSlice({
             });
         },
         swapOrderFor: (state, action: PayloadAction<[string, string]>) => {
-            console.log('payload', action.payload);
             const { order } = state.entities[action.payload[0]]!;
             state.entities[action.payload[0]]!.order = state.entities[action.payload[1]]!.order;
             state.entities[action.payload[1]]!.order = order;

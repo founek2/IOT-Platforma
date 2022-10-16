@@ -1,22 +1,21 @@
-import {
-    Divider,
-    Box,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    ListSubheader,
-    SwipeableDrawer,
-} from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+
+import uiMessages from 'common/src/localization/uiMessages';
 import { RouteMenu } from 'framework-ui/src/privileges';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
+import { getCurrentGroups } from '../../selectors/getters';
 import { privileges } from '../../services/privileges';
-import { getCurrentGroups } from '../../utils/getters';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import uiMessages from 'common/src/localization/uiMessages';
 
 function externalRedirect(path: string) {
     return (e: any) => {

@@ -1,10 +1,14 @@
-import { Box, Grid, SxProps, Theme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import clsx from 'clsx';
 import React from 'react';
 import { Draggable } from '../../components/Draggable';
 import { useAppSelector } from '../../hooks';
 import { byPreferences } from '../../utils/sort';
 import { LocationTypography } from './LocationTypography';
-import RoomWidget from './RoomWidget';
+import RoomWidget from './buildingWidget/RoomWidget';
+import { not } from '../../utils/ramda';
 
 const roomsContainerStyle: SxProps<Theme> = (theme) => ({
     display: 'grid',
@@ -45,36 +49,44 @@ interface BuildingWidgetProps {
     editMode: 'rooms' | 'buildings' | false;
     isSingle: boolean;
     onMove: (dragId: string, hoverId: string) => any;
+    className?: string;
 }
 export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetProps>(
-    ({ isDragable, building, editMode, isSingle, onMove }, ref) => {
+    ({ isDragable, building, editMode, isSingle, onMove, className }, ref) => {
         const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
 
         return (
-            <Grid item xs={12} md={10} lg={8} xl={7} sx={{ opacity: isDragable ? 0.4 : 1, paddingBottom: 2 }} ref={ref}>
+            <Grid
+                item
+                xs={12}
+                md={10}
+                lg={8}
+                xl={7}
+                sx={{ opacity: isDragable ? 0.4 : 1, paddingBottom: 2 }}
+                className={className}
+                ref={ref}
+            >
                 <LocationTypography location={{ building: building.name }} showRootSlash={isSingle} />
                 <Box sx={roomsContainerStyle}>
-                    {building.rooms.sort(byPreferences(locationPreferences)).map((room, idx) => {
-                        if (editMode === 'rooms')
-                            return (
-                                <Draggable
-                                    id={room.id}
-                                    key={room.id}
-                                    index={idx}
-                                    render={(isDragable: boolean, ref) => (
-                                        <RoomWidget
-                                            ref={ref}
-                                            deviceIDs={room.deviceIDs}
-                                            link={room.id}
-                                            sx={{ opacity: isDragable ? 0.4 : 1 }}
-                                        />
-                                    )}
-                                    onMove={onMove}
-                                    type={building.name}
+                    {building.rooms.sort(byPreferences(locationPreferences)).map((room, idx) => (
+                        <Draggable
+                            id={room.id}
+                            key={room.id}
+                            index={idx}
+                            onMove={onMove}
+                            type={building.name}
+                            dragDisabled={not(editMode === 'rooms')}
+                            render={(isDragable: boolean, ref) => (
+                                <RoomWidget
+                                    ref={ref}
+                                    deviceIDs={room.deviceIDs}
+                                    link={`/building/${building.name}/room/${room.name}`}
+                                    sx={{ opacity: isDragable ? 0.4 : 1 }}
+                                    className={clsx({ floating: editMode === 'rooms' })}
                                 />
-                            );
-                        return <RoomWidget key={room.id} deviceIDs={room.deviceIDs} link={room.id} />;
-                    })}
+                            )}
+                        />
+                    ))}
                 </Box>
             </Grid>
         );

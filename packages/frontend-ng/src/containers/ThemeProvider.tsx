@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
-import { createTheme, ThemeProvider } from '@mui/material';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+import createTheme from '@mui/material/styles/createTheme';
 import { orange } from '@mui/material/colors';
 import { useAppSelector } from '../hooks';
-import { getColorMode } from '../utils/getters';
+import { getColorMode } from '../selectors/getters';
 
 declare module '@mui/material/styles' {
     interface Theme {

@@ -143,3 +143,15 @@ a {
 .pure-material-button-contained:disabled::after {
     opacity: 0;
 }
+
+/* FLOATING */
+@keyframes floater {
+    0%{transform: translateY(0);transition: ease 0.5s;}
+    50%{transform: translateY(4px);transition: ease 0.5s;}
+}
+.floating{
+    animation: floater 1.5s infinite;
+    transition: ease 0.5s;
+    border: 1px solid black;
+}
+  

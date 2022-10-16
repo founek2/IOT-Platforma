@@ -1,4 +1,6 @@
-import { Box, CircularProgress, Grid, useTheme } from '@mui/material';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -6,13 +8,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { AuthType } from 'common/src/constants';
 import { getFieldVal } from 'common/src/utils/getters';
-import { head } from 'ramda';
 import * as React from 'react';
 import { useAppSelector } from '../hooks';
 import { useForm } from '../hooks/useForm';
 import { useGetAuthProvidersQuery, useLazyGetAuthTypesQuery, useSignInMutation } from '../services/signIn';
+import { head } from '../utils/ramda';
 import FieldConnector from './FieldConnector';
 import AuthProviderButtons from './loginDialog/AuthProviderButtons';
+import useTheme from '@mui/material/styles/useTheme';
 
 interface LoginForm {
     userName: string;

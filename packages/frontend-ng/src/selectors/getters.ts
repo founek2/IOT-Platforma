@@ -2,7 +2,9 @@ import { createSelector, Dictionary, EntityId } from '@reduxjs/toolkit';
 import { IThing } from 'common/src/models/interface/thing';
 import { RootState } from '../store';
 import { Device } from '../store/slices/application/devicesSlice';
+import { thingSelectors } from '../store/slices/application/thingsSlice';
 import { devicePreferencesSelectors } from '../store/slices/preferences/deviceSlice';
+import { buildingsCachedSelector } from './devicesSelector';
 
 export const getColorMode = (state: RootState) => state.preferences.setting.colorMode;
 
@@ -39,3 +41,11 @@ export const getDevicesById = (deviceIDs: String[]) => {
 };
 
 export const getThing = (thingId: IThing['_id']) => createSelector(getThings, (state) => state.entities[thingId]);
+
+export const getRoomLocation = (buildingName: string, roomName: string) =>
+    createSelector(buildingsCachedSelector, (buildings) => {
+        const buildingObj = buildings.find((b) => b.name === buildingName);
+        if (!buildingObj) return undefined;
+
+        return buildingObj.rooms.find((r) => r.name === roomName);
+    });

@@ -6,13 +6,15 @@ import { AllowedRoutes, PrivilegesContainer } from 'framework-ui/src/privileges'
 import { lazy } from 'react';
 
 import { allowedGroups } from 'common/src/constants/privileges';
-import { append } from 'ramda';
+import { append } from '../utils/ramda';
 
 const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement'));
 
 const DeviceManagement = lazy(() => import(/* webpackChunkName: 'DeviceManagement' */ '../Pages/DeviceManagement'));
 
-const DevicesLazy = lazy(() => import(/* webpackChunkName: 'Devices' */ '../Pages/Devices'));
+const LocationsLazy = lazy(() => import(/* webpackChunkName: 'Locations' */ '../Pages/Buildings'));
+
+const RoomsLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room'));
 
 // const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'EditNotifyForm' */ '../Pages/EditNotifyForm'));
 
@@ -20,17 +22,16 @@ const DevicesLazy = lazy(() => import(/* webpackChunkName: 'Devices' */ '../Page
 
 const userRoutes = [
     {
-        // path: ['/devices/:building/:room', '/devices/:building', '/devices'],
-        path: '/devices/:building/:room',
-        Component: DevicesLazy,
+        path: '/building/:building/room/:room',
+        Component: RoomsLazy,
     },
     {
-        path: '/devices/:building',
-        Component: DevicesLazy,
+        path: '/building/:building',
+        Component: LocationsLazy,
     },
     {
-        path: '/devices',
-        Component: DevicesLazy,
+        path: '/building',
+        Component: LocationsLazy,
         name: 'deviceControl',
         Icon: CloudIcon,
     },

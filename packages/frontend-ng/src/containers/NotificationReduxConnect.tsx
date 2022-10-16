@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SnackbarKey, useSnackbar } from 'notistack';
 import { notificationActions } from '../store/slices/notificationSlice';
-import { getNotifications } from '../utils/getters';
+import { getNotifications } from '../selectors/getters';
 
 export function NotificationReduxConnect() {
     const [displayed, setDisplayed] = useState<SnackbarKey[]>([]);

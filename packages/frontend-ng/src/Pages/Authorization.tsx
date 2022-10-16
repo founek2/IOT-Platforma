@@ -1,7 +1,8 @@
-import { CircularProgress, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 import { logger } from 'common/src/logger';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSignInOauthMutation } from '../services/signIn';
 import { buildRedirectUri } from '../utils/redirectUri';
 
@@ -18,9 +19,9 @@ export function Authorization() {
         signIn({ code, redirectUri: buildRedirectUri() })
             .unwrap()
             .then(() => {
-                navigate('/devices');
+                navigate('/building');
             })
-            .catch((err) => {
+            .catch((err: any) => {
                 logger.error('failed signIn by oauth code', err);
                 setMessage('Při přihlašování nastala chyba, akci opakujte');
                 navigate({ search: '' }); // clear code
