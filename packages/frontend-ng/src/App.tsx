@@ -1,6 +1,7 @@
 import CircularProgress from '@mui/material/CircularProgress';
 import { SnackbarProvider } from 'notistack';
-import React, { Suspense } from 'react';
+import { string } from 'prop-types';
+import React, { Suspense, useCallback, useState } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Router, Routes } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -8,9 +9,13 @@ import { MenuAppBar } from './components/MenuAppBar';
 import { NotificationReduxConnect } from './containers/NotificationReduxConnect';
 import MyRoutes from './containers/Routes';
 import { MyThemeProvider } from './containers/ThemeProvider';
+import { AppBarContext, AppBarContextType, defaultAppBarCtx } from './hooks/useAppBarContext';
 import { persistor, store } from './store';
 
 function App() {
+    const [appBarData, setAppBarData] = useState<AppBarContextType['data']>(defaultAppBarCtx.data);
+    const setData = useCallback((text: string, Icon: JSX.Element) => setAppBarData([text, Icon]), [setAppBarData]);
+    const resetData = useCallback(() => setAppBarData(defaultAppBarCtx.data), [setAppBarData]);
     return (
         <Provider store={store}>
             <PersistGate persistor={persistor}>
@@ -18,10 +23,14 @@ function App() {
                     <SnackbarProvider maxSnack={3}>
                         <NotificationReduxConnect />
                         <BrowserRouter>
-                            <MenuAppBar />
-                            <Suspense fallback={<CircularProgress />}>
-                                <MyRoutes />
-                            </Suspense>
+                            <AppBarContext.Provider
+                                value={{ data: appBarData, setAppHeader: setData, resetAppHeader: resetData }}
+                            >
+                                <MenuAppBar />
+                                <Suspense fallback={<CircularProgress />}>
+                                    <MyRoutes />
+                                </Suspense>
+                            </AppBarContext.Provider>
                         </BrowserRouter>
                     </SnackbarProvider>
                 </MyThemeProvider>

@@ -7,14 +7,16 @@ interface ContextMenuProps {
         menuList: JSX.Element;
         onContextMenu: (event: React.MouseEvent | React.TouchEvent) => any;
     }) => JSX.Element;
+    disabled?: boolean;
 }
-export function ContextMenu({ renderMenuItems, render }: ContextMenuProps) {
+export function ContextMenu({ renderMenuItems, render, disabled }: ContextMenuProps) {
     const [contextMenu, setContextMenu] = React.useState<{
         mouseX: number;
         mouseY: number;
     } | null>(null);
 
     const handleContextMenu = (event: React.MouseEvent | React.TouchEvent) => {
+        if (disabled) return;
         if (event.cancelable) event.preventDefault();
 
         const eventTouch = event as React.TouchEvent;

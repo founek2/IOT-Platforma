@@ -6,11 +6,11 @@
         "outDir": "dist",
         "lib": ["dom", "dom.iterable", "esnext"],
         "sourceMap": true,
-        "moduleResolution": "Node16",
+        "moduleResolution": "node",
         "allowJs": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "module": "Node16",
+        "module": "NodeNext",
         "jsx": "react"
         // "allowSyntheticDefaultImports": true,
         // "noFallthroughCasesInSwitch": true,

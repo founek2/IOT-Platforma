@@ -9,15 +9,13 @@ export function Background({
     onClick,
 }: {
     children?: React.ReactNode;
-    onContextMenu?: (e: React.MouseEvent | React.TouchEvent) => any;
+    onContextMenu?: (e: React.MouseEvent) => any;
     onClick?: (event: React.MouseEvent) => any;
 }) {
-    const backspaceLongPress = useLongPress(onContextMenu, undefined);
-
     return (
         <Box
             sx={(theme) => ({
-                backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : 'rgb(5 0 0 / 70%)',
+                backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : 'rgba(0, 0, 0, 0.7)',
                 minHeight: 'calc(100% - 64px)',
                 paddingBottom: '64px',
                 display: 'flex',
@@ -29,12 +27,7 @@ export function Background({
             })}
         >
             <Container />
-            <div
-                style={{ minHeight: '100%', flex: 1 }}
-                onContextMenu={onContextMenu}
-                onClick={onClick}
-                {...backspaceLongPress}
-            >
+            <div style={{ minHeight: '100%', flex: 1 }} onContextMenu={onContextMenu} onClick={onClick}>
                 {children}
             </div>
         </Box>

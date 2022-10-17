@@ -46,13 +46,14 @@ interface BuildingWidgetProps {
             deviceIDs: string[];
         }[];
     };
-    editMode: 'rooms' | 'buildings' | false;
+    editMode?: 'rooms' | 'buildings';
+    editEnabled: boolean;
     isSingle: boolean;
     onMove: (dragId: string, hoverId: string) => any;
     className?: string;
 }
 export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetProps>(
-    ({ isDragable, building, editMode, isSingle, onMove, className }, ref) => {
+    ({ isDragable, building, editMode, isSingle, onMove, className, editEnabled }, ref) => {
         const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
 
         return (
@@ -75,14 +76,14 @@ export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetPro
                             index={idx}
                             onMove={onMove}
                             type={building.name}
-                            dragDisabled={not(editMode === 'rooms')}
+                            dragDisabled={!editEnabled || editMode !== 'rooms'}
                             render={(isDragable: boolean, ref) => (
                                 <RoomWidget
                                     ref={ref}
                                     deviceIDs={room.deviceIDs}
                                     link={`/building/${building.name}/room/${room.name}`}
                                     sx={{ opacity: isDragable ? 0.4 : 1 }}
-                                    className={clsx({ floating: editMode === 'rooms' })}
+                                    className={clsx({ floating: editEnabled && editMode === 'rooms' })}
                                 />
                             )}
                         />

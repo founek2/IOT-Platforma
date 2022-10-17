@@ -14,9 +14,13 @@ import { isLoggedIn } from '../selectors/getters';
 import LoginDialog from './LoginDialog';
 import { SideMenu } from './menuAppBar/SideMenu';
 import { UserMenu } from './menuAppBar/UserMenu';
+import { useAppBarContext } from '../hooks/useAppBarContext';
 
 export function MenuAppBar() {
     const theme = useTheme();
+    const {
+        data: [headerText, RightIcon],
+    } = useAppBarContext();
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
     const [isMenuOpen, setMenuOpen] = React.useState(false);
     const [isLoginOpen, setLoginOpen] = React.useState(false);
@@ -51,10 +55,12 @@ export function MenuAppBar() {
                         </IconButton>
 
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            <Link to="/building">{isDesktop ? 'IoT Domu' : 'Domu'}</Link>
+                            {headerText ? headerText : <Link to="/building">{isDesktop ? 'IoT Domu' : 'Domu'}</Link>}
                         </Typography>
 
-                        {isUserLoggedIn ? (
+                        {RightIcon ? (
+                            RightIcon
+                        ) : isUserLoggedIn ? (
                             <UserMenu />
                         ) : (
                             <Button onClick={() => setLoginOpen(true)} color="inherit">

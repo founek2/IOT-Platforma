@@ -55,16 +55,16 @@ export function DraggableComponent({ id, index, onMove, render, type }: Draggabl
             const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
 
             // Only perform the move when the mouse has crossed half of the items height
-            // When dragging downwards, only move when the cursor is below 50%
-            // When dragging upwards, only move when the cursor is above 50%
+            // When dragging downwards, only move when the cursor is below 25%
+            // When dragging upwards, only move when the cursor is above 25%
 
             // Dragging downwards
-            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY / 1.5) {
                 return;
             }
 
             // Dragging upwards
-            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY * 1.5) {
                 return;
             }
 
@@ -102,18 +102,7 @@ export function Draggable({ dragDisabled, render, ...props }: DraggableComponent
 const checkIfTouchScreen = () => matchMedia('(hover: none), (pointer: coarse)').matches;
 
 export function DraggableProvider({ children }: { children: React.ReactElement | React.ReactElement[] }) {
-    const [isTouchScreen, setIsTouchScreen] = React.useState(checkIfTouchScreen());
-    React.useEffect(() => {
-        function handleResize() {
-            setIsTouchScreen(checkIfTouchScreen());
-        }
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    const isTouchScreen = checkIfTouchScreen();
 
     if (isTouchScreen) {
         logger.info('Using TouchBackend');

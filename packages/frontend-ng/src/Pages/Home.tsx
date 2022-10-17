@@ -1,10 +1,10 @@
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import type { Identifier, XYCoord } from 'dnd-core';
 import React, { useCallback, useRef, useState } from 'react';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDrag, useDrop } from 'react-dnd';
+import { DraggableProvider } from '../components/Draggable';
 
 type Item = { id: number; text: string };
 const defaultCards = [
@@ -122,7 +122,7 @@ export function HomePage() {
     );
 
     return (
-        <DndProvider backend={HTML5Backend}>
+        <DraggableProvider>
             <Grid container spacing={{ xs: 2 }}>
                 {cards.map((card, idx) => (
                     <Grid item xs={2} key={card.id}>
@@ -135,6 +135,6 @@ export function HomePage() {
                     </Grid>
                 ))}
             </Grid>
-        </DndProvider>
+        </DraggableProvider>
     );
 }

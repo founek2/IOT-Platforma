@@ -1,5 +1,4 @@
-import { logger } from 'common/src/logger';
-import { persistor } from '../..';
+import { api } from '../../../services/api';
 import { AppThunk } from '../../../types';
 import { authorizationReducerActions } from './authorizationSlice';
 
@@ -11,6 +10,7 @@ export const authorizationActions = {
     signOut(): AppThunk {
         return function (dispatch, getState) {
             dispatch({ type: ACTION_RESET_STORE });
+            dispatch(api.util.resetApiState());
         };
     },
 };

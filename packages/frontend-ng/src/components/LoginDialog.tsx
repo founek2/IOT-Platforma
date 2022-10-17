@@ -16,6 +16,7 @@ import { head } from '../utils/ramda';
 import FieldConnector from './FieldConnector';
 import AuthProviderButtons from './loginDialog/AuthProviderButtons';
 import useTheme from '@mui/material/styles/useTheme';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginForm {
     userName: string;
@@ -35,6 +36,7 @@ interface LoginDialogProps {
 }
 export default function LoginDialog({ onClose, open }: LoginDialogProps) {
     const theme = useTheme();
+    const navigate = useNavigate();
     const { data: dataProviders } = useGetAuthProvidersQuery();
     const { validateField, validateForm, setFieldValue, resetForm } = useForm<LoginForm>('LOGIN');
     const [getAuthTypes, { isLoading: isLoadingAuthTypes, data: authTypesData, error, isError }] =
@@ -50,7 +52,13 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
     function handleSignIn() {
         const { valid, data } = validateForm();
         if (valid) {
-            signIn(data).unwrap().then(handleClose).then(resetForm);
+            signIn(data)
+                .unwrap()
+                .then(() => {
+                    handleClose();
+                    navigate('/building');
+                })
+                .then(resetForm);
         }
     }
     function handleClose() {

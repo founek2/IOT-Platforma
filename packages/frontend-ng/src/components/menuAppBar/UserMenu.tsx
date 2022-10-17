@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { authorizationActions } from '../../store/slices/application/authorizationActions';
 import { preferencesActions } from '../../store/slices/preferences/setting';
 import { getColorMode, getCurrentUserName } from '../../selectors/getters';
+import { useNavigate } from 'react-router-dom';
 
 export function UserMenu() {
     const userName = useAppSelector(getCurrentUserName);
@@ -17,6 +18,7 @@ export function UserMenu() {
     const dispatch = useAppDispatch();
     const open = Boolean(anchorEl);
     const colorMode = useAppSelector(getColorMode);
+    const navigate = useNavigate();
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -30,6 +32,10 @@ export function UserMenu() {
     };
     const handleColorModeChange = () => {
         dispatch(preferencesActions.setColorMode(colorMode === 'light' ? 'dark' : 'light'));
+        handleClose();
+    };
+    const handleEditMode = () => {
+        navigate({ search: '?edit=true' });
         handleClose();
     };
 
@@ -54,6 +60,7 @@ export function UserMenu() {
                 }}
             >
                 <MenuItem onClick={handleClose}>Účet</MenuItem>
+                <MenuItem onClick={handleEditMode}>Uspořádat</MenuItem>
                 <MenuItem onClick={handleColorModeChange}>
                     <Typography>{colorMode === 'light' ? 'Tmavý' : 'Světlý'}</Typography>
                     <ListItemIcon sx={{ justifyContent: 'flex-end' }}>
