@@ -19,15 +19,17 @@ Alternatively, you can download and extract the repo as a zip.
 wget https://github.com/founek2/IOT-Platforma-hosting/archive/refs/heads/master.zip
 unzip master.zip
 cd IOT-Platforma-hosting-master
+cp .env.example .env
 ```
 
-In the downloaded directory you'll find one important file:
+In the downloaded directory you'll find two important file:
 
--   docker-compose.yml - installs and orchestrates networking between your IoT Platform server, Mongo database and RabbitMQ (MQTT broker). It comes with some defaults that are ready to go, although you're free to tweak the configuration to match your needs. All configuration options (enviroment variables) can be found in [documentation here](https://docs.iotplatforma.cloud/#/quickstart?id=enviroment-promněné). Just edit them in docker-compose.yml in environment section, where you can also find default values ex. DATABASE_URI and NODE_ENV.
+-   docker-compose.yml - installs and orchestrates networking between your IoT Platform server, Mongo database and RabbitMQ (MQTT broker). It comes with some defaults that are ready to go, although you're free to tweak the configuration to match your needs
+-   .env.example - contains example configuration (enviroment variables) and options can be found in [documentation here](https://docs.iotplatforma.cloud/#/quickstart?id=enviroment-promněné).
 
 ## 2. Start the server
 
-Once you are happy with configuration, you're ready to start up the server:
+Once you are happy with configuration in your custom `.env`, you're ready to start up the server:
 
 ```
 docker-compose up -d
@@ -35,6 +37,12 @@ docker-compose up -d
 
 When you run this command for the first time, it does the following:
 
-Creates a Mongo database for persisten data
+Creates a Mongo database for data, InfluxDB for time-series data, Node-red for visual programming, all microServices
 Starts the server on port 8050
-You can now navigate to http://{hostname}:8050 and see the login screen. First user, who will register will be given admin permissions.
+You can now open browser and see the login screen. First user, who will register will be given admin permissions. Services:
+
+-   [http://localhost](http://localhost) - platform
+-   [http://localhost:81](http://localhost:81) - NodeRed
+-   [http://localhost:81](http://localhost:82) - INFLUXDB_PORT
+-   [localhost:1883](http://localhost:1883) - MQTT
+-   [localhost:8883](http://localhost:8883) - MQTT over TLS
