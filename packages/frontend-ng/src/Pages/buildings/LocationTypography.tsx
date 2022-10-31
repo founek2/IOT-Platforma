@@ -1,4 +1,4 @@
-import Typography from '@mui/material/Typography';
+import { Breadcrumbs, Link as LinkMUI } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -11,17 +11,25 @@ interface LocationTypographyProps {
 }
 
 export function LocationTypography({ location, showRootSlash }: LocationTypographyProps) {
-    const linkToRoot = <Link to="/building">/</Link>;
-    const linkToBuilding = <Link to={`/building/${location.building}`}>{location?.building}</Link>;
-
     return (
-        <Typography sx={{ flex: '1 0 100%', textAlign: 'center' }} variant="h4">
-            {showRootSlash ? linkToRoot : null}
-            {linkToBuilding}
-
-            {location.room && '/'}
-            <wbr />
-            {location.room}
-        </Typography>
+        <Breadcrumbs
+            aria-label="breadcrumb"
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                fontSize: 24,
+            }}
+        >
+            <Link to={`/building`}>
+                <LinkMUI underline="hover" color="inherit">
+                    {location.building}
+                </LinkMUI>
+            </Link>
+            {location.room ? (
+                <LinkMUI underline="none" color="inherit">
+                    {location.room}
+                </LinkMUI>
+            ) : null}
+        </Breadcrumbs>
     );
 }

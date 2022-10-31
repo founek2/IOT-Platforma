@@ -17,7 +17,7 @@ import type { SxProps, Theme } from '@mui/material/styles';
 interface SensorBadgesProps {
     thingId: Thing['_id'];
 }
-function SensorBadges({ thingId }: SensorBadgesProps) {
+function createSensorBadges({ thingId }: SensorBadgesProps) {
     const badges: JSX.Element[] = [];
     const thing = useAppSelector(getThing(thingId));
     if (thing?.config.componentType !== ComponentType.sensor) return badges;
@@ -51,7 +51,7 @@ const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({
     let sensors: (JSX.Element | null)[] = [];
     devices.forEach((device) => {
         device.things.forEach((thingId) => {
-            const badges = SensorBadges({ thingId });
+            const badges = createSensorBadges({ thingId });
             sensors.push(...badges);
         });
     });
@@ -74,12 +74,12 @@ const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({
                 {location.room}
             </Typography>
             <Box
-                sx={(theme) => ({
+                sx={{
                     display: 'flex',
                     flexGrow: 1,
                     flexWrap: 'wrap',
                     justifyContent: 'space-around',
-                })}
+                }}
             >
                 {sensors.slice(0, sensorsLimit)}
             </Box>
