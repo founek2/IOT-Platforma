@@ -28,6 +28,8 @@ export const getCurrentGroups = (state: RootState) => state.application.authoriz
 
 export const getDevices = (state: RootState) => state.application.devices;
 
+export const getDevice = (id: Device['_id']) => (state: RootState) => state.application.devices.entities[id];
+
 export const getAllDevices = (state: RootState) =>
     state.application.devices.ids.map((id: EntityId) => state.application.devices.entities[id]!);
 

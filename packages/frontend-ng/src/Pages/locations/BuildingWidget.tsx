@@ -6,7 +6,7 @@ import React from 'react';
 import { Draggable } from '../../components/Draggable';
 import { useAppSelector } from '../../hooks';
 import { byPreferences } from '../../utils/sort';
-import { LocationTypography } from './LocationTypography';
+import { LocationTypography } from '../../components/LocationTypography';
 import RoomWidget from './buildingWidget/RoomWidget';
 import { not } from '../../utils/ramda';
 
@@ -81,7 +81,7 @@ export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetPro
                                 <RoomWidget
                                     ref={ref}
                                     deviceIDs={room.deviceIDs}
-                                    link={`/building/${building.name}/room/${room.name}`}
+                                    link={`${building.name}/room/${room.name}`}
                                     sx={{ opacity: isDragable ? 0.4 : 1 }}
                                     className={clsx({ floating: editEnabled && editMode === 'rooms' })}
                                 />

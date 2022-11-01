@@ -1,5 +1,6 @@
-import { mergeDeepRight, mergeRight, prop, uniqBy } from 'ramda';
+import { mergeDeepRight, prop, uniqBy } from 'ramda';
 import React from 'react';
+import { UiMessageKey } from '../localization/uiMessages';
 
 export interface AllowedGroup {
     text: string;
@@ -9,24 +10,24 @@ export interface AllowedGroup {
 export interface AllowedGroups {
     [groupName: string]: { allowedGroups: AllowedGroup[] };
 }
-
+type LazyComponent = React.LazyExoticComponent<({ title }: { title?: string }) => JSX.Element>;
 export interface Route {
     path: string;
-    Component?: React.LazyExoticComponent<() => JSX.Element>;
-    name?: string;
+    Component?: LazyComponent;
+    name?: UiMessageKey;
     Icon?: any;
 }
 
 export interface RouteWithComponent {
     path: string;
-    Component: React.LazyExoticComponent<() => JSX.Element>;
-    name?: string;
+    Component: LazyComponent;
+    name?: UiMessageKey;
     Icon?: React.ReactNode;
 }
 
 export interface RouteMenu {
     path: string;
-    name: string;
+    name: UiMessageKey;
     Icon: any;
 }
 

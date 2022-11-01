@@ -1,6 +1,6 @@
 import { messageFactory } from '.';
 
-const mainMenu = {
+const messages = {
     userManagement: 'Správce uživatelů',
     registration: 'Registrovat',
     deviceControl: 'Zařízení',
@@ -9,4 +9,5 @@ const mainMenu = {
     visualProgramming: 'Automatizace',
 };
 
-export default messageFactory(mainMenu);
+export type UiMessageKey = keyof typeof messages;
+export default messageFactory(messages);

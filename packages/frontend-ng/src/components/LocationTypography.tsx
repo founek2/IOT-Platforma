@@ -21,7 +21,7 @@ export function LocationTypography({ location, showRootSlash }: LocationTypograp
             }}
         >
             <Link to={`/building`}>
-                <LinkMUI underline="hover" color="inherit">
+                <LinkMUI underline="hover" color="inherit" component="span">
                     {location.building}
                 </LinkMUI>
             </Link>

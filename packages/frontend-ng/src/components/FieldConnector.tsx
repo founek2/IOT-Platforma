@@ -10,12 +10,14 @@ import { isRequired } from 'common/src/validations';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { formsDataActions as formsActions } from '../store/slices/formDataActions';
+import Autocomplete, { AutocompleteOption } from './fieldConnector/Autocomplete';
 
 const { registerField, unregisterField, setFormField, validateField, validateForm, updateRegisteredField } =
     formsActions;
 
 const Components = {
     TextField: TextField,
+    Autocomplete: Autocomplete,
     // PasswordField: PasswordField,
     // Select: Select,
     // DateTimePicker: DateTimePicker,
@@ -41,15 +43,17 @@ interface ComponentProps {
     autoFocus?: boolean;
     onKeyDown: React.EventHandler<any>;
     label: string;
+    sx: SxProps<Theme>;
 }
 
-interface FieldConnectorProps {
+type FieldConnectorProps<T extends componentKeys> = {
     deepPath: string;
     onBlur?: React.ChangeEventHandler;
     onFocus?: React.ChangeEventHandler;
     onEnter?: (e: React.KeyboardEvent) => void;
     onChange?: React.ChangeEventHandler<{ value: any }>;
-    component?: componentKeys | ((props: ComponentProps) => JSX.Element);
+    // component: //| ((props: ComponentProps) => JSX.Element);
+    component?: T | ((props: ComponentProps) => JSX.Element);
     fieldProps?: any;
     name?: string;
     autoFocus?: boolean;
@@ -57,7 +61,14 @@ interface FieldConnectorProps {
     label?: string;
     fullWidth?: boolean;
     variant?: 'filled' | 'outlined' | 'standard';
-}
+};
+type FieldConnectorAutocomplete = FieldConnectorProps<'Autocomplete'> & {
+    options: AutocompleteOption[];
+};
+
+type FieldConnectorTextfield = FieldConnectorProps<'TextField'> & {
+    // options?: undefined;
+};
 
 function FieldConnector({
     deepPath,
@@ -73,7 +84,8 @@ function FieldConnector({
     label,
     fullWidth,
     variant = 'standard',
-}: FieldConnectorProps) {
+    ...props
+}: FieldConnectorAutocomplete | FieldConnectorTextfield) {
     // registerField: formsDataActions.registerField,
     // unregisterField: formsDataActions.unregisterField,
     // updateRegisteredField: formsDataActions.updateRegisteredField,
@@ -122,11 +134,17 @@ function FieldConnector({
 
         const Component = typeof component === 'string' ? Components[component] : component;
 
+        let anotherProps = {};
+        if (component === 'Autocomplete') {
+            const autoProps = props as FieldConnectorAutocomplete;
+            anotherProps = { options: autoProps.options };
+        }
+
         return (
             <Component
                 id={deepPath}
                 onChange={onChangeHandler}
-                value={value || value === false ? value : ''}
+                value={typeof component === 'string' ? (value || value === false ? value : '') : value}
                 sx={sx}
                 error={!valid}
                 // required={required}
@@ -145,6 +163,7 @@ function FieldConnector({
                 fullWidth={fullWidth}
                 variant={variant}
                 {...fieldProps}
+                {...anotherProps}
             />
         );
     } else {

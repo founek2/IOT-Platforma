@@ -2,7 +2,7 @@ import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import CloudIcon from '@mui/icons-material/Cloud';
 import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
 import PeopleIcon from '@mui/icons-material/People';
-import { AllowedRoutes, PrivilegesContainer } from 'framework-ui/src/privileges';
+import { AllowedRoutes, PrivilegesContainer, Route, RouteMenu } from 'common/src/privileges';
 import { lazy } from 'react';
 
 import { allowedGroups } from 'common/src/constants/privileges';
@@ -10,20 +10,20 @@ import { append } from '../utils/ramda';
 
 const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement'));
 
-const DeviceManagement = lazy(() => import(/* webpackChunkName: 'DeviceManagement' */ '../Pages/DeviceManagement'));
+const DeviceManagementLazy = lazy(() => import(/* webpackChunkName: 'DeviceManagement' */ '../Pages/DeviceManagement'));
 
-const LocationsLazy = lazy(() => import(/* webpackChunkName: 'Locations' */ '../Pages/Buildings'));
+const LocationsLazy = lazy(() => import(/* webpackChunkName: 'Locations' */ '../Pages/Locations'));
 
-const RoomsLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room'));
+const RoomLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room'));
 
 // const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'EditNotifyForm' */ '../Pages/EditNotifyForm'));
 
 // const ProfileLazy = lazy(() => import(/* webpackChunkName: 'Profile' */ '../Pages/Profile'));
 
-const userRoutes = [
+const userRoutes: Route[] = [
     {
         path: '/building/:building/room/:room',
-        Component: RoomsLazy,
+        Component: RoomLazy,
     },
     {
         path: '/building/:building',
@@ -39,7 +39,13 @@ const userRoutes = [
     //     path: '/profile/*',
     //     Component: ProfileLazy,
     // },
-    { path: '/deviceManagement', Component: DeviceManagement, name: 'devices', Icon: DevicesOtherIcon },
+    { path: '/management/building', Component: LocationsLazy, name: 'devices', Icon: DevicesOtherIcon },
+    { path: '/management/building/:building', Component: LocationsLazy },
+    { path: '/management/building/:building/room/:room', Component: DeviceManagementLazy, name: 'devices' },
+    // {
+    //     path: '/management/building/:building/room/:room',
+    //     Component: RoomsLazy,
+    // },
     // { path: '/device/:deviceId/thing/:nodeId/notify', Component: EditNotifyFormLazy },
 ];
 const adminRoutes = append(

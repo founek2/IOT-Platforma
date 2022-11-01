@@ -1,5 +1,5 @@
 import DoneIcon from '@mui/icons-material/Done';
-import { IconButton } from '@mui/material';
+import { CircularProgress, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import clsx from 'clsx';
@@ -16,8 +16,8 @@ import { Buildings, buildingsCachedSelector } from '../selectors/devicesSelector
 import { useDevicesQuery } from '../services/devices';
 import { locationPreferencesReducerActions } from '../store/slices/preferences/locationSlice';
 import { byPreferences } from '../utils/sort';
-import { BuildingWidget } from './buildings/BuildingWidget';
-import { EditModeDialog } from './buildings/EditModeDialog';
+import { BuildingWidget } from './locations/BuildingWidget';
+import { EditModeDialog } from './locations/EditModeDialog';
 
 interface DevicesContentProps {
     buildingsData: Buildings;
@@ -58,14 +58,17 @@ function DevicesContent({ buildingsData, editMode, onMove, editEnabled }: Device
     );
 }
 
-type EditMode = false | 'rooms' | 'buildings';
 const HOUR_1 = 60 * 60 * 1000;
-export default function Devices() {
+
+interface DevicesProps {
+    title?: string;
+}
+export default function Locations({ title }: DevicesProps) {
     const dispatch = useAppDispatch();
     const { setAppHeader, resetAppHeader } = useAppBarContext();
     const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
-    const _ = useDevicesQuery(undefined, { pollingInterval: HOUR_1 });
-    const { isEditMode, enterEditMode, leaveEditMode } = useEditMode();
+    const { isLoading } = useDevicesQuery(undefined, { pollingInterval: HOUR_1 });
+    const { isEditMode, leaveEditMode } = useEditMode();
     const [editMode, setEditMode] = useState<'rooms' | 'buildings' | undefined>(undefined);
 
     const buildings = useAppSelector(buildingsCachedSelector);
@@ -121,6 +124,11 @@ export default function Devices() {
         else resetAppHeader();
     }, [isEditMode, leaveEditMode]);
 
+    useEffect(() => {
+        if (title) setAppHeader(title);
+        return () => resetAppHeader();
+    }, [title]);
+
     function handleSelectEditMode(mode: 'buildings' | 'rooms') {
         setEditMode(mode);
         prepareEditMode(mode);
@@ -128,42 +136,12 @@ export default function Devices() {
 
     const content = (
         <>
-            <ContextMenu
-                disabled={isEditMode && !!editMode}
-                renderMenuItems={(onClose) => [
-                    <MenuItem
-                        key={0}
-                        onClick={() => {
-                            onClose();
-                            enterEditMode();
-                            setEditMode('rooms');
-                        }}
-                    >
-                        Uspořádat místnosti
-                    </MenuItem>,
-                    <MenuItem
-                        key={1}
-                        onClick={() => {
-                            onClose();
-                            enterEditMode();
-                            setEditMode('buildings');
-                        }}
-                    >
-                        Uspořádat budovy
-                    </MenuItem>,
-                ]}
-                render={({ onContextMenu, menuList }) => (
-                    <Background onContextMenu={onContextMenu}>
-                        <DevicesContent
-                            buildingsData={data}
-                            editEnabled={isEditMode}
-                            editMode={editMode}
-                            onMove={onMove}
-                        />
-                        {menuList}
-                    </Background>
-                )}
-            />
+            {isLoading ? (
+                <CircularProgress />
+            ) : (
+                <DevicesContent buildingsData={data} editEnabled={isEditMode} editMode={editMode} onMove={onMove} />
+            )}
+
             <EditModeDialog
                 open={isEditMode && !editMode}
                 onClose={(v) => (v ? handleSelectEditMode(v) : leaveEditMode())}

@@ -3,8 +3,9 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 import React from 'react';
-import { useAppSelector } from '../../hooks/index';
-import { getThing } from '../../selectors/getters';
+import { useAppSelector } from '../../../hooks/index';
+import { getThing } from '../../../selectors/getters';
+import { Link } from 'react-router-dom';
 
 interface ThingWidgetProps {
     id: string;
@@ -31,17 +32,18 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
             ]}
             ref={ref}
         >
-            <Typography
-                sx={{
-                    overflow: 'hidden',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    paddingTop: 1,
-                    paddingBottom: 1,
-                }}
-            >
-                {thing.config.name}
-            </Typography>
+            <Link to={{ search: `thingId=${thing._id}` }}>
+                <Typography
+                    sx={{
+                        overflow: 'hidden',
+                        textAlign: 'center',
+                        paddingTop: 1,
+                        paddingBottom: 1,
+                    }}
+                >
+                    {thing.config.name}
+                </Typography>
+            </Link>
         </Paper>
     );
 });

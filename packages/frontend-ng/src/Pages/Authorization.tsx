@@ -39,7 +39,7 @@ export function Authorization() {
             <Typography component="span" pt={2}>
                 {message}
             </Typography>
-            {true ? <CircularProgress /> : null}
+            {isLoading ? <CircularProgress /> : null}
         </div>
     );
 }

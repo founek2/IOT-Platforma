@@ -2,7 +2,7 @@ import React, { createContext, useContext } from 'react';
 
 export type AppBarContextType = {
     data: [header: string, Icon: JSX.Element | null];
-    setAppHeader: (headerText: string, Icon: JSX.Element) => void;
+    setAppHeader: (headerText: string, Icon?: JSX.Element) => void;
     resetAppHeader: () => void;
 };
 

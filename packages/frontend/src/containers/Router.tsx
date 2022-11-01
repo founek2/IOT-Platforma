@@ -1,5 +1,5 @@
 import Loader from 'framework-ui/src/Components/Loader';
-import { getPathsWithComp } from 'framework-ui/src/privileges';
+import { getPathsWithComp } from 'common/src/privileges';
 import { isUserLoggerIn } from 'framework-ui/src/utils/getters';
 import { createBrowserHistory } from 'history';
 import { map } from 'ramda';

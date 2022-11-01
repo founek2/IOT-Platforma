@@ -9,8 +9,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
-import uiMessages from 'common/src/localization/uiMessages';
-import { RouteMenu } from 'framework-ui/src/privileges';
+import uiMessages, { UiMessageKey } from 'common/src/localization/uiMessages';
+import { RouteMenu } from 'common/src/privileges';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
@@ -34,7 +34,7 @@ function createMenuListItem({ path, name, Icon }: RouteMenu) {
                     <ListItemIcon>
                         <Icon />
                     </ListItemIcon>
-                    <ListItemText primary={uiMessages.getMessage(name as any)} />
+                    <ListItemText primary={uiMessages.getMessage(name)} />
                 </ListItemButton>
             </ListItem>
         </Link>
@@ -63,7 +63,9 @@ export function SideMenu({ open, onClose, onOpen }: SideMenuProps) {
                 </List>
                 <Divider />
                 <List>
-                    {[{ path: '/registerUser', name: 'registration', Icon: AccountCircleIcon }].map(createMenuListItem)}
+                    {[{ path: '/registerUser', name: 'registration' as UiMessageKey, Icon: AccountCircleIcon }].map(
+                        createMenuListItem
+                    )}
                 </List>
             </Box>
         </SwipeableDrawer>
