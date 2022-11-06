@@ -1,7 +1,7 @@
 import React from 'react';
-import Typography, { TypographyProps } from '@material-ui/core/Typography';
-import getLastUpdateText from '../utils/getLastUpdateText';
 import ForceUpdate from './forceUpdateHoc';
+import { Typography, TypographyProps } from '@mui/material';
+import getLastUpdateText from '../utils/getLastUpdateText';
 
 type UpdatedBeforeProps = {
     time: Date;

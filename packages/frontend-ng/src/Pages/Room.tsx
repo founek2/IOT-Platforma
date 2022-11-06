@@ -1,10 +1,13 @@
-import { CircularProgress, Dialog } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useDevicesQuery } from '../endpoints/devices';
+import { Dialog } from '../components/Dialog';
+import { useDevicesQuery, useLazyThingHistoryQuery } from '../endpoints/devices';
 import { useAppSelector } from '../hooks';
 import { useAppBarContext } from '../hooks/useAppBarContext';
+import { ThingContext } from '../hooks/useThing';
 import { getThing } from '../selectors/getters';
+import PropertyRow from './room/PropertyRow';
 import Room from './room/Room';
 
 export interface RoomProps {
@@ -13,14 +16,47 @@ export interface RoomProps {
 export default function RoomPage({ title }: RoomProps) {
     const { isLoading } = useDevicesQuery(undefined, { pollingInterval: 10 * 60 * 1000 });
     const [urlSearchParams] = useSearchParams();
-    const selectedThing = useAppSelector(getThing(urlSearchParams.get('thingId') || ''));
+    const thing = useAppSelector(getThing(urlSearchParams.get('thingId') || ''));
     const { setAppHeader, resetAppHeader } = useAppBarContext();
     const navigate = useNavigate();
+    const [fetchHistory, { data: historyData }] = useLazyThingHistoryQuery();
 
     return (
         <>
             {isLoading ? <CircularProgress /> : <Room title={title} mode="things" />}
-            <Dialog open={Boolean(selectedThing)} onClose={() => navigate({ search: '' }, { replace: true })}></Dialog>
+            <Dialog
+                open={Boolean(thing)}
+                onClose={() => navigate({ search: '' }, { replace: true })}
+                title={thing?.config.name}
+            >
+                <>
+                    {thing
+                        ? thing.config.properties.map((property, i) => (
+                              <ThingContext.Provider value={thing} key={property._id}>
+                                  <PropertyRow
+                                      key={property.propertyId}
+                                      property={property}
+                                      value={thing.state?.value[property.propertyId]}
+                                      timestamp={thing.state?.timestamp && new Date(thing.state.timestamp)}
+                                      onChange={(e) => console.log(e)}
+                                      //   onChange={(newValue: any) =>
+                                      //       dispatch(
+                                      //           devicesActions.updateState(
+                                      //               queryParams.deviceId,
+                                      //               thing._id,
+                                      //               property.propertyId,
+                                      //               newValue
+                                      //           )
+                                      //       )
+                                      //   }
+                                      history={historyData}
+                                      defaultShowDetail={i === 0}
+                                  />
+                              </ThingContext.Provider>
+                          ))
+                        : null}
+                </>
+            </Dialog>
         </>
     );
 }

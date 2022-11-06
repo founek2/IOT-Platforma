@@ -3,7 +3,7 @@ import { IThing } from 'common/src/models/interface/thing';
 import { devicesApi } from '../../../endpoints/devices';
 import { normalizeDevices } from '../../../utils/normalizr';
 
-export type Thing = Omit<IThing, '_id'> & { _id: string };
+export type Thing = Omit<IThing, '_id'> & { _id: string; deviceId: string };
 
 const thingsAdapter = createEntityAdapter<Thing>({
     selectId: (thing) => thing._id,

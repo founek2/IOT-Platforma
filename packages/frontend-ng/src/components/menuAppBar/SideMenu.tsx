@@ -12,7 +12,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import uiMessages, { UiMessageKey } from 'common/src/localization/uiMessages';
 import { RouteMenu } from 'common/src/privileges';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Location, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
 import { getCurrentGroups } from '../../selectors/getters';
 import { privileges } from '../../services/privileges';
@@ -26,11 +26,11 @@ function externalRedirect(path: string) {
     };
 }
 
-function createMenuListItem({ path, name, Icon }: RouteMenu) {
+function createMenuListItem({ path, name, Icon }: RouteMenu, location: Location) {
     return (
         <Link to={path} key={path} onClick={externalRedirect(path)}>
             <ListItem disablePadding>
-                <ListItemButton>
+                <ListItemButton selected={location.pathname === path}>
                     <ListItemIcon>
                         <Icon />
                     </ListItemIcon>
@@ -48,6 +48,7 @@ export interface SideMenuProps {
 }
 export function SideMenu({ open, onClose, onOpen }: SideMenuProps) {
     const userGroups = useAppSelector(getCurrentGroups);
+    const location = useLocation();
 
     return (
         <SwipeableDrawer anchor="left" open={open} onClose={onClose} onOpen={onOpen}>
@@ -59,12 +60,12 @@ export function SideMenu({ open, onClose, onOpen }: SideMenuProps) {
                         </ListSubheader>
                     }
                 >
-                    {privileges.getMenuPaths(userGroups).map(createMenuListItem)}
+                    {privileges.getMenuPaths(userGroups).map((item) => createMenuListItem(item, location))}
                 </List>
                 <Divider />
                 <List>
                     {[{ path: '/registerUser', name: 'registration' as UiMessageKey, Icon: AccountCircleIcon }].map(
-                        createMenuListItem
+                        (item) => createMenuListItem(item, location)
                     )}
                 </List>
             </Box>

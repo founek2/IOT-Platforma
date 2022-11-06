@@ -40,6 +40,10 @@ a {
     flex-direction: column;
 }
 
+.utils--flex-inline {
+    display: inline-flex;
+}
+
 .pure-material-button-contained {
     position: relative;
     display: inline-block;

@@ -18,6 +18,10 @@ const deviceEntity = new schema.Entity(
     },
     {
         idAttribute: '_id',
+        processStrategy: (entity: IDevice, parent, key) => {
+            return { ...entity, things: entity.things.map((thing) => ({ ...thing, deviceId: entity._id })) } as any;
+            // return entity;
+        },
     }
 );
 
