@@ -23,25 +23,27 @@ const RoomLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room
 const userRoutes: Route[] = [
     {
         path: '/building/:building/room/:room',
+        name: 'devices',
         Component: RoomLazy,
     },
     {
         path: '/building/:building',
+        name: 'devices',
         Component: LocationsLazy,
     },
     {
         path: '/building',
         Component: LocationsLazy,
-        name: 'deviceControl',
+        name: 'devices',
         Icon: CloudIcon,
     },
     // {
     //     path: '/profile/*',
     //     Component: ProfileLazy,
     // },
-    { path: '/management/building', Component: LocationsLazy, name: 'devices', Icon: DevicesOtherIcon },
-    { path: '/management/building/:building', Component: LocationsLazy },
-    { path: '/management/building/:building/room/:room', Component: DeviceManagementLazy, name: 'devices' },
+    { path: '/management/building', Component: LocationsLazy, name: 'deviceControl', Icon: DevicesOtherIcon },
+    { path: '/management/building/:building', Component: LocationsLazy, name: 'deviceControl' },
+    { path: '/management/building/:building/room/:room', Component: DeviceManagementLazy, name: 'deviceControl' },
     // {
     //     path: '/management/building/:building/room/:room',
     //     Component: RoomsLazy,

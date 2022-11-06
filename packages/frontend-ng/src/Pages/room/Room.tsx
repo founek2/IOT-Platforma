@@ -15,6 +15,7 @@ import { LocationTypography } from '../../components/LocationTypography';
 import { ThingWidget } from './widgets/ThingWidget';
 import { Dictionary } from '@reduxjs/toolkit';
 import { DeviceWidget } from './widgets/DeviceWidget';
+import { devicePreferencesReducerActions } from '../../store/slices/preferences/deviceSlice';
 
 interface RoomContentProps {
     thingIDs: string[];
@@ -92,21 +93,37 @@ export default function Room({ title, mode }: RoomProps) {
 
     const onMove = useCallback(
         (dragId: string, hoverId: string) => {
-            dispatch(thingPreferencesReducerActions.swapOrderFor([dragId, hoverId]));
+            if (mode === 'things') {
+                dispatch(thingPreferencesReducerActions.swapOrderFor([dragId, hoverId]));
+            } else dispatch(devicePreferencesReducerActions.swapOrderFor([dragId, hoverId]));
         },
         [dispatch]
     );
 
     const prepareEditMode = useCallback(() => {
         if (IDs)
-            dispatch(
-                thingPreferencesReducerActions.resetOrderFor(
-                    IDs.map((id) => ({ id: id }))
-                        .sort(byPreferences(preferencies))
-                        .map((r) => r.id)
-                )
-            );
+            if (mode === 'things') {
+                dispatch(
+                    thingPreferencesReducerActions.resetOrderFor(
+                        IDs.map((id) => ({ id: id }))
+                            .sort(byPreferences(preferencies))
+                            .map((r) => r.id)
+                    )
+                );
+            } else {
+                dispatch(
+                    devicePreferencesReducerActions.resetOrderFor(
+                        IDs.map((id) => ({ id: id }))
+                            .sort(byPreferences(preferencies))
+                            .map((r) => r.id)
+                    )
+                );
+            }
     }, [dispatch, IDs]);
+
+    useEffect(() => {
+        return () => resetAppHeader();
+    }, []);
 
     useEffect(() => {
         if (editMode) {
@@ -121,13 +138,10 @@ export default function Room({ title, mode }: RoomProps) {
                 </IconButton>
             );
             prepareEditMode();
+        } else if (title) {
+            setAppHeader(title);
         } else resetAppHeader();
-    }, [editMode, navigate, prepareEditMode]);
-
-    useEffect(() => {
-        if (title) setAppHeader(title);
-        return () => resetAppHeader();
-    }, [title]);
+    }, [title, editMode, navigate, prepareEditMode]);
 
     const content = (
         <>

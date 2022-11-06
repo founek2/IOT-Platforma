@@ -3,8 +3,8 @@ import { messageFactory } from '.';
 const messages = {
     userManagement: 'Správce uživatelů',
     registration: 'Registrovat',
-    deviceControl: 'Zařízení',
-    devices: 'Správa zařízení',
+    deviceControl: 'Správa Zařízení',
+    devices: 'Zařízení',
     about: 'Informace',
     visualProgramming: 'Automatizace',
 };

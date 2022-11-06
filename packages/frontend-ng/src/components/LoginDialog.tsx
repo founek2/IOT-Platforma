@@ -11,7 +11,7 @@ import { getFieldVal } from 'common/src/utils/getters';
 import * as React from 'react';
 import { useAppSelector } from '../hooks';
 import { useForm } from '../hooks/useForm';
-import { useGetAuthProvidersQuery, useLazyGetAuthTypesQuery, useSignInMutation } from '../services/signIn';
+import { useGetAuthProvidersQuery, useLazyGetAuthTypesQuery, useSignInMutation } from '../endpoints/signIn';
 import { head } from '../utils/ramda';
 import FieldConnector from './FieldConnector';
 import AuthProviderButtons from './loginDialog/AuthProviderButtons';

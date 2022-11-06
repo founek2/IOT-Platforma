@@ -3,7 +3,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { logger } from 'common/src/logger';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useSignInOauthMutation } from '../services/signIn';
+import { useSignInOauthMutation } from '../endpoints/signIn';
 import { buildRedirectUri } from '../utils/redirectUri';
 
 export function Authorization() {

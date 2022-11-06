@@ -1,0 +1,28 @@
+import { IDevice } from 'common/src/models/interface/device';
+import { Device } from '../store/slices/application/devicesSlice';
+import { api } from './api';
+
+export interface EditDeviceForm {
+    info: Device['info'];
+    permissions: Device['permissions'];
+}
+
+export const devicesApi = api.injectEndpoints({
+    endpoints: (build) => ({
+        updateDevice: build.mutation<{}, { deviceID: string; data: EditDeviceForm }>({
+            query: ({ deviceID, data }) => ({
+                url: `device/${deviceID}`,
+                method: 'PATCH',
+                body: { formData: { EDIT_DEVICE: data } },
+            }),
+            invalidatesTags: ['Devices'],
+        }),
+        devices: build.query<{ docs: IDevice[] }, undefined>({
+            query: () => `device`,
+
+            providesTags: ['Devices'],
+        }),
+    }),
+});
+
+export const { useDevicesQuery, useUpdateDeviceMutation } = devicesApi;

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IUser } from 'common/src/models/interface/userInterface';
-import { signInApi } from '../../../services/signIn';
+import { signInApi } from '../../../endpoints/signIn';
 
 export interface AuthorizationState {
     loggedIn: boolean;

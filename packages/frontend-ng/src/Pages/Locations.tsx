@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { useAppBarContext } from '../hooks/useAppBarContext';
 import { useEditMode } from '../hooks/useEditMode';
 import { Buildings, buildingsCachedSelector } from '../selectors/devicesSelector';
-import { useDevicesQuery } from '../services/devices';
+import { useDevicesQuery } from '../endpoints/devices';
 import { locationPreferencesReducerActions } from '../store/slices/preferences/locationSlice';
 import { byPreferences } from '../utils/sort';
 import { BuildingWidget } from './locations/BuildingWidget';
@@ -58,8 +58,6 @@ function DevicesContent({ buildingsData, editMode, onMove, editEnabled }: Device
     );
 }
 
-const HOUR_1 = 60 * 60 * 1000;
-
 interface DevicesProps {
     title?: string;
 }
@@ -67,7 +65,7 @@ export default function Locations({ title }: DevicesProps) {
     const dispatch = useAppDispatch();
     const { setAppHeader, resetAppHeader } = useAppBarContext();
     const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
-    const { isLoading } = useDevicesQuery(undefined, { pollingInterval: HOUR_1 });
+    const { isLoading } = useDevicesQuery(undefined, { pollingInterval: 10 * 60 * 1000 });
     const { isEditMode, leaveEditMode } = useEditMode();
     const [editMode, setEditMode] = useState<'rooms' | 'buildings' | undefined>(undefined);
 

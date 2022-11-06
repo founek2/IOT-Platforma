@@ -52,7 +52,6 @@ const config = {
                     getCustomTransformers: () => ({
                         before: [!isEnvProduction && ReactRefreshTypeScript()].filter(Boolean),
                     }),
-                    transpileOnly: !isEnvProduction,
                     projectReferences: true,
                 },
             },
@@ -76,7 +75,11 @@ const config = {
     // devtool: 'source-map',
     plugins: [
         !isEnvProduction && new ReactRefreshWebpackPlugin(),
-        new ForkTsCheckerWebpackPlugin(),
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                mode: 'write-references',
+            },
+        }),
         new CopyPlugin({
             patterns: [
                 { from: path.join(__dirname, 'public/assets'), to: 'assets' },

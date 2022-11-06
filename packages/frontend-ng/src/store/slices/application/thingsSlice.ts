@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IThing } from 'common/src/models/interface/thing';
-import { devicesApi } from '../../../services/devices';
+import { devicesApi } from '../../../endpoints/devices';
 import { normalizeDevices } from '../../../utils/normalizr';
 
 export type Thing = Omit<IThing, '_id'> & { _id: string };

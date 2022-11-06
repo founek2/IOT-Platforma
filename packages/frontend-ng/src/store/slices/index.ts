@@ -1,5 +1,5 @@
 import { ActionFromReducersMapObject, combineReducers, Reducer, StateFromReducersMapObject } from '@reduxjs/toolkit';
-import { api } from '../../services/api';
+import { api } from '../../endpoints/api';
 import application from './application';
 import formsData from './formDataSlice';
 import notifications from './notificationSlice';

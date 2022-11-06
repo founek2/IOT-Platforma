@@ -1,7 +1,7 @@
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import React from 'react';
-import { AuthProvider } from '../../services/signIn';
+import { AuthProvider } from '../../endpoints/signIn';
 
 function AuthProviderButtons({ providers }: { providers: AuthProvider[] }) {
     return (

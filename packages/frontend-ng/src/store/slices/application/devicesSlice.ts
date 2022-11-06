@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { IDevice } from 'common/src/models/interface/device';
-import { devicesApi } from '../../../services/devices';
+import { devicesApi } from '../../../endpoints/devices';
 import { normalizeDevices } from '../../../utils/normalizr';
 
 export type Device = Omit<IDevice, 'things' | '_id'> & { _id: string; things: string[] };

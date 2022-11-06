@@ -1,4 +1,4 @@
-import { api } from '../../../services/api';
+import { api } from '../../../endpoints/api';
 import { AppThunk } from '../../../types';
 import { authorizationReducerActions } from './authorizationSlice';
 

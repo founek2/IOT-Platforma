@@ -1,6 +1,6 @@
 import { CombinedState, configureStore, isRejectedWithValue, Middleware } from '@reduxjs/toolkit';
 import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
-import { api } from '../services/api';
+import { api } from '../endpoints/api';
 import rootReducer from './slices';
 import { notificationActions } from './slices/notificationSlice';
 import { $CombinedState } from '@reduxjs/toolkit';
