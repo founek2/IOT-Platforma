@@ -231,21 +231,20 @@ function EnhancedTable<T extends { _id: string }>({
                                             </TableCell>
                                         ))}
                                         <TableCell className={classes.editCell}>
-                                            {customEditButton &&
-                                                (!customEditButton ? (
-                                                    <IconButton
-                                                        // color="primary"
-                                                        aria-label="Edit"
-                                                        size="small"
-                                                        onClick={() => {
-                                                            if (onEdit) onEdit(n._id);
-                                                        }}
-                                                    >
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                ) : (
-                                                    customEditButton(n._id, n)
-                                                ))}
+                                            {!customEditButton ? (
+                                                <IconButton
+                                                    // color="primary"
+                                                    aria-label="Edit"
+                                                    size="small"
+                                                    onClick={() => {
+                                                        if (onEdit) onEdit(n._id);
+                                                    }}
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                            ) : (
+                                                customEditButton(n._id, n)
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 );
