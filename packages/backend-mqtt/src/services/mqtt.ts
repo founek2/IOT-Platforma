@@ -93,6 +93,16 @@ function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser:
         cl.end();
         client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
     });
+
+    cl.on('close', async function () {
+        logger.info('mqtt closed connection');
+    });
+    cl.on('disconnect', async function () {
+        logger.info('mqtt disconnected');
+    });
+    cl.on('offline', async function () {
+        logger.info('mqtt offline');
+    });
 }
 
 /* Initialize MQTT client connection */
