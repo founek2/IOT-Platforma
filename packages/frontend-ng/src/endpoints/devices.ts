@@ -25,12 +25,7 @@ export const devicesApi = api.injectEndpoints({
 
             providesTags: ['Devices'],
         }),
-        thingHistory: build.query<HistoryResponse['docs'], { deviceID: string; thingID: string }>({
-            query: ({ deviceID, thingID }) => `device/${deviceID}/thing/${thingID}/history`,
-            transformResponse: (res: HistoryResponse) => res.docs,
-            providesTags: ['History'],
-        }),
     }),
 });
 
-export const { useDevicesQuery, useUpdateDeviceMutation, useLazyThingHistoryQuery } = devicesApi;
+export const { useDevicesQuery, useUpdateDeviceMutation } = devicesApi;

@@ -2,7 +2,8 @@ import { CircularProgress } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Dialog } from '../components/Dialog';
-import { useDevicesQuery, useLazyThingHistoryQuery } from '../endpoints/devices';
+import { useDevicesQuery } from '../endpoints/devices';
+import { useLazyThingHistoryQuery, useUpdateThingStateMutation } from '../endpoints/thing';
 import { useAppSelector } from '../hooks';
 import { useAppBarContext } from '../hooks/useAppBarContext';
 import { ThingContext } from '../hooks/useThing';
@@ -20,6 +21,11 @@ export default function RoomPage({ title }: RoomProps) {
     const { setAppHeader, resetAppHeader } = useAppBarContext();
     const navigate = useNavigate();
     const [fetchHistory, { data: historyData }] = useLazyThingHistoryQuery();
+    const [updatePropertyState] = useUpdateThingStateMutation();
+
+    useEffect(() => {
+        if (thing) fetchHistory({ deviceID: thing.deviceId, thingID: thing.config.nodeId });
+    }, [thing?._id]);
 
     return (
         <>
@@ -37,18 +43,16 @@ export default function RoomPage({ title }: RoomProps) {
                                       key={property.propertyId}
                                       property={property}
                                       value={thing.state?.value[property.propertyId]}
-                                      timestamp={thing.state?.timestamp && new Date(thing.state.timestamp)}
-                                      onChange={(e) => console.log(e)}
-                                      //   onChange={(newValue: any) =>
-                                      //       dispatch(
-                                      //           devicesActions.updateState(
-                                      //               queryParams.deviceId,
-                                      //               thing._id,
-                                      //               property.propertyId,
-                                      //               newValue
-                                      //           )
-                                      //       )
-                                      //   }
+                                      timestamp={thing.state?.timestamp ? new Date(thing.state.timestamp) : undefined}
+                                      onChange={(value) =>
+                                          updatePropertyState({
+                                              deviceId: thing.deviceId,
+                                              propertyId: property.propertyId,
+                                              thingId: thing._id,
+                                              nodeId: thing.config.nodeId,
+                                              value,
+                                          })
+                                      }
                                       history={historyData}
                                       defaultShowDetail={i === 0}
                                   />

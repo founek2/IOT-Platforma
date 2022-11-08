@@ -117,12 +117,11 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
 export function PropertyRowPlain({ value, property, onChange }: PropertyRowComponentProps) {
     const { unitOfMeasurement } = property;
 
-    const units = unitOfMeasurement ? ' ' + unitOfMeasurement : '';
     return (
         <>
             <PropertyRowComponent value={value} property={property} onChange={onChange} />
-            <Typography component="span" sx={{ paddingLeft: '0.4em' }}>
-                {units}
+            <Typography component="span" sx={{ paddingLeft: unitOfMeasurement ? '0.4em' : '0' }}>
+                {unitOfMeasurement ? unitOfMeasurement : ''}
             </Typography>
         </>
     );
@@ -167,12 +166,13 @@ function PropertyRow({ property, value, onChange, history, timestamp, defaultSho
     const [showDetail, setshowDetail] = useState(defaultShowDetail);
     const toogleDetail = useCallback(() => setshowDetail(!showDetail), [setshowDetail, showDetail]);
 
-    const { unitOfMeasurement, propertyClass, name } = property;
+    const { propertyClass, name } = property;
     const Icon = propertyClass ? SensorIcons[propertyClass] : null;
 
+    console.log('history', history);
     return (
         <div>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {Icon ? <Icon onClick={toogleDetail} /> : null}
                 <Typography component="span" onClick={toogleDetail}>
                     {name}

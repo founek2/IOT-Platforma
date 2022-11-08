@@ -11,6 +11,7 @@ import { ComponentType, PropertyDataType } from 'common/src/models/interface/thi
 import { Thing } from '../../../store/slices/application/thingsSlice';
 import { PropertyRowPlain } from '../PropertyRow';
 import { Box } from '@mui/material';
+import { useUpdateThingStateMutation } from '../../../endpoints/thing';
 
 function getApropriateProperty(config: Thing['config']) {
     if (config.componentType === ComponentType.activator) {
@@ -35,6 +36,7 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
     const thing = useAppSelector(getThing(id));
     if (!thing) return null;
     const appropriateThing = getApropriateProperty(thing.config);
+    const [updatePropertyState] = useUpdateThingStateMutation();
 
     return (
         <ThingContext.Provider value={thing}>
@@ -66,11 +68,19 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
                     </Typography>
                 </Link>
                 {appropriateThing ? (
-                    <Box sx={{ display: 'flex' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'inherit' }}>
                         <PropertyRowPlain
                             value={thing.state?.value[appropriateThing.propertyId]}
                             property={appropriateThing}
-                            onChange={() => console.log('change')}
+                            onChange={(value) =>
+                                updatePropertyState({
+                                    deviceId: thing.deviceId,
+                                    propertyId: appropriateThing.propertyId,
+                                    thingId: thing._id,
+                                    nodeId: thing.config.nodeId,
+                                    value,
+                                })
+                            }
                         />
                     </Box>
                 ) : null}
