@@ -91,7 +91,7 @@ function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser:
     cl.on('error', async function (err) {
         logger.error('mqtt connection error', err);
         cl.end();
-        client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
+        // client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
     });
 
     cl.on('close', async function () {
