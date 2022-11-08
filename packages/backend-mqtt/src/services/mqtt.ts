@@ -58,6 +58,7 @@ async function reconnect(config: MqttConf, getUser: GetUser, cb: ClientCb): Prom
             password: `${user.password}`,
             reconnectPeriod: 0,
             port: config.port,
+            rejectUnauthorized: false,
         });
         cb(client);
         return client;
@@ -91,6 +92,17 @@ function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser:
         logger.error('mqtt connection error', err);
         cl.end();
         client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
+    });
+
+    cl.on('close', async function () {
+        logger.info('mqtt closed connection');
+        client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
+    });
+    cl.on('disconnect', async function () {
+        logger.info('mqtt disconnected');
+    });
+    cl.on('offline', async function () {
+        logger.info('mqtt offline');
     });
 }
 
