@@ -41,7 +41,7 @@ function connect(config: MqttConf, getUser: GetUser, cb: ClientCb, forceNow = fa
     return new Promise<MqttClient>((res) =>
         setTimeout(
             async () => {
-                logger.info('Trying to connect to mqtt...', `${config.url}:${config.port}`);
+                logger.info(`Trying to connect to MQTT ove WS host=${config.url} port=${config.port}`);
                 res(await reconnect(config, getUser, cb));
             },
             forceNow ? 0 : SECONDS_20
@@ -59,6 +59,7 @@ async function reconnect(config: MqttConf, getUser: GetUser, cb: ClientCb): Prom
             reconnectPeriod: 0,
             port: config.port,
             rejectUnauthorized: false,
+            keepalive: 30,
         });
         cb(client);
         return client;
@@ -91,7 +92,18 @@ function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser:
     cl.on('error', async function (err) {
         logger.error('mqtt connection error', err);
         cl.end();
-        client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
+        // client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
+    });
+
+    cl.on('close', async function () {
+        logger.info('mqtt closed connection');
+        client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser), true);
+    });
+    cl.on('disconnect', async function () {
+        logger.info('mqtt disconnected');
+    });
+    cl.on('offline', async function () {
+        logger.info('mqtt offline');
     });
 }
 
