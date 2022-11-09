@@ -1,4 +1,4 @@
-import { Select, MenuItem, Slider, Switch, TextField, Typography, Box } from '@mui/material';
+import { Select, MenuItem, Slider, Switch, TextField, Typography, Box, SxProps } from '@mui/material';
 import {
     IThingProperty,
     IThingPropertyEnum,
@@ -21,6 +21,8 @@ import { toogleSwitchVal } from './helpers/toogleSwitchVal';
 import { onEnterRun } from 'common/src/utils/onEnter';
 import { SensorIcons } from '../../constants/sensorIcons';
 import { Measurement } from 'common/src/types';
+import { Theme } from '@mui/system';
+import ColorPicker from '../../components/ColorPicker';
 
 interface PropertyRowComponentProps {
     value: string | number | undefined;
@@ -40,7 +42,7 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
                 </CopyUrlContext>
             ) : (
                 <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <Select value={value || ''} onChange={(e) => onChange(e.target.value as string)} disableUnderline>
+                    <Select value={value || ''} onChange={(e) => onChange(e.target.value as string)} variant="standard">
                         {(property as IThingPropertyEnum).format.map((label) => (
                             <MenuItem value={label} key={label}>
                                 {label}
@@ -51,10 +53,12 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
             );
         } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format) {
             const propertyNumeric = property as IThingPropertyNumeric;
+            console.log(propertyNumeric);
             return (
                 // TODO debounce bude lepší
                 <CopyUrlContext propertyId={property.propertyId} value={value as number}>
                     <Slider
+                        sx={{ width: '80px' }}
                         onChangeCommitted={(e, newValue) => onChange(newValue as number)}
                         value={stateValue !== undefined ? Number(stateValue) : propertyNumeric.format?.min}
                         onChange={(e, newValue) => setStateValue(newValue as number)}
@@ -76,19 +80,18 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
                     />
                 </CopyUrlContext>
             );
+        } else if (property.dataType === PropertyDataType.color) {
+            return (
+                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                    <ColorPicker
+                        value={value as string}
+                        onChange={(e) => {
+                            onChange(e.target.value);
+                        }}
+                    />
+                </CopyUrlContext>
+            );
         }
-        // else if (property.dataType === PropertyDataType.color) {
-        //     return (
-        //         <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-        //             <ColorPicker
-        //                 value={value as string}
-        //                 onChange={(e) => {
-        //                     onChange(e.target.value);
-        //                 }}
-        //             />
-        //         </CopyUrlContext>
-        //     );
-        // }
         const isNum = isNumericDataType(property.dataType);
         return (
             // TODO debounce nějaký delší?
@@ -160,21 +163,29 @@ interface PropertyRowProps {
     onChange: (newValue: string | number) => void;
     history?: Measurement[];
     defaultShowDetail?: boolean;
+    sx?: SxProps<Theme>;
 }
 
-function PropertyRow({ property, value, onChange, history, timestamp, defaultShowDetail = false }: PropertyRowProps) {
+function PropertyRow({
+    property,
+    value,
+    onChange,
+    history,
+    timestamp,
+    defaultShowDetail = false,
+    sx,
+}: PropertyRowProps) {
     const [showDetail, setshowDetail] = useState(defaultShowDetail);
     const toogleDetail = useCallback(() => setshowDetail(!showDetail), [setshowDetail, showDetail]);
 
     const { propertyClass, name } = property;
     const Icon = propertyClass ? SensorIcons[propertyClass] : null;
 
-    console.log('history', history);
     return (
-        <div>
+        <Box sx={sx}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {Icon ? <Icon onClick={toogleDetail} /> : null}
-                <Typography component="span" onClick={toogleDetail}>
+                <Typography component="span" onClick={toogleDetail} pr={2} sx={{ cursor: 'pointer' }}>
                     {name}
                 </Typography>
                 <PropertyRowPlain property={property} value={value} onChange={onChange} />
@@ -185,7 +196,7 @@ function PropertyRow({ property, value, onChange, history, timestamp, defaultSho
             {showDetail && history?.some((v) => v.propertyId === property.propertyId)
                 ? showDetailVisualization(property, history)
                 : null}
-        </div>
+        </Box>
     );
 }
 

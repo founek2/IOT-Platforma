@@ -4,7 +4,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import { Button, IconButton, SxProps, Theme, useMediaQuery, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 export interface DialogProps {
@@ -15,6 +15,8 @@ export interface DialogProps {
     agreeText?: string;
     disagreeText?: string;
     children?: JSX.Element | null;
+    fullWidth?: boolean;
+    sx?: SxProps<Theme>;
 }
 export function Dialog({
     open,
@@ -24,11 +26,13 @@ export function Dialog({
     agreeText = 'Souhlasím',
     disagreeText,
     children,
+    sx,
+    fullWidth,
 }: DialogProps) {
     const isSmall = useMediaQuery('(max-width:450px)');
 
     return (
-        <DialogMui open={open} onClose={onClose} fullScreen={isSmall}>
+        <DialogMui open={open} onClose={onClose} fullScreen={isSmall} sx={sx} fullWidth={fullWidth}>
             <DialogTitle id="alert-dialog-title">
                 {title ? title : null}
                 {isSmall ? (

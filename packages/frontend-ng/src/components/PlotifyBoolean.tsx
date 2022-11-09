@@ -1,11 +1,14 @@
 import { Box, CircularProgress } from '@mui/material';
 import { subDays } from 'date-fns';
 import React, { lazy, Suspense } from 'react';
+import { useAppSelector } from '../hooks';
+import { getColorMode } from '../selectors/getters';
 
 const PlotlyChart = lazy(() => import(/* webpackChunkName: 'PlotifyChart' */ './PlotifyChart'));
 
-const layout = {
-    // width: 600,
+const layout = (mode: 'light' | 'dark') => ({
+    plot_bgcolor: mode === 'dark' ? 'rgba(0,0,0,0)' : 'rgb(255, 255, 255)',
+    paper_bgcolor: mode === 'dark' ? 'rgba(0,0,0,0)' : 'rgb(255, 255, 255)',
     colorway: ['#4E86EC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477'],
     autosize: true,
     height: 70,
@@ -14,12 +17,18 @@ const layout = {
         range: [0, 1],
         nticks: 2,
         zeroline: false,
+        tickfont: {
+            color: mode === 'dark' ? '#121212' : undefined,
+        },
     },
     xaxis: {
         tickformat: '%H:%M',
         showgrid: false,
         range: [subDays(new Date(), 1), new Date()],
         zeroline: false,
+        tickfont: {
+            color: mode === 'dark' ? '#121212' : undefined,
+        },
     },
     margin: {
         b: 30,
@@ -29,13 +38,15 @@ const layout = {
         pad: 10,
     },
     orientation: 'v',
-};
+});
 
 interface ChartSimpleProps {
     data: Array<any>;
 }
 
 function PlotifyBoolean({ data }: ChartSimpleProps) {
+    const mode = useAppSelector(getColorMode);
+
     return (
         <Box
             sx={(theme) => ({
@@ -61,7 +72,7 @@ function PlotifyBoolean({ data }: ChartSimpleProps) {
             })}
         >
             <Suspense fallback={<CircularProgress />}>
-                <PlotlyChart data={data} layout={layout} config={{ displayModeBar: false }} />
+                <PlotlyChart data={data} layout={layout(mode)} config={{ displayModeBar: false }} />
             </Suspense>
         </Box>
     );

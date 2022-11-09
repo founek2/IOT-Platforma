@@ -34,12 +34,15 @@ export default function RoomPage({ title }: RoomProps) {
                 open={Boolean(thing)}
                 onClose={() => navigate({ search: '' }, { replace: true })}
                 title={thing?.config.name}
+                // sx={{ minWidth: 600 }}
+                fullWidth
             >
                 <>
                     {thing
                         ? thing.config.properties.map((property, i) => (
                               <ThingContext.Provider value={thing} key={property._id}>
                                   <PropertyRow
+                                      sx={{ paddingBottom: 2 }}
                                       key={property.propertyId}
                                       property={property}
                                       value={thing.state?.value[property.propertyId]}
