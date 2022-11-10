@@ -64,7 +64,7 @@ export function SideMenu({ open, onClose, onOpen }: SideMenuProps) {
                 </List>
                 <Divider />
                 <List>
-                    {[{ path: '/registerUser', name: 'registration' as UiMessageKey, Icon: AccountCircleIcon }].map(
+                    {[{ path: '/registration', name: 'registration' as UiMessageKey, Icon: AccountCircleIcon }].map(
                         (item) => createMenuListItem(item, location)
                     )}
                 </List>

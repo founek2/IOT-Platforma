@@ -6,6 +6,7 @@ import { HomePage } from '../Pages/Home';
 import { privileges } from '../services/privileges';
 import { getCurrentGroups } from '../selectors/getters';
 import uiMessages from 'common/src/localization/uiMessages';
+import Registration from '../Pages/Registration';
 
 export default function MyRoutes() {
     const userGroups = useAppSelector(getCurrentGroups);
@@ -20,6 +21,7 @@ export default function MyRoutes() {
                 />
             ))}
             <Route path="/authorization/*" element={<Authorization />} />
+            <Route path="/registration" element={<Registration />} />
             <Route path="/*" element={<HomePage />} />
         </Routes>
     );

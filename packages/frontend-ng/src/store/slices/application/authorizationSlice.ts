@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IUser } from 'common/src/models/interface/userInterface';
 import { signInApi } from '../../../endpoints/signIn';
+import { usersApi } from '../../../endpoints/users';
 
 export interface AuthorizationState {
     loggedIn: boolean;
@@ -45,6 +46,11 @@ export const authorizationSlice = createSlice({
             state.currentUser = payload.user;
         });
         builder.addMatcher(signInApi.endpoints.signInOauth.matchFulfilled, (state, { payload }) => {
+            state.loggedIn = true;
+            state.accessToken = payload.accessToken || payload.token;
+            state.currentUser = payload.user;
+        });
+        builder.addMatcher(usersApi.endpoints.registerAndSignIn.matchFulfilled, (state, { payload }) => {
             state.loggedIn = true;
             state.accessToken = payload.accessToken || payload.token;
             state.currentUser = payload.user;

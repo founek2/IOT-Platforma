@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { formsDataActions as formsActions } from '../store/slices/formDataActions';
 import Autocomplete, { AutocompleteOption } from './fieldConnector/Autocomplete';
+import PasswordField from './fieldConnector/PasswordField';
 
 const { registerField, unregisterField, setFormField, validateField, validateForm, updateRegisteredField } =
     formsActions;
@@ -18,7 +19,7 @@ const { registerField, unregisterField, setFormField, validateField, validateFor
 const Components = {
     TextField: TextField,
     Autocomplete: Autocomplete,
-    // PasswordField: PasswordField,
+    PasswordField: PasswordField,
     // Select: Select,
     // DateTimePicker: DateTimePicker,
     // InputField: InputField,
@@ -66,7 +67,7 @@ type FieldConnectorAutocomplete = FieldConnectorProps<'Autocomplete'> & {
     options: AutocompleteOption[];
 };
 
-type FieldConnectorTextfield = FieldConnectorProps<'TextField'> & {
+type FieldConnectorTextfield = FieldConnectorProps<'TextField' | 'PasswordField'> & {
     // options?: undefined;
 };
 

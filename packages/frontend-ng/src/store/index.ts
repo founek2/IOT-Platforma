@@ -4,6 +4,7 @@ import { api } from '../endpoints/api';
 import rootReducer from './slices';
 import { notificationActions } from './slices/notificationSlice';
 import { $CombinedState } from '@reduxjs/toolkit';
+import errorMessages from 'common/src/localization/error';
 
 export const rtkQueryErrorLogger: Middleware =
     ({ dispatch }) =>
@@ -11,9 +12,17 @@ export const rtkQueryErrorLogger: Middleware =
     (action) => {
         // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
         if (isRejectedWithValue(action)) {
+            console.log('action', action);
             // console.warn('We got a rejected action!');
             //   toast.warn({ title: 'Async error!', message: action.error.data.message })
-            dispatch(notificationActions.add({ message: 'Nastala chyba', options: { variant: 'error' } }));
+            if (action?.payload?.data?.error) {
+                dispatch(
+                    notificationActions.add({
+                        message: errorMessages.getMessage(action.payload.data.error),
+                        options: { variant: 'error' },
+                    })
+                );
+            } else dispatch(notificationActions.add({ message: 'Nastala chyba', options: { variant: 'error' } }));
         }
 
         return next(action);
