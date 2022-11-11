@@ -8,18 +8,19 @@ import { locationsSelector } from '../../selectors/locationsSelector';
 import PermissionSelect from './PermissionSelect';
 import { Device } from '../../store/slices/application/devicesSlice';
 import { useUserNamesQuery } from '../../endpoints/users';
-import { EditDeviceForm } from '../../endpoints/devices';
+import { EditDeviceFormData } from '../../endpoints/devices';
 
 const formName = 'EDIT_DEVICE';
 interface DeviceFormProps {
     open: boolean;
     onClose: () => any;
-    onSave: (data: EditDeviceForm) => Promise<any>;
+    onSave: (data: EditDeviceFormData) => Promise<any>;
     title?: string;
+    deviceToEdit?: Device;
 }
-export function DeviceDialogForm({ open, onClose, title, onSave }: DeviceFormProps) {
+export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }: DeviceFormProps) {
     const [pending, setPending] = useState(false);
-    const { setFieldValue, validateForm } = useForm<EditDeviceForm>(formName);
+    const { setFieldValue, validateForm, setFormData, resetForm } = useForm<EditDeviceFormData>(formName);
     const { data: userNames } = useUserNamesQuery(undefined, { pollingInterval: 60 * 1000 });
     const buildings = useAppSelector(locationsSelector);
     const selectedBuildingName = useAppSelector(getFieldVal(`${formName}.info.location.building`)) as string;
@@ -31,6 +32,22 @@ export function DeviceDialogForm({ open, onClose, title, onSave }: DeviceFormPro
     useEffect(() => {
         if (!availableRooms.some((v) => v === selectedRoomName)) setFieldValue('', ['info', 'location', 'room']);
     }, [selectedBuildingName]);
+
+    useEffect(() => {
+        if (deviceToEdit)
+            setFormData({
+                info: {
+                    name: deviceToEdit.info.name,
+                    location: {
+                        room: deviceToEdit.info.location.room,
+                        building: deviceToEdit.info.location.building,
+                    },
+                },
+                permissions: deviceToEdit.permissions,
+            });
+
+        return () => resetForm();
+    }, [deviceToEdit, setFormData, resetForm]);
 
     async function handleSave() {
         const { valid, data } = validateForm();

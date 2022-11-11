@@ -3,6 +3,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
     FormControl,
+    FormHelperText,
     IconButton,
     Input,
     InputAdornment,
@@ -12,14 +13,26 @@ import {
     useTheme,
 } from '@mui/material';
 
-function PasswordField({ label, value, onChange, onBlur, onFocus, fullWidth, ...props }: TextFieldProps) {
+function PasswordField({
+    label,
+    value,
+    onChange,
+    onBlur,
+    onFocus,
+    fullWidth,
+    error,
+    helperText,
+    ...props
+}: TextFieldProps) {
     const theme = useTheme();
     const isWide = useMediaQuery(theme.breakpoints.up('md'));
 
     const [showPsswd, setShowPsswd] = useState(false);
     return (
         <FormControl variant="standard" fullWidth={fullWidth}>
-            <InputLabel htmlFor="standard-adornment-password">{label || ''}</InputLabel>
+            <InputLabel htmlFor="standard-adornment-password" error={error}>
+                {label || ''}
+            </InputLabel>
             <Input
                 id="standard-adornment-password"
                 type={showPsswd ? 'text' : 'password'}
@@ -40,7 +53,13 @@ function PasswordField({ label, value, onChange, onBlur, onFocus, fullWidth, ...
                     </InputAdornment>
                 }
                 fullWidth={fullWidth}
+                error={error}
             />
+            {error ? (
+                <FormHelperText sx={{ margin: 0 }} error={error}>
+                    {helperText}
+                </FormHelperText>
+            ) : null}
         </FormControl>
     );
 }

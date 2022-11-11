@@ -1,9 +1,7 @@
-import { getFormData } from 'common/src/utils/getters';
-import { FieldState } from 'common/src/validations/types';
-import React, { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '.';
+import React from 'react';
+import { useAppDispatch } from '.';
 import { formsDataActions } from '../store/slices/formDataActions';
-import { Leaves, Paths } from '../types';
+import { Paths } from '../types';
 
 export function useForm<T = FormData>(formName: string) {
     const dispatch = useAppDispatch();
@@ -20,14 +18,19 @@ export function useForm<T = FormData>(formName: string) {
             dispatch(formsDataActions.setFormField({ deepPath: `${formName}.${fieldPath.join('.')}`, value })),
         [dispatch]
     );
-    const resetForm = React.useCallback(() => dispatch(formsDataActions.removeForm(formName)), [dispatch]);
-    const data = (useAppSelector(getFormData(formName)) || {}) as unknown as T;
+    const setFormData = React.useCallback(
+        (formData: T) => dispatch(formsDataActions.setFormData({ formName: formName, data: formData } as any)),
+        [dispatch]
+    );
+    const resetForm = React.useCallback(() => {
+        dispatch(formsDataActions.removeForm(formName));
+    }, [dispatch]);
 
     return {
         validateField,
         validateForm,
         setFieldValue,
         resetForm,
-        data,
+        setFormData,
     };
 }

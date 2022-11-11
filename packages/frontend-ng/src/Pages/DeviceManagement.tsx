@@ -18,28 +18,7 @@ export default function DeviceManagement({ title }: DeviceManagementProps) {
     const [urlSearchParams] = useSearchParams();
     const selectedDevice = useAppSelector(getDevice(urlSearchParams.get('deviceId') || ''));
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
     const [updateDevice, result] = useUpdateDeviceMutation();
-
-    useEffect(() => {
-        if (selectedDevice) {
-            dispatch(
-                formsDataActions.setFormData({
-                    formName: 'EDIT_DEVICE',
-                    data: {
-                        info: {
-                            name: selectedDevice.info.name,
-                            location: {
-                                room: selectedDevice.info.location.room,
-                                building: selectedDevice.info.location.building,
-                            },
-                        },
-                        permissions: selectedDevice.permissions,
-                    },
-                })
-            );
-        }
-    }, [selectedDevice, dispatch]);
 
     function closeDialog() {
         navigate({ search: '' }, { replace: true });
@@ -51,6 +30,7 @@ export default function DeviceManagement({ title }: DeviceManagementProps) {
                 title={selectedDevice?.info.name}
                 open={Boolean(selectedDevice)}
                 onClose={closeDialog}
+                deviceToEdit={selectedDevice}
                 onSave={async (data) => {
                     if (!selectedDevice) return;
 

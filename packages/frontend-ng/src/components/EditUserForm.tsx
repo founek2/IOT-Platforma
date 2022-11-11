@@ -3,9 +3,10 @@ import React from 'react';
 import { useAppSelector } from 'src/hooks';
 import { getCurrentGroups } from '../selectors/getters';
 import FieldConnector from './FieldConnector';
+import { privileges } from '../services/privileges';
 
 interface UserFormProps {
-    formName: 'REGISTRATION';
+    formName: 'REGISTRATION' | 'EDIT_USER';
     onEnter?: React.EventHandler<any>;
     editGroups?: boolean;
 }
@@ -40,16 +41,18 @@ function EditUserForm({ formName, onEnter, editGroups }: UserFormProps) {
                     fullWidth
                 />
             </Grid>
-            {/* {editGroups ? (
-                <Grid item>
+            {editGroups ? (
+                <Grid item xs={12}>
                     <FieldConnector
                         deepPath={`${formName}.groups`}
                         component="ChipArray"
-                        optionsData={map(({ name, text }) => ({ value: name, label: text }), getAllowedGroups(groups))}
-                        // className={classes.chipArray}
+                        fullWidth
+                        options={privileges
+                            .getAllowedGroups(groups)
+                            .map(({ text, name }) => ({ value: name, label: text }))}
                     />
                 </Grid>
-            ) : null} */}
+            ) : null}
         </Grid>
     );
 }

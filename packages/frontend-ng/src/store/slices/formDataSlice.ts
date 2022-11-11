@@ -4,9 +4,15 @@ import mergeDeepLeft from 'ramda/src/mergeDeepLeft';
 import { FieldState, FormsData } from 'common/src/validations/types';
 import setInPath from 'common/src/utils/setInPath';
 import getInPath from 'common/src/utils/getInPath';
+import { EditUserFormData } from '../../endpoints/users';
+import { EditDeviceFormData } from '../../endpoints/devices';
 
 // Define the initial state using that type
 const initialState: FormsData = { registeredFields: {} };
+
+type SetFormData =
+    | { formName: 'EDIT_USER'; data: EditUserFormData }
+    | { formName: 'EDIT_DEVICE'; data: EditDeviceFormData };
 
 export const formsDataSlice = createSlice({
     name: 'formsData',
@@ -14,7 +20,7 @@ export const formsDataSlice = createSlice({
     initialState,
     reducers: {
         toDefault: () => initialState,
-        setFormData: (state, action: PayloadAction<{ formName: string; data: any }>) => {
+        setFormData: (state, action: PayloadAction<SetFormData>) => {
             const { formName, data } = action.payload;
             return setInPath(formName, data, state);
         },

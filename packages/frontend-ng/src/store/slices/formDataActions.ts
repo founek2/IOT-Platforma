@@ -55,6 +55,7 @@ export const formsDataActions = {
         return function (dispatch, getState) {
             logger.info('VALIDATE_REGISTERED_FIELDS:', formName);
 
+            // @ts-ignore
             dispatch(formsDataActions.setFormData({ formName, data: getFormData(formName)(getState()) }));
             const fieldStates = validateRegisteredFields(
                 formName,

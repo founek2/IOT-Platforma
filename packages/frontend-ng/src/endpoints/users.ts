@@ -1,6 +1,6 @@
 import { IDevice } from 'common/src/models/interface/device';
 import { api } from './api';
-import { SignInResponse } from './signIn';
+import { SignInResponse, User } from './signIn';
 
 export interface RegisterUserForm {
     info: {
@@ -12,6 +12,19 @@ export interface RegisterUserForm {
     auth: {
         password: string;
     };
+}
+
+export interface EditUserFormData {
+    info: {
+        userName: string;
+        firstName?: string;
+        lastName?: string;
+        email: string;
+    };
+    auth?: {
+        password: string;
+    };
+    groups: string[];
 }
 
 type userNamesResponse = { data: { _id: string; userName: string }[] };
@@ -36,7 +49,26 @@ export const usersApi = api.injectEndpoints({
                 body: { formData: { REGISTRATION: data } },
             }),
         }),
+        users: build.query<User[], undefined>({
+            query: () => `user`,
+            providesTags: ['Users'],
+            transformResponse: (res: { docs: User[] }) => res.docs,
+        }),
+        updateUser: build.mutation<undefined, { userId: string; data: EditUserFormData }>({
+            query: ({ userId, data }) => ({
+                url: `user/${userId}`,
+                method: 'PUT',
+                body: { formData: { EDIT_USER: data } },
+            }),
+            invalidatesTags: ['Users'],
+        }),
     }),
 });
 
-export const { useUserNamesQuery, useRegisterAndSignInMutation, useRegisterMutation } = usersApi;
+export const {
+    useUserNamesQuery,
+    useRegisterAndSignInMutation,
+    useRegisterMutation,
+    useUsersQuery,
+    useUpdateUserMutation,
+} = usersApi;

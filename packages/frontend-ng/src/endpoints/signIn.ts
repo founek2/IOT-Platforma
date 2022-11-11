@@ -3,11 +3,13 @@ import { IUser } from 'common/src/models/interface/userInterface';
 import { buildRedirectUri } from '../utils/redirectUri';
 import { api } from './api';
 
+export type User = Omit<IUser, '_id'> & { _id: string };
+
 export interface SignInResponse {
     accessToken: string;
     refreshToken: string;
     token: string;
-    user: IUser;
+    user: User;
 }
 
 export interface AuthTypesResponse {

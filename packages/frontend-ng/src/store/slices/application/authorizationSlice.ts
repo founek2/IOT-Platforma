@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IUser } from 'common/src/models/interface/userInterface';
-import { signInApi } from '../../../endpoints/signIn';
+import { signInApi, User } from '../../../endpoints/signIn';
 import { usersApi } from '../../../endpoints/users';
 
 export interface AuthorizationState {
@@ -9,7 +8,7 @@ export interface AuthorizationState {
     accessTokenExpiresAt: string;
     refreshToken: string;
     refreshTokenExpiresAt: string;
-    currentUser: IUser | null;
+    currentUser: User | null;
 }
 
 const initialState: AuthorizationState = {
@@ -25,7 +24,7 @@ export const authorizationSlice = createSlice({
     name: 'authorization',
     initialState,
     reducers: {
-        setCurrentUser: (state, action: PayloadAction<IUser>) => {
+        setCurrentUser: (state, action: PayloadAction<User>) => {
             state.loggedIn = action.payload ? true : false;
             state.currentUser = action.payload;
         },

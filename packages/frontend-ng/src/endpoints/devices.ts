@@ -3,7 +3,7 @@ import { Measurement } from 'common/src/types';
 import { Device } from '../store/slices/application/devicesSlice';
 import { api } from './api';
 
-export interface EditDeviceForm {
+export interface EditDeviceFormData {
     info: Device['info'];
     permissions: Device['permissions'];
 }
@@ -12,7 +12,7 @@ interface HistoryResponse {
 }
 export const devicesApi = api.injectEndpoints({
     endpoints: (build) => ({
-        updateDevice: build.mutation<{}, { deviceID: string; data: EditDeviceForm }>({
+        updateDevice: build.mutation<{}, { deviceID: string; data: EditDeviceFormData }>({
             query: ({ deviceID, data }) => ({
                 url: `device/${deviceID}`,
                 method: 'PATCH',

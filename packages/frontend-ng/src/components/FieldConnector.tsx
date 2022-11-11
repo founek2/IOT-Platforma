@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { formsDataActions as formsActions } from '../store/slices/formDataActions';
 import Autocomplete, { AutocompleteOption } from './fieldConnector/Autocomplete';
+import ChipArray from './fieldConnector/ChipArray';
 import PasswordField from './fieldConnector/PasswordField';
 
 const { registerField, unregisterField, setFormField, validateField, validateForm, updateRegisteredField } =
@@ -24,7 +25,7 @@ const Components = {
     // DateTimePicker: DateTimePicker,
     // InputField: InputField,
     // FileLoader: FileLoader,
-    // ChipArray: ChipArray,
+    ChipArray: ChipArray,
     // CheckBox: CheckBox,
     // Autocomplete: Autocomplete
 };
@@ -63,7 +64,7 @@ type FieldConnectorProps<T extends componentKeys> = {
     fullWidth?: boolean;
     variant?: 'filled' | 'outlined' | 'standard';
 };
-type FieldConnectorAutocomplete = FieldConnectorProps<'Autocomplete'> & {
+type FieldConnectorAutocomplete = FieldConnectorProps<'Autocomplete' | 'ChipArray'> & {
     options: AutocompleteOption[];
 };
 
@@ -136,7 +137,7 @@ function FieldConnector({
         const Component = typeof component === 'string' ? Components[component] : component;
 
         let anotherProps = {};
-        if (component === 'Autocomplete') {
+        if (component === 'Autocomplete' || component === 'ChipArray') {
             const autoProps = props as FieldConnectorAutocomplete;
             anotherProps = { options: autoProps.options };
         }
