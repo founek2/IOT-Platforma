@@ -113,10 +113,10 @@ export default () =>
                     if (equals(existingConfig, newConfig)) {
                         // device exists with same config -> reuse it!
                         return alreadyExist;
-                    } else {
-                        // different config -> don`t reuse
-                        return null;
                     }
+
+                    // different config -> don`t reuse
+                    return null;
                 }
 
                 return DeviceModel.createNew(
