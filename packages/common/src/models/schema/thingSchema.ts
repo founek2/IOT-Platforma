@@ -16,7 +16,7 @@ export const thingSchema = new Schema({
                 unitOfMeasurement: String,
                 dataType: String,
                 format: Schema.Types.Mixed,
-                settable: { type: Boolean, default: false },
+                settable: Boolean,
                 retained: Boolean,
             },
         ],
