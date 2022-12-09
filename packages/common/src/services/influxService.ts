@@ -50,10 +50,12 @@ export class InfluxService {
 
     public static async saveMeasurements(points: Point[]) {
         writeApi.writePoints(points);
+        await writeApi.flush();
     }
 
     public static async saveMeasurement(point: Point) {
         writeApi.writePoint(point);
+        await writeApi.flush();
     }
 
     public static async getOrg(org: string): Promise<Organization> {
