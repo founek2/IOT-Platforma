@@ -10,10 +10,7 @@ import { format } from 'date-fns';
 import UpdatedBefore from '../../components/UpdatedBefore';
 import PlotifyBoolean from '../../components/PlotifyBoolean';
 import PlotifyNumeric from '../../components/PlotifyNumeric';
-import {
-    convertBoolHistoryToGraphData,
-    convertNumericHistoryToGraphData,
-} from 'frontend/src/utils/convertHistoryToGraphData';
+import { convertBoolHistoryToGraphData, convertNumericHistoryToGraphData } from '../../utils/convertHistoryToGraphData';
 import React, { useCallback, useState } from 'react';
 import { ActivatorButton } from '../../components/ActivatorButton';
 import { CopyUrlContext } from './helpers/CopyUrl';
@@ -28,8 +25,9 @@ interface PropertyRowComponentProps {
     value: string | number | undefined;
     property: IThingProperty;
     onChange: (newValue: string | number) => void;
+    disabled?: boolean;
 }
-function PropertyRowComponent({ value, property, onChange }: PropertyRowComponentProps) {
+function PropertyRowComponent({ value, property, onChange, disabled }: PropertyRowComponentProps) {
     const [stateValue, setStateValue] = useState(value); // TODO rozbije se při příchozí změně z websocketu (desync)
 
     if (property.settable) {
@@ -38,11 +36,16 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
 
             return propertyEnum.format.length === 1 ? (
                 <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} />
+                    <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} disabled={disabled} />
                 </CopyUrlContext>
             ) : (
                 <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <Select value={value || ''} onChange={(e) => onChange(e.target.value as string)} variant="standard">
+                    <Select
+                        value={value || ''}
+                        onChange={(e) => onChange(e.target.value as string)}
+                        variant="standard"
+                        disabled={disabled}
+                    >
                         {(property as IThingPropertyEnum).format.map((label) => (
                             <MenuItem value={label} key={label}>
                                 {label}
@@ -53,7 +56,6 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
             );
         } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format) {
             const propertyNumeric = property as IThingPropertyNumeric;
-            console.log(propertyNumeric);
             return (
                 // TODO debounce bude lepší
                 <CopyUrlContext propertyId={property.propertyId} value={value as number}>
@@ -66,6 +68,7 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
                         max={propertyNumeric.format?.max}
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"
+                        disabled={disabled}
                     />
                 </CopyUrlContext>
             );
@@ -77,6 +80,7 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
                             onChange(toogleSwitchVal(value));
                         }}
                         checked={value === 'true'}
+                        disabled={disabled}
                     />
                 </CopyUrlContext>
             );
@@ -88,6 +92,7 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
                         onChange={(e) => {
                             onChange(e.target.value);
                         }}
+                        disabled={disabled}
                     />
                 </CopyUrlContext>
             );
@@ -104,6 +109,7 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
                         const val = isNum ? Number(e.target.value) : e.target.value;
                         onChange(val);
                     })}
+                    disabled={disabled}
                 />
             </CopyUrlContext>
         );
@@ -112,17 +118,19 @@ function PropertyRowComponent({ value, property, onChange }: PropertyRowComponen
     const val = value ? value : '[Chybí hodnota]';
     return (
         <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
-            <Typography component="span">{val}</Typography>
+            <Typography component="span" sx={disabled ? { opacity: 0.6 } : undefined}>
+                {val}
+            </Typography>
         </CopyUrlContext>
     );
 }
 
-export function PropertyRowPlain({ value, property, onChange }: PropertyRowComponentProps) {
+export function PropertyRowPlain({ value, property, onChange, disabled }: PropertyRowComponentProps) {
     const { unitOfMeasurement } = property;
 
     return (
         <>
-            <PropertyRowComponent value={value} property={property} onChange={onChange} />
+            <PropertyRowComponent value={value} property={property} onChange={onChange} disabled={disabled} />
             <Typography component="span" sx={{ paddingLeft: unitOfMeasurement ? '0.4em' : '0' }}>
                 {unitOfMeasurement ? unitOfMeasurement : ''}
             </Typography>

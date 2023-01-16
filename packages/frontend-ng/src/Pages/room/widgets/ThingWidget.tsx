@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 
 import React from 'react';
 import { useAppSelector } from '../../../hooks/index';
-import { getThing } from '../../../selectors/getters';
+import { getDevice, getDevicesById, getThing } from '../../../selectors/getters';
 import { Link } from 'react-router-dom';
 import { ThingContext } from '../../../hooks/useThing';
 import { ComponentType, PropertyDataType } from 'common/src/models/interface/thing';
@@ -12,6 +12,8 @@ import { Thing } from '../../../store/slices/application/thingsSlice';
 import { PropertyRowPlain } from '../PropertyRow';
 import { Box } from '@mui/material';
 import { useUpdateThingStateMutation } from '../../../endpoints/thing';
+import Circle from '../../../components/OnlineCircle';
+import { DeviceStatus } from 'common/src/models/interface/device';
 
 function getApropriateProperty(config: Thing['config']) {
     if (config.componentType === ComponentType.activator) {
@@ -34,9 +36,14 @@ interface ThingWidgetProps {
 }
 export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({ id, sx, className }, ref) => {
     const thing = useAppSelector(getThing(id));
-    if (!thing) return null;
+    const device = useAppSelector(getDevice(thing?.deviceId!));
+    if (!thing || !device) return null;
+
     const appropriateThing = getApropriateProperty(thing.config);
     const [updatePropertyState] = useUpdateThingStateMutation();
+    const disabled = [DeviceStatus.disconnected, DeviceStatus.lost].includes(
+        device.state?.status?.value || DeviceStatus.ready
+    );
 
     return (
         <ThingContext.Provider value={thing}>
@@ -55,6 +62,11 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
                 ]}
                 ref={ref}
             >
+                <Circle
+                    status={device.state?.status}
+                    inTransition={false}
+                    sx={{ position: 'absolute', top: 5, right: 5 }}
+                />
                 <Link to={{ search: `thingId=${thing._id}` }}>
                     <Typography
                         sx={{
@@ -62,6 +74,7 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
                             textAlign: 'center',
                             paddingTop: 1,
                             paddingBottom: 1,
+                            opacity: disabled ? 0.6 : 1,
                         }}
                     >
                         {thing.config.name}
@@ -72,6 +85,7 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
                         <PropertyRowPlain
                             value={thing.state?.value[appropriateThing.propertyId]}
                             property={appropriateThing}
+                            disabled={disabled}
                             onChange={(value) =>
                                 updatePropertyState({
                                     deviceId: thing.deviceId,

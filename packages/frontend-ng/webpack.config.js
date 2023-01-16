@@ -75,11 +75,7 @@ const config = {
     // devtool: 'source-map',
     plugins: [
         !isEnvProduction && new ReactRefreshWebpackPlugin(),
-        new ForkTsCheckerWebpackPlugin({
-            typescript: {
-                mode: 'write-references',
-            },
-        }),
+        new ForkTsCheckerWebpackPlugin(),
         new CopyPlugin({
             patterns: [
                 { from: path.join(__dirname, 'public/assets'), to: 'assets' },

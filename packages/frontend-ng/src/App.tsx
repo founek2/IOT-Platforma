@@ -1,9 +1,8 @@
 import CircularProgress from '@mui/material/CircularProgress';
 import { SnackbarProvider } from 'notistack';
-import { string } from 'prop-types';
 import React, { Suspense, useCallback, useState } from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Router, Routes } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Background } from './components/Background';
 import { MenuAppBar } from './components/MenuAppBar';

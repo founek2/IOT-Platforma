@@ -58,7 +58,8 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
                     handleClose();
                     navigate('/building');
                 })
-                .then(resetForm);
+                .then(resetForm)
+                .catch(() => {});
         }
     }
     function handleClose() {
