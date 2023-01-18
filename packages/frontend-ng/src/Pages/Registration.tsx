@@ -1,4 +1,10 @@
-import { Button, Card, CardActions, CardContent, Checkbox, FormControlLabel, Grid, Paper } from '@mui/material';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
 import React, { useEffect, useState } from 'react';
 import EditUserForm from '../components/EditUserForm';
 import { RegisterUserForm, useRegisterAndSignInMutation, useRegisterMutation } from '../endpoints/users';

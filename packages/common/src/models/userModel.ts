@@ -1,9 +1,8 @@
-import mongoose, { Model, Query } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { IUser } from './interface/userInterface';
 import { IUserDocument, userSchemaPlain } from './schema/userSchema';
 import { NotifyModel } from './notifyModel';
 import { DeviceModel } from './deviceModel';
-import { keys } from 'ramda';
 
 const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;

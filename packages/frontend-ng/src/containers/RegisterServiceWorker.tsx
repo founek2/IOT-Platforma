@@ -1,4 +1,5 @@
-import { Button, Snackbar } from '@mui/material';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
 import React, { useEffect, useState } from 'react';
 import * as serviceWorker from '../serviceWorkerRegistration';
 

@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import Search from '@mui/icons-material/Search';
-
-import {
-    FormControl,
-    FormHelperText,
-    IconButton,
-    Input,
-    InputAdornment,
-    InputLabel,
-    TextFieldProps,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import IconButton from '@mui/material/IconButton';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import { TextFieldProps } from '@mui/material/TextField';
 
 export default function SearchField({
     label,

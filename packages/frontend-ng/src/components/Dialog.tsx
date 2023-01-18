@@ -2,9 +2,12 @@ import React from 'react';
 import DialogMui from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Button, IconButton, SxProps, Theme, useMediaQuery, useTheme } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import type { SxProps, Theme } from '@mui/system';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 import CloseIcon from '@mui/icons-material/Close';
 
 export interface DialogProps {

@@ -1,4 +1,4 @@
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Dialog } from '../components/Dialog';

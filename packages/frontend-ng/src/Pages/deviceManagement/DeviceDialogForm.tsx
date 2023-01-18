@@ -1,8 +1,12 @@
-import { Button, Dialog, DialogActions, DialogContent, Grid } from '@mui/material';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Grid from '@mui/material/Grid';
 import { getFieldVal } from 'common/src/utils/getters';
 import React, { useEffect, useState } from 'react';
 import FieldConnector from '../../components/FieldConnector';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../hooks';
 import { useForm } from '../../hooks/useForm';
 import { locationsSelector } from '../../selectors/locationsSelector';
 import PermissionSelect from './PermissionSelect';

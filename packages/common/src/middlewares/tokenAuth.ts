@@ -1,10 +1,8 @@
 import { JwtService } from '../services/jwtService';
-import mongoose from 'mongoose';
 import { equals, T, not } from 'ramda';
 import { logger } from 'framework-ui/src/logger';
-
 import express from 'express';
-import { IUser, Permission } from '../models/interface/userInterface';
+import { Permission } from '../models/interface/userInterface';
 import { UserModel } from '../models/userModel';
 import { RequestWithAuth } from '../types';
 

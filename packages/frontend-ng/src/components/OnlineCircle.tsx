@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import getCircleColor, { CircleColors, getCircleTooltipText } from '../utils/getCircleColor';
 import { format } from '../utils/date-fns';
 import { grey } from '@mui/material/colors';
-import { Box, SxProps, Tooltip } from '@mui/material';
-import { Theme } from '@mui/system';
+import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
+import type { SxProps, Theme } from '@mui/system';
 
 const colors = {
     green: 'initial',

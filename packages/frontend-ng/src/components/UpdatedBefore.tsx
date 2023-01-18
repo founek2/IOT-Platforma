@@ -1,6 +1,6 @@
 import React from 'react';
 import ForceUpdate from './forceUpdateHoc';
-import { Typography, TypographyProps } from '@mui/material';
+import Typography, { TypographyProps } from '@mui/material/Typography';
 import getLastUpdateText from '../utils/getLastUpdateText';
 
 type UpdatedBeforeProps = {

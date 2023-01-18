@@ -1,6 +1,6 @@
 import React from 'react';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import { IconButton } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 
 interface ActivatorProps {
     disabled?: boolean;

@@ -1,5 +1,5 @@
 import DoneIcon from '@mui/icons-material/Done';
-import { IconButton } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import clsx from 'clsx';

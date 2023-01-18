@@ -1,11 +1,9 @@
-import { CircularProgress } from '@mui/material';
-import React, { useEffect } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Dialog } from '../components/Dialog';
 import { useDevicesQuery, useUpdateDeviceMutation } from '../endpoints/devices';
-import { useAppDispatch, useAppSelector } from '../hooks/index';
+import { useAppSelector } from '../hooks/index';
 import { getDevice } from '../selectors/getters';
-import { formsDataActions } from '../store/slices/formDataActions';
 import { not } from '../utils/ramda';
 import { DeviceDialogForm } from './deviceManagement/DeviceDialogForm';
 import Room from './room/Room';

@@ -1,4 +1,11 @@
-import { Select, MenuItem, Slider, Switch, TextField, Typography, Box, SxProps } from '@mui/material';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Slider from '@mui/material/Slider';
+import Switch from '@mui/material/Switch';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import type { SxProps } from '@mui/material';
 import {
     IThingProperty,
     IThingPropertyEnum,

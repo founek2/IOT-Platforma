@@ -4,14 +4,14 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { IUser } from 'common/src/models/interface/userInterface';
-import { map, o, prop } from 'ramda';
 import React, { useState } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SettingsRemoteIcon from '@mui/icons-material/SettingsRemote';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Device } from '../../store/slices/application/devicesSlice';
-import { Menu, MenuItem, SxProps } from '@mui/material';
-import { useAppSelector } from '../../hooks';
+import type { SxProps } from '@mui/material';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { Theme } from '@mui/system';
 
 function getIcon(userId: IUser['_id'], permissions: Device['permissions']) {
@@ -92,7 +92,7 @@ export function PermissionSelect({
         onChange({ target: { value: perms } });
     }
 
-    const listItems = map(createListItem(handleClick, permissions), userNames);
+    const listItems = userNames.map(createListItem(handleClick, permissions));
 
     return (
         <>

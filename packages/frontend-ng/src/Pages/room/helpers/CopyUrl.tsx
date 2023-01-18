@@ -1,4 +1,5 @@
-import { Menu, MenuItem } from '@mui/material';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import copy from 'clipboard-copy';
 import clsx from 'clsx';
 import { logger } from 'common/src/logger';

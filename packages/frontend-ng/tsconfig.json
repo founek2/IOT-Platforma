@@ -10,7 +10,8 @@
         "allowJs": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "module": "NodeNext",
+
+        "module": "ESNext",
         "jsx": "react"
         // "allowSyntheticDefaultImports": true,
         // "noFallthroughCasesInSwitch": true,

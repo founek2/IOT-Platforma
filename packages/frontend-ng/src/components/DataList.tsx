@@ -1,4 +1,9 @@
-import { Box, List, ListItem, ListItemButton, ListItemText, ListSubheader } from '@mui/material';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
 import React, { useState } from 'react';
 import SearchField from './fieldConnector/SearchField';
 

@@ -14,9 +14,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
     }
 
     static getDerivedStateFromError(error: Error) {
+        return { hasError: true };
+
         // Update state so the next render will show the fallback UI.
-        if (process.env.NODE_ENV === 'production') return { hasError: true };
-        else return { hasError: false };
+        // if (process.env.NODE_ENV === 'production') return { hasError: true };
+        // else return { hasError: false };
     }
 
     componentDidCatch(error: Error, info: React.ErrorInfo) {

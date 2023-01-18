@@ -22,7 +22,7 @@ import {
 } from '@mui/material/colors';
 // import { HuePicker, TwitterPicker } from 'react-color';
 import { RgbColorPicker } from 'react-colorful';
-import { Box, Paper } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import { Dialog } from './Dialog';
 
 const COLORS = [

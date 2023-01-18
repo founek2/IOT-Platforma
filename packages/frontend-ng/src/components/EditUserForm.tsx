@@ -1,6 +1,6 @@
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import React from 'react';
-import { useAppSelector } from 'src/hooks';
+import { useAppSelector } from '../hooks';
 import { getCurrentGroups } from '../selectors/getters';
 import FieldConnector from './FieldConnector';
 import { privileges } from '../services/privileges';

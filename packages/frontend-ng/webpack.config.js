@@ -5,7 +5,6 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
@@ -19,7 +18,7 @@ const proxyTarget =
         ? 'https://iotdomu.cz'
         : 'http://localhost:8085';
 
-console.log('Proxy target: ', proxyTarget);
+console.log('Proxy target: ', proxyTarget, process.env.NODE_ENV);
 const config = {
     mode: isEnvProduction ? 'production' : 'development',
     entry: ['./src/index.tsx'],
@@ -36,8 +35,8 @@ const config = {
         fallback: {
             stream: require.resolve('stream-browserify'),
             process: require.resolve('process'),
+            'process/browser': require.resolve('process/browser'),
         },
-        plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
     },
     module: {
         rules: [
@@ -66,21 +65,19 @@ const config = {
                 test: /\.svg$/,
                 use: ['@svgr/webpack'],
             },
-            {
-                test: /\.m?js$/,
-            },
         ],
     },
     devtool: sourceMapEnv ? sourceMapEnv : isEnvProduction ? undefined : 'inline-source-map',
     // devtool: 'source-map',
     plugins: [
         !isEnvProduction && new ReactRefreshWebpackPlugin(),
-        new ForkTsCheckerWebpackPlugin({
-            typescript: {
-                mode: 'write-references',
-                build: true,
-            },
-        }),
+        !isEnvProduction &&
+            new ForkTsCheckerWebpackPlugin({
+                typescript: {
+                    mode: 'write-references',
+                    build: true,
+                },
+            }),
         new CopyPlugin({
             patterns: [
                 { from: path.join(__dirname, 'public/assets'), to: 'assets' },
@@ -111,10 +108,14 @@ const config = {
         new webpack.ProvidePlugin({
             process: 'process/browser',
         }),
-        new webpack.HotModuleReplacementPlugin(),
-        // new webpack.DefinePlugin({
-        //     'process.env.NODE_ENV': process.env.NODE_ENV,
-        // }),
+        !isEnvProduction && new webpack.HotModuleReplacementPlugin(),
+        isEnvProduction &&
+            new WorkboxPlugin.InjectManifest({
+                swSrc: './src/service-worker.ts',
+                swDest: 'service-worker.js',
+                maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
+                exclude: [/\.map$/, /^manifest.*\.js$/, /\/dist\//],
+            }),
     ].filter(Boolean),
     devServer: {
         proxy: {
@@ -137,29 +138,43 @@ const config = {
             rewrites: [{ from: /^\/(?!api\/)/, to: '/index.html' }],
         },
     },
+    // optimization: {
+    //     splitChunks: {
+    //         chunks: 'all',
+    //         cacheGroups: {
+    //             reactVendor: {
+    //                 test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom)[\\/]/,
+    //                 name: 'vendor-react',
+    //                 chunks: 'all',
+    //             },
+    //         },
+    //     },
+    // },
+
     optimization: {
         splitChunks: {
-            chunks: 'all',
+            chunks: 'async',
+            minSize: 20000,
+            minRemainingSize: 0,
+            minChunks: 1,
+            maxAsyncRequests: 30,
+            maxInitialRequests: 30,
+            enforceSizeThreshold: 50000,
             cacheGroups: {
                 reactVendor: {
-                    test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom)[\\/]/,
-                    name: 'vendor-react',
+                    test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom|@reduxjs|ramda)[\\/]/,
+                    name: 'vendor',
                     chunks: 'all',
                 },
+
+                // default: {
+                //     minChunks: 2,
+                //     priority: -20,
+                //     reuseExistingChunk: true,
+                // },
             },
         },
     },
 };
-
-if (isEnvProduction) {
-    config.plugins.push(
-        new WorkboxPlugin.InjectManifest({
-            swSrc: './src/service-worker.ts',
-            swDest: 'service-worker.js',
-            maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
-            exclude: [/\.map$/, /^manifest.*\.js$/, /\/dist\//],
-        })
-    );
-}
 
 module.exports = config;

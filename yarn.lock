@@ -7381,24 +7381,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-dnd/asap@npm:4.0.1":
-  version: 4.0.1
-  resolution: "@react-dnd/asap@npm:4.0.1"
-  checksum: 757db3b5c436a95383b74f187f503321092909401ce9665d9cc1999308a44de22809bf8dbe82c9126bd73b72dd6665bbc4a788e864fc3c243c59f65057a4f87f
-  languageName: node
-  linkType: hard
-
 "@react-dnd/asap@npm:^5.0.1":
   version: 5.0.2
   resolution: "@react-dnd/asap@npm:5.0.2"
   checksum: 18f040e53512983f11c542ef21e6e4cac605d585a10cd764b13bc1b2f3ac7490e0fa40503adc348d8387aa45bc8e7eebe9cb33003b960a30bb5fde666ff2adde
-  languageName: node
-  linkType: hard
-
-"@react-dnd/invariant@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@react-dnd/invariant@npm:3.0.1"
-  checksum: c1626899b8b8af0dc5c10a5745709fc415a6c81f1b729e589c579ac9a563471882c1cd9ca362f6df37f3ef9a0481316aeb1f587cbf8c104e82ceda11639af8e8
   languageName: node
   linkType: hard
 
@@ -7409,10 +7395,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-dnd/shallowequal@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@react-dnd/shallowequal@npm:3.0.1"
-  checksum: 0a41d7283a113126d98072a1c9f11d38a853dd7d6473ff1d5b8c24374977451266ba01f2e27bc5159bab08dda0a0a751672bb47a432def1db2871fd323369d8c
+"@react-dnd/shallowequal@npm:^4.0.1":
+  version: 4.0.2
+  resolution: "@react-dnd/shallowequal@npm:4.0.2"
+  checksum: 7f21d691bddbfd4d2830948cbeefecca1600b2b46bcb1934926795f07ae8a1fa60a3dfd3a2112be5ef682c3820c80a99711e9fa15843f7e300acb25a4ecb70ab
   languageName: node
   linkType: hard
 
@@ -8673,15 +8659,6 @@ __metadata:
     "@types/react": "*"
     "@types/reactcss": "*"
   checksum: 8cd881d6eb725190be942c1d71f7917d3dd1b418417740f64fa6c03ae3ba16cb91d07c4b3b348cf5bae20071c8ca5d4aaf514c9a5318077d5e50bd782a5e8da2
-  languageName: node
-  linkType: hard
-
-"@types/react-dnd-touch-backend@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@types/react-dnd-touch-backend@npm:0.5.0"
-  dependencies:
-    react-dnd-touch-backend: "*"
-  checksum: 5f3f9ef4851bd955b27293487ecccb51618f840ee9c932fcefa3b163c0a8023629637de718c6c5673b5aeca08c2cf8611ce86aff6c087ea65a52f0a4cb2569b1
   languageName: node
   linkType: hard
 
@@ -13221,17 +13198,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dnd-core@npm:15.1.2":
-  version: 15.1.2
-  resolution: "dnd-core@npm:15.1.2"
-  dependencies:
-    "@react-dnd/asap": 4.0.1
-    "@react-dnd/invariant": 3.0.1
-    redux: ^4.1.2
-  checksum: c3b1759fbcdbe1f102793bdda0f422ffa3e6d99f06a6d135bb65a728849eb50746dfffdfd52652bf0332795f61a522ff4e1a57364e0ae162ac7018a234fa9b52
-  languageName: node
-  linkType: hard
-
 "dnd-core@npm:^16.0.1":
   version: 16.0.1
   resolution: "dnd-core@npm:16.0.1"
@@ -14996,7 +14962,6 @@ __metadata:
     "@types/plotly.js": ^2.12.5
     "@types/ramda": 0.28.15
     "@types/react": ^18.0.21
-    "@types/react-dnd-touch-backend": ^0.5.0
     "@types/react-dom": ^18.0.6
     "@types/react-router-dom": ^5.3.3
     "@types/reselect": ^2.2.0
@@ -15020,9 +14985,9 @@ __metadata:
     ramda: ^0.28.0
     react: ^18.2.0
     react-colorful: ^5.6.1
-    react-dnd: ^15.1.2
-    react-dnd-html5-backend: ^15.1.3
-    react-dnd-touch-backend: ^15.1.2
+    react-dnd: ^16.0.1
+    react-dnd-html5-backend: ^16.0.1
+    react-dnd-touch-backend: ^16.0.1
     react-dom: ^18.0.2
     react-plotlyjs-ts: ^2.2.2
     react-redux: ^8.0.4
@@ -15034,7 +14999,7 @@ __metadata:
     redux-thunk: ^2.4.1
     reselect: ^4.1.6
     socket.io-client: ^4.5.2
-    source-map-explorer: ^2.5.2
+    source-map-explorer: ^2.5.3
     stream-browserify: ^3.0.0
     ts-loader: ^9.4.1
     tsconfig-paths-webpack-plugin: ^3.5.2
@@ -23419,16 +23384,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dnd-html5-backend@npm:^15.1.3":
-  version: 15.1.3
-  resolution: "react-dnd-html5-backend@npm:15.1.3"
+"react-dnd-html5-backend@npm:^16.0.1":
+  version: 16.0.1
+  resolution: "react-dnd-html5-backend@npm:16.0.1"
   dependencies:
-    dnd-core: 15.1.2
-  checksum: 325672647965873365d5afaa5ddb81562202f30e11a6d4922236f5a1c46eb336db04746726fa070ee328cade45455c636330893d330dddd7d7aad6b45c7bfb7f
+    dnd-core: ^16.0.1
+  checksum: e2368bf85d5632a5cd867b743feb54c9052d909ea5331608860fa455edf3c633ac791f5b338e3db29b19ea8670c0ba5fb43c9c1c2510760bea030811d726cdfa
   languageName: node
   linkType: hard
 
-"react-dnd-touch-backend@npm:*":
+"react-dnd-touch-backend@npm:^16.0.1":
   version: 16.0.1
   resolution: "react-dnd-touch-backend@npm:16.0.1"
   dependencies:
@@ -23438,23 +23403,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dnd-touch-backend@npm:^15.1.2":
-  version: 15.1.2
-  resolution: "react-dnd-touch-backend@npm:15.1.2"
+"react-dnd@npm:^16.0.1":
+  version: 16.0.1
+  resolution: "react-dnd@npm:16.0.1"
   dependencies:
-    "@react-dnd/invariant": 3.0.1
-    dnd-core: 15.1.2
-  checksum: ab6d4e5f93777a418630afe442db3b7f7301b3c18b81df76a947dd38fa29231efbfd09a2ed91c6544af9f9bed9fd21a8a68ea0a1e938d443c739452f9cab4949
-  languageName: node
-  linkType: hard
-
-"react-dnd@npm:^15.1.2":
-  version: 15.1.2
-  resolution: "react-dnd@npm:15.1.2"
-  dependencies:
-    "@react-dnd/invariant": 3.0.1
-    "@react-dnd/shallowequal": 3.0.1
-    dnd-core: 15.1.2
+    "@react-dnd/invariant": ^4.0.1
+    "@react-dnd/shallowequal": ^4.0.1
+    dnd-core: ^16.0.1
     fast-deep-equal: ^3.1.3
     hoist-non-react-statics: ^3.3.2
   peerDependencies:
@@ -23469,7 +23424,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 3e8c07ea4c1c0a0a6d2dfd8ba67f4f971dbd868ea50ccecc86f0735f4d583962d1ee4c5a8362b0b92c14538d2696567fed1309ef6ac95f575ccf1b580f99934d
+  checksum: e8da2186aaafcd5bb41c090a995c963a7c3c73c20991667a2cfc0c800d7f7f73913414b2e61c437cdb6221bb2151bd5174088b8b42c17056a896fc4d1da5729f
   languageName: node
   linkType: hard
 
@@ -25573,6 +25528,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"source-map-explorer@npm:^2.5.3":
+  version: 2.5.3
+  resolution: "source-map-explorer@npm:2.5.3"
+  dependencies:
+    btoa: ^1.2.1
+    chalk: ^4.1.0
+    convert-source-map: ^1.7.0
+    ejs: ^3.1.5
+    escape-html: ^1.0.3
+    glob: ^7.1.6
+    gzip-size: ^6.0.0
+    lodash: ^4.17.20
+    open: ^7.3.1
+    source-map: ^0.7.4
+    temp: ^0.9.4
+    yargs: ^16.2.0
+  bin:
+    sme: bin/cli.js
+    source-map-explorer: bin/cli.js
+  checksum: 1d4e619d7eb224f38a3dadfb20eb34a56cfc29bd237b4815b60257e7fe5ee9f791fda3e0bba91318e0f2beffec5cca573abb8b5030a95f305ce4abee93296065
+  languageName: node
+  linkType: hard
+
 "source-map-js@npm:^1.0.2":
   version: 1.0.2
   resolution: "source-map-js@npm:1.0.2"
@@ -25648,6 +25626,13 @@ __metadata:
   version: 0.7.3
   resolution: "source-map@npm:0.7.3"
   checksum: cd24efb3b8fa69b64bf28e3c1b1a500de77e84260c5b7f2b873f88284df17974157cc88d386ee9b6d081f08fdd8242f3fc05c953685a6ad81aad94c7393dedea
+  languageName: node
+  linkType: hard
+
+"source-map@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "source-map@npm:0.7.4"
+  checksum: 01cc5a74b1f0e1d626a58d36ad6898ea820567e87f18dfc9d24a9843a351aaa2ec09b87422589906d6ff1deed29693e176194dc88bcae7c9a852dc74b311dbf5
   languageName: node
   linkType: hard
 

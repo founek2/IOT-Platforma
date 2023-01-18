@@ -1,13 +1,11 @@
 import DoneIcon from '@mui/icons-material/Done';
-import { CircularProgress, IconButton } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
 import clsx from 'clsx';
 import { logger } from 'common/src/logger';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Background } from '../components/Background';
-import { ContextMenu } from '../components/ContextMenu';
 import { Draggable, DraggableProvider } from '../components/Draggable';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useAppBarContext } from '../hooks/useAppBarContext';

@@ -1,4 +1,5 @@
-import { Breadcrumbs, Link as LinkMUI } from '@mui/material';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import LinkMUI from '@mui/material/Link';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
