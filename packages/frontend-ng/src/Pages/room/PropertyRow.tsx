@@ -131,7 +131,10 @@ export function PropertyRowPlain({ value, property, onChange, disabled }: Proper
     return (
         <>
             <PropertyRowComponent value={value} property={property} onChange={onChange} disabled={disabled} />
-            <Typography component="span" sx={{ paddingLeft: unitOfMeasurement ? '0.4em' : '0' }}>
+            <Typography
+                component="span"
+                sx={{ paddingLeft: unitOfMeasurement ? '0.4em' : '0', opacity: disabled ? 0.6 : 1 }}
+            >
                 {unitOfMeasurement ? unitOfMeasurement : ''}
             </Typography>
         </>
