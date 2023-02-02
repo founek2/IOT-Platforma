@@ -147,7 +147,7 @@ function ValueComponent({
         );
     }
 
-    const val = value ? value : '[Chybí hodnota]';
+    const val = value !== undefined ? value : '[Chybí hodnota]';
     return <Typography component="span">{val} </Typography>;
 }
 
