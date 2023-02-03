@@ -14,6 +14,10 @@ const DeviceManagementLazy = lazy(() => import(/* webpackChunkName: 'DeviceManag
 
 const LocationsLazy = lazy(() => import(/* webpackChunkName: 'Locations' */ '../Pages/Locations'));
 
+const LocationsManagementLazy = lazy(
+    () => import(/* webpackChunkName: 'LocationsManagement' */ '../Pages/LocationsManagement')
+);
+
 const RoomLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room'));
 
 // const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'EditNotifyForm' */ '../Pages/EditNotifyForm'));
@@ -41,8 +45,8 @@ const userRoutes: Route[] = [
     //     path: '/profile/*',
     //     Component: ProfileLazy,
     // },
-    { path: '/management/building', Component: LocationsLazy, name: 'deviceControl', Icon: DevicesOtherIcon },
-    { path: '/management/building/:building', Component: LocationsLazy, name: 'deviceControl' },
+    { path: '/management/building', Component: LocationsManagementLazy, name: 'deviceControl', Icon: DevicesOtherIcon },
+    { path: '/management/building/:building', Component: LocationsManagementLazy, name: 'deviceControl' },
     { path: '/management/building/:building/room/:room', Component: DeviceManagementLazy, name: 'deviceControl' },
     // {
     //     path: '/management/building/:building/room/:room',

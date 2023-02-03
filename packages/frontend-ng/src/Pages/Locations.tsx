@@ -25,7 +25,7 @@ interface DevicesContentProps {
 }
 function DevicesContent({ buildingsData, editMode, onMove, editEnabled }: DevicesContentProps) {
     const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
-
+    console.log(editEnabled, editMode);
     return (
         <Grid container justifyContent="center">
             {buildingsData.sort(byPreferences(locationPreferences)).map((building, idx) => {
