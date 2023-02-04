@@ -44,7 +44,7 @@ function Sensor({ deviceId, thing }: BoxWidgetProps) {
             <div className={classes.container}>
                 {Icon ? <Icon className={classes.icon} /> : null}
                 <Typography component="span">
-                    {value || '??'}&nbsp;{property.unitOfMeasurement || ''}
+                    {value === undefined ? '??' : value}&nbsp;{property.unitOfMeasurement || ''}
                 </Typography>
             </div>
         </div>
