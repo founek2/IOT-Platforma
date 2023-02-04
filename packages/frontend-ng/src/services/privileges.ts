@@ -10,7 +10,9 @@ import { append } from '../utils/ramda';
 
 const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement'));
 
-const DeviceManagementLazy = lazy(() => import(/* webpackChunkName: 'DeviceManagement' */ '../Pages/DeviceManagement'));
+const DeviceManagementLazy = lazy(
+    () => import(/* webpackChunkName: 'DeviceManagement' */ '../Pages/DeviceManagementRoom')
+);
 
 const LocationsLazy = lazy(() => import(/* webpackChunkName: 'Locations' */ '../Pages/Locations'));
 

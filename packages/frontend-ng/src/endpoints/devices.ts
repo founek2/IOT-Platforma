@@ -28,4 +28,4 @@ export const devicesApi = api.injectEndpoints({
     }),
 });
 
-export const { useDevicesQuery, useUpdateDeviceMutation } = devicesApi;
+export const { useDevicesQuery, useLazyDevicesQuery, useUpdateDeviceMutation } = devicesApi;

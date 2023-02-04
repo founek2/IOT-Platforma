@@ -16,9 +16,6 @@
         "dev:fe": "yarn workspace frontend dev",
         "prepare": "ts-patch install -s"
     },
-    "dependencies": {
-        "caniuse-lite": "^1.0.30001346"
-    },
     "devDependencies": {
         "@types/node": "^16.11.7",
         "lerna": "^3.22.1",

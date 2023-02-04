@@ -1,15 +1,12 @@
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDevicesQuery, useUpdateDeviceMutation } from '../endpoints/devices';
 import { useAppSelector } from '../hooks/index';
-import { getAllDevices, getDevice, getDevices } from '../selectors/getters';
+import { getDevice } from '../selectors/getters';
 import { not } from '../utils/ramda';
 import { DeviceDialogForm } from './deviceManagement/DeviceDialogForm';
 import Room from './room/Room';
-import Typography from '@mui/material/Typography';
-import { Grid, TextField } from '@mui/material';
-import { DeviceWidget } from './room/widgets/DeviceWidget';
 
 interface DeviceManagementProps {
     title?: string;

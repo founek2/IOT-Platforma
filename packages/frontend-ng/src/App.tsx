@@ -10,6 +10,7 @@ import { NotificationReduxConnect } from './containers/NotificationReduxConnect'
 import { RegisterServiceWorker } from './containers/RegisterServiceWorker';
 import MyRoutes from './containers/Routes';
 import { MyThemeProvider } from './containers/ThemeProvider';
+import WebSocket from './containers/WebSocket';
 import { AppBarContext, AppBarContextType, defaultAppBarCtx } from './hooks/useAppBarContext';
 import { persistor, store } from './store';
 
@@ -39,6 +40,7 @@ function App() {
                                     </Suspense>
                                 </Background>
                             </AppBarContext.Provider>
+                            <WebSocket />
                         </BrowserRouter>
                     </SnackbarProvider>
                 </MyThemeProvider>

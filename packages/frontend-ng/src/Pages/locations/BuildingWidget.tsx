@@ -55,7 +55,6 @@ interface BuildingWidgetProps {
 export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetProps>(
     ({ isDragable, building, editMode, isSingle, onMove, className, editEnabled }, ref) => {
         const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
-        console.log('clsx', className);
         return (
             <Grid
                 item
