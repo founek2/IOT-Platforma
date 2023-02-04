@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -105,36 +106,49 @@ function Dragable({
     return <Box ref={ref}>{render(isDragging)}</Box>;
 }
 
+// export function HomePage() {
+//     const [cards, setCards] = useState(defaultCards);
+
+//     const moveCard = useCallback(
+//         (dragIndex: number, hoverIndex: number) =>
+//             setCards((prevCards: Item[]) => {
+//                 const newCards = [...prevCards];
+//                 const tmp = newCards[hoverIndex];
+//                 newCards[hoverIndex] = newCards[dragIndex];
+//                 newCards[dragIndex] = tmp;
+
+//                 return newCards;
+//             }),
+//         []
+//     );
+
+//     return (
+//         <DraggableProvider>
+//             <Grid container spacing={{ xs: 2 }}>
+//                 {cards.map((card, idx) => (
+//                     <Grid item xs={2} key={card.id}>
+//                         <Dragable
+//                             id={card.id}
+//                             index={idx}
+//                             onMove={moveCard}
+//                             render={(isDragging) => <Paper sx={{ opacity: isDragging ? 0.3 : 1 }}>{card.text}</Paper>}
+//                         />
+//                     </Grid>
+//                 ))}
+//             </Grid>
+//         </DraggableProvider>
+//     );
+// }
+
 export function HomePage() {
-    const [cards, setCards] = useState(defaultCards);
-
-    const moveCard = useCallback(
-        (dragIndex: number, hoverIndex: number) =>
-            setCards((prevCards: Item[]) => {
-                const newCards = [...prevCards];
-                const tmp = newCards[hoverIndex];
-                newCards[hoverIndex] = newCards[dragIndex];
-                newCards[dragIndex] = tmp;
-
-                return newCards;
-            }),
-        []
-    );
-
     return (
-        <DraggableProvider>
-            <Grid container spacing={{ xs: 2 }}>
-                {cards.map((card, idx) => (
-                    <Grid item xs={2} key={card.id}>
-                        <Dragable
-                            id={card.id}
-                            index={idx}
-                            onMove={moveCard}
-                            render={(isDragging) => <Paper sx={{ opacity: isDragging ? 0.3 : 1 }}>{card.text}</Paper>}
-                        />
-                    </Grid>
-                ))}
-            </Grid>
-        </DraggableProvider>
+        <Box sx={{ padding: 2 }}>
+            <Typography variant="h2" fontWeight={500} textAlign="center">
+                Vítej!
+            </Typography>
+            <Typography>
+                Pro přihlášení stiskněte tlačítko Login nebo v menu vyber Registrovat pro založení nového účtu
+            </Typography>
+        </Box>
     );
 }

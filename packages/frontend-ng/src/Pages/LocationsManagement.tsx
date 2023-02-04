@@ -42,7 +42,7 @@ export default function LocationsManagement({ title }: DevicesProps) {
 
     return (
         <>
-            <Grid container justifyContent="center">
+            <Grid container justifyContent="center" sx={{ padding: 2 }}>
                 <Grid item xs={12} md={7} lg={6} xl={5}>
                     <TextField
                         variant="standard"
@@ -57,7 +57,6 @@ export default function LocationsManagement({ title }: DevicesProps) {
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fill, minmax(8rem, 1fr))',
                             gap: 2,
-                            padding: 2,
                             [theme.breakpoints.up('md')]: {
                                 gridTemplateColumns: 'repeat(auto-fill, minmax(12rem, 1fr))',
                             },

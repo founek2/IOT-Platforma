@@ -1,10 +1,13 @@
 import { createSlice, EntityState, PayloadAction, createEntityAdapter } from '@reduxjs/toolkit';
 
+const detectedColorMode =
+    window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
 export interface PreferencesState {
     colorMode: 'light' | 'dark';
 }
 const initialState: PreferencesState = {
-    colorMode: 'dark',
+    colorMode: detectedColorMode,
 };
 
 export const preferencesSlice = createSlice({

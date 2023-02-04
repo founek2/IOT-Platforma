@@ -32,7 +32,6 @@ function PasswordField({
                 {label || ''}
             </InputLabel>
             <Input
-                id="standard-adornment-password"
                 type={showPsswd ? 'text' : 'password'}
                 value={value}
                 onChange={onChange}

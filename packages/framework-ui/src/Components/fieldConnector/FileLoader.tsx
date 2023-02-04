@@ -54,7 +54,6 @@ function FileLoader({ onChange, label, value, className, FormHelperTextProps, he
             <div className={classes.inputWrapper}>
                 <InputLabel htmlFor="standard-adornment-password">{label}</InputLabel>
                 <Input
-                    id="standard-adornment-password"
                     value={value?.name ? value.name : value}
                     // onChange={handleChange('password')}
                     fullWidth

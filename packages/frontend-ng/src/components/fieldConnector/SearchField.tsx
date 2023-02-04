@@ -27,7 +27,6 @@ export default function SearchField({
                 {label || ''}
             </InputLabel>
             <Input
-                id="standard-adornment-password"
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}

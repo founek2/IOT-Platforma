@@ -5,6 +5,7 @@ import rootReducer from './slices';
 import { notificationActions } from './slices/notificationSlice';
 import { $CombinedState } from '@reduxjs/toolkit';
 import errorMessages from 'common/src/localization/error';
+import { authorizationActions } from './slices/application/authorizationActions';
 
 export const rtkQueryErrorLogger: Middleware =
     ({ dispatch }) =>
@@ -23,6 +24,10 @@ export const rtkQueryErrorLogger: Middleware =
                     })
                 );
             } else dispatch(notificationActions.add({ message: 'Nastala chyba', options: { variant: 'error' } }));
+
+            if (action.error?.message === 'Rejected') {
+                dispatch(authorizationActions.signOut() as any);
+            }
         }
 
         return next(action);
