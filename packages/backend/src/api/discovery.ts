@@ -14,6 +14,8 @@ import eventEmitter from '../services/eventEmitter';
 import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
 import { IThing } from 'common/src/models/interface/thing';
 import { extractPlainConfig } from '../utils/extractPlainConfig';
+import util from 'util';
+import { logger } from 'framework-ui/src/logger';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -104,13 +106,17 @@ export default () =>
                 if (alreadyExist) {
                     const existingConfig = alreadyExist.things.map(extractPlainConfig);
                     const newConfig = things.map(extractPlainConfig);
+
+                    logger.silly('existingConfig', util.inspect(existingConfig, { showHidden: false, depth: null }));
+                    logger.silly('newConfig', util.inspect(newConfig, { showHidden: false, depth: null }));
+
                     if (equals(existingConfig, newConfig)) {
                         // device exists with same config -> reuse it!
                         return alreadyExist;
-                    } else {
-                        // different config -> don`t reuse
-                        return null;
                     }
+
+                    // different config -> don`t reuse
+                    return null;
                 }
 
                 return DeviceModel.createNew(

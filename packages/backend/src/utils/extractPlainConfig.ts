@@ -5,7 +5,9 @@ export type ThingPlainConfig = IThing['config'] & { properties: Omit<IThing['con
 export function extractPlainConfig(thing: IThing): ThingPlainConfig {
     const newThing = clone(thing.config);
     // console.log('thing', newThing);
-    newThing.properties = newThing.properties.map((property) => omit(['_id'], property));
+    newThing.properties = newThing.properties
+        .map((property) => omit(['_id'], property))
+        .map((property) => (property.settable ? property : { ...property, settable: false }));
     // console.log('thing', newThing);
 
     return newThing as ThingPlainConfig;

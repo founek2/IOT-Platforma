@@ -30,7 +30,7 @@ export function convertProperty(property: IThingProperty): IThingProperty {
 }
 
 export function convertDiscoveryThing(thing: IDiscoveryThing): IThing {
-    return o(
+    const thingConverted = o(
         dissocPath(['config', 'propertyIds']),
         assocPath(
             ['config', 'properties'],
@@ -42,4 +42,11 @@ export function convertDiscoveryThing(thing: IDiscoveryThing): IThing {
             )
         )
     )(thing) as unknown as IThing;
+
+    // Fill settable with default false
+    thingConverted.config.properties = thingConverted.config.properties.map((property) =>
+        property.settable ? property : { ...property, settable: false }
+    );
+
+    return thingConverted;
 }
