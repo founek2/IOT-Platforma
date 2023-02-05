@@ -13,7 +13,7 @@ interface SimpleSensorProps {
 export function SimpleSensor({ thing, property }: SimpleSensorProps) {
     const Icon = SensorIcons[property.propertyClass];
 
-    const value = thing.state?.value && thing.state?.value[property.propertyId];
+    const value = thing.state?.[property.propertyId]?.value;
 
     if (!value) return null;
 

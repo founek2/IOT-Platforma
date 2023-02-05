@@ -44,8 +44,7 @@ export default function RoomPage({ title }: RoomProps) {
                                       sx={{ paddingBottom: 2 }}
                                       key={property.propertyId}
                                       property={property}
-                                      value={thing.state?.value[property.propertyId]}
-                                      timestamp={thing.state?.timestamp ? new Date(thing.state.timestamp) : undefined}
+                                      state={thing.state?.[property.propertyId]}
                                       onChange={(value) =>
                                           updatePropertyState({
                                               deviceId: thing.deviceId,

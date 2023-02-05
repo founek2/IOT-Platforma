@@ -27,9 +27,10 @@ import { SensorIcons } from '../../constants/sensorIcons';
 import { Measurement } from 'common/src/types';
 import { Theme } from '@mui/system';
 import ColorPicker from '../../components/ColorPicker';
+import { PropertyState } from '../../store/slices/application/thingsSlice';
 
 interface PropertyRowComponentProps {
-    value: string | number | undefined;
+    value: string | number | boolean | undefined;
     property: IThingProperty;
     onChange: (newValue: string | number) => void;
     disabled?: boolean;
@@ -176,7 +177,7 @@ function showDetailVisualization(property: IThingProperty, historyData: Measurem
 
 interface PropertyRowProps {
     property: IThingProperty;
-    value?: number | string;
+    state?: PropertyState;
     timestamp?: Date;
     onChange: (newValue: string | number) => void;
     history?: Measurement[];
@@ -184,15 +185,7 @@ interface PropertyRowProps {
     sx?: SxProps<Theme>;
 }
 
-function PropertyRow({
-    property,
-    value,
-    onChange,
-    history,
-    timestamp,
-    defaultShowDetail = false,
-    sx,
-}: PropertyRowProps) {
+function PropertyRow({ property, state, onChange, history, defaultShowDetail = false, sx }: PropertyRowProps) {
     const [showDetail, setshowDetail] = useState(defaultShowDetail);
     const toogleDetail = useCallback(() => setshowDetail(!showDetail), [setshowDetail, showDetail]);
 
@@ -206,10 +199,15 @@ function PropertyRow({
                 <Typography component="span" onClick={toogleDetail} pr={2} sx={{ cursor: 'pointer' }}>
                     {name}
                 </Typography>
-                <PropertyRowPlain property={property} value={value} onChange={onChange} />
+                <PropertyRowPlain property={property} value={state?.value} onChange={onChange} />
             </Box>
-            {showDetail && timestamp ? (
-                <UpdatedBefore gutterBottom time={timestamp} variant="body2" prefix="Aktualizováno před" />
+            {showDetail && state?.timestamp ? (
+                <UpdatedBefore
+                    gutterBottom
+                    time={new Date(state.timestamp)}
+                    variant="body2"
+                    prefix="Aktualizováno před"
+                />
             ) : null}
             {showDetail && history?.some((v) => v.propertyId === property.propertyId)
                 ? showDetailVisualization(property, history)

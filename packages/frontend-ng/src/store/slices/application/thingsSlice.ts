@@ -4,13 +4,15 @@ import { devicesApi } from '../../../endpoints/devices';
 import { thingsApi } from '../../../endpoints/thing';
 import { normalizeDevices } from '../../../utils/normalizr';
 
+export interface PropertyState {
+    value: string | number | boolean;
+    timestamp: string;
+}
+
 export type Thing = Omit<IThing, '_id' | 'state'> & {
     _id: string;
     deviceId: string;
-    state?: {
-        timestamp: number | string;
-        value: { [propertyId: string]: string | number };
-    };
+    state?: Record<string, PropertyState | undefined>;
 };
 
 const thingsAdapter = createEntityAdapter<Thing>({
@@ -36,12 +38,11 @@ export const thingsSlice = createSlice({
             const thing = state.entities[id];
             if (thing && changes) {
                 if (!thing.state) {
-                    thing.state = { value: {} } as any;
+                    thing.state = {};
                 }
                 thing.state!.timestamp = changes.timestamp;
-                Object.keys(changes.value).forEach((propertyId) => {
-                    const value = changes.value[propertyId];
-                    thing.state!.value[propertyId] = value;
+                Object.keys(changes).forEach((propertyId) => {
+                    thing.state![propertyId] = changes[propertyId];
                 });
             }
         },
@@ -57,7 +58,7 @@ export const thingsSlice = createSlice({
             const { thingId, value, propertyId } = meta.arg.originalArgs;
 
             thingsSlice.caseReducers.updateOneState(state, {
-                payload: { id: thingId, changes: { value: { [propertyId]: value }, timestamp: new Date().getTime() } },
+                payload: { id: thingId, changes: { [propertyId]: { value, timestamp: new Date().toString() } } },
                 type: 'things/updateOneState',
             });
         });
