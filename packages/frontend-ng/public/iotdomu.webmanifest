@@ -5,7 +5,6 @@
     "scope": "/",
     "description": "IOT Platforma pro ovládání vlastních zařízení",
     "display": "standalone",
-    "theme_color": "#1876d2",
     "background_color": "#ffffff",
     "icons": [
         {

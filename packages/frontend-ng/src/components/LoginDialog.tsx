@@ -71,17 +71,12 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
         <Dialog
             open={open}
             // keepMounted
+            fullWidth
             onClose={handleClose}
-            aria-describedby="alert-dialog-slide-description"
             PaperProps={{
                 sx: {
                     overflowY: 'visible',
-                    [theme.breakpoints.up('lg')]: {
-                        width: 500,
-                    },
-                    [theme.breakpoints.up('md')]: {
-                        width: 400,
-                    },
+                    maxWidth: 400,
                 },
             }}
         >
