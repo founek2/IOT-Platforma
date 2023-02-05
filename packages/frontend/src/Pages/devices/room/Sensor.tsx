@@ -34,7 +34,7 @@ function Sensor({ deviceId, thing }: BoxWidgetProps) {
     const property = head(thing.config.properties)!;
     const Icon = property.propertyClass ? SensorIcons[property.propertyClass] : null;
 
-    const value = thing.state?.value && thing.state.value[property.propertyId];
+    const value = thing.state?.[property.propertyId].value;
 
     return (
         <div className={classes.root}>

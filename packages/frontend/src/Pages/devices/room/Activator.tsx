@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 function Activator({ onClick, deviceId, thing, className, disabled }: BoxWidgetProps) {
     const classes = useStyles();
     const property = head(thing.config.properties)! as IThingPropertyEnum;
-    const value = (thing.state?.value || { [property.propertyId]: 'false' })[property.propertyId];
+    const value = thing.state?.[property.propertyId]?.value || false;
 
     return (
         <div className={clsx(className, classes.root)}>

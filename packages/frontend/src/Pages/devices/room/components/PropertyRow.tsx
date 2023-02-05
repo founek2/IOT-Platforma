@@ -65,7 +65,7 @@ function ValueComponent({
     property,
     onChange,
 }: {
-    value: string | number | undefined;
+    value: string | number | boolean | undefined;
     property: IThingProperty;
     onChange: (newValue: string | number) => void;
 }) {
@@ -182,7 +182,7 @@ function showDetailVisualization(
 
 interface PropertyRowProps {
     property: IThingProperty;
-    value?: number | string;
+    value?: number | string | boolean;
     timestamp?: Date;
     onChange: (newValue: string | number) => void;
     history?: RootState['application']['thingHistory'];

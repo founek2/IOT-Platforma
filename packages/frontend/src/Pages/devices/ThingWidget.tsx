@@ -47,7 +47,13 @@ export function ThingWidget({ device, thingId }: ThingWidgetProps) {
                         onClick={(propertyId, newValue) =>
                             dispatch(devicesActions.updateState(device._id, thing._id, propertyId, newValue))
                         }
-                        lastChange={state?.timestamp}
+                        lastChange={
+                            state
+                                ? new Date(
+                                      Math.max(...Object.values(state).map((v) => new Date(v.timestamp).getTime()))
+                                  )
+                                : undefined
+                        }
                         disabled={isAfk(device.state?.status?.value)}
                         deviceStatus={device?.state?.status}
                         deviceId={device._id}

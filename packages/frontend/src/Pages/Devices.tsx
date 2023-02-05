@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
 function updateControl(updateThingA: any) {
     return ({ _id, thing }: SocketUpdateThingState) => {
         console.log('web socket GOT', _id, thing);
-        thing.state!.timestamp = new Date();
         updateThingA({ _id, thing });
     };
 }

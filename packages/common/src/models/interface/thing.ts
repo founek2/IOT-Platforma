@@ -24,6 +24,10 @@ export enum PropertyDataType {
 export enum StringFormat {
     httpStream = 'httpStream',
 }
+export interface PropertyState {
+    value: string | number | boolean;
+    timestamp: Date;
+}
 
 export interface IThing {
     _id?: any;
@@ -33,10 +37,11 @@ export interface IThing {
         componentType: ComponentType;
         properties: IThingProperty[];
     };
-    state?: {
-        timestamp: Date;
-        value: { [propertyId: string]: string | number };
-    };
+    state?: { [propertyId: string]: PropertyState };
+    // state?: {
+    //     timestamp: Date;
+    //     value: { [propertyId: string]: string | number };
+    // };
 }
 
 export type IThingProperty = IThingPropertyBase | IThingPropertyNumeric | IThingPropertyEnum;

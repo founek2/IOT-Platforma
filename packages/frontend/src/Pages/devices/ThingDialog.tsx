@@ -59,8 +59,10 @@ export function ThingDialog({ room }: ThingDialogProps) {
                           <PropertyRow
                               key={property.propertyId}
                               property={property}
-                              value={thing.state?.value[property.propertyId]}
-                              timestamp={thing.state?.timestamp && new Date(thing.state.timestamp)}
+                              value={thing.state?.[property.propertyId].value}
+                              timestamp={
+                                  thing.state?.timestamp && new Date(thing.state?.[property.propertyId].timestamp)
+                              }
                               onChange={(newValue: any) =>
                                   dispatch(
                                       devicesActions.updateState(

@@ -113,11 +113,11 @@ export const devicesActions = {
                         const mergedState = thing.state
                             ? mergeDeepLeft(
                                   {
-                                      value: { [propertyId]: newValue },
+                                      [propertyId]: { value: newValue, timestamp: new Date() },
                                   },
                                   thing.state
                               )
-                            : { timestamp: new Date(), value: {} };
+                            : { [propertyId]: { timestamp: new Date(), value: newValue } };
                         dispatch(
                             thingsReducerActions.updateOne({
                                 id: thingId,

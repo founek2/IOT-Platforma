@@ -1,6 +1,6 @@
 import { CONTROL_TYPES } from '../constants';
 import { IDevice } from '../models/interface/device';
-import { IThing } from '../models/interface/thing';
+import { IThing, PropertyState } from '../models/interface/thing';
 import { IUser, Permission } from '../models/interface/userInterface';
 import type { Request } from 'express';
 
@@ -79,10 +79,7 @@ export type SocketUpdateThingState = {
     thing: {
         _id: IThing['_id'];
         nodeId: IThing['config']['nodeId'];
-        state: {
-            value: { [propertyId: string]: string | number };
-            timestamp: Date;
-        };
+        state: { [propertyId: string]: PropertyState };
     };
 };
 type Dict = { [key: string]: any };

@@ -16,7 +16,7 @@ const initialState = {
 interface CopyUrlContextProps {
     children: JSX.Element | JSX.Element[];
     propertyId: IThingProperty['propertyId'];
-    value: string | number;
+    value: string | number | boolean;
     className?: string;
 }
 

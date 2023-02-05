@@ -21,8 +21,6 @@ export const thingSchema = new Schema({
             },
         ],
     },
-    state: {
-        timestamp: Date,
-        value: String,
-    },
+    // state: { type: Map, off: { value: Schema.Types.Mixed, timestamp: Date } },
+    state: Schema.Types.Mixed,
 });

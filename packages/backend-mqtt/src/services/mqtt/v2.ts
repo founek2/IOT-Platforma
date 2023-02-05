@@ -67,8 +67,8 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
             },
             {
                 $set: {
-                    'things.$.state.timestamp': timestamp,
-                    [`things.$.state.value.${propertyId}`]: result.value,
+                    [`things.$.state.${propertyId}.value`]: result.value,
+                    [`things.$.state.${propertyId}.timestamp`]: timestamp,
                 },
             }
         ).exec();
@@ -109,7 +109,7 @@ function sendToUsers(
         thing: {
             _id: thing._id,
             nodeId: nodeId,
-            state: { value: { [propertyId]: newValue }, timestamp },
+            state: { [propertyId]: { value: newValue, timestamp } },
         },
     };
     device.permissions['read'].forEach((userId) => {
