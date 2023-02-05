@@ -37,7 +37,7 @@ export interface IThing {
         componentType: ComponentType;
         properties: IThingProperty[];
     };
-    state?: { [propertyId: string]: PropertyState };
+    state?: Record<string, PropertyState | undefined>;
     // state?: {
     //     timestamp: Date;
     //     value: { [propertyId: string]: string | number };

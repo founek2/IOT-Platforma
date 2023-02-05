@@ -59,9 +59,10 @@ export function ThingDialog({ room }: ThingDialogProps) {
                           <PropertyRow
                               key={property.propertyId}
                               property={property}
-                              value={thing.state?.[property.propertyId].value}
+                              value={thing.state?.[property.propertyId]?.value}
                               timestamp={
-                                  thing.state?.timestamp && new Date(thing.state?.[property.propertyId].timestamp)
+                                  thing.state?.[property.propertyId]?.timestamp &&
+                                  new Date(thing.state![property.propertyId]!.timestamp)
                               }
                               onChange={(newValue: any) =>
                                   dispatch(

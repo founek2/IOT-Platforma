@@ -62,7 +62,7 @@ function SimpleSensor({ thing, property }: SimpleSensorProps) {
     const classes = useStyles();
     const Icon = SensorIcons[property.propertyClass];
 
-    const value = thing.state?.value && thing.state?.[property.propertyId].value;
+    const value = thing.state?.value && thing.state?.[property.propertyId]?.value;
 
     if (!value) return null;
 

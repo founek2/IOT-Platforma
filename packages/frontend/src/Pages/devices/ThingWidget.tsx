@@ -50,7 +50,7 @@ export function ThingWidget({ device, thingId }: ThingWidgetProps) {
                         lastChange={
                             state
                                 ? new Date(
-                                      Math.max(...Object.values(state).map((v) => new Date(v.timestamp).getTime()))
+                                      Math.max(...Object.values(state).map((v) => new Date(v!.timestamp).getTime()))
                                   )
                                 : undefined
                         }
