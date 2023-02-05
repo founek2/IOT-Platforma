@@ -122,7 +122,7 @@ function PropertyRowComponent({ value, property, onChange, disabled }: PropertyR
         );
     }
 
-    const val = value ? value : '[Chybí hodnota]';
+    const val = value === undefined ? '[Chybí hodnota]' : value;
     return (
         <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
             <Typography component="span" sx={disabled ? { opacity: 0.6 } : undefined}>
