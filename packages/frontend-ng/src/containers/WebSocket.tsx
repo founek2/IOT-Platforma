@@ -41,14 +41,11 @@ function WebSocket() {
 
     useEffect(() => {
         function updateDevice(payload: Device) {
-            console.log(payload);
             dispatch(devicesReducerActions.updateOne({ id: payload._id, changes: payload }));
         }
 
         function updateControl({ _id, thing }: SocketUpdateThingState) {
-            // console.log(payload);
             console.log('web socket GOT', _id, thing);
-            // updateThingA({ _id, thing });
             dispatch(
                 thingsReducerActions.updateOneState({
                     id: thing._id,

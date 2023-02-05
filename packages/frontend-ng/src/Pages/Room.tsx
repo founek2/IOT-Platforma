@@ -18,7 +18,6 @@ export default function RoomPage({ title }: RoomProps) {
     const { isLoading } = useDevicesQuery(undefined, { pollingInterval: 10 * 60 * 1000 });
     const [urlSearchParams] = useSearchParams();
     const thing = useAppSelector(getThing(urlSearchParams.get('thingId') || ''));
-    const { setAppHeader, resetAppHeader } = useAppBarContext();
     const navigate = useNavigate();
     const [fetchHistory, { data: historyData }] = useLazyThingHistoryQuery();
     const [updatePropertyState] = useUpdateThingStateMutation();

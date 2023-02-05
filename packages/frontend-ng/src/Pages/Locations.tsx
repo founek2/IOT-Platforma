@@ -117,13 +117,14 @@ export default function Locations({ title }: DevicesProps) {
                     <DoneIcon />
                 </IconButton>
             );
-        else resetAppHeader();
-    }, [isEditMode, leaveEditMode]);
+        else if (title) {
+            setAppHeader(title);
+        } else {
+            resetAppHeader();
+        }
 
-    useEffect(() => {
-        if (title) setAppHeader(title);
         return () => resetAppHeader();
-    }, [title]);
+    }, [isEditMode, leaveEditMode, title]);
 
     function handleSelectEditMode(mode: 'buildings' | 'rooms') {
         setEditMode(mode);

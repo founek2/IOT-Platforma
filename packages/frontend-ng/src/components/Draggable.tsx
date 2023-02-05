@@ -105,10 +105,10 @@ export function DraggableProvider({ children }: { children: React.ReactElement |
     const isTouchScreen = checkIfTouchScreen();
 
     if (isTouchScreen) {
-        logger.info('Using TouchBackend');
+        logger.debug('Using TouchBackend');
         return <DndProvider backend={TouchBackend}>{children}</DndProvider>;
     }
 
-    logger.info('Using HTML5Backend');
+    logger.debug('Using HTML5Backend');
     return <DndProvider backend={HTML5Backend}>{children}</DndProvider>;
 }
