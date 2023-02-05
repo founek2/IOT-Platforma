@@ -32,7 +32,7 @@ export const thingsSlice = createSlice({
                     thing.state = {};
                 }
                 thing.state!.timestamp = changes.timestamp;
-                Object.keys(changes.value).forEach((propertyId) => {
+                Object.keys(changes).forEach((propertyId) => {
                     thing.state![propertyId] = changes[propertyId];
                 });
             }
