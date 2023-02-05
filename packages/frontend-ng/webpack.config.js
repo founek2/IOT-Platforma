@@ -94,7 +94,7 @@ const config = {
                     },
                 },
                 'public/robots.txt',
-                'public/manifest.json',
+                'public/iotdomu.webmanifest',
             ],
         }),
         new HtmlWebpackPlugin({

@@ -1,0 +1,75 @@
+{
+    "short_name": "Domu",
+    "name": "IOT Domu",
+    "start_url": "/",
+    "scope": "/",
+    "description": "IOT Platforma pro ovládání vlastních zařízení",
+    "display": "standalone",
+    "theme_color": "#1876d2",
+    "background_color": "#ffffff",
+    "icons": [
+        {
+            "src": "favicon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "favicon-apple.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/assets/images/favicon256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/images/favicon128.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/images/favicon64.png",
+            "sizes": "64x64",
+            "type": "image/png"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "https://docs.iotdomu.cz/_media/screens/buildings.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "platform": "narrow",
+            "label": "Devices grouped by locations"
+        },
+        {
+            "src": "https://docs.iotdomu.cz/_media/screens/room.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "platform": "narrow",
+            "label": "Room overview"
+        },
+        {
+            "src": "https://docs.iotdomu.cz/_media/screens/temperature.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "platform": "narrow",
+            "label": "View last 24 values in graph"
+        },
+        {
+            "src": "https://docs.iotdomu.cz/_media/screens/led.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "platform": "narrow",
+            "label": "Control multiple parts of device"
+        },
+        {
+            "src": "https://docs.iotdomu.cz/_media/screens/deviceManagement2.png",
+            "sizes": "2800x1540",
+            "type": "image/png",
+            "platform": "wide",
+            "label": "Device management"
+        }
+    ]
+}
