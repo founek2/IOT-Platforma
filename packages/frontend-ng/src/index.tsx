@@ -12,7 +12,13 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 const container = document.getElementById('root');
 const root = createRoot(container!);
 root.render(
-    <ErrorBoundary>
+    <ErrorBoundary
+        onError={() => {
+            localStorage.clear();
+            document.location.reload();
+        }}
+        actionText="Odhlásit a restartovat rozhraní"
+    >
         <App />
     </ErrorBoundary>
 );
