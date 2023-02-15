@@ -102,26 +102,16 @@ export default () =>
                     deviceId: doc.deviceId,
                 };
 
-                const alreadyExist = await DeviceModel.findOne({ metadata }).lean();
-                if (alreadyExist) {
-                    const existingConfig = alreadyExist.things.map(extractPlainConfig);
-                    const newConfig = things.map(extractPlainConfig);
-
-                    logger.silly('existingConfig', util.inspect(existingConfig, { showHidden: false, depth: null }));
-                    logger.silly('newConfig', util.inspect(newConfig, { showHidden: false, depth: null }));
-
-                    if (equals(existingConfig, newConfig)) {
-                        // device exists with same config -> reuse it!
-                        return alreadyExist;
-                    }
-
-                    // different config -> don`t reuse
-                    return null;
-                }
+                const alreadyExist = await DeviceModel.findOneAndUpdate(
+                    { metadata },
+                    { info: form.info, things },
+                    { new: true }
+                ).lean();
+                if (alreadyExist) return alreadyExist;
 
                 return DeviceModel.createNew(
                     {
-                        info: { ...form.info },
+                        info: form.info,
                         things,
                         metadata,
                     },
