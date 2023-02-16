@@ -8,10 +8,10 @@ interface LocationTypographyProps {
         building: string;
         room?: string;
     };
-    showRootSlash?: boolean;
+    pathPrefix?: string;
 }
 
-export function LocationTypography({ location, showRootSlash }: LocationTypographyProps) {
+export function LocationTypography({ location, pathPrefix }: LocationTypographyProps) {
     return (
         <Breadcrumbs
             aria-label="breadcrumb"
@@ -21,7 +21,7 @@ export function LocationTypography({ location, showRootSlash }: LocationTypograp
                 fontSize: 24,
             }}
         >
-            <Link to="/building">
+            <Link to={`${pathPrefix || ''}/building`}>
                 <LinkMUI underline="hover" color="inherit" component="span">
                     {location.building}
                 </LinkMUI>

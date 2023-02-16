@@ -35,7 +35,6 @@ interface LoginDialogProps {
     onClose: () => void;
 }
 export default function LoginDialog({ onClose, open }: LoginDialogProps) {
-    const theme = useTheme();
     const navigate = useNavigate();
     const { data: dataProviders } = useGetAuthProvidersQuery();
     const { validateField, validateForm, setFieldValue, resetForm } = useForm<LoginForm>('LOGIN');
@@ -66,6 +65,8 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
         onClose();
         resetForm();
     }
+
+    const actionHandler = !authTypesData?.authTypes.length ? handleNext : handleSignIn;
 
     return (
         <Dialog
@@ -112,9 +113,10 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
                                 onStopTyping(async () => {
                                     const res = await getAuthTypes(e.target.value);
                                     const type = head(res.data?.authTypes || []);
-                                    if (type) setFieldValue(type, ['authType']);
+                                    setFieldValue(type, ['authType']);
                                 })
                             }
+                            onEnter={actionHandler}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -123,18 +125,17 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
                             deepPath="LOGIN.password"
                             fieldProps={{ type: 'password' }}
                             fullWidth
+                            onEnter={actionHandler}
                             sx={authTypeSelected === AuthType.passwd ? undefined : { display: 'none' }}
                         />
                     </Grid>
                 </Grid>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center' }}>
-                {!authTypesData?.authTypes.length ? (
-                    isLoadingAuthTypes || isLoadingSignIn ? (
-                        <CircularProgress />
-                    ) : (
-                        <Button onClick={handleNext}>Další</Button>
-                    )
+                {isLoadingAuthTypes || isLoadingSignIn ? (
+                    <CircularProgress />
+                ) : !authTypesData?.authTypes.length ? (
+                    <Button onClick={handleNext}>Další</Button>
                 ) : (
                     <Button onClick={handleSignIn}>Přihlásit</Button>
                 )}

@@ -12,7 +12,8 @@ import { locationsSelector } from '../../selectors/locationsSelector';
 import PermissionSelect from './PermissionSelect';
 import { Device } from '../../store/slices/application/devicesSlice';
 import { useUserNamesQuery } from '../../endpoints/users';
-import { EditDeviceFormData } from '../../endpoints/devices';
+import { EditDeviceFormData, useDeleteDeviceMutation } from '../../endpoints/devices';
+import { EditDeviceFields } from './EditDeviceFields';
 
 const formName = 'EDIT_DEVICE';
 interface DeviceFormProps {
@@ -29,9 +30,11 @@ export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }:
     const buildings = useAppSelector(locationsSelector);
     const selectedBuildingName = useAppSelector(getFieldVal(`${formName}.info.location.building`)) as string;
     const selectedRoomName = useAppSelector(getFieldVal(`${formName}.info.location.room`)) as string;
+    const [deleteMutation, { isLoading: isLoadingDelete }] = useDeleteDeviceMutation();
 
     const selectedBuilding = buildings.find((building) => building.name === selectedBuildingName);
     const availableRooms = selectedBuilding ? selectedBuilding.rooms.map((room) => room.name) : [];
+    const isLoading = isLoadingDelete || pending;
 
     useEffect(() => {
         if (!availableRooms.some((v) => v === selectedRoomName)) setFieldValue('', ['info', 'location', 'room']);
@@ -61,31 +64,23 @@ export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }:
             setPending(false);
         }
     }
+    async function handleDelete() {
+        if (deviceToEdit?._id)
+            deleteMutation({ deviceID: deviceToEdit._id })
+                .unwrap()
+                .then(() => onClose())
+                .catch((err) => console.error(err));
+    }
 
     return (
         <Dialog open={open} onClose={onClose} title={title}>
             <DialogContent>
                 <Grid container spacing={4}>
-                    <Grid item xs={12}>
-                        <FieldConnector component="TextField" deepPath={`${formName}.info.name`} fullWidth />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <FieldConnector
-                            deepPath={`${formName}.info.location.building`}
-                            component="Autocomplete"
-                            fullWidth
-                            options={buildings.map((building) => ({ label: building.name, value: building.name }))}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <FieldConnector
-                            deepPath={`${formName}.info.location.room`}
-                            // onEnter={onEnter}
-                            options={availableRooms.map((room) => ({ label: room, value: room }))}
-                            component="Autocomplete"
-                            fullWidth
-                        />
-                    </Grid>
+                    <EditDeviceFields
+                        formName={formName}
+                        rooms={availableRooms}
+                        buildings={buildings.map((b) => b.name)}
+                    />
                     <Grid item xs={12} md={6}>
                         <FieldConnector
                             deepPath={`${formName}.permissions`}
@@ -106,6 +101,9 @@ export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }:
                 </Grid>
             </DialogContent>
             <DialogActions>
+                <Button onClick={handleDelete} disabled={pending} color="secondary">
+                    Smazat
+                </Button>
                 <Button onClick={handleSave} disabled={pending}>
                     Uložit
                 </Button>

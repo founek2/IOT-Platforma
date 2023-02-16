@@ -20,6 +20,13 @@ export const devicesApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Devices'],
         }),
+        deleteDevice: build.mutation<undefined, { deviceID: string }>({
+            query: ({ deviceID }) => ({
+                url: `device/${deviceID}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Devices'],
+        }),
         devices: build.query<{ docs: IDevice[] }, undefined>({
             query: () => `device`,
 
@@ -28,4 +35,4 @@ export const devicesApi = api.injectEndpoints({
     }),
 });
 
-export const { useDevicesQuery, useLazyDevicesQuery, useUpdateDeviceMutation } = devicesApi;
+export const { useDevicesQuery, useLazyDevicesQuery, useUpdateDeviceMutation, useDeleteDeviceMutation } = devicesApi;

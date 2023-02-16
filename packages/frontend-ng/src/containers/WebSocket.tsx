@@ -5,6 +5,7 @@ import { Thing, thingsReducerActions } from '../store/slices/application/thingsS
 import { useLazyDevicesQuery } from '../endpoints/devices';
 import { Device, devicesReducerActions } from '../store/slices/application/devicesSlice';
 import { io, Socket } from 'socket.io-client';
+import { Discovery, discoveryReducerActions, discoverySlice } from '../store/slices/application/discoverySlice';
 
 export type SocketUpdateThingState = {
     _id: Device['_id'];
@@ -54,12 +55,18 @@ function WebSocket() {
             );
         }
 
+        function addDiscoveredDevice(device: Discovery) {
+            dispatch(discoveryReducerActions.upsertOne(device));
+        }
+
         ref.current?.on('control', updateControl);
         ref.current?.on('device', updateDevice);
+        ref.current?.on('deviceDiscovered', addDiscoveredDevice);
 
         return () => {
             ref.current?.off('device', updateDevice);
             ref.current?.off('control', updateControl);
+            ref.current?.off('deviceDiscovered', addDiscoveredDevice);
         };
     }, [dispatch, ref]);
 

@@ -15,15 +15,18 @@ export interface DialogProps {
     title?: string;
     onClose: () => any;
     onAgree?: () => any;
+    onDisagree?: () => any;
     agreeText?: string;
     disagreeText?: string;
     children?: JSX.Element | null;
     fullWidth?: boolean;
     sx?: SxProps<Theme>;
+    disabled?: boolean;
 }
 export function Dialog({
     open,
     onClose,
+    onDisagree,
     onAgree,
     title,
     agreeText = 'Souhlasím',
@@ -31,6 +34,7 @@ export function Dialog({
     children,
     sx,
     fullWidth,
+    disabled,
 }: DialogProps) {
     const isSmall = useMediaQuery('(max-width:450px)');
 
@@ -55,9 +59,13 @@ export function Dialog({
             </DialogTitle>
             <DialogContent>{children}</DialogContent>
             <DialogActions>
-                {disagreeText ? <Button onClick={onClose}>{disagreeText}</Button> : null}
+                {disagreeText ? (
+                    <Button onClick={onDisagree || onClose} color="secondary" disabled={disabled}>
+                        {disagreeText}
+                    </Button>
+                ) : null}
                 {onAgree ? (
-                    <Button onClick={onAgree} autoFocus>
+                    <Button onClick={onAgree} autoFocus disabled={disabled}>
                         {agreeText ? agreeText : null}
                     </Button>
                 ) : null}

@@ -25,7 +25,7 @@ export const rtkQueryErrorLogger: Middleware =
                 );
             } else dispatch(notificationActions.add({ message: 'Nastala chyba', options: { variant: 'error' } }));
 
-            if (action.error?.message === 'Rejected') {
+            if (action.payload?.data?.error === 'invalidToken') {
                 dispatch(authorizationActions.signOut() as any);
             }
         }

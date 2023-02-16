@@ -78,8 +78,9 @@ function RoomContent({ thingIDs, onMove, editMode, mode, preferencies }: RoomCon
 export interface RoomProps {
     title?: string;
     mode: 'things' | 'devices';
+    pathPrefix?: string;
 }
-export default function Room({ title, mode }: RoomProps) {
+export default function Room({ title, mode, pathPrefix }: RoomProps) {
     const { room, building } = useParams() as unknown as { building: string; room: string };
     const dispatch = useAppDispatch();
     const preferencies = useAppSelector((state) => state.preferences[mode].entities);
@@ -145,7 +146,7 @@ export default function Room({ title, mode }: RoomProps) {
 
     const content = (
         <>
-            <LocationTypography location={{ building, room }} showRootSlash={true} />
+            <LocationTypography location={{ building, room }} pathPrefix={pathPrefix} />
             <RoomContent
                 thingIDs={IDs || []}
                 editMode={editMode}

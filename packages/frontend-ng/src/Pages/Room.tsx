@@ -31,7 +31,7 @@ export default function RoomPage({ title }: RoomProps) {
             {isLoading ? <CircularProgress /> : <Room title={title} mode="things" />}
             <Dialog
                 open={Boolean(thing)}
-                onClose={() => navigate({ search: '' }, { replace: true })}
+                onClose={() => navigate(-1)}
                 title={thing?.config.name}
                 // sx={{ minWidth: 600 }}
                 fullWidth

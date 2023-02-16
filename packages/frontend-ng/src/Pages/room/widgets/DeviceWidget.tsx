@@ -6,6 +6,7 @@ import React from 'react';
 import { useAppSelector } from '../../../hooks/index';
 import { getDevice, getThing } from '../../../selectors/getters';
 import { Link } from 'react-router-dom';
+import Circle from '../../../components/OnlineCircle';
 
 interface ThingWidgetProps {
     id: string;
@@ -32,6 +33,11 @@ export const DeviceWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>((
             ]}
             ref={ref}
         >
+            <Circle
+                status={device.state?.status}
+                inTransition={false}
+                sx={{ position: 'absolute', top: 5, right: 5 }}
+            />
             <Link to={{ search: `deviceId=${device._id}` }}>
                 <Typography
                     sx={{

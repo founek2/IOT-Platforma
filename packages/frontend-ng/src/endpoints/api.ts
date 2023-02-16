@@ -14,7 +14,7 @@ const baseQuery = fetchBaseQuery({
     },
 });
 
-const baseQueryWithRetry = retry(baseQuery, { maxRetries: 6 });
+// const baseQueryWithRetry = retry(baseQuery, { maxRetries: 1 });
 
 /**
  * Create a base API to inject endpoints into elsewhere.
@@ -26,12 +26,21 @@ export const api = createApi({
     /**
      * A bare bones base query would just be `baseQuery: fetchBaseQuery({ baseUrl: '/' })`
      */
-    baseQuery: baseQueryWithRetry,
+    baseQuery,
     /**
      * Tag types must be defined in the original API definition
      * for any tags that would be provided by injected endpoints
      */
-    tagTypes: ['SignIn', 'Devices', 'AuthProviders', 'UserAuthTypes', 'UserNames', 'History', 'Users'],
+    tagTypes: [
+        'SignIn',
+        'Devices',
+        'AuthProviders',
+        'UserAuthTypes',
+        'UserNames',
+        'History',
+        'Users',
+        'DiscoveredDevices',
+    ],
     /**
      * This api has endpoints injected in adjacent files,
      * which is why no endpoints are shown below.

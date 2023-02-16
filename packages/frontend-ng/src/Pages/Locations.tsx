@@ -22,8 +22,9 @@ interface DevicesContentProps {
     editMode?: 'rooms' | 'buildings';
     editEnabled: boolean;
     onMove: (dragId: string, hoverId: string) => any;
+    pathPrefix?: string;
 }
-function DevicesContent({ buildingsData, editMode, onMove, editEnabled }: DevicesContentProps) {
+function DevicesContent({ buildingsData, editMode, onMove, editEnabled, pathPrefix }: DevicesContentProps) {
     const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
 
     return (
@@ -47,6 +48,7 @@ function DevicesContent({ buildingsData, editMode, onMove, editEnabled }: Device
                                 onMove={onMove}
                                 isSingle={buildingsData.length === 1}
                                 className={clsx({ floating: editEnabled && editMode === 'buildings' })}
+                                pathPrefix={pathPrefix}
                             />
                         )}
                     />
@@ -58,8 +60,9 @@ function DevicesContent({ buildingsData, editMode, onMove, editEnabled }: Device
 
 interface DevicesProps {
     title?: string;
+    pathPrefix?: string;
 }
-export default function Locations({ title }: DevicesProps) {
+export default function Locations({ title, pathPrefix }: DevicesProps) {
     const dispatch = useAppDispatch();
     const { setAppHeader, resetAppHeader } = useAppBarContext();
     const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
@@ -136,7 +139,13 @@ export default function Locations({ title }: DevicesProps) {
             {isLoading ? (
                 <CircularProgress />
             ) : (
-                <DevicesContent buildingsData={data} editEnabled={isEditMode} editMode={editMode} onMove={onMove} />
+                <DevicesContent
+                    buildingsData={data}
+                    editEnabled={isEditMode}
+                    editMode={editMode}
+                    onMove={onMove}
+                    pathPrefix={pathPrefix}
+                />
             )}
 
             <EditModeDialog

@@ -29,7 +29,6 @@ export function NotificationReduxConnect() {
                 key,
                 autoHideDuration,
                 onExited: (event, myKey) => {
-                    console.log('exited');
                     // remove this snackbar from redux store
                     dispatch(notificationActions.remove(myKey));
                     // removeDisplayed(myKey);

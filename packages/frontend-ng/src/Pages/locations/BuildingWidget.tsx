@@ -51,9 +51,10 @@ interface BuildingWidgetProps {
     isSingle: boolean;
     onMove: (dragId: string, hoverId: string) => any;
     className?: string;
+    pathPrefix?: string;
 }
 export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetProps>(
-    ({ isDragable, building, editMode, isSingle, onMove, className, editEnabled }, ref) => {
+    ({ isDragable, building, editMode, isSingle, onMove, className, editEnabled, pathPrefix }, ref) => {
         const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
         return (
             <Grid
@@ -66,7 +67,7 @@ export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetPro
                 className={className}
                 ref={ref}
             >
-                <LocationTypography location={{ building: building.name }} showRootSlash={isSingle} />
+                <LocationTypography location={{ building: building.name }} pathPrefix={pathPrefix} />
                 <Box sx={roomsContainerStyle}>
                     {building.rooms.sort(byPreferences(locationPreferences)).map((room, idx) => (
                         <Draggable

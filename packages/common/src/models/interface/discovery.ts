@@ -1,3 +1,4 @@
+import { DeviceStatus } from './device';
 import { ComponentType, IThingProperty, PropertyClass } from './thing';
 
 export interface IDiscoveryThing {
@@ -26,7 +27,7 @@ export interface IDiscovery {
     updatedAt: Date;
     state?: {
         status: {
-            value: string;
+            value: DeviceStatus;
             timestamp: Date;
         };
     };
