@@ -4,7 +4,6 @@ import { TokenModel } from 'common/src/models/tokenModel';
 import { UserModel } from 'common/src/models/userModel';
 import { UserService } from 'common/src/services/userService';
 import { RequestWithAuth } from 'common/src/types';
-import { getAllowedGroups } from 'framework-ui/src/privileges';
 import formDataChecker from 'common/src/middlewares/formDataChecker';
 import { rateLimiterMiddleware } from 'common/src/middlewares/rateLimiter';
 import resource from 'common/src/middlewares/resource-router-middleware';
@@ -12,6 +11,7 @@ import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import checkWritePerm from 'common/src/middlewares/user/checkWritePerm';
 import eventEmitter from '../services/eventEmitter';
 import { Request } from 'express';
+import { getAllowedGroups } from 'common/src/constants/privileges';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {
@@ -139,8 +139,7 @@ export default () =>
         async replaceId({ body, params, user }: RequestId, res) {
             const { id } = params;
             if (body.formData.EDIT_USER) {
-                const allowedGroups = getAllowedGroups(user.groups).map((obj: any) => obj.name);
-
+                const allowedGroups = getAllowedGroups(user.groups);
                 if (!body.formData.EDIT_USER.groups.every((group: string) => allowedGroups.includes(group)))
                     return res.sendStatus(403);
 

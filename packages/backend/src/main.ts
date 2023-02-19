@@ -2,13 +2,10 @@ import { allowedGroups } from 'common/src/constants/privileges';
 import { JwtService } from 'common/src/services/jwtService';
 import express, { Application } from 'express';
 import { logger } from 'framework-ui/src/logger';
-import initPrivileges from 'framework-ui/src/privileges';
 import http from 'http';
 import loadersInit from './loaders';
 import { MailerService } from './services/mailerService';
 import { Config } from './types';
-
-initPrivileges({}, allowedGroups);
 
 export interface MyApp extends Application {
     server: http.Server;

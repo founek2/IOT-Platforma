@@ -45,8 +45,8 @@ export default function (
                     logger.debug(`Verified user=${user.info.userName}, groups=${user.groups.join(',')}`);
                     req2.user = user.toObject();
                     req2.user.accessPermissions = [Permission.write, Permission.read, Permission.control];
-                    if (req2.user.groups.some(equals('root'))) req2.root = true;
-                    if (req2.user.groups.some(equals('admin'))) req2.user.admin = true;
+                    if (req2.user.groups.some((v) => v === 'root')) req2.root = true;
+                    if (req2.user.groups.some((v) => v === 'admin')) req2.user.admin = true;
                     next();
                 } else {
                     logger.debug('userNotExist');
@@ -72,8 +72,8 @@ export default function (
 
             // full access
             if (req2.user.accessPermissions.some((b) => b === Permission.write)) {
-                if (req2.user.groups.some(equals('root'))) req2.root = true;
-                if (req2.user.groups.some(equals('admin'))) req2.user.admin = true;
+                if (req2.user.groups.some((v) => v === 'root')) req2.root = true;
+                if (req2.user.groups.some((v) => v === 'admin')) req2.user.admin = true;
             }
 
             next();

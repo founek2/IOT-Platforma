@@ -40,7 +40,7 @@ export interface IUser {
         oauth?: IOauth;
     };
     realm: string;
-    groups: string[];
+    groups: ('user' | 'admin' | 'root' | 'flow')[];
     notifyTokens: string[];
     accessTokens?: IAccessToken[];
     createdAt: Date;

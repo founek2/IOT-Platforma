@@ -3,6 +3,7 @@
  */
 
 import { append } from 'ramda';
+import { IUser } from '../models/interface/userInterface';
 
 const adminAllowedGroups = [
     { name: 'user', text: 'uživatel' },
@@ -18,3 +19,12 @@ export const allowedGroups = {
     root: { allowedGroups: append({ name: 'root', text: 'root' }, adminAllowedGroups) },
     flow: { allowedGroups: [] },
 };
+
+export function getAllowedGroups(groups: IUser['groups']) {
+    let uniq = new Set<string>();
+    for (const userGroup of groups) {
+        allowedGroups[userGroup].allowedGroups.map((v) => uniq.add(v.name));
+    }
+
+    return [...uniq];
+}
