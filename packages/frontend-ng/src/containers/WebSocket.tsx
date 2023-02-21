@@ -5,13 +5,14 @@ import { Thing, thingsReducerActions } from '../store/slices/application/thingsS
 import { useLazyDevicesQuery } from '../endpoints/devices';
 import { Device, devicesReducerActions } from '../store/slices/application/devicesSlice';
 import { io, Socket } from 'socket.io-client';
+import { PropertyState } from '../store/slices/application/thingsSlice';
 
 export type SocketUpdateThingState = {
     _id: Device['_id'];
     thing: {
         _id: Thing['_id'];
         nodeId: Thing['config']['nodeId'];
-        state: Thing['state'];
+        state: Record<string, PropertyState>;
     };
 };
 
@@ -41,11 +42,12 @@ function WebSocket() {
 
     useEffect(() => {
         function updateDevice(payload: Device) {
+            console.log('web socket GOT device', payload);
             dispatch(devicesReducerActions.updateOne({ id: payload._id, changes: payload }));
         }
 
         function updateControl({ _id, thing }: SocketUpdateThingState) {
-            console.log('web socket GOT', _id, thing);
+            console.log('web socket GOT thing', _id, thing);
             dispatch(
                 thingsReducerActions.updateOneState({
                     id: thing._id,
