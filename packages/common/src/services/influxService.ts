@@ -2,7 +2,7 @@ import { IThing, IThingProperty, PropertyDataType } from '../models/interface/th
 import { OrgsAPI, BucketsAPI, Organization, QueryAPI } from '@influxdata/influxdb-client-apis';
 import { InfluxDB, Point, WriteApi, QueryApi } from '@influxdata/influxdb-client';
 import { Config, Measurement } from '../types';
-import { IDevice } from '../models/interface/device';
+import { DeviceStatus, IDevice } from '../models/interface/device';
 import { logger } from 'framework-ui/src/logger';
 
 export let influxDB: InfluxDB;
@@ -45,6 +45,22 @@ export class InfluxService {
         } else {
             point.stringField('value_string', sample.value);
         }
+        return point;
+    }
+
+    public static createDeviceStateMeasurement(
+        deviceId: string,
+        deviceName: string,
+        sample: { value: DeviceStatus; timestamp: Date }
+    ): Point {
+        const point = new Point('measurement')
+            .tag('deviceId', deviceId)
+            .tag('deviceName', deviceName)
+            .tag('thingId', '$internal')
+            .tag('propertyId', '$state')
+            .timestamp(sample.timestamp);
+
+        point.stringField('value_string', sample.value);
         return point;
     }
 
