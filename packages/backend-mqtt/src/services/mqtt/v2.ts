@@ -14,16 +14,17 @@ import { InfluxService } from 'common/src/services/influxService';
 type cbFn = (topic: string, message: any, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO) {
     handle('v2/+/+/$state', async function (topic, data, [realm, deviceId]) {
-        const message: DeviceStatus = data.toString();
-        logger.debug('got', message, realm, deviceId);
+        const status: DeviceStatus = data.toString();
+        const timestamp = new Date();
+        logger.debug('got', status, realm, deviceId);
         const device = await DeviceModel.findOneAndUpdate(
             {
                 'metadata.deviceId': deviceId,
                 'metadata.realm': realm,
             },
             {
-                'state.status.value': message,
-                'state.status.timestamp': new Date(),
+                'state.status.value': status,
+                'state.status.timestamp': timestamp,
             },
             { new: true }
         )
@@ -39,6 +40,12 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
                     },
                 })
             );
+
+            const sample = InfluxService.createDeviceStateMeasurement(device._id.toString(), device.info.name, {
+                value: status,
+                timestamp,
+            });
+            InfluxService.saveMeasurement(sample);
         }
     });
 
