@@ -6,10 +6,12 @@ import { getProperty } from 'common/src/utils/getProperty';
 import { getThing } from 'common/src/utils/getThing';
 import { validateValue } from 'common/src/utils/validateValue';
 import { Actions } from '../../services/actionsService';
+import checkRealmControlPerm from 'common/src/middlewares/device/checkRealmControlPerm';
 
 type Params = { realm: string; deviceId: string; nodeId: string };
 type Request = RequestWithAuth<Params>;
 type RequestQuery = RequestWithAuth<Params, { property?: string; value?: string }>;
+
 /**
  * URL prefix /device/:deviceId/thing/:nodeId
  */
@@ -17,8 +19,7 @@ export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            // TODO FIXME checkControl perm
-            modify: [tokenAuthMIddleware()],
+            modify: [tokenAuthMIddleware(), checkRealmControlPerm({ paramKey: 'deviceId' })],
         },
 
         async index(req: Request, res) {

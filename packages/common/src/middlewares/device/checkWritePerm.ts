@@ -13,7 +13,7 @@ export default function (options: { paramKey: string } = { paramKey: 'id' }) {
         checkDevice(options)(req, res, async () => {
             const { params, user } = req;
             const deviceId = params[options.paramKey];
-            if (!user) return res.status(403).send({ error: 'invalidPermissions' });
+            if (!user) return res.status(403).send({ error: 'missingUser' });
 
             if (user.admin) return next();
 

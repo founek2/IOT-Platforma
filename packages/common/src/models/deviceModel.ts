@@ -12,6 +12,11 @@ interface Realm {
     name: string;
 }
 
+interface RealmMetadata {
+    realm: IDevice['metadata']['realm'];
+    deviceId: IDevice['metadata']['deviceId'];
+}
+
 export const deviceSchema = new Schema<IDeviceDocument, IDeviceModel>(deviceSchemaPlain, {
     toObject: {
         transform: function (doc, ret) {
@@ -33,6 +38,7 @@ export interface IDeviceModel extends Model<IDeviceDocument> {
     checkWritePerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
     checkReadPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
     checkControlPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
+    checkRealmControlPerm(metadata: RealmMetadata, userId: IUser['_id']): Promise<boolean>;
     updateByFormData(id: IDevice['_id'], object: Partial<IDevice>): Promise<void>;
 
     findAllRealms(): Promise<Realm[]>;
@@ -148,6 +154,18 @@ deviceSchema.statics.checkControlPerm = function (id: IDevice['_id'], userId: IU
     const userID = ObjectId(userId);
     return this.exists({
         _id: ObjectId(id),
+        'permissions.control': userID,
+    });
+};
+
+deviceSchema.statics.checkRealmControlPerm = function (
+    metadata: RealmMetadata,
+    userId: IUser['_id']
+): Promise<boolean> {
+    const userID = ObjectId(userId);
+    return this.exists({
+        'metadata.realm': metadata.realm,
+        'metadata.deviceId': metadata.deviceId,
         'permissions.control': userID,
     });
 };

@@ -9,6 +9,7 @@ import { DeviceService } from '../services/deviceService';
 import eventEmitter from '../services/eventEmitter';
 import { IDevice } from 'common/src/models/interface/device';
 import { RequestWithAuth } from 'common/src/types';
+import checkReadPerm from '../middlewares/device/checkReadPerm';
 
 type Request = RequestWithAuth;
 type RequestId = RequestWithAuth & { params: { id: string } };
@@ -20,6 +21,7 @@ export default () =>
     resource({
         middlewares: {
             index: [tokenAuthMIddleware()],
+            read: [tokenAuthMIddleware(), checkReadPerm()],
             modifyId: [
                 tokenAuthMIddleware(),
                 checkWritePerm(),
@@ -31,11 +33,20 @@ export default () =>
 
         /** GET / - List all devices for which the user has permissions
          * @header Authorization-JWT
-         * @return json { docs: IDevice[] }
+         * @return json device
          */
         async index({ user }: Request, res) {
             const docs = await DeviceModel.findForUser(user._id);
             res.send({ docs });
+        },
+
+        /** GET /:id - Return device
+         * @header Authorization-JWT
+         * @return json { docs: IDevice[] }
+         */
+        async read({ user, params: { id } }: RequestId, res) {
+            const device = await DeviceModel.findById(id);
+            res.send(device);
         },
 
         /** POST /:id - Send command to provided device

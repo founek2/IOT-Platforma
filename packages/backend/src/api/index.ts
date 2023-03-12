@@ -4,6 +4,7 @@ import device from './device';
 import notify from './notify';
 import discovery from './discovery';
 import thing from './thing';
+import thingState from './thingState';
 import accessToken from './accessToken';
 import broker from './broker';
 import { Config } from '../types';
@@ -20,6 +21,7 @@ export default ({ config }: { config: Config }) => {
     api.use('/device', device());
 
     api.use('/device/:deviceId/thing/:nodeId', thing());
+    api.use('/device/:deviceId/thing/:nodeId/state', thingState());
 
     api.use('/discovery', discovery());
 
