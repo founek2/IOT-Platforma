@@ -8,6 +8,13 @@ import { api } from './api';
 interface HistoryResponse {
     docs: Measurement[];
 }
+export interface UpdateThingStateArgs {
+    deviceId: Device['_id'];
+    nodeId: Thing['config']['nodeId'];
+    thingId: Thing['_id'];
+    propertyId: IThingProperty['propertyId'];
+    value: string | number | boolean;
+}
 export const thingsApi = api.injectEndpoints({
     endpoints: (build) => ({
         thingHistory: build.query<
@@ -19,16 +26,7 @@ export const thingsApi = api.injectEndpoints({
             transformResponse: (res: HistoryResponse) => res.docs,
             providesTags: ['History'],
         }),
-        updateThingState: build.mutation<
-            undefined,
-            {
-                deviceId: Device['_id'];
-                nodeId: Thing['config']['nodeId'];
-                thingId: Thing['_id'];
-                propertyId: IThingProperty['propertyId'];
-                value: string | number;
-            }
-        >({
+        updateThingState: build.mutation<undefined, UpdateThingStateArgs>({
             query: ({ deviceId, nodeId, propertyId, value }) => ({
                 url: `device/${deviceId}/thing/${nodeId}?property=${propertyId}&value=${value}`,
                 method: 'POST',

@@ -49,11 +49,22 @@ function registerValidSW(swUrl: string, config?: Config) {
     navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
+            // Try to properly show popup when page was reloaded
+            if (registration.waiting) {
+                console.log('New content is available and will be used when all ' + 'tabs for this page are closed.');
+
+                // Execute callback
+                if (config && config.onUpdate) {
+                    config.onUpdate(registration);
+                }
+            }
+
             registration.onupdatefound = () => {
                 const installingWorker = registration.installing;
                 if (installingWorker == null) {
                     return;
                 }
+
                 installingWorker.onstatechange = () => {
                     if (installingWorker.state === 'installed') {
                         if (navigator.serviceWorker.controller) {

@@ -13,6 +13,7 @@ import Box from '@mui/material/Box';
 import { useUpdateThingStateMutation } from '../../../endpoints/thing';
 import Circle from '../../../components/OnlineCircle';
 import { DeviceStatus } from 'common/src/models/interface/device';
+import { useUpdateThingStateSmart } from '../../../hooks/useUpdateThingStateSmart';
 
 function getApropriateProperty(config: Thing['config']) {
     if (config.componentType === ComponentType.activator) {
@@ -36,10 +37,10 @@ interface ThingWidgetProps {
 export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({ id, sx, className }, ref) => {
     const thing = useAppSelector(getThing(id));
     const device = useAppSelector(getDevice(thing?.deviceId!));
+    const { mutateThingState } = useUpdateThingStateSmart(id);
     if (!thing || !device) return null;
 
     const appropriateThing = getApropriateProperty(thing.config);
-    const [updatePropertyState] = useUpdateThingStateMutation();
     const disabled = [DeviceStatus.disconnected, DeviceStatus.lost].includes(
         device.state?.status?.value || DeviceStatus.ready
     );
@@ -86,11 +87,8 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
                             property={appropriateThing}
                             disabled={disabled}
                             onChange={(value) =>
-                                updatePropertyState({
-                                    deviceId: thing.deviceId,
+                                mutateThingState({
                                     propertyId: appropriateThing.propertyId,
-                                    thingId: thing._id,
-                                    nodeId: thing.config.nodeId,
                                     value,
                                 })
                             }

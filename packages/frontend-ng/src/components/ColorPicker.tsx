@@ -73,7 +73,7 @@ function ColorPicker({ value, disabled, onChange }: SwitchMyProps) {
     useEffect(() => {
         if (value) {
             try {
-                const [r, g, b] = value.split(',').map(parseInt);
+                const [r, g, b] = value.split(',').map((v) => parseInt(v));
                 setPickedColor({ r, g, b });
             } catch (err) {}
         }
@@ -97,7 +97,6 @@ function ColorPicker({ value, disabled, onChange }: SwitchMyProps) {
                         color={pickedColor}
                         onChange={(color) => {
                             setPickedColor(color);
-                            console.log('color', color);
                             const { r, g, b } = color;
 
                             if (timeout) clearTimeout(timeout);

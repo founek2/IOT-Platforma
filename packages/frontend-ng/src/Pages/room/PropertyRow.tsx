@@ -191,7 +191,7 @@ function PropertyRow({ property, state, onChange, history, defaultShowDetail = f
 
     const { propertyClass, name } = property;
     const Icon = propertyClass ? SensorIcons[propertyClass] : null;
-
+    // console.log('state row', state?.desiredValue);
     return (
         <Box sx={sx}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
