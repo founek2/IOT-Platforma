@@ -1,49 +1,51 @@
-import { grey } from '@material-ui/core/colors';
-import { makeStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
 import { DeviceStatus, IDeviceStatus } from 'common/src/models/interface/device';
 import React, { useState } from 'react';
 import getCircleColor, { CircleColors, getCircleTooltipText } from '../utils/getCircleColor';
-import { format } from 'frontend/src/utils/date-fns';
+import { format } from '../utils/date-fns';
+import { grey } from '@mui/material/colors';
+import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
+import type { SxProps, Theme } from '@mui/system';
 
-const useStyles = makeStyles({
-    wrapper: {
-        width: 22,
-        height: 22,
-        borderRadius: '50%',
-        display: 'inline-block',
-    },
-    circle: {
-        width: 10,
-        height: 10,
-        borderRadius: '50%',
-        marginLeft: 6,
-        marginTop: 6,
-    },
-    green: {
-        backgroundColor: '#62bd19',
-    },
-    red: {
-        backgroundColor: '#cd0000',
-    },
-    orange: {
-        backgroundColor: '#e08d0f',
-    },
-    grey: {
-        backgroundColor: grey[400],
-    },
-});
+const colors = {
+    green: 'initial',
+    red: '#cd0000',
+    orange: '#e08d0f',
+    grey: grey[400],
+};
 
 type CircleComponentProps = {
     color: CircleColors;
     className?: string;
+    sx?: SxProps<Theme>;
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-const CircleComponent = React.forwardRef(function ({ color, className, ...props }: CircleComponentProps, ref: any) {
-    const classes = useStyles();
+const CircleComponent = React.forwardRef(function ({ color, className, sx, ...props }: CircleComponentProps, ref: any) {
     return (
-        <div {...props} ref={ref} className={`${classes.wrapper} ${className ? className : ''}`}>
-            <div className={`${classes.circle} ${classes[color]}`} />
-        </div>
+        <Box
+            {...props}
+            ref={ref}
+            className={className}
+            sx={[
+                {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: 22,
+                    height: 22,
+                    borderRadius: '50%',
+                },
+                ...(Array.isArray(sx) ? sx : [sx]),
+            ]}
+        >
+            <Box
+                sx={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    backgroundColor: colors[color],
+                }}
+            />
+        </Box>
     );
 });
 
@@ -51,8 +53,9 @@ interface CircleProps {
     status: IDeviceStatus;
     className?: string;
     inTransition: boolean;
+    sx?: SxProps<Theme>;
 }
-function Circle({ status, className, inTransition }: CircleProps) {
+function Circle({ status, className, inTransition, sx }: CircleProps) {
     const [showDate, setShowDate] = useState(false);
 
     const titleText = status?.timestamp
@@ -69,6 +72,7 @@ function Circle({ status, className, inTransition }: CircleProps) {
                 color={getCircleColor(inTransition, status?.value || DeviceStatus.disconnected)}
                 className={className}
                 onClick={() => setShowDate(!showDate)}
+                sx={sx}
             />
         </Tooltip>
     );

@@ -1,130 +1,103 @@
-import { Fab, Grid, useMediaQuery, useTheme } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import { DeviceStatus } from 'common/src/models/interface/device';
-import { IDiscovery, IDiscoveryThing } from 'common/src/models/interface/discovery';
-import Dialog from 'framework-ui/src/Components/Dialog';
-import FieldConnector from 'framework-ui/src/Components/FieldConnector';
-import EnchancedTable from 'framework-ui/src/Components/Table';
-import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
-import { DeviceForm } from 'frontend/src/components/DeviceForm';
-import { useManagementStyles } from 'frontend/src/hooks/useManagementStyles';
-import { Locations } from 'frontend/src/types';
-import { assoc, prop } from 'ramda';
-import React, { Fragment, useState } from 'react';
-import { useAppDispatch } from 'src/hooks';
-import OnlineCircle from '../../components/OnlineCircle';
-import { discoveryActions } from '../../store/actions/application/discovery';
+import React from 'react';
+import { Grid } from '@mui/material';
+import { useState } from 'react';
+import {
+    CreateDeviceForm,
+    Discovery,
+    useCreateDeviceMutation,
+    useDeleteDiscoveryDeviceMutation,
+    useDiscoveredDevicesQuery,
+} from '../../endpoints/discovery';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { getAllDevices } from '../../selectors/getters';
+import { DiscoveredWidget } from '../room/widgets/DiscoveredWidget';
+import { Dialog } from '../../components/Dialog';
+import { EditDeviceFields } from './EditDeviceFields';
+import { locationsSelector } from '../../selectors/locationsSelector';
+import { getFieldVal } from 'common/src/utils/getters';
+import { formsDataActions } from '../../store/slices/formDataActions';
+import { useForm } from '../../hooks/useForm';
+import { discoverySelectors } from '../../store/slices/application/discoverySlice';
+import { useDeleteDeviceMutation } from '../../endpoints/devices';
+import { logger } from 'common/src/logger';
 
-interface DiscoverySectionProps {
-    discoveredDevices?: IDiscovery[];
-    locations: Locations;
-}
-
-function DiscoverySection({ discoveredDevices, locations }: DiscoverySectionProps) {
-    const classes = useManagementStyles();
-    const [openAddDialog, setOpenAddDialog] = useState(false);
-    const [selectedId, setSelectedId] = useState<null | string>(null);
+const formName = 'CREATE_DEVICE';
+export default function DiscoverySection() {
     const dispatch = useAppDispatch();
-    const theme = useTheme();
-    const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
+    const { validateForm } = useForm<CreateDeviceForm>(formName);
+    const [selectedDevice, setSelectedDevice] = useState<string>();
+    const _ = useDiscoveredDevicesQuery(undefined);
+    const discoveredData = useAppSelector((state) => discoverySelectors.selectAll(state.application.discovery));
+    const [createDeviceMutation, { isLoading }] = useCreateDeviceMutation();
+    const [deleteDeviceMutation, { isLoading: isLoadingDelete }] = useDeleteDiscoveryDeviceMutation();
 
-    function closeDialog() {
-        dispatch(formsDataActions.removeForm('CREATE_DEVICE'));
-        setOpenAddDialog(false);
-    }
-
-    async function onAgree() {
-        const result = await dispatch(discoveryActions.addDevice(selectedId));
-        if (result) closeDialog();
-    }
+    const buildings = useAppSelector(locationsSelector);
+    const selectedBuildingName = useAppSelector(getFieldVal(`${formName}.info.location.building`)) as string;
+    const selectedBuilding = buildings.find((building) => building.name === selectedBuildingName);
+    const availableRooms = selectedBuilding ? selectedBuilding.rooms.map((room) => room.name) : [];
 
     return (
-        <Fragment>
-            {discoveredDevices && discoveredDevices?.length > 0 && (
-                <FieldConnector
-                    deepPath="DISCOVERY_DEVICES.selected"
-                    component={({ onChange, value }) => (
-                        <EnchancedTable
-                            customClasses={{
-                                tableWrapper: classes.tableWrapper,
-                                toolbar: classes.toolbar,
-                                pagination: classes.pagination,
-                            }}
-                            rowsPerPageOptions={[2, 5, 10, 25]}
-                            rowsPerPage={2}
-                            // @ts-ignore
-                            dataProps={[
-                                { path: 'name', label: 'Název' },
-                                { path: 'deviceId', label: 'ID zařízení' },
-                                {
-                                    path: 'things',
-                                    label: 'Věcí',
-                                    convertor: (things: { [nodeId: string]: IDiscoveryThing } = {}) =>
-                                        Object.values(things)
-                                            .map((obj) => obj.config.name)
-                                            .join(', '),
-                                },
-                                {
-                                    path: 'createdAt',
-                                    label: 'Vytvořeno',
-                                    convertor: (date: string) => new Date(date).toLocaleDateString(),
-                                },
-                                {
-                                    path: 'state.status',
-                                    label: 'Status',
-                                    convertor: (status: { value: DeviceStatus; timestamp: Date }) => (
-                                        <OnlineCircle status={status} inTransition={false} />
-                                    ),
-                                },
-                            ]}
-                            data={discoveredDevices.map((device: any) => assoc('id', prop('_id', device), device))}
-                            toolbarHead="Přidání zařízení"
-                            onDelete={() => dispatch(discoveryActions.deleteDevices())}
-                            orderBy="name"
-                            // enableCreation={isAdmin}
-                            //onAdd={() => this.updateCreateForm({ open: true })}
-                            customEditButton={(id: string, item: IDiscovery) => (
-                                <Fab
-                                    color="primary"
-                                    aria-label="add"
-                                    size="small"
-                                    disabled={item.state?.status.value !== DeviceStatus.ready}
-                                    onClick={() => {
-                                        setSelectedId(id);
-                                        dispatch(
-                                            formsDataActions.setFormField({
-                                                deepPath: 'CREATE_DEVICE.info.name',
-                                                value: discoveredDevices.find((dev) => dev._id === id)?.name || '',
-                                            })
-                                        );
-                                        setOpenAddDialog(true);
-                                    }}
-                                >
-                                    <AddIcon />
-                                </Fab>
-                            )}
-                            onChange={onChange}
-                            value={value}
-                        />
-                    )}
-                />
-            )}
+        <>
+            <Grid
+                container
+                justifyContent="center"
+                sx={(theme) => ({
+                    padding: 2,
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(15rem, 1fr))',
+                    gap: 2,
+                    [theme.breakpoints.up('md')]: {
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(18rem, 1fr))',
+                    },
+                })}
+            >
+                {discoveredData.map((device) => (
+                    <DiscoveredWidget
+                        device={device}
+                        key={device._id}
+                        onClick={() => {
+                            setSelectedDevice(device._id);
+                            dispatch(
+                                formsDataActions.setFormField({
+                                    deepPath: `${formName}.info.name`,
+                                    value: discoveredData.find((dev) => dev._id === device._id)?.name || '',
+                                })
+                            );
+                        }}
+                    />
+                ))}
+            </Grid>
             <Dialog
-                open={openAddDialog}
+                open={Boolean(selectedDevice)}
+                onClose={() => setSelectedDevice(undefined)}
                 title="Přidání zařízení"
-                cancelText="Zrušit"
+                disagreeText="Smazat"
                 agreeText="Přidat"
-                onAgree={onAgree}
-                onClose={closeDialog}
-                fullScreen={isSmall}
-                content={
-                    <Grid container spacing={2}>
-                        <DeviceForm formName="CREATE_DEVICE" onEnter={onAgree} locations={locations} />
-                    </Grid>
+                disabled={isLoading || isLoadingDelete}
+                onDisagree={() =>
+                    selectedDevice &&
+                    deleteDeviceMutation({ deviceID: selectedDevice })
+                        .unwrap()
+                        .then(() => setSelectedDevice(undefined))
+                        .catch((err) => logger.error(err))
                 }
-            />
-        </Fragment>
+                onAgree={() => {
+                    const result = validateForm();
+                    if (result.valid && selectedDevice)
+                        createDeviceMutation({ deviceID: selectedDevice, data: result.data })
+                            .unwrap()
+                            .then(() => setSelectedDevice(undefined))
+                            .catch((err) => console.error(err));
+                }}
+            >
+                <Grid container spacing={2}>
+                    <EditDeviceFields
+                        formName="CREATE_DEVICE"
+                        buildings={buildings.map((m) => m.name)}
+                        rooms={availableRooms}
+                    />
+                </Grid>
+            </Dialog>
+        </>
     );
 }
-
-export default DiscoverySection;

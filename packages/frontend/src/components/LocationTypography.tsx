@@ -1,42 +1,36 @@
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import LinkMUI from '@mui/material/Link';
 import React from 'react';
-import { makeStyles, Typography } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
 import { Link } from 'react-router-dom';
-import clsx from 'clsx';
-
-const useStyles = makeStyles((theme) => ({
-    buildingTitle: {
-        flex: '1 0 100%',
-        textAlign: 'center',
-        [theme.breakpoints.down('sm')]: {
-            textAlign: 'left',
-        },
-        color: grey[700],
-    },
-}));
 
 interface LocationTypographyProps {
     location: {
         building: string;
         room?: string;
     };
-    linkBuilding?: boolean;
-    className?: string;
+    pathPrefix?: string;
 }
 
-export function LocationTypography({ location, linkBuilding, className }: LocationTypographyProps) {
-    const classes = useStyles();
-    const linkToRoot = <Link to="/devices">/</Link>;
-    const linkToBuilding = <Link to={`/devices/${location.building}`}>{location?.building}</Link>;
-
+export function LocationTypography({ location, pathPrefix }: LocationTypographyProps) {
     return (
-        <Typography className={clsx(classes.buildingTitle, className)} variant="h4">
-            {!linkBuilding && linkToRoot}
-            {linkToBuilding}
-
-            {!linkBuilding && location.room && '/'}
-            <wbr />
-            {location.room}
-        </Typography>
+        <Breadcrumbs
+            aria-label="breadcrumb"
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                fontSize: 24,
+            }}
+        >
+            <Link to={`${pathPrefix || ''}/building`}>
+                <LinkMUI underline="hover" color="inherit" component="span">
+                    {location.building}
+                </LinkMUI>
+            </Link>
+            {location.room ? (
+                <LinkMUI underline="none" color="inherit">
+                    {location.room}
+                </LinkMUI>
+            ) : null}
+        </Breadcrumbs>
     );
 }

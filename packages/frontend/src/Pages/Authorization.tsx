@@ -1,48 +1,45 @@
-import { Typography } from '@material-ui/core';
-import Loader from 'framework-ui/src/Components/Loader';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+import { logger } from 'common/src/logger';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../hooks';
-import { authorizationActions } from '../store/actions/application/authorization';
-import { RootState } from '../store/store';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSignInOauthMutation } from '../endpoints/signIn';
 import { buildRedirectUri } from '../utils/redirectUri';
 
 export function Authorization() {
-    const { code, error } = useSelector((state: RootState) => state.history.query);
+    const [searchParams] = useSearchParams();
+    const { code, error }: Partial<{ code: string; error: string }> = Object.fromEntries(searchParams.entries());
     const navigate = useNavigate();
-    const [pending, setPending] = useState(false);
     const [message, setMessage] = useState('Probíhá přihlašování...');
-    // const tokenExpiryDate = useSelector((state));
-    const dispatch = useAppDispatch();
+    const [signIn, { isLoading }] = useSignInOauthMutation();
 
     useEffect(() => {
-        async function send(code: string) {
-            setPending(true);
-            const result = await dispatch(authorizationActions.sendCode(code, buildRedirectUri()));
-            if (result) navigate('/devices');
-            else {
+        if (!code) return;
+
+        signIn({ code, redirectUri: buildRedirectUri() })
+            .unwrap()
+            .then(() => {
+                navigate('/building');
+            })
+            .catch((err: any) => {
+                logger.error('failed signIn by oauth code', err);
                 setMessage('Při přihlašování nastala chyba, akci opakujte');
                 navigate({ search: '' }); // clear code
-                setPending(false);
-            }
-        }
-        if (code && !pending) {
-            send(code);
-        }
-    }, [code, setPending, history, dispatch, pending]);
+            });
+    }, [code, history]);
 
     useEffect(() => {
         if (error) {
             setMessage('Při přihlašování nastala chyba, akci opakujte');
-            setPending(false);
         }
-    }, [error, setPending, setMessage]);
+    }, [error, setMessage]);
 
     return (
         <div className="utils--center">
-            <Typography component="span">{message}</Typography>
-            <Loader open={pending} />
+            <Typography component="span" pt={2}>
+                {message}
+            </Typography>
+            {isLoading ? <CircularProgress /> : null}
         </div>
     );
 }

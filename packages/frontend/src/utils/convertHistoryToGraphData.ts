@@ -1,6 +1,5 @@
-import type { HistoricalGeneric, HistoricalSensor } from 'common/src/models/interface/history';
 import type { IThingProperty } from 'common/src/models/interface/thing';
-import { Measurement, MeasurementBool, MeasurementNumber } from 'common/src/types';
+import { Measurement } from 'common/src/types';
 
 export function convertNumericHistoryToGraphData(data: Measurement[], propertyId: IThingProperty['propertyId']) {
     let result: { x: Array<Date>; y: Array<number> } = { x: [], y: [] };
@@ -44,34 +43,13 @@ export function convertBoolHistoryToGraphData(data: Measurement[], propertyId: I
             }
         }
     });
-    // data.forEach((doc) => {
-    //     const samples = doc.properties[propertyId]?.samples;
-    //     if (samples) {
-    //         for (let i = 0; i < samples.length; i++) {
-    //             const rec = samples[i];
-    //             if (rec.value === 'true') {
-    //                 if (!lastTrue) {
-    //                     result.x.push(new Date(rec.timestamp));
-    //                     result.y.push(OFF);
-    //                 }
-    //                 result.x.push(new Date(rec.timestamp));
-    //                 result.y.push(ON);
-    //                 lastTrue = rec;
-    //             } else if (lastTrue) {
-    //                 result.x.push(new Date(rec.timestamp));
-    //                 result.y.push(ON);
-    //                 result.x.push(new Date(rec.timestamp));
-    //                 result.y.push(OFF);
-
-    //                 lastTrue = null;
-    //             }
-    //         }
-    //     }
-    // });
 
     if (lastTrue) {
         result.x.push(new Date());
         result.y.push(ON);
+    } else {
+        result.x.push(new Date());
+        result.y.push(OFF);
     }
 
     return result;

@@ -1,26 +1,24 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 export function useLongPress(
-    mouseCallback: (e: React.MouseEvent<HTMLDivElement>) => void,
-    touchCallback: (e: React.TouchEvent<HTMLDivElement>) => void,
+    touchCallback?: (e: React.TouchEvent<HTMLDivElement>) => void,
+    mouseCallback?: (e: React.MouseEvent<HTMLDivElement>) => void,
     ms = 300
 ) {
     const [mousePress, setMousePress] = useState<null | React.MouseEvent<HTMLDivElement>>(null);
     const [touchPress, setTouchPress] = useState<null | React.TouchEvent<HTMLDivElement>>(null);
 
     useEffect(() => {
-        let timerId: NodeJS.Timeout;
-        if (mousePress) {
+        let timerId: NodeJS.Timeout | undefined;
+        if (mousePress && mouseCallback) {
             timerId = setTimeout(() => mouseCallback(mousePress), ms);
         } else {
-            // @ts-ignore
             clearTimeout(timerId);
         }
-        let timerId2: NodeJS.Timeout;
-        if (touchPress) {
+        let timerId2: NodeJS.Timeout | undefined;
+        if (touchPress && touchCallback) {
             timerId = setTimeout(() => touchCallback(touchPress), ms);
         } else {
-            // @ts-ignore
             clearTimeout(timerId2);
         }
 

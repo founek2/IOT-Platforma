@@ -9,7 +9,7 @@ import { DeviceService } from '../services/deviceService';
 import eventEmitter from '../services/eventEmitter';
 import { IDevice } from 'common/src/models/interface/device';
 import { RequestWithAuth } from 'common/src/types';
-import checkReadPerm from '../middlewares/device/checkReadPerm';
+import checkReadPerm from 'common/src/middlewares/device/checkReadPerm';
 
 type Request = RequestWithAuth;
 type RequestId = RequestWithAuth & { params: { id: string } };

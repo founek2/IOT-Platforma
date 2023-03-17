@@ -2,7 +2,7 @@
     "extends": "../../tsconfig-base.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "rootDir": "../",
+        "rootDir": "./",
         "outDir": "dist",
         "lib": ["dom", "dom.iterable", "esnext"],
         "sourceMap": true,
@@ -10,13 +10,14 @@
         "allowJs": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "module": "esnext",
+
+        "module": "ESNext",
         "jsx": "react"
         // "allowSyntheticDefaultImports": true,
         // "noFallthroughCasesInSwitch": true,
         // "strict": true
     },
-    // "references": [{ "path": "../framework-ui" }, { "path": "../common" }],
+    "references": [{ "path": "../common" }],
     "include": ["src", "custom.d.ts"],
     "exclude": ["node_modules"]
 }

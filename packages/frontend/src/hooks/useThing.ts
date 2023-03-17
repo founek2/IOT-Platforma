@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
-import { IThing } from 'common/src/models/interface/thing';
+import { Thing } from '../store/slices/application/thingsSlice';
 
-export const ThingContext = createContext<IThing>({} as IThing);
+export const ThingContext = createContext<Thing>({} as Thing);
 
 export function useThing() {
     return useContext(ThingContext);
