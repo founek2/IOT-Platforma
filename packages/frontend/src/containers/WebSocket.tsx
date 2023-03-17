@@ -21,13 +21,11 @@ function WebSocket() {
     const [lastFetchAt, setLastFetchAt] = useState<Date>();
     const [fetchDevices] = useLazyDevicesQuery();
     const dispatch = useAppDispatch();
-    const ref = useRef<Socket>();
+    const [socket, setSocket] = useState<Socket>();
 
     useEffect(() => {
         if (token) {
-            if (ref.current) {
-                ref.current.close();
-            }
+            if (socket) socket.close();
 
             const newCon = io({
                 path: '/socket.io',
@@ -36,11 +34,13 @@ function WebSocket() {
                 },
             });
             newCon.open();
-            ref.current = newCon;
+            setSocket(newCon);
         }
     }, [token]);
 
     useEffect(() => {
+        if (!socket) return;
+
         function updateDevice(payload: Device) {
             console.log('web socket GOT device', payload);
             dispatch(devicesReducerActions.updateOne({ id: payload._id, changes: payload }));
@@ -60,16 +60,16 @@ function WebSocket() {
             dispatch(discoveryReducerActions.upsertOne(device));
         }
 
-        ref.current?.on('control', updateControl);
-        ref.current?.on('device', updateDevice);
-        ref.current?.on('deviceDiscovered', addDiscoveredDevice);
+        socket.on('control', updateControl);
+        socket.on('device', updateDevice);
+        socket.on('deviceDiscovered', addDiscoveredDevice);
 
         return () => {
-            ref.current?.off('device', updateDevice);
-            ref.current?.off('control', updateControl);
-            ref.current?.off('deviceDiscovered', addDiscoveredDevice);
+            socket.off('device', updateDevice);
+            socket.off('control', updateControl);
+            socket.off('deviceDiscovered', addDiscoveredDevice);
         };
-    }, [dispatch, ref]);
+    }, [dispatch, socket]);
 
     useEffect(() => {
         let mounted = true;
@@ -78,7 +78,7 @@ function WebSocket() {
 
             const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 5 * 60 * 1000;
 
-            if (token && (isOld || !ref.current?.connected)) {
+            if (token && (isOld || socket?.connected)) {
                 console.log('refreshing on focus');
                 if ((await fetchDevices(undefined)) && mounted) setLastFetchAt(new Date());
             }
@@ -92,7 +92,7 @@ function WebSocket() {
             window.removeEventListener('focus', handler);
             document.removeEventListener('visibilitychange', handler);
         };
-    }, [lastFetchAt, fetchDevices, ref]);
+    }, [lastFetchAt, fetchDevices, socket]);
 
     return null;
 }
