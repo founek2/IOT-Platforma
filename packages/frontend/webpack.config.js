@@ -36,6 +36,7 @@ const config = {
             stream: require.resolve('stream-browserify'),
             process: require.resolve('process'),
             'process/browser': require.resolve('process/browser'),
+            assert: false,
         },
     },
     module: {

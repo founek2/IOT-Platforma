@@ -1,20 +1,23 @@
-import CircularProgress from '@mui/material/CircularProgress';
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Dialog } from '../../components/Dialog';
-import { useLazyThingHistoryQuery, useUpdateThingStateMutation } from '../../endpoints/thing';
+import { useLazyThingHistoryQuery } from '../../endpoints/thing';
 import { useAppSelector } from '../../hooks';
 import { ThingContext } from '../../hooks/useThing';
 import { useUpdateThingStateSmart } from '../../hooks/useUpdateThingStateSmart';
 import { getThing } from '../../selectors/getters';
 import PropertyRow from '.././room/PropertyRow';
 
+const REFRESH_HISTORY_INTERVAL = 3 * 60 * 100;
+
 export function ThingDialog() {
     const [urlSearchParams] = useSearchParams();
     const thingId = urlSearchParams.get('thingId') || '';
     const thing = useAppSelector(getThing(thingId));
     const navigate = useNavigate();
-    const [fetchHistory, { data: historyData }] = useLazyThingHistoryQuery();
+    const [fetchHistory, { data: historyData }] = useLazyThingHistoryQuery({
+        pollingInterval: thing ? REFRESH_HISTORY_INTERVAL : 0,
+    });
     const { mutateThingState } = useUpdateThingStateSmart(thingId);
     useEffect(() => {
         if (thing) fetchHistory({ deviceID: thing.deviceId, thingID: thing.config.nodeId });
