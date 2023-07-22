@@ -1,18 +1,18 @@
-import { validateForm } from 'framework-ui/src/validations';
-import { checkValid } from 'framework-ui/src/validations';
-import { State } from 'framework-ui/src/types';
+
+import { checkValid, types, validateForm } from '../validations';
 
 export const checkValidFormData = (
     formData: { [formName: string]: any },
     fieldDescriptors: any,
     ingoreRequired?: boolean
 ) => {
-    const state = {
+    const state: types["State"] = {
         formsData: {
+            registeredFields: {},
             ...formData,
         },
         fieldDescriptors,
     };
-    const result = validateForm(Object.keys(formData)[0], state as State, ingoreRequired);
+    const result = validateForm(Object.keys(formData)[0], state, ingoreRequired);
     return checkValid(result);
 };

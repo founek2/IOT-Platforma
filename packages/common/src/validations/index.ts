@@ -15,7 +15,7 @@ import { ErrorMessageKey } from '../localization/error';
 import { FieldDescriptor, FieldDescriptors, FieldState, FormsData } from './types';
 import isObject from '../utils/isObject';
 
-type types = {
+export type types = {
     State: { formsData: FormsData; fieldDescriptors: FieldDescriptors };
     ErrorMessageKey: ErrorMessageKey;
 };
@@ -83,11 +83,11 @@ function recursive(
 ) {
     const func =
         (accum = '') =>
-        (value: any, key: string | number): any => {
-            if (arrayPredicate(value, accum + key)) return recArray(value, accum + key + '.'); // pouze pokud existuje descriptor pro array
-            if (predicate(value, accum + key)) return recObj(value, accum + key + '.');
-            transform(value, accum + key);
-        };
+            (value: any, key: string | number): any => {
+                if (arrayPredicate(value, accum + key)) return recArray(value, accum + key + '.'); // pouze pokud existuje descriptor pro array
+                if (predicate(value, accum + key)) return recObj(value, accum + key + '.');
+                transform(value, accum + key);
+            };
 
     function recObj(obj: object, accum?: string) {
         forEachObjIndexed(func(accum), obj);

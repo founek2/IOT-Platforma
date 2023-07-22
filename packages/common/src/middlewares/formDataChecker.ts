@@ -1,6 +1,6 @@
 import { logger } from '../logger';
 import { checkValidFormData } from '../utils/validation';
-import { trimData } from 'framework-ui/src/utils/trimData';
+import { trimData } from '../utils/trimData';
 import express from 'express';
 
 type Options = { ingoreRequired?: boolean; allowedForms?: string[] } | undefined;
