@@ -1,4 +1,4 @@
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import { getProperty } from 'common/src/utils/getProperty';
 import { getThing } from 'common/src/utils/getThing';
 import { Emitter, EmitterEvents } from '../services/eventEmitter';
@@ -9,7 +9,7 @@ export default function (eventEmitter: Emitter<EmitterEvents>) {
         publishStr(`prefix/${deviceId}/$config/apiKey/set`, apiKey);
     });
 
-    eventEmitter.on('device_pairing_done', async (deviceId) => {});
+    eventEmitter.on('device_pairing_done', async (deviceId) => { });
 
     eventEmitter.on('device_set_state', ({ device, value, nodeId, propertyId }) => {
         logger.debug('state to change', value);

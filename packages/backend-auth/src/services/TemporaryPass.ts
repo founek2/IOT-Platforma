@@ -3,7 +3,7 @@ import addMinutes from 'date-fns/addMinutes';
 import isBefore from 'date-fns/isBefore';
 import { UserModel } from 'common/src/models/userModel';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 
 export type Pass = {
     password: string;

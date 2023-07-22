@@ -1,5 +1,5 @@
 import config from 'common/src/config';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import mongoose from 'mongoose';
 import { createApp, MyApp } from './main';
 

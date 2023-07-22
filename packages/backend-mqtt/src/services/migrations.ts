@@ -1,5 +1,5 @@
 import { MigrateModel, IMigrateDocument } from 'common/src/models/migrateModel';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import fs from 'fs/promises';
 import path from 'path';
 import { Config } from '../types';

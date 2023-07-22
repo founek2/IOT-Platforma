@@ -3,7 +3,7 @@ import config from 'common/src/config';
 import { JwtService } from 'common/src/services/jwtService';
 import { connectMongoose } from 'common/src/utils/connectMongoose';
 import express, { Application } from 'express';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import http from 'http';
 import morgan from 'morgan';
 import { Server as serverIO } from 'socket.io';

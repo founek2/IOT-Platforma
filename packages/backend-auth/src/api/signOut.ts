@@ -4,7 +4,7 @@ import { RequestWithAuth } from 'common/src/types';
 import resource from 'common/src/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import { OAuthService } from '../services/oauthService';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 
 type Request = RequestWithAuth;
 

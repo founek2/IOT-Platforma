@@ -15,7 +15,7 @@ import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
 import { IThing } from 'common/src/models/interface/thing';
 import { extractPlainConfig } from '../utils/extractPlainConfig';
 import util from 'util';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 
 const ObjectId = mongoose.Types.ObjectId;
 

@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import addHours from 'date-fns/addHours';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import mongoose from 'mongoose';
 import dotify from 'node-dotify';
 import { Either, Left, Right } from 'purify-ts/Either';

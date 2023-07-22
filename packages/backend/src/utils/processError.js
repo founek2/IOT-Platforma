@@ -1,4 +1,4 @@
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 
 // TODO create own Error class to differ from other crashes
 export default function (res) {

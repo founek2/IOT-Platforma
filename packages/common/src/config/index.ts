@@ -1,5 +1,5 @@
 import { Config } from '../types';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import path from 'path';
 
 function areWeTestingWithJest() {

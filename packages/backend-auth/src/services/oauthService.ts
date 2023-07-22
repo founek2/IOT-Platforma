@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import config from 'common/src/config';
 import { OAuthProvider } from 'common/src/models/interface/userInterface';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 
 const oauth = config.oauth;
 

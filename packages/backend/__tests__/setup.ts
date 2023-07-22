@@ -1,6 +1,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import config from 'common/src/config/index';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 
 export default async function () {
     if (!config.dbUri) {

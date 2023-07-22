@@ -3,7 +3,7 @@ import { Emitter } from '../services/eventEmitter';
 import * as types from '../types';
 import { AGENDA_JOB_TYPE } from 'common/src/constants/agenda';
 import { UserService } from 'common/src/services/userService';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 
 export default function (eventEmitter: Emitter<types.EmitterEvents>) {
     eventEmitter.on('user_login', async (user) => {

@@ -9,7 +9,7 @@ import { Config } from '../types';
 import { getProperty } from 'common/src/utils/getProperty';
 import { getThing } from 'common/src/utils/getThing';
 import functions from './fireBase/notifications/functions';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import { map, prop, uniq, o } from 'ramda';
 import { NotifyService } from './notifyService';
 

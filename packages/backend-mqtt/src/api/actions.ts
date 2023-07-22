@@ -1,6 +1,6 @@
 import express from 'express';
 import eventEmitter from '../services/eventEmitter';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import { IDevice } from 'common/src/models/interface/device';
 
 const router = express.Router();

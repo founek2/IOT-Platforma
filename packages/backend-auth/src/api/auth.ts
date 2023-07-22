@@ -4,7 +4,7 @@ import express, { Response } from 'express';
 import { AuthType } from 'common/src/constants';
 import { validatePass } from '../services/TemporaryPass';
 import { UserModel } from 'common/src/models/userModel';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 
 const router = express.Router();
 

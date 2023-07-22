@@ -1,5 +1,5 @@
 import Agenda from 'agenda';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import { MailerService } from '../services/mailerService';
 import { AGENDA_JOB_TYPE } from 'common/src/constants/agenda';
 import { UserBasic } from '../types';

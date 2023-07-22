@@ -1,4 +1,4 @@
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import { Config } from '../types';
 import mongoose from 'mongoose';
 import { connectMongoose } from 'common/src/utils/connectMongoose';

@@ -1,7 +1,7 @@
 import { Server as serverIO } from 'socket.io';
 import { DeviceStatus, IDevice } from 'common/src/models/interface/device';
 import { DeviceModel } from 'common/src/models/deviceModel';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import { getThing } from 'common/src/utils/getThing';
 import { getProperty } from 'common/src/utils/getProperty';
 import { validateValue } from 'common/src/utils/validateValue';

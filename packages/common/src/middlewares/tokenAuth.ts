@@ -1,6 +1,6 @@
 import { JwtService } from '../services/jwtService';
 import { equals, T, not } from 'ramda';
-import { logger } from 'framework-ui/src/logger';
+import { logger } from 'common/src/logger';
 import express from 'express';
 import { Permission } from '../models/interface/userInterface';
 import { UserModel } from '../models/userModel';
@@ -14,8 +14,8 @@ export default function (
         restricted?: boolean;
         methods?: Array<'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD'>;
     } = {
-        restricted: true,
-    }
+            restricted: true,
+        }
 ) {
     return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const { restricted, methods } = options;
