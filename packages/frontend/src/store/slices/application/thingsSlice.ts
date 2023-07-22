@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IThing } from 'common/src/models/interface/thing';
+import { IThing } from 'common/lib/models/interface/thing';
 import { devicesApi } from '../../../endpoints/devices';
 import { thingsApi } from '../../../endpoints/thing';
 import { normalizeDevices } from '../../../utils/normalizr';

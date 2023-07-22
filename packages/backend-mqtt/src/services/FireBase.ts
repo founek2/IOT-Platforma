@@ -1,15 +1,15 @@
-import { IDevice } from 'common/src/models/interface/device';
-import { INotifyThingProperty, INotify } from 'common/src/models/interface/notifyInterface';
-import { IThing, IThingProperty } from 'common/src/models/interface/thing';
-import { IUser } from 'common/src/models/interface/userInterface';
-import { NotifyModel } from 'common/src/models/notifyModel';
-import { UserModel } from 'common/src/models/userModel';
+import { IDevice } from 'common/lib/models/interface/device';
+import { INotifyThingProperty, INotify } from 'common/lib/models/interface/notifyInterface';
+import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
+import { IUser } from 'common/lib/models/interface/userInterface';
+import { NotifyModel } from 'common/lib/models/notifyModel';
+import { UserModel } from 'common/lib/models/userModel';
 import * as admin from 'firebase-admin';
 import { Config } from '../types';
-import { getProperty } from 'common/src/utils/getProperty';
-import { getThing } from 'common/src/utils/getThing';
+import { getProperty } from 'common/lib/utils/getProperty';
+import { getThing } from 'common/lib/utils/getThing';
 import functions from './fireBase/notifications/functions';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import { map, prop, uniq, o } from 'ramda';
 import { NotifyService } from './notifyService';
 

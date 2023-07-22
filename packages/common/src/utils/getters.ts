@@ -4,7 +4,7 @@ import {
     FieldState,
     FormsData,
     RegisteredFields,
-} from 'common/src/validations/types';
+} from 'common/lib/validations/types';
 import { compose, curry, o, prop } from 'ramda';
 import getInPath from './getInPath';
 

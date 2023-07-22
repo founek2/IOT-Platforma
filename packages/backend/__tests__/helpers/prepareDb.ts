@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import { connectMongoose } from 'common/src/utils/connectMongoose';
+import { connectMongoose } from 'common/lib/utils/connectMongoose';
 import { credentials } from '../resources/credentials';
-import { UserService } from 'common/src/services/userService';
-import { AuthType } from 'common/src/constants';
+import { UserService } from 'common/lib/services/userService';
+import { AuthType } from 'common/lib/constants';
 import config from '../resources/config';
-import { JwtService } from 'common/src/services/jwtService';
+import { JwtService } from 'common/lib/services/jwtService';
 
 export default async () => {
     // JwtService.init(config.jwt);

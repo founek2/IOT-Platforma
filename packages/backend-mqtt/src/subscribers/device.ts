@@ -1,6 +1,6 @@
-import { logger } from 'common/src/logger';
-import { getProperty } from 'common/src/utils/getProperty';
-import { getThing } from 'common/src/utils/getThing';
+import { logger } from 'common/lib/logger';
+import { getProperty } from 'common/lib/utils/getProperty';
+import { getThing } from 'common/lib/utils/getThing';
 import { Emitter, EmitterEvents } from '../services/eventEmitter';
 import { publishStr } from '../services/mqtt';
 

@@ -1,5 +1,5 @@
-import { IThingProperty } from 'common/src/models/interface/thing';
-import { Measurement } from 'common/src/types';
+import { IThingProperty } from 'common/lib/models/interface/thing';
+import { Measurement } from 'common/lib/types';
 import { subDays } from 'date-fns';
 import { Device } from '../store/slices/application/devicesSlice';
 import { Thing } from '../store/slices/application/thingsSlice';

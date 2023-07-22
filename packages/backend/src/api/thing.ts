@@ -1,13 +1,13 @@
-import { DeviceModel } from 'common/src/models/deviceModel';
-import { IDevice } from 'common/src/models/interface/device';
-import { RequestWithAuth } from 'common/src/types';
-import { getProperty } from 'common/src/utils/getProperty';
-import { getThing } from 'common/src/utils/getThing';
-import { validateValue } from 'common/src/utils/validateValue';
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import { IDevice } from 'common/lib/models/interface/device';
+import { RequestWithAuth } from 'common/lib/types';
+import { getProperty } from 'common/lib/utils/getProperty';
+import { getThing } from 'common/lib/utils/getThing';
+import { validateValue } from 'common/lib/utils/validateValue';
 import { all, equals } from 'ramda';
-import checkControlPerm from 'common/src/middlewares/device/checkControlPerm';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import checkControlPerm from 'common/lib/middlewares/device/checkControlPerm';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 
 type Params = { nodeId: string; deviceId: string };

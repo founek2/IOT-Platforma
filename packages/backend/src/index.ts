@@ -1,5 +1,5 @@
-import config from 'common/src/config';
-import { logger } from 'common/src/logger';
+import config from 'common/lib/config';
+import { logger } from 'common/lib/logger';
 import mongoose from 'mongoose';
 import { createApp, MyApp } from './main';
 

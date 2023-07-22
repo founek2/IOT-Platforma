@@ -1,10 +1,10 @@
 import bodyParser from 'body-parser';
-import config from 'common/src/config';
-import { InfluxService } from 'common/src/services/influxService';
-import { JwtService } from 'common/src/services/jwtService';
-import { connectMongoose } from 'common/src/utils/connectMongoose';
+import config from 'common/lib/config';
+import { InfluxService } from 'common/lib/services/influxService';
+import { JwtService } from 'common/lib/services/jwtService';
+import { connectMongoose } from 'common/lib/utils/connectMongoose';
 import express, { Application, RequestHandler } from 'express';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import http from 'http';
 import morgan from 'morgan';
 import { Server as serverIO } from 'socket.io';
@@ -15,7 +15,7 @@ import { migrate } from './services/migrations';
 import mqttService from './services/mqtt';
 import initSubscribers from './subscribers';
 import { Config } from './types';
-import { AuthConnector } from 'common/src/connectors/authConnector';
+import { AuthConnector } from 'common/lib/connectors/authConnector';
 
 interface customApp extends Application {
     server: http.Server;

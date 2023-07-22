@@ -1,21 +1,21 @@
-import fieldDescriptors from 'common/src/fieldDescriptors';
-import { DiscoveryModel, IDiscoveryDocument } from 'common/src/models/deviceDiscoveryModel';
-import { DeviceModel } from 'common/src/models/deviceModel';
-import { DeviceStatus } from 'common/src/models/interface/device';
-import { RequestWithAuth } from 'common/src/types';
+import fieldDescriptors from 'common/lib/fieldDescriptors';
+import { DiscoveryModel, IDiscoveryDocument } from 'common/lib/models/deviceDiscoveryModel';
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import { DeviceStatus } from 'common/lib/models/interface/device';
+import { RequestWithAuth } from 'common/lib/types';
 import mongoose from 'mongoose';
 import { assocPath, equals, map } from 'ramda';
-import checkDiscovery from 'common/src/middlewares/discovery/checkDiscovery';
-import formDataChecker from 'common/src/middlewares/formDataChecker';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import checkDiscovery from 'common/lib/middlewares/discovery/checkDiscovery';
+import formDataChecker from 'common/lib/middlewares/formDataChecker';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import eventEmitter from '../services/eventEmitter';
 import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
-import { IThing } from 'common/src/models/interface/thing';
+import { IThing } from 'common/lib/models/interface/thing';
 import { extractPlainConfig } from '../utils/extractPlainConfig';
 import util from 'util';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 
 const ObjectId = mongoose.Types.ObjectId;
 

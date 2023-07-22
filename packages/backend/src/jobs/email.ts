@@ -1,9 +1,9 @@
 import Agenda from 'agenda';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import { MailerService } from '../services/mailerService';
-import { AGENDA_JOB_TYPE } from 'common/src/constants/agenda';
+import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda';
 import { UserBasic } from '../types';
-import { IToken } from 'common/src/models/tokenModel';
+import { IToken } from 'common/lib/models/tokenModel';
 
 export default function (agenda: Agenda) {
     /* Send SignUp email */

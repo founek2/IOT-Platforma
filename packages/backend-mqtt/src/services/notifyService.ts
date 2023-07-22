@@ -1,24 +1,24 @@
-import { IThingProperty, IThing } from 'common/src/models/interface/thing';
-import { IUser } from 'common/src/models/interface/userInterface';
-import { INotify, INotifyThing, INotifyThingProperty } from 'common/src/models/interface/notifyInterface';
+import { IThingProperty, IThing } from 'common/lib/models/interface/thing';
+import { IUser } from 'common/lib/models/interface/userInterface';
+import { INotify, INotifyThing, INotifyThingProperty } from 'common/lib/models/interface/notifyInterface';
 import { groupBy, values, map } from 'ramda';
-import { NotifyModel } from 'common/src/models/notifyModel';
+import { NotifyModel } from 'common/lib/models/notifyModel';
 import { ObjectId } from '../utils/objectId';
 
 const prepareQuery =
     (updateQuery: any, nodeId: INotifyThing['nodeId']) =>
-    (arg: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }) => {
-        const { _id, prop_id } = arg;
-        return {
-            updateOne: {
-                filter: {
-                    _id: ObjectId(_id),
+        (arg: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }) => {
+            const { _id, prop_id } = arg;
+            return {
+                updateOne: {
+                    filter: {
+                        _id: ObjectId(_id),
+                    },
+                    update: updateQuery,
+                    arrayFilters: [{ 'thing.nodeId': nodeId }, { 'property._id': ObjectId(prop_id) }],
                 },
-                update: updateQuery,
-                arrayFilters: [{ 'thing.nodeId': nodeId }, { 'property._id': ObjectId(prop_id) }],
-            },
+            };
         };
-    };
 
 /**
  * Service for updating notification rules metadata

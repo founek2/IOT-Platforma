@@ -1,10 +1,10 @@
-import { OAuthProvider } from 'common/src/models/interface/userInterface';
-import { UserService } from 'common/src/services/userService';
-import { RequestWithAuth } from 'common/src/types';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import { OAuthProvider } from 'common/lib/models/interface/userInterface';
+import { UserService } from 'common/lib/services/userService';
+import { RequestWithAuth } from 'common/lib/types';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { OAuthService } from '../services/oauthService';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 
 type Request = RequestWithAuth;
 

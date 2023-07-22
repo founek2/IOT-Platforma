@@ -1,4 +1,4 @@
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import { checkValidFormData } from '../utils/validation';
 import { trimData } from 'framework-ui/src/utils/trimData';
 import express from 'express';

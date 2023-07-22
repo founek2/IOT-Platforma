@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import dissocPath from 'ramda/src/dissocPath';
 import mergeDeepLeft from 'ramda/src/mergeDeepLeft';
-import { FieldState, FormsData } from 'common/src/validations/types';
-import setInPath from 'common/src/utils/setInPath';
-import getInPath from 'common/src/utils/getInPath';
+import { FieldState, FormsData } from 'common/lib/validations/types';
+import setInPath from 'common/lib/utils/setInPath';
+import getInPath from 'common/lib/utils/getInPath';
 import { EditUserFormData } from '../../endpoints/users';
 import { EditDeviceFormData } from '../../endpoints/devices';
 

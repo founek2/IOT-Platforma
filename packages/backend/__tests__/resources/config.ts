@@ -1,4 +1,4 @@
-import config from 'common/src/config';
+import config from 'common/lib/config';
 
 export default {
     url: `localhost:${config.port}`,

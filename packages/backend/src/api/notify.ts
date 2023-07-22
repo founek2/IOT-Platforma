@@ -1,12 +1,12 @@
-import fieldDescriptors from 'common/src/fieldDescriptors';
-import { NotifyModel } from 'common/src/models/notifyModel';
-import { RequestWithAuth } from 'common/src/types';
-import { transformNotifyForBE } from 'common/src/utils/transform';
-import checkReadPerm from 'common/src/middlewares/device/checkReadPerm';
-import checkWritePerm from 'common/src/middlewares/device/checkWritePerm';
-import formDataChecker from 'common/src/middlewares/formDataChecker';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import fieldDescriptors from 'common/lib/fieldDescriptors';
+import { NotifyModel } from 'common/lib/models/notifyModel';
+import { RequestWithAuth } from 'common/lib/types';
+import { transformNotifyForBE } from 'common/lib/utils/transform';
+import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
+import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
+import formDataChecker from 'common/lib/middlewares/formDataChecker';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;

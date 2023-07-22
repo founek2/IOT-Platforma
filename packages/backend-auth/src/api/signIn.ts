@@ -1,12 +1,12 @@
-import config from 'common/src/config';
-import fieldDescriptors from 'common/src/fieldDescriptors';
-import { OAuthProvider } from 'common/src/models/interface/userInterface';
-import { UserService } from 'common/src/services/userService';
+import config from 'common/lib/config';
+import fieldDescriptors from 'common/lib/fieldDescriptors';
+import { OAuthProvider } from 'common/lib/models/interface/userInterface';
+import { UserService } from 'common/lib/services/userService';
 import { EitherAsync } from 'purify-ts/EitherAsync';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import formDataChecker from 'common/src/middlewares/formDataChecker';
-import { rateLimiterMiddleware } from 'common/src/middlewares/rateLimiter';
-import resource from 'common/src/middlewares/resource-router-middleware';
+import formDataChecker from 'common/lib/middlewares/formDataChecker';
+import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter';
+import resource from 'common/lib/middlewares/resource-router-middleware';
 import eventEmitter from '../services/eventEmitter';
 import { OAuthService } from '../services/oauthService';
 

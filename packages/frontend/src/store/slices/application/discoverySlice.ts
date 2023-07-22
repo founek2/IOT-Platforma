@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { devicesApi } from '../../../endpoints/devices';
 import { normalizeDevices } from '../../../utils/normalizr';
-import { IDiscovery } from 'common/src/models/interface/discovery';
+import { IDiscovery } from 'common/lib/models/interface/discovery';
 import { discoveryApi } from '../../../endpoints/discovery';
 
 export type Discovery = IDiscovery & { _id: string };

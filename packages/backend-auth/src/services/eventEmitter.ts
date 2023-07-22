@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 import * as types from '../types';
-import type { IDevice, DeviceCommand } from 'common/src/models/interface/device';
-import { IThing, IThingProperty } from 'common/src/models/interface/thing';
-import { IUser } from 'common/src/models/interface/userInterface';
+import type { IDevice, DeviceCommand } from 'common/lib/models/interface/device';
+import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
+import { IUser } from 'common/lib/models/interface/userInterface';
 
 type EventMap = Record<string, any>;
 
@@ -41,6 +41,6 @@ export interface EmitterEvents {
     user_login: IUser;
 }
 
-class MyClass extends MyEmitter<EmitterEvents> {}
+class MyClass extends MyEmitter<EmitterEvents> { }
 
 export default new MyClass();

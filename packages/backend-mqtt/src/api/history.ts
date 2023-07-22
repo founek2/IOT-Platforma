@@ -1,9 +1,9 @@
-import { HistoricalModel } from 'common/src/models/historyModel';
+import { HistoricalModel } from 'common/lib/models/historyModel';
 import express from 'express';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
-import checkReadPerm from 'common/src/middlewares/device/checkReadPerm';
-import { InfluxService } from 'common/src/services/influxService';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
+import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
+import { InfluxService } from 'common/lib/services/influxService';
 
 /**
  * URL prefix /device/:deviceId/thing/:thingId/history

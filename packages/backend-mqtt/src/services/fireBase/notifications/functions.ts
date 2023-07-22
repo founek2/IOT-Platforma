@@ -1,5 +1,5 @@
 import shouldSend from '../../../utils/shouldSend';
-import { NotifyType } from 'common/src/models/interface/notifyInterface';
+import { NotifyType } from 'common/lib/models/interface/notifyInterface';
 
 const functions: {
     [key in NotifyType]: (

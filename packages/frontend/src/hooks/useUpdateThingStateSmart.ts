@@ -1,4 +1,4 @@
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import { useCallback, useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '.';
 import { UpdateThingStateArgs, useUpdateThingStateMutation } from '../endpoints/thing';

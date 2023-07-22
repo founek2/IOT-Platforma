@@ -1,11 +1,11 @@
-import fieldDescriptors from 'common/src/fieldDescriptors';
-import formDataChecker from 'common/src/middlewares/formDataChecker';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
-import checkWritePerm from 'common/src/middlewares/user/checkWritePerm';
-import { UserModel } from 'common/src/models/userModel';
-import { UserService } from 'common/src/services/userService';
-import { RequestWithAuth } from 'common/src/types';
+import fieldDescriptors from 'common/lib/fieldDescriptors';
+import formDataChecker from 'common/lib/middlewares/formDataChecker';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
+import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm';
+import { UserModel } from 'common/lib/models/userModel';
+import { UserService } from 'common/lib/services/userService';
+import { RequestWithAuth } from 'common/lib/types';
 import { map, omit } from 'ramda';
 import { ObjectId } from '../utils/objectId';
 

@@ -1,10 +1,10 @@
 import fetch from 'node-fetch';
-import config from 'common/src/config';
-import { IDevice, DeviceCommand } from 'common/src/models/interface/device';
-import { IDiscovery } from 'common/src/models/interface/discovery';
-import { IThing, IThingProperty } from 'common/src/models/interface/thing';
+import config from 'common/lib/config';
+import { IDevice, DeviceCommand } from 'common/lib/models/interface/device';
+import { IDiscovery } from 'common/lib/models/interface/discovery';
+import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import { AuthConnector } from 'common/src/connectors/authConnector';
+import { AuthConnector } from 'common/lib/connectors/authConnector';
 /**
  * Service to communicate with backend-mqtt, allowing sending data directly to devices
  */

@@ -1,17 +1,17 @@
-import fieldDescriptors from 'common/src/fieldDescriptors';
-import { IUser } from 'common/src/models/interface/userInterface';
-import { TokenModel } from 'common/src/models/tokenModel';
-import { UserModel } from 'common/src/models/userModel';
-import { UserService } from 'common/src/services/userService';
-import { RequestWithAuth } from 'common/src/types';
-import formDataChecker from 'common/src/middlewares/formDataChecker';
-import { rateLimiterMiddleware } from 'common/src/middlewares/rateLimiter';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
-import checkWritePerm from 'common/src/middlewares/user/checkWritePerm';
+import fieldDescriptors from 'common/lib/fieldDescriptors';
+import { IUser } from 'common/lib/models/interface/userInterface';
+import { TokenModel } from 'common/lib/models/tokenModel';
+import { UserModel } from 'common/lib/models/userModel';
+import { UserService } from 'common/lib/services/userService';
+import { RequestWithAuth } from 'common/lib/types';
+import formDataChecker from 'common/lib/middlewares/formDataChecker';
+import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
+import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm';
 import eventEmitter from '../services/eventEmitter';
 import { Request } from 'express';
-import { getAllowedGroups } from 'common/src/constants/privileges';
+import { getAllowedGroups } from 'common/lib/constants/privileges';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {

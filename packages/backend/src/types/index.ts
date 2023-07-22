@@ -1,6 +1,6 @@
-import { ControlRecipe } from 'common/src/types';
+import { ControlRecipe } from 'common/lib/types';
 import type { Request } from 'express';
-import { IUser, Permission } from 'common/src/models/interface/userInterface';
+import { IUser, Permission } from 'common/lib/models/interface/userInterface';
 
 export interface EmitterEvents {
     user_login: IUser;

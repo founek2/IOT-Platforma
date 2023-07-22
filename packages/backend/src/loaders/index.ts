@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import type * as types from '../types';
 import expressLoader from './express';
 import mongoLoader from './mongodb';

@@ -1,11 +1,11 @@
-import { IDiscoveryThing } from 'common/src/models/interface/discovery';
+import { IDiscoveryThing } from 'common/lib/models/interface/discovery';
 import {
     IThingProperty,
     PropertyDataType,
     IThingPropertyNumeric,
     IThingPropertyEnum,
     IThing,
-} from 'common/src/models/interface/thing';
+} from 'common/lib/models/interface/thing';
 import { assoc, assocPath, dissocPath, map, o } from 'ramda';
 
 export function convertProperty(property: IThingProperty): IThingProperty {

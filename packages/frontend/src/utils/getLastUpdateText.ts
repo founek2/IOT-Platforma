@@ -1,4 +1,4 @@
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 
 /**
  * Calculate diff between now and provided time -> translate to human readable form

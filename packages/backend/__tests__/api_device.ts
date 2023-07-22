@@ -6,7 +6,7 @@ import dbConnect from './helpers/prepareDb';
 import mongoose from 'mongoose';
 import { getAdminToken, getUserToken } from './lib/tokens.js';
 import { server } from './lib/superTest';
-import { DeviceModel } from 'common/src/models/deviceModel';
+import { DeviceModel } from 'common/lib/models/deviceModel';
 // import permMiddlewareChecker from './lib/authMiddlewareCheck'
 
 const ObjectId = mongoose.Types.ObjectId;

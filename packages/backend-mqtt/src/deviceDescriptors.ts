@@ -1,5 +1,5 @@
 import validationFactory from 'framework-ui/src/validations/validationFactory';
-import { ComponentType, PropertyClass, PropertyDataType } from 'common/src/models/interface/thing';
+import { ComponentType, PropertyClass, PropertyDataType } from 'common/lib/models/interface/thing';
 import { transformToForm } from 'framework-ui/src/utils/transformToForm';
 import { FormFieldDescriptors } from 'framework-ui/src/types';
 

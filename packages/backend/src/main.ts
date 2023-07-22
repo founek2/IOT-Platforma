@@ -1,7 +1,7 @@
-import { allowedGroups } from 'common/src/constants/privileges';
-import { JwtService } from 'common/src/services/jwtService';
+import { allowedGroups } from 'common/lib/constants/privileges';
+import { JwtService } from 'common/lib/services/jwtService';
 import express, { Application } from 'express';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import http from 'http';
 import loadersInit from './loaders';
 import { MailerService } from './services/mailerService';

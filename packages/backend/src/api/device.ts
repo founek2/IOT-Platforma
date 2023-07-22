@@ -1,15 +1,15 @@
-import fieldDescriptors from 'common/src/fieldDescriptors';
-import { DeviceModel } from 'common/src/models/deviceModel';
-import checkWritePerm from 'common/src/middlewares/device/checkWritePerm';
-import formDataChecker from 'common/src/middlewares/formDataChecker';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
+import fieldDescriptors from 'common/lib/fieldDescriptors';
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
+import formDataChecker from 'common/lib/middlewares/formDataChecker';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import { DeviceService } from '../services/deviceService';
 import eventEmitter from '../services/eventEmitter';
-import { IDevice } from 'common/src/models/interface/device';
-import { RequestWithAuth } from 'common/src/types';
-import checkReadPerm from 'common/src/middlewares/device/checkReadPerm';
+import { IDevice } from 'common/lib/models/interface/device';
+import { RequestWithAuth } from 'common/lib/types';
+import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
 
 type Request = RequestWithAuth;
 type RequestId = RequestWithAuth & { params: { id: string } };

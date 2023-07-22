@@ -1,9 +1,9 @@
 import bodyParser from 'body-parser';
-import config from 'common/src/config';
-import { JwtService } from 'common/src/services/jwtService';
-import { connectMongoose } from 'common/src/utils/connectMongoose';
+import config from 'common/lib/config';
+import { JwtService } from 'common/lib/services/jwtService';
+import { connectMongoose } from 'common/lib/utils/connectMongoose';
 import express, { Application } from 'express';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import http from 'http';
 import morgan from 'morgan';
 import { Server as serverIO } from 'socket.io';

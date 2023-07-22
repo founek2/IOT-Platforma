@@ -1,5 +1,5 @@
 import { EntityId } from '@reduxjs/toolkit';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import { createSelectorCreator, defaultMemoize } from 'reselect';
 import { RootState } from '../store/index';
 import { Device } from '../store/slices/application/devicesSlice';

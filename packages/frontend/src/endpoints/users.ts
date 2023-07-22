@@ -1,4 +1,4 @@
-import { IDevice } from 'common/src/models/interface/device';
+import { IDevice } from 'common/lib/models/interface/device';
 import { api } from './api';
 import { SignInResponse, User } from './signIn';
 

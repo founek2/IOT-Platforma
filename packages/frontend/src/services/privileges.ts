@@ -2,10 +2,10 @@ import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import CloudIcon from '@mui/icons-material/Cloud';
 import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
 import PeopleIcon from '@mui/icons-material/People';
-import { AllowedRoutes, PrivilegesContainer, Route, RouteMenu } from 'common/src/privileges';
+import { AllowedRoutes, PrivilegesContainer, Route, RouteMenu } from 'common/lib/privileges';
 import { lazy } from 'react';
 
-import { allowedGroups } from 'common/src/constants/privileges';
+import { allowedGroups } from 'common/lib/constants/privileges';
 import { append } from '../utils/ramda';
 
 const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement'));

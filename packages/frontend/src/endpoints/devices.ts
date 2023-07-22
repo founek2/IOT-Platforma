@@ -1,5 +1,5 @@
-import { IDevice } from 'common/src/models/interface/device';
-import { Measurement } from 'common/src/types';
+import { IDevice } from 'common/lib/models/interface/device';
+import { Measurement } from 'common/lib/types';
 import { Device } from '../store/slices/application/devicesSlice';
 import { api } from './api';
 

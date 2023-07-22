@@ -1,4 +1,4 @@
-import { checkValidFormData } from 'common/src/utils/validation';
+import { checkValidFormData } from 'common/lib/utils/validation';
 import forms from './resources/forms/userForms';
 import fieldDescriptors from './resources/fieldDescriptors';
 

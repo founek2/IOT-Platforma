@@ -1,8 +1,8 @@
 import { Point } from '@influxdata/influxdb-client';
-import { DeviceModel } from 'common/src/models/deviceModel';
-import { HistoricalModel } from 'common/src/models/historyModel';
-import { logger } from 'common/src/logger';
-import { InfluxService } from 'common/src/services/influxService';
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import { HistoricalModel } from 'common/lib/models/historyModel';
+import { logger } from 'common/lib/logger';
+import { InfluxService } from 'common/lib/services/influxService';
 import { Config } from '../types';
 
 export async function up(config: Config) {

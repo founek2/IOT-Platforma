@@ -1,10 +1,10 @@
-import { DeviceModel } from 'common/src/models/deviceModel';
-import { UserService } from 'common/src/services/userService';
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import { UserService } from 'common/lib/services/userService';
 import express, { Response } from 'express';
-import { AuthType } from 'common/src/constants';
+import { AuthType } from 'common/lib/constants';
 import { validatePass } from '../services/TemporaryPass';
-import { UserModel } from 'common/src/models/userModel';
-import { logger } from 'common/src/logger';
+import { UserModel } from 'common/lib/models/userModel';
+import { logger } from 'common/lib/logger';
 
 const router = express.Router();
 

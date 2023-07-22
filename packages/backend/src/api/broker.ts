@@ -1,7 +1,7 @@
-import { RequestWithAuth } from 'common/src/types';
-import resource from 'common/src/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
-import { checkIsRoot } from 'common/src/middlewares/user/checkIsRoot';
+import { RequestWithAuth } from 'common/lib/types';
+import resource from 'common/lib/middlewares/resource-router-middleware';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
+import { checkIsRoot } from 'common/lib/middlewares/user/checkIsRoot';
 import { BrokerService } from '../services/brokerService';
 
 type Request = RequestWithAuth;
