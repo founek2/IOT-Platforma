@@ -3,7 +3,7 @@ import tokenAuthMIddleware from 'common/src/middlewares/tokenAuth';
 import { DeviceModel } from 'common/src/models/deviceModel';
 import { RequestWithAuth } from 'common/src/types';
 import { getThing } from 'common/src/utils/getThing';
-import checkReadPerm from '../middlewares/device/checkReadPerm';
+import checkReadPerm from 'common/src/middlewares/device/checkReadPerm';
 
 type Params = { deviceId: string; nodeId: string };
 type Request = RequestWithAuth<Params>;

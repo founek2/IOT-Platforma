@@ -1,33 +1,17 @@
-import DoneIcon from '@mui/icons-material/Done';
-import CircularProgress from '@mui/material/CircularProgress';
-import IconButton from '@mui/material/IconButton';
+import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import clsx from 'clsx';
-import { logger } from 'common/src/logger';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Draggable, DraggableProvider } from '../components/Draggable';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { useAppBarContext } from '../hooks/useAppBarContext';
-import { useEditMode } from '../hooks/useEditMode';
-import { Buildings, buildingsCachedSelector } from '../selectors/devicesSelector';
-import { useDevicesQuery, useUpdateDeviceMutation } from '../endpoints/devices';
-import { locationPreferencesReducerActions } from '../store/slices/preferences/locationSlice';
-import { byPreferences } from '../utils/sort';
-import { BuildingWidget } from './locations/BuildingWidget';
-import { EditModeDialog } from './locations/EditModeDialog';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAppSelector } from '../hooks';
+import { useUpdateDeviceMutation } from '../endpoints/devices';
 import Locations from './Locations';
 import { getAllDevices, getDevice } from '../selectors/getters';
-import { TextField, Typography } from '@mui/material';
+import { TextField } from '@mui/material';
 import { DeviceWidget } from './room/widgets/DeviceWidget';
 import { Box } from '@mui/system';
 import { Device } from '../store/slices/application/devicesSlice';
-import { useDiscoveredDevicesQuery } from '../endpoints/discovery';
-import { DiscoveredWidget } from './room/widgets/DiscoveredWidget';
 import DiscoverySection from './deviceManagement/DiscoverySection';
 import { DeviceDialogForm } from './deviceManagement/DeviceDialogForm';
 import { not } from '../utils/ramda';
-import { Link } from 'react-router-dom';
 
 function searchByText(text: string) {
     const search = text.toLowerCase();
