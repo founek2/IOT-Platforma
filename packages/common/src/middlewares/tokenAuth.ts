@@ -1,6 +1,6 @@
 import { JwtService } from '../services/jwtService';
 import { equals, T, not } from 'ramda';
-import { logger } from 'common/lib/logger';
+import { logger } from '../logger';
 import express from 'express';
 import { Permission } from '../models/interface/userInterface';
 import { UserModel } from '../models/userModel';

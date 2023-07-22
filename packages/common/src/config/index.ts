@@ -1,5 +1,5 @@
 import { Config } from '../types';
-import { logger } from 'common/lib/logger';
+import { logger } from '../logger';
 import path from 'path';
 
 function areWeTestingWithJest() {

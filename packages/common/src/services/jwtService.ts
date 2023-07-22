@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
-import { logger } from 'common/lib/logger';
+import { logger } from '../logger';
 
 let privKey: jwt.Secret | null = null;
 let pubKey: jwt.Secret | null = null;

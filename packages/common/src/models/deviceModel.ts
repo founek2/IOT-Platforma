@@ -1,4 +1,4 @@
-import { logger } from 'common/lib/logger';
+import { logger } from '../logger';
 import mongoose, { Model } from 'mongoose';
 import { IThing } from './interface/thing';
 import { deviceSchemaPlain, IDeviceDocument } from './schema/deviceSchema';

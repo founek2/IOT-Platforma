@@ -3,7 +3,7 @@ import { OrgsAPI, BucketsAPI, Organization, QueryAPI } from '@influxdata/influxd
 import { InfluxDB, Point, WriteApi, QueryApi } from '@influxdata/influxdb-client';
 import { Config, Measurement } from '../types';
 import { DeviceStatus, IDevice } from '../models/interface/device';
-import { logger } from 'common/lib/logger';
+import { logger } from '../logger';
 
 export let influxDB: InfluxDB;
 export let bucketsApi: BucketsAPI;
