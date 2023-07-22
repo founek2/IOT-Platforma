@@ -1,5 +1,3 @@
-import { logger } from '../logger';
-
 let storage = localStorage;
 
 export function getItem(key: string) {
@@ -23,5 +21,5 @@ export function removeItems(array: string[]) {
 export function setStorage(type: 'local' | 'session') {
     if (type === 'local') storage = localStorage;
     else if (type === 'session') storage = sessionStorage;
-    else logger.error('Unsupported storage');
+    else console.error('Unsupported storage');
 }

@@ -2,7 +2,6 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { forEach, toPairs } from 'ramda';
 import ErrorMessages from '../localization/errorMessages';
 import SuccessMessages from '../localization/successMessages';
-import { logger } from '../logger';
 import { dehydrateState } from '../redux/actions/';
 import { notificationsActions } from '../redux/actions/application/notifications';
 
@@ -20,7 +19,7 @@ const processResponse = (dispatch: Dispatch, successMessage?: string) => async (
 
     const newToken = response.headers.get('authorization-jwt-new');
     if (newToken) {
-        logger.error('Unable to set resigned token, actions moved to FE');
+        console.error('Unable to set resigned token, actions moved to FE');
         // dispatch(userActions.update({ token: newToken }));
         // @ts-ignore
         dispatch(dehydrateState());
@@ -115,7 +114,7 @@ const processResponse = (dispatch: Dispatch, successMessage?: string) => async (
 };
 
 const checkError = (Fn: undefined | ((err: Error) => any), error: any) => {
-    logger.warning('API catch> ' + error, error.stack);
+    console.warn('API catch> ' + error, error.stack);
     // if (error.message !== 'breakChain' && Fn)
     if (Fn) Fn(error);
 };

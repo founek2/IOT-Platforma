@@ -12,15 +12,14 @@ import { notificationsActions } from './application/notifications';
 import ErrorMessages from '../../localization/errorMessages';
 import { formsDataReducerActions } from '../reducers/formsData';
 import { AppThunk } from '../../types';
-import { logger } from '../../logger';
 
 function recursive(transform: any, predicate: any, object: any) {
     const func =
         (accum = '') =>
-        (value: any, key: any) => {
-            if (predicate(value)) return rec(value, accum + key + '.');
-            transform(value, accum + key);
-        };
+            (value: any, key: any) => {
+                if (predicate(value)) return rec(value, accum + key + '.');
+                transform(value, accum + key);
+            };
 
     function rec(obj: any, accum?: any) {
         forEachObjIndexed(func(accum), obj);
@@ -33,7 +32,7 @@ export const formsDataActions = {
 
     validateField(deepPath: string, ignorePristine = false): AppThunk<ReturnType<typeof ValidateField>> {
         return function (dispatch, getState) {
-            logger.info('VALIDATE_FIELD:', deepPath);
+            console.info('VALIDATE_FIELD:', deepPath);
             const fieldState = ValidateField(deepPath, getState(), ignorePristine);
             dispatch(formsDataActions.updateRegisteredField({ deepPath, value: fieldState }));
             return fieldState;
@@ -42,7 +41,7 @@ export const formsDataActions = {
 
     validateForm(formName: string, ignoreRequired = false): AppThunk<ReturnType<typeof checkValid>> {
         return function (dispatch, getState) {
-            logger.info('VALIDATE_FORM:', formName);
+            console.info('VALIDATE_FORM:', formName);
 
             dispatch(formsDataActions.setFormData({ formName, data: getFormData(formName)(getState()) }));
             const fieldStates = ValidateForm(formName, getState(), ignoreRequired);
@@ -67,7 +66,7 @@ export const formsDataActions = {
 
     validateRegisteredFields(formName: string, ignoreRequired = false): AppThunk<ReturnType<typeof checkValid>> {
         return function (dispatch, getState) {
-            logger.info('VALIDATE_REGISTERED_FIELDS:', formName);
+            console.info('VALIDATE_REGISTERED_FIELDS:', formName);
 
             dispatch(formsDataActions.setFormData({ formName, data: getFormData(formName)(getState()) }));
             const fieldStates = ValidateRegisteredFields(formName, getState(), ignoreRequired);
@@ -91,7 +90,7 @@ export const formsDataActions = {
     // TODO maybe broken?? Do I even need it???
     resetForm(formName: string): AppThunk {
         return function (dispatch, getState) {
-            logger.info('RESET_FORM:', formName);
+            console.info('RESET_FORM:', formName);
             const state = getState();
 
             // @ts-ignore

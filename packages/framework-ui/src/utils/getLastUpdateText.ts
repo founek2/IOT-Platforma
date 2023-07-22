@@ -1,5 +1,3 @@
-import { logger } from '../logger';
-
 /**
  * Calculate diff between now and provided time -> translate to human readable form
  * In form: "Last update before 10 hours"
@@ -12,7 +10,7 @@ export default function getLastUpdateText(
     nowText = 'Aktuální'
 ): [string, number | null] {
     if (String(time) === 'Invalid Date') {
-        logger.error('invalid date', time);
+        console.error('invalid date', time);
         return ['', 10]; // 10s default, otherwise performance issues
     }
 
