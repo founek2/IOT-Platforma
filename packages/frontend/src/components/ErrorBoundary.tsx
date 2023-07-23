@@ -14,23 +14,25 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
     }
 
     static getDerivedStateFromError(error: Error) {
-        return { hasError: true };
-
         // Update state so the next render will show the fallback UI.
-        // if (process.env.NODE_ENV === 'production') return { hasError: true };
-        // else return { hasError: false };
+        return { hasError: true };
     }
 
     componentDidCatch(error: Error, info: React.ErrorInfo) {
-        // Display fallback UI
-        if (process.env.NODE_ENV === 'production') {
-            // this.setState({ hasError: true });
-            logger.error(error, info);
-            // @ts-ignore
-            if (typeof umami != 'undefined' && "track" in umami)
+        if (process.env.NODE_ENV !== 'production') return
+
+        // log the error 
+        logger.error(error, info);
+        // @ts-ignore
+        if (typeof umami != 'undefined' && "track" in umami) {
+            try {
                 // @ts-ignore
-                umami.track(JSON.stringify(info), error.message);
+                umami.track(error.name, { ...error, componentStack: info.componentStack });
+            } catch (err) {
+                logger.error(err)
+            }
         }
+
     }
 
     render() {
