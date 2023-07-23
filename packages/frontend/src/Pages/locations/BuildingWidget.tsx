@@ -17,7 +17,7 @@ const roomsContainerStyle: SxProps<Theme> = (theme) => ({
     paddingLeft: 1,
     paddingRight: 1,
     [theme.breakpoints.up('xl')]: {
-        gridTemplateColumns: 'repeat(auto-fill, minmax(30rem, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(29rem, 1fr))',
         // gap: 4,
     },
     [theme.breakpoints.up('lg')]: {
@@ -55,7 +55,7 @@ interface BuildingWidgetProps {
 export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetProps>(
     ({ isDragable, building, editMode, isSingle, onMove, className, editEnabled, pathPrefix }, ref) => {
         const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
-        console.log("editMode", editMode)
+
         return (
             <Grid
                 item
