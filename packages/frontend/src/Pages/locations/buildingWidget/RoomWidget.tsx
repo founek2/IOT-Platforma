@@ -66,6 +66,7 @@ const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({
                     display: 'flex',
                     flexDirection: 'column',
                     [theme.breakpoints.up('md')]: { flexDirection: 'row' },
+                    cursor: "pointer"
                 }),
                 ...(Array.isArray(sx) ? sx : [sx]),
             ]}
