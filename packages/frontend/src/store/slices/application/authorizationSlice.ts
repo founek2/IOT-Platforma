@@ -54,6 +54,12 @@ export const authorizationSlice = createSlice({
             state.accessToken = payload.accessToken || payload.token;
             state.currentUser = payload.user;
         });
+        builder.addMatcher(usersApi.endpoints.users.matchFulfilled, (state, { payload }) => {
+            const currentUser = payload.find(user => user._id === state.currentUser?._id)
+            if (currentUser) {
+                state.currentUser = currentUser
+            }
+        });
     },
 });
 

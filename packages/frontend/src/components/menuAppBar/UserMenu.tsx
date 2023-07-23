@@ -9,7 +9,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { authorizationActions } from '../../store/slices/application/authorizationActions';
 import { preferencesActions } from '../../store/slices/preferences/setting';
-import { getColorMode, getCurrentUserName } from '../../selectors/getters';
+import { getColorMode, getCurrentUserId, getCurrentUserName } from '../../selectors/getters';
 import { useNavigate } from 'react-router-dom';
 
 export function UserMenu() {
@@ -38,6 +38,10 @@ export function UserMenu() {
         navigate({ search: '?edit=true' });
         handleClose();
     };
+    const handleEditUser = () => {
+        navigate({ search: `?editUser=current` });
+        handleClose();
+    };
 
     return (
         <>
@@ -59,7 +63,7 @@ export function UserMenu() {
                     horizontal: 'left',
                 }}
             >
-                <MenuItem onClick={handleClose}>Účet</MenuItem>
+                <MenuItem onClick={handleEditUser}>Účet</MenuItem>
                 <MenuItem onClick={handleEditMode}>Uspořádat</MenuItem>
                 <MenuItem onClick={handleColorModeChange}>
                     <Typography>{colorMode === 'light' ? 'Tmavý' : 'Světlý'}</Typography>

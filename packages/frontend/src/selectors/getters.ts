@@ -24,6 +24,10 @@ export const isLoggedIn = (state: RootState) => state.application.authorization.
 
 export const getCurrentUserName = (state: RootState) => state.application.authorization.currentUser?.info.userName;
 
+export const getCurrentUser = (state: RootState) => state.application.authorization.currentUser || undefined;
+
+export const getCurrentUserId = (state: RootState) => state.application.authorization.currentUser?._id;
+
 export const getCurrentGroups = (state: RootState) => state.application.authorization.currentUser?.groups || [];
 
 export const getDevices = (state: RootState) => state.application.devices;

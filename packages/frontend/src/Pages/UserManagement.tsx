@@ -1,13 +1,11 @@
+import React from "react"
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
-import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DataList from '../components/DataList';
-import { Dialog } from '../components/Dialog';
-import EditUserForm from '../components/EditUserForm';
 import { User } from '../endpoints/signIn';
-import { EditUserFormData, useUpdateUserMutation, useUsersQuery } from '../endpoints/users';
-import { useForm } from '../hooks/useForm';
+import { useUsersQuery } from '../endpoints/users';
 
 function extractHumanText(user: User) {
     let text = user.info.userName;
@@ -25,33 +23,7 @@ function extractHumanText(user: User) {
 
 export default function UserManagement() {
     const { isLoading, data } = useUsersQuery(undefined);
-    const [selectedUser, setSelectedUser] = useState<User>();
-    const { validateForm, resetForm, setFormData } = useForm<EditUserFormData>('EDIT_USER');
-    const [updateUserMutation] = useUpdateUserMutation();
-
-    useEffect(() => {
-        if (!selectedUser) resetForm();
-        else
-            setFormData({
-                info: {
-                    userName: selectedUser.info.userName,
-                    email: selectedUser.info.email,
-                    firstName: selectedUser.info.firstName,
-                    lastName: selectedUser.info.lastName,
-                },
-                groups: selectedUser.groups,
-            });
-    }, [selectedUser]);
-
-    async function handleEdit() {
-        const result = validateForm();
-        if (!result.valid || !selectedUser) return;
-
-        updateUserMutation({ userId: selectedUser._id, data: result.data })
-            .unwrap()
-            .then(() => setSelectedUser(undefined))
-            .catch(() => {});
-    }
+    const navigate = useNavigate()
 
     return isLoading ? (
         <CircularProgress />
@@ -60,18 +32,10 @@ export default function UserManagement() {
             <Grid container justifyContent="center">
                 <Grid item xs={12} md={7} lg={6} xl={3}>
                     <Card sx={{ padding: 4 }}>
-                        <DataList data={data || []} getHumanText={extractHumanText} onClick={setSelectedUser} />
+                        <DataList data={data || []} getHumanText={extractHumanText} onClick={(user) => navigate({ search: `?editUser=${user._id}` })} />
                     </Card>
                 </Grid>
             </Grid>
-            <Dialog
-                open={Boolean(selectedUser)}
-                onClose={() => setSelectedUser(undefined)}
-                onAgree={handleEdit}
-                agreeText="Uložit"
-            >
-                <EditUserForm formName="EDIT_USER" editGroups />
-            </Dialog>
         </>
     );
 }

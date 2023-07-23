@@ -58,7 +58,7 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
                     navigate('/building');
                 })
                 .then(resetForm)
-                .catch(() => {});
+                .catch(() => { });
         }
     }
     function handleClose() {
@@ -70,6 +70,7 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
 
     return (
         <Dialog
+            disableRestoreFocus
             open={open}
             // keepMounted
             fullWidth
