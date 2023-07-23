@@ -11,7 +11,7 @@ import { Thing } from '../../../store/slices/application/thingsSlice';
 import { ComponentType, IThingPropertyBase } from 'common/src/models/interface/thing';
 import { SimpleSensor } from '../roomWidget/SimpleSensor';
 import { WithRequired } from '../../../types';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import type { SxProps, Theme } from '@mui/material/styles';
 
 interface SensorBadgesProps {
@@ -88,9 +88,12 @@ const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({
 });
 
 export default React.forwardRef<HTMLDivElement, RoomWidgetProps & { link: string }>(function ({ link, ...props }, ref) {
+    const navigate = useNavigate();
+
     return (
-        <Link to={link}>
+        // Link did not work in Firefox, because <a> is draggable by native browser
+        <div onClick={() => navigate(link)}>
             <RoomWidget {...props} ref={ref} />
-        </Link>
+        </div>
     );
 });
