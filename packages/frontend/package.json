@@ -11,12 +11,12 @@
         "analyze": "SOURCE_MAP=source-map yarn build && source-map-explorer 'build/assets/js/*.js'"
     },
     "dependencies": {
-        "@emotion/react": "^11.10.4",
-        "@emotion/styled": "^11.10.4",
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
         "@fontsource/roboto": "^4.5.8",
-        "@mui/icons-material": "^5.11.9",
-        "@mui/material": "^5.11.9",
-        "@reduxjs/toolkit": "^1.8.6",
+        "@mui/icons-material": "^5.14.1",
+        "@mui/material": "^5.14.1",
+        "@reduxjs/toolkit": "^1.9.5",
         "clipboard-copy": "^4.0.1",
         "clsx": "^1.2.1",
         "date-fns": "^2.29.3",
