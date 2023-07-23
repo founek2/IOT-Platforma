@@ -4,7 +4,7 @@ import { api } from '../endpoints/api';
 import rootReducer from './slices';
 import { notificationActions } from './slices/notificationSlice';
 import { $CombinedState } from '@reduxjs/toolkit';
-import errorMessages from 'common/lib/localization/error';
+import errorMessages from 'common/src/localization/error';
 import { authorizationActions } from './slices/application/authorizationActions';
 
 export const rtkQueryErrorLogger: Middleware =

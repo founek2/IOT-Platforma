@@ -8,7 +8,6 @@ import { useAppSelector } from '../../hooks';
 import { byPreferences } from '../../utils/sort';
 import { LocationTypography } from '../../components/LocationTypography';
 import RoomWidget from './buildingWidget/RoomWidget';
-import { not } from '../../utils/ramda';
 
 const roomsContainerStyle: SxProps<Theme> = (theme) => ({
     display: 'grid',
@@ -56,6 +55,7 @@ interface BuildingWidgetProps {
 export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetProps>(
     ({ isDragable, building, editMode, isSingle, onMove, className, editEnabled, pathPrefix }, ref) => {
         const locationPreferences = useAppSelector((state) => state.preferences.locations.entities);
+        console.log("editMode", editMode)
         return (
             <Grid
                 item

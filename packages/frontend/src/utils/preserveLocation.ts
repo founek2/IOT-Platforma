@@ -1,4 +1,4 @@
-import { logger } from 'common/lib/logger';
+import { logger } from 'common/src/logger';
 
 export function preserveLocation() {
     // Listen for all location changes (including back and forward)

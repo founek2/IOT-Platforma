@@ -1,5 +1,5 @@
-import { AuthType } from 'common/lib/constants';
-import { IUser } from 'common/lib/models/interface/userInterface';
+import { AuthType } from 'common/src/constants';
+import { IUser } from 'common/src/models/interface/userInterface';
 import { buildRedirectUri } from '../utils/redirectUri';
 import { api } from './api';
 

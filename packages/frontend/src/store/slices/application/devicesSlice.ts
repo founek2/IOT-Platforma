@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { IDevice } from 'common/lib/models/interface/device';
+import { IDevice } from 'common/src/models/interface/device';
 import { devicesApi } from '../../../endpoints/devices';
 import { normalizeDevices } from '../../../utils/normalizr';
 

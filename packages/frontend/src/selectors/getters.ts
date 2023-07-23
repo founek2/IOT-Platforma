@@ -1,5 +1,5 @@
 import { createSelector, Dictionary, EntityId } from '@reduxjs/toolkit';
-import { IThing } from 'common/lib/models/interface/thing';
+import { IThing } from 'common/src/models/interface/thing';
 import { RootState } from '../store';
 import { Device } from '../store/slices/application/devicesSlice';
 import { thingSelectors } from '../store/slices/application/thingsSlice';

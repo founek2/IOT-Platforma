@@ -1,4 +1,4 @@
-import { validationMessageKey } from 'common/lib/localization/validationMessages';
+import { validationMessageKey } from 'common/src/localization/validationMessages';
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from './store';
