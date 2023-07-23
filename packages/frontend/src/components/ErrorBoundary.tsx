@@ -27,9 +27,9 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasErro
             // this.setState({ hasError: true });
             logger.error(error, info);
             // @ts-ignore
-            if (typeof umami != 'undefined')
+            if (typeof umami != 'undefined' && "track" in umami)
                 // @ts-ignore
-                umami.trackEvent(JSON.stringify(info), error.message);
+                umami.track(JSON.stringify(info), error.message);
         }
     }
 
