@@ -7,13 +7,11 @@ import { Thing } from '../../../store/slices/application/thingsSlice';
 
 type IThingPropertyWithDeviceClass = IThingProperty & { propertyClass: NonNullable<IThingProperty['propertyClass']> };
 interface SimpleSensorProps {
-    thing: Thing;
+    value: any;
     property: IThingPropertyWithDeviceClass;
 }
-export function SimpleSensor({ thing, property }: SimpleSensorProps) {
+export function SimpleSensor({ value, property }: SimpleSensorProps) {
     const Icon = SensorIcons[property.propertyClass];
-
-    const value = thing.state?.[property.propertyId]?.value;
 
     if (!value) return null;
 
@@ -23,6 +21,8 @@ export function SimpleSensor({ thing, property }: SimpleSensorProps) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                paddingLeft: "0.3rem",
+                paddingRight: "0.3rem"
             }}
         >
             <Icon />

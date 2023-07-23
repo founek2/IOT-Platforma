@@ -2,7 +2,7 @@ import { createSelector, Dictionary, EntityId } from '@reduxjs/toolkit';
 import { IThing } from 'common/src/models/interface/thing';
 import { RootState } from '../store';
 import { Device } from '../store/slices/application/devicesSlice';
-import { thingSelectors } from '../store/slices/application/thingsSlice';
+import { Thing, thingSelectors } from '../store/slices/application/thingsSlice';
 import { usersSelectors } from '../store/slices/application/usersSlice';
 import { devicePreferencesSelectors } from '../store/slices/preferences/deviceSlice';
 import { buildingsCachedSelector } from './devicesSelector';
@@ -42,6 +42,15 @@ export const getDevicesById = (deviceIDs: String[]) => {
     return createSelector(getDevices, (state) => {
         const entities: Device[] = [];
         state.ids.forEach((id) => deviceIDs.includes(id as any) && entities.push(state.entities[id] as any));
+
+        return entities;
+    });
+};
+
+export const getThingsById = (thingIDs: String[]) => {
+    return createSelector(getThings, (state) => {
+        const entities: Thing[] = [];
+        state.ids.forEach((id) => thingIDs.includes(id as any) && entities.push(state.entities[id] as any));
 
         return entities;
     });

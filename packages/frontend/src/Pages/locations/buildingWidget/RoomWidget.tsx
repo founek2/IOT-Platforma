@@ -6,9 +6,9 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/material/styles/useTheme';
 import { useAppSelector } from '../../../hooks';
 import { Device, deviceSelectors } from '../../../store/slices/application/devicesSlice';
-import { getDevicesById, getThing } from '../../../selectors/getters';
+import { getDevicesById, getThing, getThingsById } from '../../../selectors/getters';
 import { Thing } from '../../../store/slices/application/thingsSlice';
-import { ComponentType, IThingPropertyBase } from 'common/src/models/interface/thing';
+import { ComponentType, IThingProperty, IThingPropertyBase } from 'common/src/models/interface/thing';
 import { SimpleSensor } from '../roomWidget/SimpleSensor';
 import { WithRequired } from '../../../types';
 import { useNavigate } from 'react-router-dom';
@@ -17,23 +17,19 @@ import type { SxProps, Theme } from '@mui/material/styles';
 interface SensorBadgesProps {
     thingId: Thing['_id'];
 }
-function createSensorBadges({ thingId }: SensorBadgesProps) {
-    const badges: JSX.Element[] = [];
-    const thing = useAppSelector(getThing(thingId));
-    if (thing?.config.componentType !== ComponentType.sensor) return badges;
 
-    thing.config.properties.forEach((property) => {
-        if (property.propertyClass)
-            badges.push(
-                <SimpleSensor
-                    thing={thing}
-                    property={property as WithRequired<IThingPropertyBase, 'propertyClass'>}
-                    key={property._id}
-                />
-            );
-    });
+function createSensorBadge(value: any, property: IThingProperty) {
+    return <SimpleSensor
+        value={value}
+        property={property as WithRequired<IThingPropertyBase, 'propertyClass'>}
+        key={property._id}
+    />
+}
 
-    return badges;
+function pickAllSensors(thing: Thing) {
+    if (thing?.config.componentType !== ComponentType.sensor) return [];
+
+    return thing.config.properties.filter((property) => property.propertyClass).map(property => ({ value: thing.state?.[property.propertyId]?.value, property }));
 }
 
 interface RoomWidgetProps {
@@ -45,16 +41,16 @@ const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('md'));
     const devices = useAppSelector(getDevicesById(deviceIDs));
+    const things = useAppSelector(getThingsById(devices.flatMap(device => device.things)));
     const sensorsLimit = isSmall ? 3 : 4;
     const location = devices[0].info.location;
 
-    let sensors: (JSX.Element | null)[] = [];
-    devices.forEach((device) => {
-        device.things.forEach((thingId) => {
-            const badges = createSensorBadges({ thingId });
-            sensors.push(...badges);
-        });
-    });
+    let sensors = things
+        .filter(thing => thing?.config.componentType === ComponentType.sensor)
+        .flatMap(pickAllSensors)
+        .slice(0, sensorsLimit)
+        .map(({ value, property }) => createSensorBadge(value, property))
+
     return (
         <Paper
             elevation={3}
@@ -82,7 +78,7 @@ const RoomWidget = React.forwardRef<HTMLDivElement, RoomWidgetProps>(function ({
                     justifyContent: 'space-around',
                 }}
             >
-                {sensors.slice(0, sensorsLimit)}
+                {sensors}
             </Box>
         </Paper>
     );
