@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import React from 'react';
-import { useLongPress } from '../hooks/useLongPress';
 
 export function Background({
     children,
@@ -15,7 +14,6 @@ export function Background({
     return (
         <Box
             sx={(theme) => ({
-                backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : 'rgba(0, 0, 0, 0.7)',
                 minHeight: 'calc(100% - 64px)',
                 paddingBottom: '64px',
                 display: 'flex',
