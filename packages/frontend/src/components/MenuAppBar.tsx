@@ -8,19 +8,13 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAppSelector } from '../hooks';
-import { getCurrentUser, getCurrentUserName, isLoggedIn } from '../selectors/getters';
+import { isLoggedIn } from '../selectors/getters';
 import LoginDialog from './LoginDialog';
 import { SideMenu } from './menuAppBar/SideMenu';
 import { UserMenu } from './menuAppBar/UserMenu';
 import { useAppBarContext } from '../hooks/useAppBarContext';
-import { Dialog } from './Dialog';
-import EditUserForm from './EditUserForm';
-import EditUserDialog from './EditUserDialog';
-import { useForm } from '../hooks/useForm';
-import { EditUserFormData } from '../endpoints/users';
-import { User } from '../endpoints/signIn';
 
 export function MenuAppBar() {
     const theme = useTheme();
@@ -79,7 +73,6 @@ export function MenuAppBar() {
             </Box>
             <SideMenu open={isMenuOpen} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)} />
             <LoginDialog open={isLoginOpen && !isUserLoggedIn} onClose={() => setLoginOpen(false)} />
-            <EditUserDialog />
         </>
     );
 }

@@ -3,6 +3,7 @@ import { IThing } from 'common/src/models/interface/thing';
 import { RootState } from '../store';
 import { Device } from '../store/slices/application/devicesSlice';
 import { thingSelectors } from '../store/slices/application/thingsSlice';
+import { usersSelectors } from '../store/slices/application/usersSlice';
 import { devicePreferencesSelectors } from '../store/slices/preferences/deviceSlice';
 import { buildingsCachedSelector } from './devicesSelector';
 
@@ -55,3 +56,5 @@ export const getRoomLocation = (buildingName: string, roomName: string) =>
 
         return buildingObj.rooms.find((r) => r.name === roomName);
     });
+
+export const getUsers = (state: RootState) => usersSelectors.selectAll(getApplication(state).users);

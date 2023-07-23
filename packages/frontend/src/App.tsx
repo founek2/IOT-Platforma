@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Background } from './components/Background';
+import EditUserDialog from './components/EditUserDialog';
 import { MenuAppBar } from './components/MenuAppBar';
 import { NotificationReduxConnect } from './containers/NotificationReduxConnect';
 import { RegisterServiceWorker } from './containers/RegisterServiceWorker';
@@ -39,6 +40,7 @@ function App() {
                                         <MyRoutes />
                                     </Suspense>
                                 </Background>
+                                <EditUserDialog />
                             </AppBarContext.Provider>
                             <WebSocket />
                         </BrowserRouter>

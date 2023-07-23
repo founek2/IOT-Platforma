@@ -8,13 +8,15 @@ import { EditUserFormData, useUpdateUserMutation, useUsersQuery } from '../endpo
 import { useForm } from '../hooks/useForm';
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppSelector } from "../hooks";
-import { getCurrentUser } from "../selectors/getters";
+import { getCurrentUser, getUsers } from "../selectors/getters";
+import { usersSelectors } from "../store/slices/application/usersSlice";
 
 export default function EditUserDialog() {
     const [selectedUser, setSelectedUser] = useState<User>()
     const [searchParams] = useSearchParams();
     const currentUser = useAppSelector(getCurrentUser)
-    const { data: users } = useUsersQuery(undefined);
+    const users = useAppSelector(getUsers);
+    // const users:User[] = []
     const navigate = useNavigate()
     const editUserParam: "current" | string | undefined = searchParams.get("editUser") || undefined
 
@@ -26,7 +28,7 @@ export default function EditUserDialog() {
         if (editUserParam === "current") {
             setSelectedUser(currentUser)
         } else if (editUserParam) {
-            const user = users?.find(user => user._id === editUserParam)
+            const user = users.find(user => user._id === editUserParam)
             setSelectedUser(user)
         } else setSelectedUser(undefined)
     }, [editUserParam])
