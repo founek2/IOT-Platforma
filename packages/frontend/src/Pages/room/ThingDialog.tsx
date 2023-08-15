@@ -34,24 +34,24 @@ export function ThingDialog() {
             <>
                 {thing
                     ? thing.config.properties.map((property, i) => (
-                          <ThingContext.Provider value={thing} key={property._id}>
-                              <PropertyRow
-                                  sx={{ paddingBottom: 2 }}
-                                  key={property.propertyId}
-                                  property={property}
-                                  state={thing.state?.[property.propertyId]}
-                                  onChange={(value) => {
-                                      console.log('clicked');
-                                      mutateThingState({
-                                          propertyId: property.propertyId,
-                                          value,
-                                      });
-                                  }}
-                                  history={historyData}
-                                  defaultShowDetail={i === 0}
-                              />
-                          </ThingContext.Provider>
-                      ))
+                        <ThingContext.Provider value={thing} key={property._id}>
+                            <PropertyRow
+                                sx={{ paddingBottom: 2 }}
+                                key={property.propertyId}
+                                property={property}
+                                state={thing.state?.[property.propertyId]}
+                                onChange={(value) => {
+                                    console.log('clicked');
+                                    mutateThingState({
+                                        propertyId: property.propertyId,
+                                        value,
+                                    });
+                                }}
+                                history={historyData}
+                                defaultShowDetail={i === 0}
+                            />
+                        </ThingContext.Provider>
+                    ))
                     : null}
             </>
         </Dialog>
