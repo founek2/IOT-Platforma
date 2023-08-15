@@ -38,7 +38,7 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
     const thing = useAppSelector(getThing(id));
     const device = useAppSelector(getDevice(thing?.deviceId!));
     const { mutateThingState } = useUpdateThingStateSmart(id);
-    if (!thing || !device) return null;
+    if (!thing || !device) return <span>Zařízení nebo věc nebyla nalezena</span>;
 
     const appropriateThing = getApropriateProperty(thing.config);
     const disabled = [DeviceStatus.disconnected, DeviceStatus.lost].includes(

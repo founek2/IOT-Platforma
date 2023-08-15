@@ -120,7 +120,7 @@ export default function Room({ title, mode, pathPrefix }: RoomProps) {
                     )
                 );
             }
-    }, [dispatch, IDs]);
+    }, [dispatch, IDs, mode]);
 
     useEffect(() => {
         return () => resetAppHeader();

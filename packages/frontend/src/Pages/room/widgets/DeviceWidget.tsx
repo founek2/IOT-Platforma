@@ -15,7 +15,7 @@ interface ThingWidgetProps {
 }
 export const DeviceWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({ id, sx, className }, ref) => {
     const device = useAppSelector(getDevice(id));
-    if (!device) return null;
+    if (!device) return <span>Zařízení nebylo nalezeno</span>;
 
     return (
         <Paper

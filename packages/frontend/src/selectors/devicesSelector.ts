@@ -18,8 +18,15 @@ function sameLocations(a: Device, b: Device) {
 const customSelectorCreator = createSelectorCreator(defaultMemoize, (a: Device[], b: Device[]) => {
     if (
         a.length !== b.length ||
-        a.some((value, index) => value._id !== b[index]._id || !sameLocations(value, b[index]))
+        a.some((value, deviceIndex) =>
+            // some device not matches ID
+            value._id !== b[deviceIndex]._id
+            // some device different location
+            || !sameLocations(value, b[deviceIndex])
+            // some device has different things
+            || value.things.some((thingId, thingIndex) => thingId !== b[deviceIndex].things[thingIndex]))
     ) {
+        logger.debug("Invalidating location cache")
         return false;
     }
 
