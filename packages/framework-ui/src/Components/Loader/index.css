@@ -15,6 +15,7 @@
      0% {
           -webkit-transform: rotate(0deg);
      }
+
      100% {
           -webkit-transform: rotate(360deg);
      }
@@ -24,6 +25,7 @@
      0% {
           transform: rotate(0deg);
      }
+
      100% {
           transform: rotate(360deg);
      }
@@ -50,9 +52,11 @@
      0% {
           -webkit-transform: translate3d(0, 0, 0) scale(1);
      }
+
      50% {
           -webkit-transform: translate3d(24px, 0, 0) scale(.5);
      }
+
      100% {
           -webkit-transform: translate3d(0, 0, 0) scale(1);
      }
@@ -62,9 +66,11 @@
      0% {
           transform: translate3d(0, 0, 0) scale(1);
      }
+
      50% {
           transform: translate3d(24px, 0, 0) scale(.5);
      }
+
      100% {
           transform: translate3d(0, 0, 0) scale(1);
      }
@@ -91,9 +97,11 @@
      0% {
           -webkit-transform: translate3d(0, 0, 0) scale(1);
      }
+
      50% {
           -webkit-transform: translate3d(-24px, 0, 0) scale(.5);
      }
+
      100% {
           -webkit-transform: translate3d(0, 0, 0) scale(1);
      }
@@ -103,9 +111,11 @@
      0% {
           transform: translate3d(0, 0, 0) scale(1);
      }
+
      50% {
           transform: translate3d(-24px, 0, 0) scale(.5);
      }
+
      100% {
           transform: translate3d(0, 0, 0) scale(1);
      }
@@ -144,9 +154,11 @@
      0% {
           -webkit-transform: translate3d(0, 0, 0) scale(1);
      }
+
      50% {
           -webkit-transform: translate3d(0, 24px, 0) scale(.5);
      }
+
      100% {
           -webkit-transform: translate3d(0, 0, 0) scale(1);
      }
@@ -156,9 +168,11 @@
      0% {
           transform: translate3d(0, 0, 0) scale(1);
      }
+
      50% {
           transform: translate3d(0, 24px, 0) scale(.5);
      }
+
      100% {
           transform: translate3d(0, 0, 0) scale(1);
      }
@@ -185,9 +199,11 @@
      0% {
           -webkit-transform: translate3d(0, 0, 0) scale(1);
      }
+
      50% {
           -webkit-transform: translate3d(0, -24px, 0) scale(.5);
      }
+
      100% {
           -webkit-transform: translate3d(0, 0, 0) scale(1);
      }
@@ -197,9 +213,11 @@
      0% {
           transform: translate3d(0, 0, 0) scale(1);
      }
+
      50% {
           transform: translate3d(0, -24px, 0) scale(.5);
      }
+
      100% {
           transform: translate3d(0, 0, 0) scale(1);
      }
@@ -211,6 +229,6 @@
 }
 
 .loader--center {
-    margin: 0 auto;
-    margin-top: 30vh
+     margin: 0 auto;
+     margin-top: 30vh
 }

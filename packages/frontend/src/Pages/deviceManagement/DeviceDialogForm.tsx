@@ -1,5 +1,6 @@
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import { Dialog as MyDialog } from '../../components/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Grid from '@mui/material/Grid';
@@ -14,6 +15,7 @@ import { Device } from '../../store/slices/application/devicesSlice';
 import { useUserNamesQuery } from '../../endpoints/users';
 import { EditDeviceFormData, useDeleteDeviceMutation } from '../../endpoints/devices';
 import { EditDeviceFields } from './EditDeviceFields';
+import { DialogContentText } from '@mui/material';
 
 const formName = 'EDIT_DEVICE';
 interface DeviceFormProps {
@@ -25,6 +27,7 @@ interface DeviceFormProps {
 }
 export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }: DeviceFormProps) {
     const [pending, setPending] = useState(false);
+    const [openConfirmation, setOpenConfirmation] = useState(false);
     const { setFieldValue, validateForm, setFormData, resetForm } = useForm<EditDeviceFormData>(formName);
     const { data: userNames } = useUserNamesQuery(undefined, { pollingInterval: 60 * 1000 });
     const buildings = useAppSelector(locationsSelector);
@@ -73,41 +76,55 @@ export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }:
     }
 
     return (
-        <Dialog open={open} onClose={onClose} title={title}>
-            <DialogContent>
-                <Grid container spacing={4}>
-                    <EditDeviceFields
-                        formName={formName}
-                        rooms={availableRooms}
-                        buildings={buildings.map((b) => b.name)}
-                    />
-                    <Grid item xs={12} md={6}>
-                        <FieldConnector
-                            deepPath={`${formName}.permissions`}
-                            // onEnter={onEnter}
-                            component={({ label, error, value, onChange }) => (
-                                <PermissionSelect
-                                    sx={{ maxHeight: 300 }}
-                                    label={label}
-                                    error={error}
-                                    permissions={value}
-                                    onChange={onChange}
-                                    userNames={userNames || []}
-                                />
-                            )}
-                            fullWidth
+        <>
+            <Dialog open={open} onClose={onClose} title={title}>
+                <DialogContent>
+                    <Grid container spacing={4}>
+                        <EditDeviceFields
+                            formName={formName}
+                            rooms={availableRooms}
+                            buildings={buildings.map((b) => b.name)}
                         />
+                        <Grid item xs={12} md={6}>
+                            <FieldConnector
+                                deepPath={`${formName}.permissions`}
+                                // onEnter={onEnter}
+                                component={({ label, error, value, onChange }) => (
+                                    <PermissionSelect
+                                        sx={{ maxHeight: 300 }}
+                                        label={label}
+                                        error={error}
+                                        permissions={value}
+                                        onChange={onChange}
+                                        userNames={userNames || []}
+                                    />
+                                )}
+                                fullWidth
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleDelete} disabled={pending} color="secondary">
-                    Smazat
-                </Button>
-                <Button onClick={handleSave} disabled={pending}>
-                    Uložit
-                </Button>
-            </DialogActions>
-        </Dialog>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenConfirmation(true)} disabled={isLoading} color="secondary">
+                        Smazat
+                    </Button>
+                    <Button onClick={handleSave} disabled={isLoading}>
+                        Uložit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <MyDialog
+                open={openConfirmation}
+                title="Opravdu chcete přístupový token odstranit?"
+                onClose={() => setOpenConfirmation(false)}
+                disagreeText="Zrušit"
+                onAgree={() => {
+                    setOpenConfirmation(false)
+                    handleDelete()
+                }}
+            >
+                <DialogContentText>Tato akce je nevratná a pokud máte token někde použitý, tak ztratíte přístup.</DialogContentText>
+            </MyDialog>
+        </>
     );
 }

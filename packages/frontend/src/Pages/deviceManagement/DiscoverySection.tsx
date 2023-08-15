@@ -3,13 +3,11 @@ import { Grid } from '@mui/material';
 import { useState } from 'react';
 import {
     CreateDeviceForm,
-    Discovery,
     useCreateDeviceMutation,
     useDeleteDiscoveryDeviceMutation,
     useDiscoveredDevicesQuery,
 } from '../../endpoints/discovery';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getAllDevices } from '../../selectors/getters';
 import { DiscoveredWidget } from '../room/widgets/DiscoveredWidget';
 import { Dialog } from '../../components/Dialog';
 import { EditDeviceFields } from './EditDeviceFields';
@@ -18,13 +16,12 @@ import { getFieldVal } from 'common/src/utils/getters';
 import { formsDataActions } from '../../store/slices/formDataActions';
 import { useForm } from '../../hooks/useForm';
 import { discoverySelectors } from '../../store/slices/application/discoverySlice';
-import { useDeleteDeviceMutation } from '../../endpoints/devices';
 import { logger } from 'common/src/logger';
 
 const formName = 'CREATE_DEVICE';
 export default function DiscoverySection() {
     const dispatch = useAppDispatch();
-    const { validateForm } = useForm<CreateDeviceForm>(formName);
+    const { validateForm, resetForm } = useForm<CreateDeviceForm>(formName);
     const [selectedDevice, setSelectedDevice] = useState<string>();
     const _ = useDiscoveredDevicesQuery(undefined);
     const discoveredData = useAppSelector((state) => discoverySelectors.selectAll(state.application.discovery));
@@ -86,7 +83,10 @@ export default function DiscoverySection() {
                     if (result.valid && selectedDevice)
                         createDeviceMutation({ deviceID: selectedDevice, data: result.data })
                             .unwrap()
-                            .then(() => setSelectedDevice(undefined))
+                            .then(() => {
+                                setSelectedDevice(undefined)
+                                resetForm()
+                            })
                             .catch((err) => console.error(err));
                 }}
             >

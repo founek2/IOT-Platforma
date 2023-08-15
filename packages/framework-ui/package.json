@@ -22,8 +22,8 @@
         "date-fns": "^2.16.1",
         "prop-types": "^15.8.1",
         "ramda": "^0.27.1",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "react": "^18.0.2",
+        "react-dom": "^18.0.2"
     },
     "devDependencies": {
         "@types/ramda": "0.27.34",

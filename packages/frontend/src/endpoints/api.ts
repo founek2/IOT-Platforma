@@ -40,6 +40,7 @@ export const api = createApi({
         'History',
         'Users',
         'DiscoveredDevices',
+        'AccessTokens',
     ],
     /**
      * This api has endpoints injected in adjacent files,

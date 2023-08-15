@@ -39,7 +39,7 @@ export function UserMenu() {
         handleClose();
     };
     const handleEditUser = () => {
-        navigate({ search: `?editUser=current` });
+        navigate("/profile");
         handleClose();
     };
 

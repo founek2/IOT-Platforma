@@ -7,8 +7,8 @@ export enum Permission {
 }
 export interface IAccessToken {
     _id?: any;
-    token: String;
-    name: String;
+    token: string;
+    name: string;
     permissions: Permission[];
     createdAt: Date;
     validTo?: Date;

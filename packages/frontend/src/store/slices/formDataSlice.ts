@@ -12,7 +12,9 @@ const initialState: FormsData = { registeredFields: {} };
 
 type SetFormData =
     | { formName: 'EDIT_USER'; data: EditUserFormData }
-    | { formName: 'EDIT_DEVICE'; data: EditDeviceFormData };
+    | { formName: 'EDIT_DEVICE'; data: EditDeviceFormData }
+    | { formName: 'EDIT_ACCESS_TOKEN'; data: any }
+    | { formName: 'ADD_ACCESS_TOKEN'; data: any };
 
 export const formsDataSlice = createSlice({
     name: 'formsData',
