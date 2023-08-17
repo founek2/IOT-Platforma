@@ -74,7 +74,7 @@ function WebSocket() {
     useEffect(() => {
         let mounted = true;
         async function handler() {
-            if (document.hidden) return;
+            if (document.visibilityState === "hidden") return;
 
             const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 5 * 60 * 1000;
 
