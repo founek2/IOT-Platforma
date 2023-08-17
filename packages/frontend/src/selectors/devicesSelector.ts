@@ -23,6 +23,8 @@ const customSelectorCreator = createSelectorCreator(defaultMemoize, (a: Device[]
             value._id !== b[deviceIndex]._id
             // some device different location
             || !sameLocations(value, b[deviceIndex])
+            // different number of things
+            || value.things.length !== b[deviceIndex].things.length
             // some device has different things
             || value.things.some((thingId, thingIndex) => thingId !== b[deviceIndex].things[thingIndex]))
     ) {
