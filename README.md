@@ -2,7 +2,7 @@
 
 [![Build Status](https://jenkins.iotdomu.cz/buildStatus/icon?job=IoT+Platform%2Frelease)](https://jenkins.iotdomu.cz/job/IoT%20Platform/job/release/)
 
-[Dokumentace](https://docs.iotdomu.cz)
+[Documentation](https://founek2.github.io/IOT-Platforma/)
 
 ## Up and running
 

@@ -80,7 +80,12 @@ function WebSocket() {
 
             if (token && (isOld || socket?.connected)) {
                 console.log('refreshing on focus');
-                if ((await fetchDevices(undefined)) && mounted) setLastFetchAt(new Date());
+                // Add little bit of timeout to give device time to setup network after waking from sleep
+                setTimeout(async () => {
+                    if (mounted) await fetchDevices(undefined)
+
+                    if (mounted) setLastFetchAt(new Date());
+                }, window.navigator.onLine ? 0 : 500);
             }
         }
 
