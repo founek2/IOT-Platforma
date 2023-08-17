@@ -60,8 +60,8 @@ function WebSocket() {
             dispatch(discoveryReducerActions.upsertOne(device));
         }
 
-        socket.on('control', updateControl);
         socket.on('device', updateDevice);
+        socket.on('control', updateControl);
         socket.on('deviceDiscovered', addDiscoveredDevice);
 
         return () => {
@@ -90,7 +90,7 @@ function WebSocket() {
         }
 
         window.addEventListener('focus', handler);
-        document.addEventListener('visibilitychange', handler, false);
+        document.addEventListener('visibilitychange', handler);
 
         return () => {
             mounted = false;
