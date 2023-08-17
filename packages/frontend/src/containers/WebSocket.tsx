@@ -79,7 +79,7 @@ function WebSocket() {
             const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 5 * 60 * 1000;
 
             if (token && (isOld || socket?.disconnected)) {
-                console.log('refreshing on focus');
+                console.log('refreshing on focus', isOld, socket?.disconnected);
                 // Add little bit of timeout to give device time to setup network after waking from sleep
                 setTimeout(async () => {
                     if (mounted) await fetchDevices(undefined)
