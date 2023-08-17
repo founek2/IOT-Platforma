@@ -107,11 +107,11 @@ function PropertyRowComponent({ value, property, onChange, disabled }: PropertyR
         }
         const isNum = isNumericDataType(property.dataType);
         return (
-            // TODO debounce nějaký delší?
             <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
                 <TextField
-                    value={isNum ? Number(stateValue) : stateValue}
-                    type={isNum ? 'number' : 'text'}
+                    focused={stateValue ? String(stateValue) !== String(value) : undefined}
+                    value={stateValue || ''}
+                    inputProps={{ inputMode: isNum ? 'numeric' : "text", pattern: isNum ? '[0-9]*' : "" }}
                     onChange={(e) => setStateValue(isNum ? Number(e.target.value) : e.target.value)}
                     onKeyDown={onEnterRun((e: any) => {
                         const val = isNum ? Number(e.target.value) : e.target.value;
@@ -123,7 +123,7 @@ function PropertyRowComponent({ value, property, onChange, disabled }: PropertyR
         );
     }
 
-    const val = value === undefined ? '[Chybí hodnota]' : value;
+    const val = value === undefined ? '-' : value;
     return (
         <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
             <Typography component="span" sx={disabled ? { opacity: 0.6 } : undefined}>
