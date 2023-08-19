@@ -6,6 +6,8 @@ import { getThing } from '../selectors/getters';
 import { Thing, thingsReducerActions } from '../store/slices/application/thingsSlice';
 import { notificationActions } from '../store/slices/notificationSlice';
 
+const SECOND_1 = 1_000;
+
 export function useUpdateThingStateSmart(thingId: Thing['_id']) {
     const [updatePropertyState] = useUpdateThingStateMutation();
     const thing = useAppSelector(getThing(thingId));
@@ -56,7 +58,7 @@ export function useUpdateThingStateSmart(thingId: Thing['_id']) {
                         );
                     }
                 }
-            }, 400);
+            }, SECOND_1);
         },
         [dispatch, updatePropertyState, ref, thing]
     );
