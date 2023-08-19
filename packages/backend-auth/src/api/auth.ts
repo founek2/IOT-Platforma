@@ -46,10 +46,10 @@ function removeUserNamePrefix(userName: string) {
  * @body { username, password }
  */
 router.post('/user', async function (req, res) {
-    // console.log('/user', req.body);
-
     const { username, password } = req.body;
-    logger.debug('username=' + username, 'password=' + password);
+
+    logger.debug('username=' + username, 'password=' + password?.replace(/./g, "*"));
+
     if (isDevice(username)) {
         const [topicPrefix, deviceId] = splitUserName(username);
         const success = await DeviceModel.login(topicPrefix, deviceId, password);
@@ -105,12 +105,25 @@ router.post('/resource', function (req, res) {
 router.post('/topic', async function (req, res) {
     // console.log("/topic", req.body)
     const { vhost, username, name, permission, routing_key } = req.body;
-    if (isUser(username)) return res.send('allow'); // TODO check if user has access
+    const [realm, deviceId] = splitUserName(username);
+
+    // check if user has access
+    if (isUser(username)) {
+        if (routing_key.startsWith("prefix."))
+            return res.send('allow');
+        if (routing_key.startsWith(`v2.${realm}.`))
+            return res.send('allow');
+
+        const user = await UserModel.findByUserName(realm);
+        if (user?.groups.includes("admin"))
+            return res.send('allow');
+
+        return sendDeny('/topic ' + routing_key + ', user=' + username, res);
+    }
 
     if (isDevice(username) && name === 'amq.topic' && vhost === '/') {
-        // const { ownerId, topic } = await Device.getOwnerAndTopic(username);
         const [realm, deviceId] = splitUserName(username);
-        if (routing_key.startsWith('v2.' + realm + '.')) return res.send('allow');
+        if (routing_key.startsWith(`v2.${realm}.`)) return res.send('allow');
 
         return sendDeny('/topic ' + routing_key + ', user=' + username, res);
     }
