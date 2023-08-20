@@ -25,16 +25,6 @@ pipeline {
                 sh "ci/jenkins/bundle-zip.sh"
             }
         }
-
-
-        stage('Deploy docs') {
-            when { branch "release*" }
-            steps{
-                script {
-                    sh "scp -r docs/* jenkins@free.iotplatforma.cloud:/home/websites/home-iot/www"
-                }
-            }
-        }
           
         stage('Release prod') {
             when { branch "release*" }
