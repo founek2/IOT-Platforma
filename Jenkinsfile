@@ -1,7 +1,7 @@
 pipeline {
  	// Clean workspace before doing anything
     // deleteDir()
-    agent { label 'java-docker-slave2' }
+    agent { label 'docker-node' }
 
     stages {
         stage ('Install dependencies') {
