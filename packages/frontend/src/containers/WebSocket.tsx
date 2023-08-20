@@ -1,4 +1,3 @@
-import { getToken } from 'framework-ui/src/utils/getters';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { PropertyState, Thing, thingsReducerActions } from '../store/slices/application/thingsSlice';
@@ -6,6 +5,7 @@ import { useLazyDevicesQuery } from '../endpoints/devices';
 import { Device, devicesReducerActions } from '../store/slices/application/devicesSlice';
 import { io, Socket } from 'socket.io-client';
 import { Discovery, discoveryReducerActions } from '../store/slices/application/discoverySlice';
+import { getAccessToken } from '../selectors/getters';
 
 export type SocketUpdateThingState = {
     _id: Device['_id'];
@@ -17,7 +17,7 @@ export type SocketUpdateThingState = {
 };
 
 function WebSocket() {
-    const token = useAppSelector(getToken);
+    const token = useAppSelector(getAccessToken);
     const [lastFetchAt, setLastFetchAt] = useState<Date>();
     const [fetchDevices] = useLazyDevicesQuery();
     const dispatch = useAppDispatch();

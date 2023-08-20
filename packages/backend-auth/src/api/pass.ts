@@ -1,5 +1,5 @@
 import express from 'express';
-import { getPass } from '../services/TemporaryPass';
+import { getPass, Pass } from '../services/TemporaryPass';
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', async function (req, res) {
     (await getPass())
-        .ifJust((pass) => {
+        .ifJust((pass: Pass) => {
             res.send({
                 pass,
             });

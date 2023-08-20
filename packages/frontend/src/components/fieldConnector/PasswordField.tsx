@@ -9,7 +9,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import { TextFieldProps } from '@mui/material/TextField';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/system';
+import useTheme from '@mui/material/styles/useTheme';
 
 function PasswordField({
     label,

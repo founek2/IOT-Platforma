@@ -11,7 +11,7 @@ export function AuthConnector(endpointUri: string) {
                     'Content-Type': 'application/json',
                 },
             });
-            return res.status === 200 ? Just((await res.json()).pass) : Nothing;
+            return res.status === 200 ? Just((await res.json() as any).pass) : Nothing;
         },
     };
 }

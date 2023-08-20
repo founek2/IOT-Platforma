@@ -21,6 +21,8 @@ export const getThings = (state: RootState) => state.application.things;
 
 export const getNotifications = (state: RootState) => state.notifications;
 
+export const getAccessToken = (state: RootState) => state.application.authorization.accessToken;
+
 export const isLoggedIn = (state: RootState) => state.application.authorization.loggedIn;
 
 export const getCurrentUserName = (state: RootState) => state.application.authorization.currentUser?.info.userName;

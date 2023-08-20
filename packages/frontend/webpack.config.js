@@ -10,6 +10,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const ReactRefreshTypeScript = require('react-refresh-typescript');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
 
 const proxyTarget =
     process.env.PROXY === 'dev'
@@ -32,12 +33,24 @@ const config = {
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        plugins: [
+            PnpWebpackPlugin,
+        ],
         fallback: {
             stream: require.resolve('stream-browserify'),
             process: require.resolve('process'),
             'process/browser': require.resolve('process/browser'),
+            "events": require.resolve("events/"),
+            "buffer": require.resolve("buffer/"),
+            "@plotly/point-cluster": require.resolve("@plotly/point-cluster"),
+            "array-bounds": require.resolve("array-bounds"),
             assert: false,
         },
+    },
+    resolveLoader: {
+        plugins: [
+          PnpWebpackPlugin.moduleLoader(module),
+        ],
     },
     module: {
         rules: [

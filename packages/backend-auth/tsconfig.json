@@ -6,7 +6,7 @@
         "outDir": "./dist",
         "moduleResolution": "node"
     },
-    "references": [{ "path": "../common" }, { "path": "../framework-ui" }],
+    "references": [{ "path": "../common" }],
     "include": ["./src"],
     "exclude": ["./dist"]
 }

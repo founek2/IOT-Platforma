@@ -191,7 +191,7 @@ async function sendAllNotifications(arrOfTokens: { userId: string; notifyTokens:
 
     const invalidTokens: string[] = [];
     if (response.successCount !== messages.length) {
-        response.responses.forEach(({ error }, idx) => {
+        response.responses.forEach(({ error }: any, idx: number) => {
             if (error) {
                 if (error.code === 'messaging/registration-token-not-registered') {
                     invalidTokens.push(messages[idx].token);

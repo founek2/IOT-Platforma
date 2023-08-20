@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../hooks';
 import { useUpdateDeviceMutation } from '../endpoints/devices';
@@ -7,7 +8,6 @@ import Locations from './Locations';
 import { getAllDevices, getDevice } from '../selectors/getters';
 import { TextField } from '@mui/material';
 import { DeviceWidget } from './room/widgets/DeviceWidget';
-import { Box } from '@mui/system';
 import { Device } from '../store/slices/application/devicesSlice';
 import DiscoverySection from './deviceManagement/DiscoverySection';
 import { DeviceDialogForm } from './deviceManagement/DeviceDialogForm';
@@ -62,8 +62,8 @@ export default function LocationsManagement({ title }: DevicesProps) {
                     >
                         {searchText
                             ? devices
-                                  .filter(searchByText(searchText))
-                                  .map((device) => <DeviceWidget id={device._id} key={device._id} />)
+                                .filter(searchByText(searchText))
+                                .map((device) => <DeviceWidget id={device._id} key={device._id} />)
                             : null}
                     </Box>
                 </Grid>

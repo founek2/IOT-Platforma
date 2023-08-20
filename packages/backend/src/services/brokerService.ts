@@ -27,7 +27,7 @@ async function fetchData() {
             Authorization: 'Basic ' + auth,
         },
     });
-    const body = await res.json();
+    const body = await res.json() as any;
 
     data = {
         overView: body,

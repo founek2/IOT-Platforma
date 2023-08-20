@@ -26,14 +26,14 @@ export interface Config {
         expiresIn: string;
     };
     email:
-        | {
-              host: string;
-              port: number;
-              secure: boolean;
-              userName: string;
-              password: string;
-          }
-        | undefined;
+    | {
+        host: string;
+        port: number;
+        secure: boolean;
+        userName: string;
+        password: string;
+    }
+    | undefined;
     agenda: {
         collection: string;
         jobs?: string;

@@ -4,10 +4,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import EditAccessToken from './accessTokens/EditAccessToken';
-import { formsDataActions } from 'framework-ui/src/redux/actions/formsData';
 import { useAppSelector } from '../../hooks';
 import { getCurrentUser } from '../../selectors/getters';
-import { useTheme } from '@mui/system';
 import { Box, Button, Card, CardContent, DialogContentText, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery } from '@mui/material';
 import { AccessToken, NewAccessTokenData, useAccessTokensQuery, useCreateAccessTokenMutation, useDeleteAccessTokenMutation, useUpdateAccessTokenMutation } from '../../endpoints/accessTokens';
 import { useForm } from '../../hooks/useForm';
@@ -16,6 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Dialog } from '../../components/Dialog';
 import { logger } from 'common/src/logger';
+import useTheme from '@mui/material/styles/useTheme';
 
 enum OpenDialog {
     Delete,

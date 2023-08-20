@@ -6,7 +6,6 @@
         "outDir": "lib",
         "moduleResolution": "node"
     },
-    "references": [{ "path": "../framework-ui" }],
     "include": ["./src"],
     "exclude": ["./lib"]
 }

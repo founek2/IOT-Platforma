@@ -17,7 +17,7 @@
         // "noFallthroughCasesInSwitch": true,
         // "strict": true
     },
-    "references": [{ "path": "../common" }],
+    "references": [{ "path": "../common/tsconfig.json" }],
     "include": ["src", "custom.d.ts"],
     "exclude": ["node_modules"]
 }
