@@ -8470,7 +8470,6 @@ __metadata:
     nodemon: ^2.0.4
     purify-ts: ^1.2.2
     ramda: ^0.27.1
-    rimraf: ^3.0.2
     socket.io: ^3.0.4
     ts-jest: 24.3.0
     ts-node-dev: ^2.0.0
@@ -8508,7 +8507,6 @@ __metadata:
     nodemon: ^2.0.4
     purify-ts: ^1.2.2
     ramda: ^0.27.1
-    rimraf: ^3.0.2
     socket.io: ^3.0.4
     ts-jest: 24.3.0
     ts-node-dev: ^2.0.0

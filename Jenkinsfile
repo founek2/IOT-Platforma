@@ -10,15 +10,15 @@ pipeline {
             }
         }
 
-        stage ('Prepare') {
+        stage ('Clean') {
             steps {
                 sh "yarn clean:all"
-                sh "yarn build:common"
             }
         }
         
         stage ('Build') {
             steps {
+                sh "yarn build:common"
                 sh "yarn build:packages"
                 sh "ci/jenkins/bundle-zip.sh"
             }
