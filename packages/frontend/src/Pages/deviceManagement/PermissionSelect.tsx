@@ -9,10 +9,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SettingsRemoteIcon from '@mui/icons-material/SettingsRemote';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Device } from '../../store/slices/application/devicesSlice';
-import type { SxProps } from '@mui/material';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { Theme } from '@mui/system';
+import type { SxProps, Theme } from '@mui/material';
 
 function getIcon(userId: IUser['_id'], permissions: Device['permissions']) {
     const isRead = permissions.read.some((id) => id === userId);

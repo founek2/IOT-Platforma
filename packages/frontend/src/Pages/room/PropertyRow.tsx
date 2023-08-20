@@ -25,7 +25,7 @@ import { toogleSwitchVal } from './helpers/toogleSwitchVal';
 import { onEnterRun } from 'common/src/utils/onEnter';
 import { SensorIcons } from '../../constants/sensorIcons';
 import { Measurement } from 'common/src/types';
-import { Theme } from '@mui/system';
+import type { Theme } from '@mui/material';
 import ColorPicker from '../../components/ColorPicker';
 import { PropertyState } from '../../store/slices/application/thingsSlice';
 

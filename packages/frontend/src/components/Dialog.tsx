@@ -5,10 +5,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import type { SxProps, Theme } from '@mui/system';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
 import CloseIcon from '@mui/icons-material/Close';
+import type { SxProps, Theme } from '@mui/material';
 
 export interface DialogProps {
     open: boolean;

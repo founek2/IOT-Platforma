@@ -5,7 +5,7 @@ import { format } from '../utils/date-fns';
 import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
-import type { SxProps, Theme } from '@mui/system';
+import type { SxProps, Theme } from '@mui/material';
 
 const colors = {
     green: 'initial',

@@ -12527,6 +12527,7 @@ __metadata:
     copy-webpack-plugin: ^11.0.0
     css-loader: ^6.7.1
     date-fns: ^2.29.3
+    dnd-core: ^16.0.1
     events: ^3.3.0
     firebase: ^8.2.1
     fork-ts-checker-webpack-plugin: ^7.3.0
