@@ -1,8 +1,10 @@
-import fetch from 'node-fetch';
 import config from 'common/lib/config';
 import { OAuthProvider } from 'common/lib/models/interface/userInterface';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { logger } from 'common/lib/logger';
+import type { RequestInfo, RequestInit } from 'node-fetch';
+
+const fetch = (url: URL | RequestInfo, init?: RequestInit | undefined) => import('node-fetch').then(({ default: fetch }) => fetch(url, init));
 
 const oauth = config.oauth;
 
