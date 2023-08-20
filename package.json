@@ -4,23 +4,17 @@
     "author": "Martin Skalický",
     "private": true,
     "scripts": {
-        "bootstrap": "lerna bootstrap",
-        "build": "tsc -b packages/backend/tsconfig.build.json packages/backend-mqtt/tsconfig.build.json packages/backend-auth/tsconfig.build.json && lerna run copyFiles && lerna run --scope frontend build",
-        "clean": "lerna run --parallel clean",
-        "test": "lerna run --scope backend --scope backend-mqtt --scope framework-ui test",
-        "watch": "lerna run --parallel --scope common --scope framework-ui dev",
+        "build": "tsc -b packages/backend/tsconfig.build.json packages/backend-mqtt/tsconfig.build.json packages/backend-auth/tsconfig.build.json && yarn workspaces foreach --all run copyFiles && yarn workspace frontend build",
+        "clean": "yarn workspaces foreach --all run clean",
+        "test": "yarn workspaces foreach --all run test",
         "build:shared": "tsc -b packages/framework-ui packages/common/tsconfig.build.json",
         "dev:be": "yarn workspace backend dev",
         "dev:mqtt": "yarn workspace backend-mqtt dev",
         "dev:auth": "yarn workspace backend-auth dev",
-        "dev:fe": "yarn workspace frontend dev",
-        "prepare": "ts-patch install -s"
+        "dev:fe": "yarn workspace frontend dev"
     },
     "devDependencies": {
         "@types/node": "^16.11.7",
-        "lerna": "^3.22.1",
-        "rimraf": "^3.0.2",
-        "ts-patch": "^2.0.1",
         "typescript": "^4.7.3"
     },
     "workspaces": [
