@@ -8,7 +8,6 @@ pipeline {
             steps {
                 sh "yarn"
                 sh "yarn lerna init"
-                sh "yarn prepare"
             }
         }
 
