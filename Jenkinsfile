@@ -12,14 +12,14 @@ pipeline {
 
         stage ('Prepare') {
             steps {
-                sh "yarn clean"
-                sh "yarn build:shared"
+                sh "yarn clean:all"
+                sh "yarn build:common"
             }
         }
         
         stage ('Build') {
             steps {
-                sh "yarn build"
+                sh "yarn build:packages"
                 sh "ci/jenkins/bundle-zip.sh"
             }
         }

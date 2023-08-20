@@ -38,7 +38,7 @@ export interface INotifyThingProperty {
     };
     tmp?: {
         lastSendAt: Date;
-        lastSatisfied: Boolean;
+        lastSatisfied: boolean;
     };
 }
 

@@ -1,5 +1,5 @@
-import validationFactory from 'framework-ui/src/validations/validationFactory';
-import { FormFieldDescriptors, FieldDescriptor, FieldDescriptors } from 'framework-ui/src/types';
+import { FormFieldDescriptors } from 'common/src/validations/types';
+import validationFactory from 'common/src/validations/validationFactory';
 
 const REGISTRATION: FormFieldDescriptors = {
     info: {
