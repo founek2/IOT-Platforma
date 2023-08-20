@@ -1,7 +1,7 @@
 pipeline {
  	// Clean workspace before doing anything
     // deleteDir()
-    agent any
+    agent { label 'java-docker-slave2' }
 
     stages {
         stage ('Install dependencies') {
@@ -66,7 +66,6 @@ pipeline {
 
 
         stage('Building image prod') {
-            agent { label 'java-docker-slave' }
             when { branch "release*" }
 
             steps{
@@ -77,7 +76,6 @@ pipeline {
         }
 
         stage('Building image dev') {
-            agent { label 'java-docker-slave' }
             when { branch "develop*" }
 
             steps{
