@@ -1,7 +1,7 @@
-import { CONTROL_TYPES } from '../constants';
-import { IDevice } from '../models/interface/device';
-import { IThing, PropertyState } from '../models/interface/thing';
-import { IUser, Permission } from '../models/interface/userInterface';
+import { CONTROL_TYPES } from './constants/index.js';
+import { IDevice } from './models/interface/device.js';
+import { IThing, PropertyState } from './models/interface/thing.js';
+import { IUser, Permission } from './models/interface/userInterface.js';
 import type { Request } from 'express';
 
 export interface Config {

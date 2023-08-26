@@ -1,10 +1,10 @@
-import { JwtService } from '../services/jwtService';
+import { JwtService } from '../services/jwtService.js';
 import { equals, T, not } from 'ramda';
-import { logger } from '../logger';
+import { logger } from '../logger/index.js';
 import express from 'express';
-import { Permission } from '../models/interface/userInterface';
-import { UserModel } from '../models/userModel';
-import { RequestWithAuth } from '../types';
+import { Permission } from '../models/interface/userInterface.js';
+import { UserModel } from '../models/userModel.js';
+import { RequestWithAuth } from '../types.js';
 
 /**
  * Middleware validating JWT token in headers and binding User object to request
@@ -45,8 +45,8 @@ export default function (
                     logger.debug(`Verified user=${user.info.userName}, groups=${user.groups.join(',')}`);
                     req2.user = user.toObject();
                     req2.user.accessPermissions = [Permission.write, Permission.read, Permission.control];
-                    if (req2.user.groups.some((v) => v === 'root')) req2.root = true;
-                    if (req2.user.groups.some((v) => v === 'admin')) req2.user.admin = true;
+                    if (req2.user.groups.some((v: string) => v === 'root')) req2.root = true;
+                    if (req2.user.groups.some((v: string) => v === 'admin')) req2.user.admin = true;
                     next();
                 } else {
                     logger.debug('userNotExist');
@@ -71,9 +71,9 @@ export default function (
             req2.user.accessPermissions = user.accessTokens[0].permissions;
 
             // full access
-            if (req2.user.accessPermissions.some((b) => b === Permission.write)) {
-                if (req2.user.groups.some((v) => v === 'root')) req2.root = true;
-                if (req2.user.groups.some((v) => v === 'admin')) req2.user.admin = true;
+            if (req2.user.accessPermissions.some((b: string) => b === Permission.write)) {
+                if (req2.user.groups.some((v: string) => v === 'root')) req2.root = true;
+                if (req2.user.groups.some((v: string) => v === 'admin')) req2.user.admin = true;
             }
 
             next();

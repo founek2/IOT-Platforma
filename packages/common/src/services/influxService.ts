@@ -1,9 +1,9 @@
-import { IThing, IThingProperty, PropertyDataType } from '../models/interface/thing';
+import { IThing, IThingProperty, PropertyDataType } from '../models/interface/thing.js';
 import { OrgsAPI, BucketsAPI, Organization, QueryAPI } from '@influxdata/influxdb-client-apis';
 import { InfluxDB, Point, WriteApi, QueryApi } from '@influxdata/influxdb-client';
-import { Config, Measurement } from '../types';
-import { DeviceStatus, IDevice } from '../models/interface/device';
-import { logger } from '../logger';
+import { Config, Measurement } from '../types.js';
+import { DeviceStatus, IDevice } from '../models/interface/device.js';
+import { logger } from '../logger/index.js';
 
 export let influxDB: InfluxDB;
 export let bucketsApi: BucketsAPI;

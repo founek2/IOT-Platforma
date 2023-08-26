@@ -1,17 +1,17 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import { TokenModel } from 'common/lib/models/tokenModel';
-import { UserModel } from 'common/lib/models/userModel';
-import { UserService } from 'common/lib/services/userService';
-import { RequestWithAuth } from 'common/lib/types';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm';
-import eventEmitter from '../services/eventEmitter';
+import fieldDescriptors from 'common/lib/fieldDescriptors.js';
+import { IUser } from 'common/lib/models/interface/userInterface.js';
+import { TokenModel } from 'common/lib/models/tokenModel.js';
+import { UserModel } from 'common/lib/models/userModel.js';
+import { UserService } from 'common/lib/services/userService.js';
+import { RequestWithAuth } from 'common/lib/types.js';
+import formDataChecker from 'common/lib/middlewares/formDataChecker.js';
+import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
+import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm.js';
+import eventEmitter from '../services/eventEmitter.js';
 import { Request } from 'express';
-import { getAllowedGroups } from 'common/lib/constants/privileges';
+import { getAllowedGroups } from 'common/lib/constants/privileges.js';
 
 function removeUserItself(id: IUser['_id']) {
     return function (doc: IUser) {

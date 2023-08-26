@@ -1,11 +1,10 @@
 import mqtt, { IClientPublishOptions, MqttClient } from 'mqtt';
 import { Server as serverIO } from 'socket.io';
-import handlePrefix from './mqtt/prefix';
-import handleV2 from './mqtt/v2';
+import handlePrefix from './mqtt/prefix.js';
+import handleV2 from './mqtt/v2.js';
 import { logger } from 'common/lib/logger';
-import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
+import { Maybe } from 'purify-ts/Maybe';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import { isNil } from 'ramda';
 
 let client: mqtt.MqttClient | undefined;
 

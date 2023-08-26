@@ -1,18 +1,18 @@
 import argon2 from 'argon2';
 import addHours from 'date-fns/addHours';
-import { logger } from '../logger';
-import mongoose from 'mongoose';
+import { logger } from '../logger/index.js';
+import * as mongoose from 'mongoose';
 import dotify from 'node-dotify';
 import { Either, Left, Right } from 'purify-ts/Either';
 import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
-import { AuthType } from '../constants';
-import { DeviceModel } from '../models/deviceModel';
-import { IAccessToken, IOauth, IUser, Permission } from '../models/interface/userInterface';
-import { NotifyModel } from '../models/notifyModel';
-import { IToken, TokenModel, TokenType } from '../models/tokenModel';
-import { UserModel } from '../models/userModel';
-import { JwtService } from '../services/jwtService';
-import { Security } from './SecurityService';
+import { AuthType } from '../constants/index.js';
+import { DeviceModel } from '../models/deviceModel.js';
+import { IAccessToken, IOauth, IUser, Permission } from '../models/interface/userInterface.js';
+import { NotifyModel } from '../models/notifyModel.js';
+import { IToken, TokenModel, TokenType } from '../models/tokenModel.js';
+import { UserModel } from '../models/userModel.js';
+import { JwtService } from '../services/jwtService.js';
+import { Security } from './SecurityService.js';
 
 const ObjectId = mongoose.Types.ObjectId;
 

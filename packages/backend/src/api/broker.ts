@@ -1,8 +1,8 @@
-import { RequestWithAuth } from 'common/lib/types';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { checkIsRoot } from 'common/lib/middlewares/user/checkIsRoot';
-import { BrokerService } from '../services/brokerService';
+import { RequestWithAuth } from 'common/lib/types.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
+import { checkIsRoot } from 'common/lib/middlewares/user/checkIsRoot.js';
+import { BrokerService } from '../services/brokerService.js';
 
 type Request = RequestWithAuth;
 

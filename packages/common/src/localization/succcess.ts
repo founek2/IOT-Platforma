@@ -1,4 +1,4 @@
-import { messageFactory } from '.';
+import { messageFactory } from './factory.js';
 
 export const messages = {
     successfullyLoggedIn: 'Jste úspěšně přihlášen',

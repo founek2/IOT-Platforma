@@ -1,8 +1,8 @@
-import { DeviceModel } from '../../models/deviceModel';
+import { DeviceModel } from '../../models/deviceModel.js';
 import express from 'express';
-import checkDevice from './checkDevice';
-import { RequestWithAuthOpt } from '../../types';
-import { Permission } from '../../models/interface/userInterface';
+import checkDevice from './checkDevice.js';
+import { RequestWithAuthOpt } from '../../types.js';
+import { Permission } from '../../models/interface/userInterface.js';
 
 /**
  * Middleware to check if device exists and user has permission to read it
@@ -18,7 +18,7 @@ export default function (options: { paramKey: string } = { paramKey: 'id' }) {
             if (user.admin) return next();
 
             if (
-                user.accessPermissions?.some((b) => Permission.read) &&
+                user.accessPermissions?.some((b: string) => b === Permission.read) &&
                 (await DeviceModel.checkReadPerm(deviceId, user._id))
             )
                 return next();

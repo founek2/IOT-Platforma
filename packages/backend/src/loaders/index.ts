@@ -1,9 +1,9 @@
 import { Application } from 'express';
 import { logger } from 'common/lib/logger';
-import type * as types from '../types';
-import expressLoader from './express';
-import mongoLoader from './mongodb';
-import subscribers from './subscribers';
+import type * as types from '../types/index.js';
+import expressLoader from './express.js';
+import mongoLoader from './mongodb.js';
+import subscribers from './subscribers.js';
 import '../agenda'; // Agenda init
 
 /* Load appropriate loaders */

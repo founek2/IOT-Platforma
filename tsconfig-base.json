@@ -1,20 +1,35 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es2019",
-        "lib": ["ES2019.Array", "ES2020.String"],
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "target": "ES2022",
         "composite": true,
         "incremental": true,
         "sourceMap": true,
         "declaration": true,
         "declarationMap": true,
         "skipLibCheck": true,
-        "esModuleInterop": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
         "noImplicitAny": true,
-        "strict": true
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "plugins": [
+            // Transform paths in output .js files
+            {
+                "transform": "typescript-transform-paths"
+            },
+            // Transform paths in output .d.ts files (Include this line if you output declarations files)
+            {
+                "transform": "typescript-transform-paths",
+                "afterDeclarations": true
+            }
+        ]
     },
-    "exclude": ["node_modules", "dist", "lib"],
-    "files": ["types/global.d.ts"]
+    "exclude": [
+        "node_modules",
+        "dist",
+        "lib"
+    ],
+    "files": [
+        "types/global.d.ts"
+    ]
 }

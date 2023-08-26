@@ -1,14 +1,13 @@
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import { IDevice } from 'common/lib/models/interface/device';
-import { RequestWithAuth } from 'common/lib/types';
-import { getProperty } from 'common/lib/utils/getProperty';
-import { getThing } from 'common/lib/utils/getThing';
-import { validateValue } from 'common/lib/utils/validateValue';
-import { all, equals } from 'ramda';
-import checkControlPerm from 'common/lib/middlewares/device/checkControlPerm';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { Actions } from '../services/actionsService';
+import { DeviceModel } from 'common/lib/models/deviceModel.js';
+import { IDevice } from 'common/lib/models/interface/device.js';
+import { RequestWithAuth } from 'common/lib/types.js';
+import { getProperty } from 'common/lib/utils/getProperty.js';
+import { getThing } from 'common/lib/utils/getThing.js';
+import { validateValue } from 'common/lib/utils/validateValue.js';
+import checkControlPerm from 'common/lib/middlewares/device/checkControlPerm.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
+import { Actions } from '../services/actionsService.js';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;

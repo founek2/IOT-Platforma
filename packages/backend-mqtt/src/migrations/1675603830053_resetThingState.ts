@@ -1,9 +1,5 @@
-import { Point } from '@influxdata/influxdb-client';
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import { HistoricalModel } from 'common/lib/models/historyModel';
-import { logger } from 'common/lib/logger';
-import { InfluxService } from 'common/lib/services/influxService';
-import { Config } from '../types';
+import { DeviceModel } from 'common/lib/models/deviceModel.js';
+import { Config } from '../types.js';
 
 export async function up(config: Config) {
     await DeviceModel.updateMany(

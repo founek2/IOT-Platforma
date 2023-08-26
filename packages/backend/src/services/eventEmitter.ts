@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import * as types from '../types';
+import * as types from '../types/index.js';
 
 type EventMap = Record<string, any>;
 

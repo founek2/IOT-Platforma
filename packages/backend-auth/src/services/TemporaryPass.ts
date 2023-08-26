@@ -1,7 +1,7 @@
-import { Security } from 'common/lib/services/SecurityService';
+import { Security } from 'common/lib/services/SecurityService.js';
 import addMinutes from 'date-fns/addMinutes';
 import isBefore from 'date-fns/isBefore';
-import { UserModel } from 'common/lib/models/userModel';
+import { UserModel } from 'common/lib/models/userModel.js';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { logger } from 'common/lib/logger';
 

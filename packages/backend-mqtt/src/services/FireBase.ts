@@ -1,17 +1,17 @@
-import { IDevice } from 'common/lib/models/interface/device';
-import { INotifyThingProperty, INotify } from 'common/lib/models/interface/notifyInterface';
-import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-import { IUser } from 'common/lib/models/interface/userInterface';
-import { NotifyModel } from 'common/lib/models/notifyModel';
-import { UserModel } from 'common/lib/models/userModel';
+import { IDevice } from 'common/lib/models/interface/device.js';
+import { INotifyThingProperty, INotify } from 'common/lib/models/interface/notifyInterface.js';
+import { IThing, IThingProperty } from 'common/lib/models/interface/thing.js';
+import { IUser } from 'common/lib/models/interface/userInterface.js';
+import { NotifyModel } from 'common/lib/models/notifyModel.js';
+import { UserModel } from 'common/lib/models/userModel.js';
 import * as admin from 'firebase-admin';
-import { Config } from '../types';
-import { getProperty } from 'common/lib/utils/getProperty';
-import { getThing } from 'common/lib/utils/getThing';
-import functions from './fireBase/notifications/functions';
+import { Config } from '../types.js';
+import { getProperty } from 'common/lib/utils/getProperty.js';
+import { getThing } from 'common/lib/utils/getThing.js';
+import functions from './fireBase/notifications/functions.js';
 import { logger } from 'common/lib/logger';
 import { map, prop, uniq, o } from 'ramda';
-import { NotifyService } from './notifyService';
+import { NotifyService } from './notifyService.js';
 
 /**
  * Funcional implementation sending notifications
@@ -45,7 +45,7 @@ function createNotification(options: CreateNotificationsOptions) {
         value,
         homepageUrl,
     } = options;
-    const units = unitOfMeasurement ? ' ' + unitOfMeasurement : '';
+    const units = unitOfMeasurement ? ' ' + unitOfMeasurement : '.js';
     return {
         title,
         body: `${name} je ${value}${units}`,

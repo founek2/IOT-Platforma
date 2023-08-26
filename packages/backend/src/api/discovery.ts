@@ -1,21 +1,18 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { DiscoveryModel, IDiscoveryDocument } from 'common/lib/models/deviceDiscoveryModel';
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import { DeviceStatus } from 'common/lib/models/interface/device';
-import { RequestWithAuth } from 'common/lib/types';
+import fieldDescriptors from 'common/lib/fieldDescriptors.js';
+import { DiscoveryModel, IDiscoveryDocument } from 'common/lib/models/deviceDiscoveryModel.js';
+import { DeviceModel } from 'common/lib/models/deviceModel.js';
+import { DeviceStatus } from 'common/lib/models/interface/device.js';
+import { RequestWithAuth } from 'common/lib/types.js';
 import mongoose from 'mongoose';
 import { assocPath, equals, map } from 'ramda';
-import checkDiscovery from 'common/lib/middlewares/discovery/checkDiscovery';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { Actions } from '../services/actionsService';
-import eventEmitter from '../services/eventEmitter';
-import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
-import { IThing } from 'common/lib/models/interface/thing';
-import { extractPlainConfig } from '../utils/extractPlainConfig';
-import util from 'util';
-import { logger } from 'common/lib/logger';
+import checkDiscovery from 'common/lib/middlewares/discovery/checkDiscovery.js';
+import formDataChecker from 'common/lib/middlewares/formDataChecker.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
+import { Actions } from '../services/actionsService.js';
+import eventEmitter from '../services/eventEmitter.js';
+import { convertDiscoveryThing } from '../utils/convertDiscoveryThing.js';
+import { IThing } from 'common/lib/models/interface/thing.js';
 
 const ObjectId = mongoose.Types.ObjectId;
 

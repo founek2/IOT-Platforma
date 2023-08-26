@@ -1,9 +1,9 @@
-import { OAuthProvider } from 'common/lib/models/interface/userInterface';
-import { UserService } from 'common/lib/services/userService';
-import { RequestWithAuth } from 'common/lib/types';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { OAuthService } from '../services/oauthService';
+import { OAuthProvider } from 'common/lib/models/interface/userInterface.js';
+import { UserService } from 'common/lib/services/userService.js';
+import { RequestWithAuth } from 'common/lib/types.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
+import { OAuthService } from '../services/oauthService.js';
 import { logger } from 'common/lib/logger';
 
 type Request = RequestWithAuth;

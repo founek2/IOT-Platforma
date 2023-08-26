@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import actions from './actions';
-import webSocket from './socket';
+import actions from './actions.js';
+import webSocket from './socket.js';
 import { Server as serverIO } from 'socket.io';
-import history from './history';
+import history from './history.js';
 
 export default ({ io }: { io: serverIO }) => {
     let api = Router();

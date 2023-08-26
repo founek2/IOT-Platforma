@@ -1,6 +1,6 @@
-import { logger } from '../logger';
-import { checkValidFormData } from '../utils/validation';
-import { trimData } from '../utils/trimData';
+import { logger } from '../logger/index.js';
+import { checkValidFormData } from '../utils/validation.js';
+import { trimData } from '../utils/trimData.js';
 import express from 'express';
 
 type Options = { ingoreRequired?: boolean; allowedForms?: string[] } | undefined;

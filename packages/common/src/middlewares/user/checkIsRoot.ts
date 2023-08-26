@@ -1,6 +1,6 @@
 import express from 'express';
-import { RequestWithAuthOpt } from '../../types';
-import { isRoot } from '../../utils/groups';
+import { RequestWithAuthOpt } from '../../types.js';
+import { isRoot } from '../../utils/groups.js';
 
 export function checkIsRoot() {
     return async ({ user }: RequestWithAuthOpt, res: express.Response, next: express.NextFunction) => {

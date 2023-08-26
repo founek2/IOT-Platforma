@@ -1,5 +1,5 @@
 import express from 'express';
-import { getPass, Pass } from '../services/TemporaryPass';
+import { getPass, Pass } from '../services/TemporaryPass.js';
 
 const router = express.Router();
 

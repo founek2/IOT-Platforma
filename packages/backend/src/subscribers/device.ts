@@ -1,7 +1,7 @@
-import agenda from '../agenda';
-import { Emitter } from '../services/eventEmitter';
-import * as types from '../types';
-import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda';
+import agenda from '../agenda.js';
+import { Emitter } from '../services/eventEmitter.js';
+import * as types from '../types/index.js';
+import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda.js';
 
 export default function (eventEmitter: Emitter<types.EmitterEvents>) {
     eventEmitter.on('device_control_recipe_change', async ({ recipes, deviceId }) => {

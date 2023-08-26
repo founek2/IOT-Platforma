@@ -1,8 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { DiscoveryModel } from 'common/lib/models/deviceDiscoveryModel';
-import { RequestWithAuthOpt } from '../../types';
-import { Permission } from 'common/lib/models/interface/userInterface';
+import { DiscoveryModel } from 'common/lib/models/deviceDiscoveryModel.js';
+import { RequestWithAuthOpt } from '../../types/index.js';
+import { Permission } from 'common/lib/models/interface/userInterface.js';
 
 /**
  * Middleware to check if discovered device exists and user has permission to it

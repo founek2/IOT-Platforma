@@ -1,12 +1,12 @@
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import { RequestWithAuth } from 'common/lib/types';
-import { getProperty } from 'common/lib/utils/getProperty';
-import { getThing } from 'common/lib/utils/getThing';
-import { validateValue } from 'common/lib/utils/validateValue';
-import { Actions } from '../../services/actionsService';
-import checkRealmControlPerm from 'common/lib/middlewares/device/checkRealmControlPerm';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
+import { DeviceModel } from 'common/lib/models/deviceModel.js';
+import { RequestWithAuth } from 'common/lib/types.js';
+import { getProperty } from 'common/lib/utils/getProperty.js';
+import { getThing } from 'common/lib/utils/getThing.js';
+import { validateValue } from 'common/lib/utils/validateValue.js';
+import { Actions } from '../../services/actionsService.js';
+import checkRealmControlPerm from 'common/lib/middlewares/device/checkRealmControlPerm.js';
 
 type Params = { realm: string; deviceId: string; nodeId: string };
 type Request = RequestWithAuth<Params>;

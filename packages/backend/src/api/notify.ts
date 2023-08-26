@@ -1,12 +1,12 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { NotifyModel } from 'common/lib/models/notifyModel';
-import { RequestWithAuth } from 'common/lib/types';
-import { transformNotifyForBE } from 'common/lib/utils/transform';
-import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
-import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
+import fieldDescriptors from 'common/lib/fieldDescriptors.js';
+import { NotifyModel } from 'common/lib/models/notifyModel.js';
+import { RequestWithAuth } from 'common/lib/types.js';
+import { transformNotifyForBE } from 'common/lib/utils/transform.js';
+import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm.js';
+import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm.js';
+import formDataChecker from 'common/lib/middlewares/formDataChecker.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;

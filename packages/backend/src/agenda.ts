@@ -1,6 +1,6 @@
 import Agenda from 'agenda';
 import config from 'common/lib/config';
-import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda';
+import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda.js';
 import { logger } from 'common/lib/logger';
 
 const configAgenda = config.agenda;

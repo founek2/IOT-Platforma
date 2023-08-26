@@ -1,12 +1,10 @@
 import config from 'common/lib/config';
-import { IDevice, DeviceCommand } from 'common/lib/models/interface/device';
-import { IDiscovery } from 'common/lib/models/interface/discovery';
-import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import { AuthConnector } from 'common/lib/connectors/authConnector';
-import type { RequestInfo, RequestInit } from 'node-fetch';
-
-const fetch = (url: URL | RequestInfo, init?: RequestInit | undefined) => import('node-fetch').then(({ default: fetch }) => fetch(url, init));
+import { IDevice, DeviceCommand } from 'common/lib/models/interface/device.js';
+import { IDiscovery } from 'common/lib/models/interface/discovery.js';
+import { IThing, IThingProperty } from 'common/lib/models/interface/thing.js';
+import { AuthConnector } from 'common/lib/connectors/authConnector.js';
+import fetch from 'node-fetch';
+import { Maybe } from 'purify-ts';
 
 /**
  * Service to communicate with backend-mqtt, allowing sending data directly to devices
@@ -70,7 +68,7 @@ export class Actions {
         return res.status === 204;
     }
 
-    public static async getBrokerAuth() {
+    public static async getBrokerAuth(): Promise<Maybe<string>> {
         const result = await AuthConnector(`${config.serviceAuthUri}`).getPass();
         return result.map((pass) => {
             const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');

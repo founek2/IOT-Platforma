@@ -1,21 +1,14 @@
 import bodyParser from 'body-parser';
 import config from 'common/lib/config';
-import { JwtService } from 'common/lib/services/jwtService';
-import { connectMongoose } from 'common/lib/utils/connectMongoose';
-import express, { Application } from 'express';
+import { JwtService } from 'common/lib/services/jwtService.js';
+import { connectMongoose } from 'common/lib/utils/connectMongoose.js';
+import express from 'express';
 import { logger } from 'common/lib/logger';
-import http from 'http';
 import morgan from 'morgan';
-import { Server as serverIO } from 'socket.io';
-import api from './api';
-import eventEmitter from './services/eventEmitter';
-import initSubscribers from './subscribers';
-import { Config } from './types';
-
-interface customApp extends Application {
-    server: http.Server;
-    io: serverIO;
-}
+import api from './api/index.js';
+import eventEmitter from './services/eventEmitter.js';
+import initSubscribers from './subscribers/index.js';
+import { Config } from './types.js';
 
 async function startServer(config: Config) {
     JwtService.init(config.jwt);

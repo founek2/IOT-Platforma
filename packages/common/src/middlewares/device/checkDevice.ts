@@ -1,4 +1,4 @@
-import { DeviceModel } from '../../models/deviceModel';
+import { DeviceModel } from '../../models/deviceModel.js';
 import express from 'express';
 import mongoose from 'mongoose';
 

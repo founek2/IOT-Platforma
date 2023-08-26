@@ -4,7 +4,6 @@
         "baseUrl": ".",
         "rootDir": "./src",
         "outDir": "./dist",
-        "moduleResolution": "node"
     },
     "references": [{ "path": "../common" }],
     "include": ["./src"],

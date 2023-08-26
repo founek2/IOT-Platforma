@@ -1,6 +1,6 @@
 import { is } from 'ramda';
 import { NOTIFY_INTERVALS } from 'common/lib/constants';
-import { INotifyThingProperty } from 'common/lib/models/interface/notifyInterface';
+import { INotifyThingProperty } from 'common/lib/models/interface/notifyInterface.js';
 
 function getMinFromEpoch(date: Date) {
     return date.getTime() / 1000 / 60;

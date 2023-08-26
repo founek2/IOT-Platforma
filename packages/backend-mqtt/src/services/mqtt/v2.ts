@@ -1,15 +1,15 @@
 import { Server as serverIO } from 'socket.io';
-import { DeviceStatus, IDevice } from 'common/lib/models/interface/device';
-import { DeviceModel } from 'common/lib/models/deviceModel';
+import { DeviceStatus, IDevice } from 'common/lib/models/interface/device.js';
+import { DeviceModel } from 'common/lib/models/deviceModel.js';
 import { logger } from 'common/lib/logger';
-import { getThing } from 'common/lib/utils/getThing';
-import { getProperty } from 'common/lib/utils/getProperty';
-import { validateValue } from 'common/lib/utils/validateValue';
-import { HistoricalModel } from 'common/lib/models/historyModel';
-import * as FireBaseService from '../FireBase';
-import { SocketUpdateThingState } from 'common/lib/types';
+import { getThing } from 'common/lib/utils/getThing.js';
+import { getProperty } from 'common/lib/utils/getProperty.js';
+import { validateValue } from 'common/lib/utils/validateValue.js';
+import { HistoricalModel } from 'common/lib/models/historyModel.js';
+import * as FireBaseService from '../FireBase.js';
+import { SocketUpdateThingState } from 'common/lib/types.js';
 import { uniq } from 'ramda';
-import { InfluxService } from 'common/lib/services/influxService';
+import { InfluxService } from 'common/lib/services/influxService.js';
 
 type cbFn = (topic: string, message: any, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO) {

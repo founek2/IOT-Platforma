@@ -1,11 +1,10 @@
-import { allowedGroups } from 'common/lib/constants/privileges';
-import { JwtService } from 'common/lib/services/jwtService';
+import { JwtService } from 'common/lib/services/jwtService.js';
 import express, { Application } from 'express';
 import { logger } from 'common/lib/logger';
 import http from 'http';
-import loadersInit from './loaders';
-import { MailerService } from './services/mailerService';
-import { Config } from './types';
+import loadersInit from './loaders/index.js';
+import { MailerService } from './services/mailerService.js';
+import { Config } from './types/index.js';
 
 export interface MyApp extends Application {
     server: http.Server;

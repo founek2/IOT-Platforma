@@ -3,9 +3,8 @@ import Email from 'email-templates';
 import { createTransport } from 'nodemailer';
 import path from 'path';
 import config from 'common/lib/config';
-import { UserBasic } from '../types';
-import { Config } from 'common/lib/types';
-import { IToken } from 'common/lib/models/tokenModel';
+import { Config } from 'common/lib/types.js';
+import { IToken } from 'common/lib/models/tokenModel.js';
 
 let defaultEmail: Email;
 

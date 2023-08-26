@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import auth from './auth';
-import pass from './pass';
-import signIn from './signIn';
-import signOut from './signOut';
+import auth from './auth.js';
+import pass from './pass.js';
+import signIn from './signIn.js';
+import signOut from './signOut.js';
 
-export default ({}) => {
+export default ({ }) => {
     let api = Router();
 
     api.use('/auth/rabbitmq', auth);

@@ -1,10 +1,10 @@
-import { UserModel } from 'common/lib/models/userModel';
-import { DiscoveryModel } from 'common/lib/models/deviceDiscoveryModel';
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import { DeviceStatus } from 'common/lib/models/interface/device';
-import { ComponentType, PropertyClass, PropertyDataType } from 'common/lib/models/interface/thing';
+import { UserModel } from 'common/lib/models/userModel.js';
+import { DiscoveryModel } from 'common/lib/models/deviceDiscoveryModel.js';
+import { DeviceModel } from 'common/lib/models/deviceModel.js';
+import { DeviceStatus } from 'common/lib/models/interface/device.js';
+import { ComponentType, PropertyClass, PropertyDataType } from 'common/lib/models/interface/thing.js';
 import { Server as serverIO } from 'socket.io';
-import eventEmitter from '../eventEmitter';
+import eventEmitter from '../eventEmitter.js';
 
 type cbFn = (topic: string, message: any, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO) {

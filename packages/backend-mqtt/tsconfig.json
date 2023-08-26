@@ -3,10 +3,17 @@
     "compilerOptions": {
         "baseUrl": ".",
         "rootDir": "./src",
-        "outDir": "./dist",
-        "moduleResolution": "node"
+        "outDir": "./dist"
     },
-    "references": [{ "path": "../common" }],
-    "include": ["./src"],
-    "exclude": ["./dist"]
+    "references": [
+        {
+            "path": "../common"
+        }
+    ],
+    "include": [
+        "./src"
+    ],
+    "exclude": [
+        "./dist"
+    ]
 }

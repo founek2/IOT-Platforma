@@ -1,21 +1,21 @@
 import bodyParser from 'body-parser';
 import config from 'common/lib/config';
-import { InfluxService } from 'common/lib/services/influxService';
-import { JwtService } from 'common/lib/services/jwtService';
-import { connectMongoose } from 'common/lib/utils/connectMongoose';
+import { InfluxService } from 'common/lib/services/influxService.js';
+import { JwtService } from 'common/lib/services/jwtService.js';
+import { connectMongoose } from 'common/lib/utils/connectMongoose.js';
 import express, { Application, RequestHandler } from 'express';
 import { logger } from 'common/lib/logger';
 import http from 'http';
 import morgan from 'morgan';
 import { Server as serverIO } from 'socket.io';
-import api from './api';
-import eventEmitter from './services/eventEmitter';
-import * as FireBase from './services/FireBase';
-import { migrate } from './services/migrations';
-import mqttService from './services/mqtt';
-import initSubscribers from './subscribers';
-import { Config } from './types';
-import { AuthConnector } from 'common/lib/connectors/authConnector';
+import api from './api/index.js';
+import eventEmitter from './services/eventEmitter.js';
+import * as FireBase from './services/FireBase.js';
+import { migrate } from './services/migrations.js';
+import mqttService from './services/mqtt.js';
+import initSubscribers from './subscribers/index.js';
+import { Config } from './types.js';
+import { AuthConnector } from 'common/lib/connectors/authConnector.js';
 
 interface customApp extends Application {
     server: http.Server;

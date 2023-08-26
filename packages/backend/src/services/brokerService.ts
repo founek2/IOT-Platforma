@@ -1,11 +1,9 @@
-import { OverView } from '../types/rabbitmq';
+import { OverView } from '../types/rabbitmq.js';
 import config from 'common/lib/config';
-import { Actions } from './actionsService';
-import { isBefore, addMinutes, isAfter } from 'date-fns';
+import { Actions } from './actionsService.js';
+import { addMinutes, isAfter } from 'date-fns';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import type { RequestInfo, RequestInit } from 'node-fetch';
-
-const fetch = (url: URL | RequestInfo, init?: RequestInit | undefined) => import('node-fetch').then(({ default: fetch }) => fetch(url, init));
+import fetch from 'node-fetch';
 
 const CACHE_MINUTES = 3;
 

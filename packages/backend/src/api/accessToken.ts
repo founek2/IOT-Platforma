@@ -1,13 +1,13 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm';
-import { UserModel } from 'common/lib/models/userModel';
-import { UserService } from 'common/lib/services/userService';
-import { RequestWithAuth } from 'common/lib/types';
+import fieldDescriptors from 'common/lib/fieldDescriptors.js';
+import formDataChecker from 'common/lib/middlewares/formDataChecker.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
+import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm.js';
+import { UserModel } from 'common/lib/models/userModel.js';
+import { UserService } from 'common/lib/services/userService.js';
+import { RequestWithAuth } from 'common/lib/types.js';
 import { map, omit } from 'ramda';
-import { ObjectId } from '../utils/objectId';
+import { ObjectId } from '../utils/objectId.js';
 
 type Params = { userId: string };
 type Request = RequestWithAuth<Params>;

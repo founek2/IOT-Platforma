@@ -1,15 +1,15 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { Actions } from '../services/actionsService';
-import { DeviceService } from '../services/deviceService';
-import eventEmitter from '../services/eventEmitter';
-import { IDevice } from 'common/lib/models/interface/device';
-import { RequestWithAuth } from 'common/lib/types';
-import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
+import fieldDescriptors from 'common/lib/fieldDescriptors.js';
+import { DeviceModel } from 'common/lib/models/deviceModel.js';
+import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm.js';
+import formDataChecker from 'common/lib/middlewares/formDataChecker.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth.js';
+import { Actions } from '../services/actionsService.js';
+import { DeviceService } from '../services/deviceService.js';
+import eventEmitter from '../services/eventEmitter.js';
+import { IDevice } from 'common/lib/models/interface/device.js';
+import { RequestWithAuth } from 'common/lib/types.js';
+import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm.js';
 
 type Request = RequestWithAuth;
 type RequestId = RequestWithAuth & { params: { id: string } };

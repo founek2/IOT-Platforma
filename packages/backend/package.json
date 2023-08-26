@@ -4,6 +4,7 @@
     "license": "GPL-3.0-only",
     "description": "",
     "main": "lib/main.js",
+    "type": "module",
     "scripts": {
         "dev": "ts-node-dev src/index.ts",
         "build": "tsc -b tsconfig.build.json && yarn copyFiles",
@@ -47,8 +48,9 @@
         "@types/email-templates": "^7.1.0",
         "@types/express": "^4.17.9",
         "@types/express-mongo-sanitize": "^1.3.2",
+        "@types/jest": "^26.0.4",
         "@types/morgan": "^1.9.2",
-        "@types/node": "^14.0.20",
+        "@types/node": "^20.5.6",
         "@types/nodemailer": "^6.4.0",
         "@types/ramda": "0.27.34",
         "@types/socket.io": "^2.1.12",
@@ -63,7 +65,7 @@
         "supertest": "^6.1.4",
         "ts-jest": "29.0.2",
         "ts-node-dev": "^2.0.0",
-        "typescript": "^4.9.5",
+        "typescript": "^5.2.2",
         "typescript-transform-paths": "^3.3.1"
     }
 }

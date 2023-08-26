@@ -1,10 +1,7 @@
 import mongoose, { Document } from 'mongoose';
-import { IUser } from '../interface/userInterface';
+import { IUser } from '../interface/userInterface.js';
 
-const Schema = mongoose.Schema;
-const ObjectId = mongoose.Types.ObjectId;
-
-export interface IUserDocument extends IUser, Document {}
+export interface IUserDocument extends IUser, Document { }
 
 export const userSchemaPlain = {
     info: {

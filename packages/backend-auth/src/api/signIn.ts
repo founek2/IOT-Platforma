@@ -1,14 +1,14 @@
 import config from 'common/lib/config';
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { OAuthProvider } from 'common/lib/models/interface/userInterface';
-import { UserService } from 'common/lib/services/userService';
+import fieldDescriptors from 'common/lib/fieldDescriptors.js';
+import { OAuthProvider } from 'common/lib/models/interface/userInterface.js';
+import { UserService } from 'common/lib/services/userService.js';
 import { EitherAsync } from 'purify-ts/EitherAsync';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import eventEmitter from '../services/eventEmitter';
-import { OAuthService } from '../services/oauthService';
+import formDataChecker from 'common/lib/middlewares/formDataChecker.js';
+import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter.js';
+import resource from 'common/lib/middlewares/resource-router-middleware.js';
+import eventEmitter from '../services/eventEmitter.js';
+import { OAuthService } from '../services/oauthService.js';
 
 /**
  * URL prefix /authorization

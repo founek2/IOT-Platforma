@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import { randomBytes, randomInt } from 'node:crypto';
 
 var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -8,7 +8,7 @@ export class Security {
      * @param {number} size
      */
     static getRandomToken(size: number) {
-        const token = crypto.randomBytes(Math.floor(size)).toString('base64').slice(0, size);
+        const token = randomBytes(Math.floor(size)).toString('base64').slice(0, size);
         return token;
     }
 
@@ -17,7 +17,7 @@ export class Security {
 
         var charactersLength = characters.length;
         for (var i = 0; i < size; i++) {
-            result.push(characters.charAt(crypto.randomInt(charactersLength)));
+            result.push(characters.charAt(randomInt(charactersLength)));
         }
         return result.join('');
     }

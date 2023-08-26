@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import user from './user';
-import device from './device';
-import notify from './notify';
-import discovery from './discovery';
-import thing from './thing';
-import thingState from './thingState';
-import accessToken from './accessToken';
-import broker from './broker';
-import { Config } from '../types';
+import user from './user.js';
+import device from './device.js';
+import notify from './notify.js';
+import discovery from './discovery.js';
+import thing from './thing.js';
+import thingState from './thingState.js';
+import accessToken from './accessToken.js';
+import broker from './broker.js';
+import { Config } from '../types/index.js';
 
 export default ({ config }: { config: Config }) => {
     let api = Router();

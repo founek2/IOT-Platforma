@@ -1,6 +1,6 @@
-import { Config } from '../types';
-import { logger } from '../logger';
-import path from 'path';
+import { Config } from '../types.js';
+import { logger } from '../logger/index.js';
+import path from 'node:path';
 
 function areWeTestingWithJest() {
     return process.env.JEST_WORKER_ID !== undefined;

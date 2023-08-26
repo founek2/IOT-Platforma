@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import fs from 'fs';
-import { logger } from '../logger';
+import { readFileSync } from 'node:fs';
+import { logger } from '../logger/index.js';
 
 let privKey: jwt.Secret | null = null;
 let pubKey: jwt.Secret | null = null;
@@ -22,8 +22,8 @@ function init({
     if (!publicKey) logger.error('JWT invalid publicKey path:', publicKey);
     if (!exIn) logger.error('JWT invalid expiresIn:', exIn);
 
-    privKey = fs.readFileSync(privateKey);
-    pubKey = fs.readFileSync(publicKey);
+    privKey = readFileSync(privateKey);
+    pubKey = readFileSync(publicKey);
     expiresIn = exIn;
 }
 

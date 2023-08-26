@@ -1,5 +1,5 @@
 import mongoose, { Document, Model } from 'mongoose';
-import { IUser } from './interface/userInterface';
+import { IUser } from './interface/userInterface.js';
 
 export enum TokenType {
     forgot_password = 'forgot_password',
@@ -15,7 +15,7 @@ export interface IToken {
     userId: IUser['_id'];
 }
 
-export interface ITokenDocument extends Document, IToken {}
+export interface ITokenDocument extends Document, IToken { }
 
 export interface IUserModel extends Model<ITokenDocument> {
     retrieve(data: IToken['data']): Promise<IToken | null>;

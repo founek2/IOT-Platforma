@@ -1,10 +1,10 @@
-import express, { Application, Request, RequestHandler } from 'express';
+import express, { Application, Request, RequestHandler, NextFunction } from 'express';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mongoSanitize from 'express-mongo-sanitize';
-import api from '../api';
-import api2 from '../api/v2';
-import { Config } from '../types';
+import api from '../api/index.js';
+import api2 from '../api/v2/index.js';
+import { Config } from '../types/index.js';
 import path from 'path';
 
 function getMaxSize(req: Request) {
@@ -13,7 +13,7 @@ function getMaxSize(req: Request) {
     return '100kb';
 }
 
-const sizeLimitter: RequestHandler = (req, res, next) => {
+const sizeLimitter: RequestHandler = (req, res: any, next) => {
     bodyParser.json({
         limit: getMaxSize(req),
     })(req, res, next);
