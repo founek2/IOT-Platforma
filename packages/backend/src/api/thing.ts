@@ -4,12 +4,12 @@ import { RequestWithAuth } from 'common/lib/types';
 import { getProperty } from 'common/lib/utils/getProperty';
 import { getThing } from 'common/lib/utils/getThing';
 import { validateValue } from 'common/lib/utils/validateValue';
-import { all, equals } from 'ramda';
 import checkControlPerm from 'common/lib/middlewares/device/checkControlPerm';
 import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import { ObjectId } from '../utils/objectId';
+import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;
@@ -23,8 +23,7 @@ export default () =>
         mergeParams: true,
         middlewares: {
             create: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
-            modify: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
-            replace: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
+            replace: [tokenAuthMIddleware(), checkWritePerm({ paramKey: 'deviceId' })],
         },
 
         async index(req: Request, res) {
