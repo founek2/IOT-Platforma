@@ -18,7 +18,7 @@ export default function (options: { paramKey: string } = { paramKey: 'id' }) {
             if (user.admin) return next();
 
             if (
-                user.accessPermissions?.some((b) => Permission.read) &&
+                user.accessPermissions?.includes(Permission.read) &&
                 (await DeviceModel.checkReadPerm(deviceId, user._id))
             )
                 return next();

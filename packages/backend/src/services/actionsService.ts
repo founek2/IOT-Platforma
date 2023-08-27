@@ -2,11 +2,8 @@ import config from 'common/lib/config';
 import { IDevice, DeviceCommand } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
 import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { AuthConnector } from 'common/lib/connectors/authConnector';
-import type { RequestInfo, RequestInit } from 'node-fetch';
-
-const fetch = (url: URL | RequestInfo, init?: RequestInit | undefined) => import('node-fetch').then(({ default: fetch }) => fetch(url, init));
+import fetch from 'node-fetch';
 
 /**
  * Service to communicate with backend-mqtt, allowing sending data directly to devices

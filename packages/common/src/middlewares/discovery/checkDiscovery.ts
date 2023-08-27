@@ -20,7 +20,7 @@ export default function (options: { paramKey: string } = { paramKey: 'id' }) {
 
         if (
             user?.realm &&
-            user.accessPermissions?.some((b) => b === Permission.write) &&
+            user.accessPermissions?.includes(Permission.write) &&
             (await DiscoveryModel.checkPermissions(discoveryId, user.realm))
         )
             return next();

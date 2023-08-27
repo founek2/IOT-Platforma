@@ -8466,7 +8466,7 @@ __metadata:
     jest: 26.6.0
     mongoose: ^5.13.2
     morgan: ^1.9.1
-    node-fetch: ^2.6.0
+    node-fetch: ^2.6.7
     nodemon: ^2.0.4
     purify-ts: ^1.2.2
     ramda: ^0.27.1
@@ -8503,7 +8503,6 @@ __metadata:
     jest: 26.6.0
     morgan: ^1.9.1
     mqtt: ^4.3.7
-    node-fetch: ^2.6.0
     nodemon: ^2.0.4
     purify-ts: ^1.2.2
     ramda: ^0.27.1
@@ -8554,7 +8553,7 @@ __metadata:
     mongoose: ^5.13.2
     morgan: ^1.9.1
     node-dotify: ^1.1.0
-    node-fetch: ^3.3.2
+    node-fetch: ^2.6.7
     nodemailer: ^6.5.0
     nodemon: ^2.0.4
     pug: ^3.0.0
