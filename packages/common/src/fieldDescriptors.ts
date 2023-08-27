@@ -164,7 +164,6 @@ const EDIT_DEVICE: FormFieldDescriptors = {
         deepPath: 'EDIT_DEVICE.permissions',
         label: 'Oprávnění',
     },
-    // permissions: transformToForm('EDIT_DEVICE.permissions', EDIT_PERMISSIONS),
 };
 
 const EDIT_NOTIFY: FormFieldDescriptors = {
@@ -224,6 +223,17 @@ const EDIT_NOTIFY: FormFieldDescriptors = {
         deepPath: 'EDIT_NOTIFY.count',
         required: true,
         validations: [validationFactory('isNumber', { max: 20 })],
+    },
+};
+
+
+const EDIT_DEVICE_CONFIG: FormFieldDescriptors = {
+    "thing[]": {
+        deepPath: 'EDIT_DEVICE_CONFIG.thing[]',
+        required: true,
+        label: 'Název',
+        name: 'title',
+        // validations: [validationFactory('isArray', { min: 1 })],
     },
 };
 
@@ -344,6 +354,7 @@ const descriptors: FieldDescriptors = {
     ADD_ACCESS_TOKEN,
     EDIT_ACCESS_TOKEN,
     AUTHORIZATION,
+    EDIT_DEVICE_CONFIG,
 };
 
 export default descriptors;
