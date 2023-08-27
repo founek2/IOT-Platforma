@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
+import clsx from 'clsx';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Dialog } from '../../components/Dialog';
-import { useLazyThingHistoryQuery } from '../../endpoints/thing';
-import { useAppSelector } from '../../hooks';
+import { Draggable, DraggableProvider } from '../../components/Draggable';
+import { useLazyThingHistoryQuery, useUpdateThingMutation } from '../../endpoints/thing';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { ThingContext } from '../../hooks/useThing';
 import { useUpdateThingStateSmart } from '../../hooks/useUpdateThingStateSmart';
 import { getThing } from '../../selectors/getters';
+import { thingsReducerActions } from '../../store/slices/application/thingsSlice';
+import { notificationActions } from '../../store/slices/notificationSlice';
 import PropertyRow from '.././room/PropertyRow';
 
 const REFRESH_HISTORY_INTERVAL = 3 * 60 * 100;
 
 export function ThingDialog() {
+    const [editMode, setEditMode] = useState(false);
+    const [thingDirty, setThingDirty] = useState(false);
     const [urlSearchParams] = useSearchParams();
     const thingId = urlSearchParams.get('thingId') || '';
     const thing = useAppSelector(getThing(thingId));
@@ -18,41 +24,80 @@ export function ThingDialog() {
     const [fetchHistory, { data: historyData }] = useLazyThingHistoryQuery({
         pollingInterval: thing ? REFRESH_HISTORY_INTERVAL : 0,
     });
+    const dispatch = useAppDispatch()
     const { mutateThingState } = useUpdateThingStateSmart(thingId);
+    const [mutateThing] = useUpdateThingMutation();
+
     useEffect(() => {
         if (thing) fetchHistory({ deviceID: thing.deviceId, thingID: thing.config.nodeId });
     }, [thing?._id]);
 
+    function onMove(dragId: string, hoverId: string) {
+        setThingDirty(true)
+        dispatch(thingsReducerActions.swapPropertyOrderFor([thingId, dragId, hoverId]))
+    }
+
+    async function handleClose() {
+        if (thingDirty && thing) {
+            await mutateThing({
+                deviceId: thing.deviceId, nodeId: thing._id, data: {
+                    config: thing.config
+                }
+            }).unwrap()
+                .then(() => {
+                    setEditMode(false)
+                    setThingDirty(false)
+                    dispatch(notificationActions.add({ message: "Změna byla uložena" }))
+                })
+                .catch(err => console.log(err))
+        }
+        navigate({ search: '' }, { replace: true })
+    }
+
+
+    const content = thing
+        ? thing.config.properties.map((property, i) => (
+            <Draggable
+                id={property._id!}
+                key={property._id!}
+                index={i}
+                onMove={onMove}
+                type="property"
+                dragDisabled={!editMode}
+                render={(isDragable: boolean, ref) =>
+                    <ThingContext.Provider value={thing} key={property._id}>
+                        <PropertyRow
+                            ref={ref}
+                            sx={{ paddingBottom: 2, sx: isDragable ? 0.4 : 1 }}
+                            className={clsx({ floating: editMode })}
+                            key={property.propertyId}
+                            property={property}
+                            state={thing.state?.[property.propertyId]}
+                            onChange={(value) => {
+                                console.log('clicked');
+                                mutateThingState({
+                                    propertyId: property.propertyId,
+                                    value,
+                                });
+                            }}
+                            history={historyData}
+                            defaultShowDetail={i === 0}
+                        />
+                    </ThingContext.Provider>
+                } />
+        ))
+        : <></>;
+
     return (
         <Dialog
             open={Boolean(thing)}
-            onClose={() => navigate({ search: '' }, { replace: true })}
+            onClose={() => handleClose()}
             title={thing?.config.name}
-            // sx={{ minWidth: 600 }}
+            onMenuItem={() => setEditMode(!editMode)}
             fullWidth
         >
             <>
-                {thing
-                    ? thing.config.properties.map((property, i) => (
-                        <ThingContext.Provider value={thing} key={property._id}>
-                            <PropertyRow
-                                sx={{ paddingBottom: 2 }}
-                                key={property.propertyId}
-                                property={property}
-                                state={thing.state?.[property.propertyId]}
-                                onChange={(value) => {
-                                    console.log('clicked');
-                                    mutateThingState({
-                                        propertyId: property.propertyId,
-                                        value,
-                                    });
-                                }}
-                                history={historyData}
-                                defaultShowDetail={i === 0}
-                            />
-                        </ThingContext.Provider>
-                    ))
-                    : null}
+                {editMode ? <DraggableProvider>{content}</DraggableProvider> : content}
             </>
         </Dialog>
     );

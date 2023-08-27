@@ -15,12 +15,12 @@ export interface UpdateThingStateArgs {
     propertyId: IThingProperty['propertyId'];
     value: string | number | boolean;
 }
+export interface EditThingFormData {
+    config: Thing["config"];
+}
 export const thingsApi = api.injectEndpoints({
     endpoints: (build) => ({
-        thingHistory: build.query<
-            HistoryResponse['docs'],
-            { deviceID: Device['_id']; thingID: Thing['config']['nodeId'] }
-        >({
+        thingHistory: build.query<HistoryResponse['docs'], { deviceID: Device['_id']; thingID: Thing['config']['nodeId'] }>({
             query: ({ deviceID, thingID }) =>
                 `device/${deviceID}/thing/${thingID}/history?from=${subDays(new Date(), 1).getTime()}`,
             transformResponse: (res: HistoryResponse) => res.docs,
@@ -32,7 +32,15 @@ export const thingsApi = api.injectEndpoints({
                 method: 'POST',
             }),
         }),
+        updateThing: build.mutation<undefined, {deviceId: string, nodeId: string, data: EditThingFormData}>({
+            query: ({ deviceId, nodeId, data }) => ({
+                url: `device/${deviceId}/thing/${nodeId}`,
+                method: 'PUT',
+                body: { formData: { EDIT_THING: data } },
+                invalidatesTags: ["Devices"]
+            }),
+        }),
     }),
 });
 
-export const { useLazyThingHistoryQuery, useUpdateThingStateMutation } = thingsApi;
+export const { useLazyThingHistoryQuery, useUpdateThingStateMutation, useUpdateThingMutation } = thingsApi;

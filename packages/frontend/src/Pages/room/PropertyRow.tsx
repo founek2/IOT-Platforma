@@ -18,7 +18,7 @@ import UpdatedBefore from '../../components/UpdatedBefore';
 import PlotifyBoolean from '../../components/PlotifyBoolean';
 import PlotifyNumeric from '../../components/PlotifyNumeric';
 import { convertBoolHistoryToGraphData, convertNumericHistoryToGraphData } from '../../utils/convertHistoryToGraphData';
-import React, { useCallback, useState } from 'react';
+import React, { forwardRef, useCallback, useState } from 'react';
 import { ActivatorButton } from '../../components/ActivatorButton';
 import { CopyUrlContext } from './helpers/CopyUrl';
 import { toogleSwitchVal } from './helpers/toogleSwitchVal';
@@ -180,9 +180,10 @@ interface PropertyRowProps {
     history?: Measurement[];
     defaultShowDetail?: boolean;
     sx?: SxProps<Theme>;
+    className?: string;
 }
 
-function PropertyRow({ property, state, onChange, history, defaultShowDetail = false, sx }: PropertyRowProps) {
+const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function PropertyRow({ property, state, onChange, history, defaultShowDetail = false, sx, className }, ref) {
     const [showDetail, setshowDetail] = useState(defaultShowDetail);
     const toogleDetail = useCallback(() => setshowDetail(!showDetail), [setshowDetail, showDetail]);
 
@@ -190,7 +191,7 @@ function PropertyRow({ property, state, onChange, history, defaultShowDetail = f
     const Icon = propertyClass ? SensorIcons[propertyClass] : null;
     // console.log('state row', state?.desiredValue);
     return (
-        <Box sx={sx}>
+        <Box sx={sx} ref={ref} className={className}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {Icon ? <Icon onClick={toogleDetail} /> : null}
                 <Typography component="span" onClick={toogleDetail} pr={2} sx={{ cursor: 'pointer' }}>
@@ -211,6 +212,6 @@ function PropertyRow({ property, state, onChange, history, defaultShowDetail = f
                 : null}
         </Box>
     );
-}
+})
 
 export default PropertyRow;

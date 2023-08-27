@@ -54,6 +54,19 @@ export const thingsSlice = createSlice({
                 });
             }
         },
+        swapPropertyOrderFor: (state, action: PayloadAction<[Thing["_id"], string, string]>) => {
+            const [entityId, propA, propB] = action.payload;
+            const properties = state.entities[entityId]?.config.properties
+            if (!properties) return
+
+            const idA = properties.findIndex(p => p._id === propA)
+            const idB = properties.findIndex(p => p._id === propB)
+            if (idA === -1 || idB === -1) return
+
+            const tmp = properties[idA];
+            properties[idA] = properties[idB]
+            properties[idB] = tmp;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase('store/reset', () => thingsAdapter.getInitialState());

@@ -58,6 +58,7 @@ export function DraggableComponent({ id, index, onMove, render, type }: Draggabl
             // When dragging downwards, only move when the cursor is below 25%
             // When dragging upwards, only move when the cursor is above 25%
 
+            console.log(dragIndex, hoverIndex, hoverClientY, hoverMiddleY)
             // Dragging downwards
             if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY / 1.5) {
                 return;
@@ -69,6 +70,7 @@ export function DraggableComponent({ id, index, onMove, render, type }: Draggabl
             }
 
             // Time to actually perform the action
+            console.log("move")
             onMove(item.id, id);
 
             // Note: we're mutating the monitor item here!

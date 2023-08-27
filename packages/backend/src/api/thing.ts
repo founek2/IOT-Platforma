@@ -9,6 +9,7 @@ import checkControlPerm from 'common/lib/middlewares/device/checkControlPerm';
 import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
+import { ObjectId } from '../utils/objectId';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;
@@ -23,6 +24,7 @@ export default () =>
         middlewares: {
             create: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
             modify: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
+            replace: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
         },
 
         async index(req: Request, res) {
@@ -47,5 +49,22 @@ export default () =>
             (await Actions.deviceSetProperty(deviceId, nodeId, propertyId, value, doc))
                 ? res.sendStatus(204)
                 : res.sendStatus(400);
+        },
+
+        async replace({ params: { deviceId, nodeId }, body }: Request, res) {
+            const { formData } = body;
+            const config = formData.EDIT_THING.config;
+
+            const device = await DeviceModel.findById(deviceId);
+            if (!device) return res.sendStatus(404);
+
+            await DeviceModel.updateOne({
+                _id: ObjectId(deviceId),
+                "things._id": ObjectId(nodeId),
+            }, {
+                "things.$.config": config,
+            })
+
+            res.sendStatus(204)
         },
     });
