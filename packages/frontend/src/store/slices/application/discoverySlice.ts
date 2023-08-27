@@ -1,14 +1,12 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { devicesApi } from '../../../endpoints/devices';
-import { normalizeDevices } from '../../../utils/normalizr';
-import { IDiscovery } from 'common/src/models/interface/discovery';
-import { discoveryApi } from '../../../endpoints/discovery';
+import { IDiscovery } from 'common/src/models/interface/discovery.js';
+import { discoveryApi } from '../../../endpoints/discovery.js';
 
 export type Discovery = IDiscovery & { _id: string };
 
 // Define a type for the slice state
 
-const discoveryAdapter = createEntityAdapter<Discovery>({
+const discoveryAdapter = createEntityAdapter<Discovery, string>({
     // Assume IDs are stored in a field other than `book.id`
     selectId: (device) => device._id,
     // Keep the "all IDs" array sorted based on book titles

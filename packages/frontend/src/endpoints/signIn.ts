@@ -1,7 +1,7 @@
 import { AuthType } from 'common/src/constants';
-import { IUser } from 'common/src/models/interface/userInterface';
-import { buildRedirectUri } from '../utils/redirectUri';
-import { api } from './api';
+import { IUser } from 'common/src/models/interface/userInterface.js';
+import { buildRedirectUri } from '../utils/redirectUri.js';
+import { api } from './api.js';
 
 export type User = Omit<IUser, '_id'> & { _id: string };
 

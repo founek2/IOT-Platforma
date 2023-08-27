@@ -1,6 +1,6 @@
 import * as React from 'react';
-import TextField, { TextFieldProps } from '@mui/material/TextField';
-import AutocompleteMui, { createFilterOptions } from '@mui/material/Autocomplete';
+import { TextField, Autocomplete as AutocompleteMui } from '@mui/material';
+import { createFilterOptions } from '@mui/material/Autocomplete';
 
 const filter = createFilterOptions<{ value: string; label: string }>();
 

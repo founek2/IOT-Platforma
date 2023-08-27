@@ -1,12 +1,12 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { IDevice } from 'common/src/models/interface/device';
-import { devicesApi } from '../../../endpoints/devices';
-import { normalizeDevices } from '../../../utils/normalizr';
+import { IDevice } from 'common/src/models/interface/device.js';
+import { devicesApi } from '../../../endpoints/devices.js';
+import { normalizeDevices } from '../../../utils/normalizr.js';
 
 export type Device = Omit<IDevice, 'things' | '_id'> & { _id: string; things: string[] };
 // Define a type for the slice state
 
-const devicesAdapter = createEntityAdapter<Device>({
+const devicesAdapter = createEntityAdapter<Device, string>({
     // Assume IDs are stored in a field other than `book.id`
     selectId: (device) => device._id,
     // Keep the "all IDs" array sorted based on book titles

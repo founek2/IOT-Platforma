@@ -4,20 +4,32 @@
         "baseUrl": ".",
         "rootDir": "./",
         "outDir": "dist",
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
         "sourceMap": true,
-        "moduleResolution": "node",
         "allowJs": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-
-        "module": "ESNext",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
         "jsx": "react"
         // "allowSyntheticDefaultImports": true,
         // "noFallthroughCasesInSwitch": true,
         // "strict": true
     },
-    "references": [{ "path": "../common/tsconfig.json" }],
-    "include": ["src", "custom.d.ts"],
-    "exclude": ["node_modules"]
+    "references": [
+        {
+            "path": "../common/tsconfig.json"
+        }
+    ],
+    "include": [
+        "src",
+        "custom.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

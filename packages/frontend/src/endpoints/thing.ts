@@ -1,9 +1,9 @@
-import { IThingProperty } from 'common/src/models/interface/thing';
-import { Measurement } from 'common/src/types';
+import { IThingProperty } from 'common/src/models/interface/thing.js';
+import { Measurement } from 'common/src/types.js';
 import { subDays } from 'date-fns';
-import { Device } from '../store/slices/application/devicesSlice';
-import { Thing } from '../store/slices/application/thingsSlice';
-import { api } from './api';
+import { Device } from '../store/slices/application/devicesSlice.js';
+import { Thing } from '../store/slices/application/thingsSlice.js';
+import { api } from './api.js';
 
 interface HistoryResponse {
     docs: Measurement[];

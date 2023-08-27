@@ -1,21 +1,12 @@
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-
-import uiMessages, { UiMessageKey } from 'common/src/localization/uiMessages';
+import { AccountCircle as AccountCircleIcon } from '@mui/icons-material';
+import uiMessages, { UiMessageKey } from 'common/src/localization/uiMessages.js';
 import { RouteMenu } from 'common/src/privileges';
 import React from 'react';
 import { Link, Location, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../hooks';
-import { getCurrentGroups } from '../../selectors/getters';
-import { privileges } from '../../services/privileges';
+import { useAppSelector } from '../../hooks/index.js';
+import { getCurrentGroups } from '../../selectors/getters.js';
+import { privileges } from '../../services/privileges.js';
+import { Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader, SwipeableDrawer } from '@mui/material';
 
 function externalRedirect(path: string) {
     return (e: any) => {

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Dialog } from '../../components/Dialog';
-import { useLazyThingHistoryQuery } from '../../endpoints/thing';
-import { useAppSelector } from '../../hooks';
-import { ThingContext } from '../../hooks/useThing';
-import { useUpdateThingStateSmart } from '../../hooks/useUpdateThingStateSmart';
-import { getThing } from '../../selectors/getters';
-import PropertyRow from '.././room/PropertyRow';
+import { Dialog } from '../../components/Dialog.js';
+import { useLazyThingHistoryQuery } from '../../endpoints/thing.js';
+import { useAppSelector } from '../../hooks/index.js';
+import { ThingContext } from '../../hooks/useThing.js';
+import { useUpdateThingStateSmart } from '../../hooks/useUpdateThingStateSmart.js';
+import { getThing } from '../../selectors/getters.js';
+import PropertyRow from '.././room/PropertyRow.js';
 
 const REFRESH_HISTORY_INTERVAL = 3 * 60 * 100;
 

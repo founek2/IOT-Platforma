@@ -1,5 +1,5 @@
-import { api } from './api';
-import { IDiscovery } from 'common/src/models/interface/discovery';
+import { api } from './api.js';
+import { IDiscovery } from 'common/src/models/interface/discovery.js';
 
 export type Discovery = IDiscovery & { _id: string };
 

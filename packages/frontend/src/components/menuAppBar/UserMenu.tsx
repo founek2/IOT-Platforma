@@ -1,16 +1,11 @@
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import Button from '@mui/material/Button';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
+import { Brightness4 as Brightness4Icon, Brightness7 as Brightness7Icon } from '@mui/icons-material';
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { authorizationActions } from '../../store/slices/application/authorizationActions';
-import { preferencesActions } from '../../store/slices/preferences/setting';
-import { getColorMode, getCurrentUserId, getCurrentUserName } from '../../selectors/getters';
+import { useAppDispatch, useAppSelector } from '../../hooks/index.js';
+import { authorizationActions } from '../../store/slices/application/authorizationActions.js';
+import { preferencesActions } from '../../store/slices/preferences/setting.js';
+import { getColorMode, getCurrentUserId, getCurrentUserName } from '../../selectors/getters.js';
 import { useNavigate } from 'react-router-dom';
+import { Button, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material';
 
 export function UserMenu() {
     const userName = useAppSelector(getCurrentUserName);

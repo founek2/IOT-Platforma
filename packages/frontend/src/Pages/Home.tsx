@@ -1,12 +1,7 @@
-import { Typography } from '@mui/material';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
+import { Box, Typography } from '@mui/material';
 import type { Identifier, XYCoord } from 'dnd-core';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { DraggableProvider } from '../components/Draggable';
-
 type Item = { id: number; text: string };
 const defaultCards = [
     { id: 1, text: 'ahok\nsdakjdak\ndasd' },
@@ -103,7 +98,7 @@ function Dragable({
     });
 
     drag(drop(ref));
-    return <Box ref={ref}>{render(isDragging)}</Box>;
+    return <Box ref={ref}>{render(isDragging)} /</Box>;
 }
 
 // export function HomePage() {

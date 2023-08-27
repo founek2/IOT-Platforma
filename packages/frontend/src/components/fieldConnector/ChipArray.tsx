@@ -1,14 +1,6 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
 import { TextFieldProps } from '@mui/material/TextField';
+import { Box, Chip, FormControl, FormHelperText, List, ListItem, ListItemButton, ListItemText, ListSubheader } from '@mui/material';
 
 export default function ChipArray({
     label,

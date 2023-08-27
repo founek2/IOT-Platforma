@@ -1,18 +1,18 @@
 import type { SxProps, Theme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import fieldDescriptors from 'common/src/fieldDescriptors';
+import fieldDescriptors from 'common/src/fieldDescriptors.js';
 import { logger } from 'common/src/logger';
-import chainHandler from 'common/src/utils/chainHandler';
-import getInPath from 'common/src/utils/getInPath';
-import { getFieldVal, getFormData, getRegisteredField } from 'common/src/utils/getters';
-import { onEnterRun } from 'common/src/utils/onEnter';
+import chainHandler from 'common/src/utils/chainHandler.js';
+import getInPath from 'common/src/utils/getInPath.js';
+import { getFieldVal, getFormData, getRegisteredField } from 'common/src/utils/getters.js';
+import { onEnterRun } from 'common/src/utils/onEnter.js';
 import { isRequired } from 'common/src/validations';
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { formsDataActions as formsActions } from '../store/slices/formDataActions';
-import Autocomplete, { AutocompleteOption } from './fieldConnector/Autocomplete';
-import ChipArray from './fieldConnector/ChipArray';
-import PasswordField from './fieldConnector/PasswordField';
+import { useAppDispatch, useAppSelector } from '../hooks/index.js';
+import { formsDataActions as formsActions } from '../store/slices/formDataActions.js';
+import Autocomplete, { AutocompleteOption } from './fieldConnector/Autocomplete.js';
+import ChipArray from './fieldConnector/ChipArray.js';
+import PasswordField from './fieldConnector/PasswordField.js';
 
 const { registerField, unregisterField, setFormField, validateField, validateForm, updateRegisteredField } =
     formsActions;
@@ -134,7 +134,8 @@ function FieldConnector({
         const required = isRequired(descriptor, formData, deepPath); // check when condition
         const finalLabel = label ? label : descriptor.label;
 
-        const Component = typeof component === 'string' ? Components[component] : component;
+        const ComponentRaw = typeof component === 'string' ? Components[component] : component;
+        const Component = ComponentRaw as any;
 
         let anotherProps = {};
         if (component === 'Autocomplete' || component === 'ChipArray') {

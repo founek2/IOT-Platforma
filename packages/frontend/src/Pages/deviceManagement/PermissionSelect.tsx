@@ -1,17 +1,8 @@
-import ListSubheader from '@mui/material/ListSubheader';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import { IUser } from 'common/src/models/interface/userInterface';
+import { IUser } from 'common/src/models/interface/userInterface.js';
 import React, { useState } from 'react';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SettingsRemoteIcon from '@mui/icons-material/SettingsRemote';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import { Device } from '../../store/slices/application/devicesSlice';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import type { SxProps, Theme } from '@mui/material';
+import { Device } from '../../store/slices/application/devicesSlice.js';
+import { Settings as SettingsIcon, SettingsRemote as SettingsRemoteIcon, MenuBook as MenuBookIcon } from '@mui/icons-material';
+import { List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Menu, MenuItem, type SxProps, type Theme } from '@mui/material';
 
 function getIcon(userId: IUser['_id'], permissions: Device['permissions']) {
     const isRead = permissions.read.some((id) => id === userId);

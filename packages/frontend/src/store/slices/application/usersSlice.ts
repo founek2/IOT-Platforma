@@ -1,12 +1,9 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { IDevice } from 'common/src/models/interface/device';
-import { devicesApi } from '../../../endpoints/devices';
-import { User } from '../../../endpoints/signIn';
-import { usersApi } from '../../../endpoints/users';
-import { normalizeDevices } from '../../../utils/normalizr';
+import { User } from '../../../endpoints/signIn.js';
+import { usersApi } from '../../../endpoints/users.js';
 
 
-const usersAdapter = createEntityAdapter<User>({
+const usersAdapter = createEntityAdapter<User, string>({
     // Assume IDs are stored in a field other than `book.id`
     selectId: (user) => user._id,
 });

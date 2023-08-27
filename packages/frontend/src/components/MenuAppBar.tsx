@@ -1,20 +1,14 @@
-import MenuIcon from '@mui/icons-material/Menu';
-import useTheme from '@mui/material/styles/useTheme';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../hooks';
-import { isLoggedIn } from '../selectors/getters';
-import LoginDialog from './LoginDialog';
-import { SideMenu } from './menuAppBar/SideMenu';
-import { UserMenu } from './menuAppBar/UserMenu';
-import { useAppBarContext } from '../hooks/useAppBarContext';
+import { useAppSelector } from '../hooks/index.js';
+import { isLoggedIn } from '../selectors/getters.js';
+import LoginDialog from './LoginDialog.js';
+import { SideMenu } from './menuAppBar/SideMenu.js';
+import { UserMenu } from './menuAppBar/UserMenu.js';
+import { useAppBarContext } from '../hooks/useAppBarContext.js';
+import { AppBar, Box, Button, IconButton, Toolbar, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Menu as MenuIcon } from "@mui/icons-material";
+
 
 export function MenuAppBar() {
     const theme = useTheme();

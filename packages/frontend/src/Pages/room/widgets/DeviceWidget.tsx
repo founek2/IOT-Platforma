@@ -1,12 +1,10 @@
 import type { SxProps, Theme } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-
 import React from 'react';
-import { useAppSelector } from '../../../hooks/index';
-import { getDevice, getThing } from '../../../selectors/getters';
+import { useAppSelector } from '../../../hooks/index.js';
+import { getDevice } from '../../../selectors/getters.js';
 import { Link } from 'react-router-dom';
-import Circle from '../../../components/OnlineCircle';
+import Circle from '../../../components/OnlineCircle.js';
+import { Paper, Typography } from '@mui/material';
 
 interface ThingWidgetProps {
     id: string;

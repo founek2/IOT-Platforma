@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import IconButton from '@mui/material/IconButton';
-import Input from '@mui/material/Input';
-import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import { TextFieldProps } from '@mui/material/TextField';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import useTheme from '@mui/material/styles/useTheme';
+import { FormControl, FormHelperText, IconButton, Input, InputAdornment, InputLabel, useMediaQuery, useTheme } from '@mui/material';
 
 function PasswordField({
     label,
@@ -45,7 +37,7 @@ function PasswordField({
                             onMouseDown={isWide ? () => setShowPsswd(true) : undefined}
                             onClick={isWide ? undefined : () => setShowPsswd(!showPsswd)}
                         >
-                            {showPsswd ? <VisibilityOff /> : <Visibility />}
+                            {showPsswd ? <VisibilityOffIcon /> : <VisibilityIcon />}
                         </IconButton>
                     </InputAdornment>
                 }

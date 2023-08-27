@@ -1,11 +1,9 @@
 import React from "react"
-import Card from '@mui/material/Card';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
+import { Card, CircularProgress, Grid } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-import DataList from '../components/DataList';
-import { User } from '../endpoints/signIn';
-import { useUsersQuery } from '../endpoints/users';
+import DataList from '../components/DataList.js';
+import { User } from '../endpoints/signIn.js';
+import { useUsersQuery } from '../endpoints/users.js';
 
 function extractHumanText(user: User) {
     let text = user.info.userName;

@@ -1,13 +1,6 @@
 import React from 'react';
-import DialogMui from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import CloseIcon from '@mui/icons-material/Close';
-import type { SxProps, Theme } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
+import { useMediaQuery, type SxProps, type Theme, DialogTitle, IconButton, DialogContent, DialogActions, Button, Dialog as DialogMui } from '@mui/material';
 
 export interface DialogProps {
     open: boolean;

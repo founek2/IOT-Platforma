@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export function useLongPress(
     touchCallback?: (e: React.TouchEvent<HTMLDivElement>) => void,

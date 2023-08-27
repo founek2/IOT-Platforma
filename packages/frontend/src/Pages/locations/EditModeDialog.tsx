@@ -1,12 +1,7 @@
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import React from 'react';
-import HomeIcon from '@mui/icons-material/Home';
-import ChairIcon from '@mui/icons-material/Chair';
+import { Home as HomeIcon, Chair as ChairIcon } from '@mui/icons-material';
+import { Dialog, DialogTitle, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+
 
 export interface EditModeDialogProps {
     open: boolean;

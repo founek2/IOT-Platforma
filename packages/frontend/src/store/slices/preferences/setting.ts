@@ -1,4 +1,4 @@
-import { createSlice, EntityState, PayloadAction, createEntityAdapter } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const detectedColorMode =
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';

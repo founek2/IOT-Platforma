@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
-import ThemeProvider from '@mui/material/styles/ThemeProvider';
-import createTheme from '@mui/material/styles/createTheme';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import { orange } from '@mui/material/colors';
-import { useAppSelector } from '../hooks';
-import { getColorMode } from '../selectors/getters';
+import { useAppSelector } from '../hooks/index.js';
+import { getColorMode } from '../selectors/getters.js';
+import { createTheme } from '@mui/material';
 
 export const LIGHT_BACKGROUND = "#fafafa"
 export const DARK_BACKGROUND = "#4c4c4c"

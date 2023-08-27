@@ -1,30 +1,30 @@
-import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
-import CloudIcon from '@mui/icons-material/Cloud';
-import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
-import PeopleIcon from '@mui/icons-material/People';
+import AllInclusiveIcon from '@mui/icons-material/AllInclusive.js';
+import CloudIcon from '@mui/icons-material/Cloud.js';
+import DevicesOtherIcon from '@mui/icons-material/DevicesOther.js';
+import PeopleIcon from '@mui/icons-material/People.js';
 import { AllowedRoutes, PrivilegesContainer, Route, RouteMenu } from 'common/src/privileges';
 import { lazy } from 'react';
 
-import { allowedGroups } from 'common/src/constants/privileges';
-import { append } from '../utils/ramda';
+import { allowedGroups } from 'common/src/constants/privileges.js';
+import { append } from '../utils/ramda.js';
 
-const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement'));
+const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement.js'));
 
 const DeviceManagementLazy = lazy(
-    () => import(/* webpackChunkName: 'DeviceManagement' */ '../Pages/DeviceManagementRoom')
+    () => import(/* webpackChunkName: 'DeviceManagement' */ '../Pages/DeviceManagementRoom.js')
 );
 
-const LocationsLazy = lazy(() => import(/* webpackChunkName: 'Locations' */ '../Pages/Locations'));
+const LocationsLazy = lazy(() => import(/* webpackChunkName: 'Locations' */ '../Pages/Locations.js'));
 
 const LocationsManagementLazy = lazy(
-    () => import(/* webpackChunkName: 'LocationsManagement' */ '../Pages/LocationsManagement')
+    () => import(/* webpackChunkName: 'LocationsManagement' */ '../Pages/LocationsManagement.js')
 );
 
-const RoomLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room'));
+const RoomLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room.js'));
 
 // const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'EditNotifyForm' */ '../Pages/EditNotifyForm'));
 
-const ProfileLazy = lazy(() => import(/* webpackChunkName: 'Profile' */ '../Pages/Profile'));
+const ProfileLazy = lazy(() => import(/* webpackChunkName: 'Profile' */ '../Pages/Profile.js'));
 
 const userRoutes: Route[] = [
     {

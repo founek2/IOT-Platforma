@@ -1,7 +1,6 @@
-import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
 import React, { useEffect, useState } from 'react';
-import * as serviceWorker from '../serviceWorkerRegistration';
+import * as serviceWorker from '../serviceWorkerRegistration.js';
+import { Button, Snackbar } from '@mui/material';
 
 let place_holder = () => console.log('nothing to install');
 export function RegisterServiceWorker() {

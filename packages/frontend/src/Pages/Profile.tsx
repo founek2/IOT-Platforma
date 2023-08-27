@@ -1,17 +1,10 @@
+import React from 'react';
 import { Box, Breadcrumbs, Grid, Typography } from '@mui/material';
-import { IUser } from 'common/src/models/interface/userInterface';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, Route, PathRouteProps, Routes, useLocation } from 'react-router-dom';
-import Account from './profile/Account';
-import AccessTokens from './profile/AcessTokens';
-import Security from './profile/Security';
-import { useAccessTokensQuery } from "../endpoints/accessTokens";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AccessibilityIcon from '@mui/icons-material/Accessibility';
-import SecurityIcon from '@mui/icons-material/Security';
-import { useAppSelector } from '../hooks';
-import { getCurrentUserId } from '../selectors/getters';
+import { Link, Route, Routes } from 'react-router-dom';
+import Account from './profile/Account.js';
+import AccessTokens from './profile/AcessTokens.js';
+import Security from './profile/Security.js';
+import { AccountCircle as AccountCircleIcon, Accessibility as AccessibilityIcon, Security as SecurityIcon } from '@mui/icons-material';
 
 // const useStyles = makeStyles((theme) => ({
 //     link: {

@@ -1,22 +1,14 @@
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import { AuthType } from 'common/src/constants';
-import { getFieldVal } from 'common/src/utils/getters';
+import { getFieldVal } from 'common/src/utils/getters.js';
 import * as React from 'react';
-import { useAppSelector } from '../hooks';
-import { useForm } from '../hooks/useForm';
-import { useGetAuthProvidersQuery, useLazyGetAuthTypesQuery, useSignInMutation } from '../endpoints/signIn';
-import { head } from '../utils/ramda';
-import FieldConnector from './FieldConnector';
-import AuthProviderButtons from './loginDialog/AuthProviderButtons';
-import useTheme from '@mui/material/styles/useTheme';
+import { useAppSelector } from '../hooks/index.js';
+import { useForm } from '../hooks/useForm.js';
+import { useGetAuthProvidersQuery, useLazyGetAuthTypesQuery, useSignInMutation } from '../endpoints/signIn.js';
+import { head } from '../utils/ramda.js';
+import FieldConnector from './FieldConnector.js';
+import AuthProviderButtons from './loginDialog/AuthProviderButtons.js';
 import { useNavigate } from 'react-router-dom';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material';
 
 interface LoginForm {
     userName: string;

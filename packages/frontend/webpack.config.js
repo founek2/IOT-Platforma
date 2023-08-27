@@ -1,23 +1,28 @@
+import path from "path"
+import webpack from "webpack";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import WorkboxPlugin from 'workbox-webpack-plugin';
+import CopyPlugin from "copy-webpack-plugin"
+import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin"
+import ReactRefreshTypeScript from "react-refresh-typescript";
+import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
+import PnpWebpackPlugin from "pnp-webpack-plugin"
+import * as url from 'url';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
 const isEnvProduction = process.env.NODE_ENV === 'production';
 const sourceMapEnv = process.env.SOURCE_MAP;
-
-const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const ReactRefreshTypeScript = require('react-refresh-typescript');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
 
 const proxyTarget =
     process.env.PROXY === 'dev'
         ? 'https://dev.iotdomu.cz'
         : process.env.PROXY === 'prod'
-        ? 'https://iotdomu.cz'
-        : 'http://localhost:8085';
+            ? 'https://iotdomu.cz'
+            : 'http://localhost:8085';
 
 console.log('Proxy target: ', proxyTarget, process.env.NODE_ENV);
 const config = {
@@ -33,6 +38,9 @@ const config = {
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        extensionAlias: {
+            '.js': ['.ts', '.tsx', '.js', "jsx"]
+        },
         plugins: [
             PnpWebpackPlugin,
         ],
@@ -47,9 +55,10 @@ const config = {
             assert: false,
         },
     },
+    // TODO this might require some fix
     resolveLoader: {
         plugins: [
-          PnpWebpackPlugin.moduleLoader(module),
+            PnpWebpackPlugin.moduleLoader(path.join(__dirname, "webpack.config.js")),
         ],
     },
     module: {
@@ -82,16 +91,15 @@ const config = {
         ],
     },
     devtool: sourceMapEnv ? sourceMapEnv : isEnvProduction ? undefined : 'inline-source-map',
-    // devtool: 'source-map',
     plugins: [
         !isEnvProduction && new ReactRefreshWebpackPlugin(),
         !isEnvProduction &&
-            new ForkTsCheckerWebpackPlugin({
-                typescript: {
-                    mode: 'write-references',
-                    build: true,
-                },
-            }),
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                mode: 'write-references',
+                build: true,
+            },
+        }),
         new CopyPlugin({
             patterns: [
                 { from: path.join(__dirname, 'public/assets'), to: 'assets' },
@@ -124,12 +132,12 @@ const config = {
         }),
         !isEnvProduction && new webpack.HotModuleReplacementPlugin(),
         isEnvProduction &&
-            new WorkboxPlugin.InjectManifest({
-                swSrc: './src/service-worker.ts',
-                swDest: 'service-worker.js',
-                maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
-                exclude: [/\.map$/, /^manifest.*\.js$/, /\/dist\//],
-            }),
+        new WorkboxPlugin.InjectManifest({
+            swSrc: './src/service-worker.ts',
+            swDest: 'service-worker.js',
+            maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
+            exclude: [/\.map$/, /^manifest.*\.js$/, /\/dist\//],
+        }),
     ].filter(Boolean),
     devServer: {
         proxy: {
@@ -191,4 +199,4 @@ const config = {
     },
 };
 
-module.exports = config;
+export default config;

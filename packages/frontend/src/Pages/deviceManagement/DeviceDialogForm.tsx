@@ -1,21 +1,16 @@
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import { Dialog as MyDialog } from '../../components/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import Grid from '@mui/material/Grid';
-import { getFieldVal } from 'common/src/utils/getters';
+import { Dialog as MyDialog } from '../../components/Dialog.js';
+import { getFieldVal } from 'common/src/utils/getters.js';
 import React, { useEffect, useState } from 'react';
-import FieldConnector from '../../components/FieldConnector';
-import { useAppSelector } from '../../hooks';
-import { useForm } from '../../hooks/useForm';
-import { locationsSelector } from '../../selectors/locationsSelector';
-import PermissionSelect from './PermissionSelect';
-import { Device } from '../../store/slices/application/devicesSlice';
-import { useUserNamesQuery } from '../../endpoints/users';
-import { EditDeviceFormData, useDeleteDeviceMutation } from '../../endpoints/devices';
-import { EditDeviceFields } from './EditDeviceFields';
-import { DialogContentText } from '@mui/material';
+import FieldConnector from '../../components/FieldConnector.js';
+import { useAppSelector } from '../../hooks/index.js';
+import { useForm } from '../../hooks/useForm.js';
+import { locationsSelector } from '../../selectors/locationsSelector.js';
+import PermissionSelect from './PermissionSelect.js';
+import { Device } from '../../store/slices/application/devicesSlice.js';
+import { useUserNamesQuery } from '../../endpoints/users.js';
+import { EditDeviceFormData, useDeleteDeviceMutation } from '../../endpoints/devices.js';
+import { EditDeviceFields } from './EditDeviceFields.js';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Grid } from '@mui/material';
 
 const formName = 'EDIT_DEVICE';
 interface DeviceFormProps {

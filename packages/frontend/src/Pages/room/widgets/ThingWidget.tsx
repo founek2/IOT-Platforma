@@ -1,19 +1,16 @@
 import type { SxProps, Theme } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import React from 'react';
-import { useAppSelector } from '../../../hooks/index';
-import { getDevice, getThing } from '../../../selectors/getters';
+import { useAppSelector } from '../../../hooks/index.js';
+import { getDevice, getThing } from '../../../selectors/getters.js';
 import { Link } from 'react-router-dom';
-import { ThingContext } from '../../../hooks/useThing';
-import { ComponentType, PropertyDataType } from 'common/src/models/interface/thing';
-import { Thing } from '../../../store/slices/application/thingsSlice';
-import { PropertyRowPlain } from '../PropertyRow';
-import Box from '@mui/material/Box';
-import { useUpdateThingStateMutation } from '../../../endpoints/thing';
-import Circle from '../../../components/OnlineCircle';
-import { DeviceStatus } from 'common/src/models/interface/device';
-import { useUpdateThingStateSmart } from '../../../hooks/useUpdateThingStateSmart';
+import { ThingContext } from '../../../hooks/useThing.js';
+import { ComponentType, PropertyDataType } from 'common/src/models/interface/thing.js';
+import { Thing } from '../../../store/slices/application/thingsSlice.js';
+import { PropertyRowPlain } from '../PropertyRow.js';
+import Circle from '../../../components/OnlineCircle.js';
+import { DeviceStatus } from 'common/src/models/interface/device.js';
+import { useUpdateThingStateSmart } from '../../../hooks/useUpdateThingStateSmart.js';
+import { Box, Paper, Typography } from '@mui/material';
 
 function getApropriateProperty(config: Thing['config']) {
     if (config.componentType === ComponentType.activator) {

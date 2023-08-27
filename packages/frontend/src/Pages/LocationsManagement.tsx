@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAppSelector } from '../hooks';
-import { useUpdateDeviceMutation } from '../endpoints/devices';
-import Locations from './Locations';
-import { getAllDevices, getDevice } from '../selectors/getters';
-import { TextField } from '@mui/material';
-import { DeviceWidget } from './room/widgets/DeviceWidget';
-import { Device } from '../store/slices/application/devicesSlice';
-import DiscoverySection from './deviceManagement/DiscoverySection';
-import { DeviceDialogForm } from './deviceManagement/DeviceDialogForm';
-import { not } from '../utils/ramda';
+import { useAppSelector } from '../hooks/index.js';
+import { useUpdateDeviceMutation } from '../endpoints/devices.js';
+import Locations from './Locations.js';
+import { getAllDevices, getDevice } from '../selectors/getters.js';
+import { Box, Grid, TextField } from '@mui/material';
+import { DeviceWidget } from './room/widgets/DeviceWidget.js';
+import { Device } from '../store/slices/application/devicesSlice.js';
+import DiscoverySection from './deviceManagement/DiscoverySection.js';
+import { DeviceDialogForm } from './deviceManagement/DeviceDialogForm.js';
+import { not } from '../utils/ramda.js';
 
 function searchByText(text: string) {
     const search = text.toLowerCase();

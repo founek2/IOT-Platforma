@@ -1,33 +1,26 @@
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Slider from '@mui/material/Slider';
-import Switch from '@mui/material/Switch';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import type { SxProps } from '@mui/material';
+import { MenuItem, Slider, Switch, Select, type SxProps, TextField, Typography, Box } from '@mui/material';
 import {
     IThingProperty,
     IThingPropertyEnum,
     IThingPropertyNumeric,
     PropertyDataType,
-} from 'common/src/models/interface/thing';
-import { isNumericDataType } from 'common/src/utils/isNumericDataType';
+} from 'common/src/models/interface/thing.js';
+import { isNumericDataType } from 'common/src/utils/isNumericDataType.js';
 import { format } from 'date-fns';
-import UpdatedBefore from '../../components/UpdatedBefore';
-import PlotifyBoolean from '../../components/PlotifyBoolean';
-import PlotifyNumeric from '../../components/PlotifyNumeric';
-import { convertBoolHistoryToGraphData, convertNumericHistoryToGraphData } from '../../utils/convertHistoryToGraphData';
+import UpdatedBefore from '../../components/UpdatedBefore.js';
+import PlotifyBoolean from '../../components/PlotifyBoolean.js';
+import PlotifyNumeric from '../../components/PlotifyNumeric.js';
+import { convertBoolHistoryToGraphData, convertNumericHistoryToGraphData } from '../../utils/convertHistoryToGraphData.js';
 import React, { useCallback, useState } from 'react';
-import { ActivatorButton } from '../../components/ActivatorButton';
-import { CopyUrlContext } from './helpers/CopyUrl';
-import { toogleSwitchVal } from './helpers/toogleSwitchVal';
-import { onEnterRun } from 'common/src/utils/onEnter';
-import { SensorIcons } from '../../constants/sensorIcons';
-import { Measurement } from 'common/src/types';
+import { ActivatorButton } from '../../components/ActivatorButton.js';
+import { CopyUrlContext } from './helpers/CopyUrl.js';
+import { toogleSwitchVal } from './helpers/toogleSwitchVal.js';
+import { onEnterRun } from 'common/src/utils/onEnter.js';
+import { SensorIcons } from '../../constants/sensorIcons.js';
+import { Measurement } from 'common/src/types.js';
 import type { Theme } from '@mui/material';
-import ColorPicker from '../../components/ColorPicker';
-import { PropertyState } from '../../store/slices/application/thingsSlice';
+import ColorPicker from '../../components/ColorPicker.js';
+import { PropertyState } from '../../store/slices/application/thingsSlice.js';
 
 interface PropertyRowComponentProps {
     value: string | number | boolean | undefined;

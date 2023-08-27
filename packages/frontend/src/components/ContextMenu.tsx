@@ -1,4 +1,4 @@
-import Menu from '@mui/material/Menu';
+import { Menu } from '@mui/material';
 import * as React from 'react';
 
 interface ContextMenuProps {
@@ -24,26 +24,26 @@ export function ContextMenu({ renderMenuItems, render, disabled }: ContextMenuPr
             setContextMenu(
                 contextMenu === null
                     ? {
-                          mouseX: eventTouch.touches[0].clientX + 2,
-                          mouseY: eventTouch.touches[0].clientY - 6,
-                      }
+                        mouseX: eventTouch.touches[0].clientX + 2,
+                        mouseY: eventTouch.touches[0].clientY - 6,
+                    }
                     : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
-                      // Other native context menus might behave different.
-                      // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
-                      null
+                    // Other native context menus might behave different.
+                    // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+                    null
             );
         } else {
             event = event as React.MouseEvent;
             setContextMenu(
                 contextMenu === null
                     ? {
-                          mouseX: event.clientX + 2,
-                          mouseY: event.clientY - 6,
-                      }
+                        mouseX: event.clientX + 2,
+                        mouseY: event.clientY - 6,
+                    }
                     : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
-                      // Other native context menus might behave different.
-                      // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
-                      null
+                    // Other native context menus might behave different.
+                    // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+                    null
             );
         }
     };

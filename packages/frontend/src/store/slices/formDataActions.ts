@@ -1,12 +1,12 @@
-import ErrorMessages from 'common/src/localization/error';
+import ErrorMessages from 'common/src/localization/error.js';
 import { logger } from 'common/src/logger';
-import { getFieldVal, getFormData, getFormsData } from 'common/src/utils/getters';
+import { getFieldVal, getFormData, getFormsData } from 'common/src/utils/getters.js';
 import { checkValid, validateField, validateForm, validateRegisteredFields } from 'common/src/validations';
-import { AppThunk } from '../../types';
-import { formsDataReducerActions } from './formDataSlice';
-import { notificationActions } from './notificationSlice';
-import fieldDescriptors from 'common/src/fieldDescriptors';
-import { FormData } from 'common/src/validations/types';
+import { AppThunk } from '../../types.js';
+import { formsDataReducerActions } from './formDataSlice.js';
+import { notificationActions } from './notificationSlice.js';
+import fieldDescriptors from 'common/src/fieldDescriptors.js';
+import { FormData } from 'common/src/validations/types.js';
 
 export const formsDataActions = {
     ...formsDataReducerActions,

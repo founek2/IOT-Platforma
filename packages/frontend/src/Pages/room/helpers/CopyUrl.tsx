@@ -1,14 +1,13 @@
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import copy from 'clipboard-copy';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import { logger } from 'common/src/logger';
-import { IThingProperty } from 'common/src/models/interface/thing';
+import { IThingProperty } from 'common/src/models/interface/thing.js';
 import React from 'react';
-import { useAppSelector } from '../../../hooks';
-import { useLongPress } from '../../../hooks/useLongPress';
-import { useThing } from '../../../hooks/useThing';
-import { getDevice } from '../../../selectors/getters';
+import { useAppSelector } from '../../../hooks/index.js';
+import { useLongPress } from '../../../hooks/useLongPress.js';
+import { useThing } from '../../../hooks/useThing.js';
+import { getDevice } from '../../../selectors/getters.js';
+import { MenuItem, Menu } from '@mui/material';
 
 const initialState = {
     mouseX: null,

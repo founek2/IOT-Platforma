@@ -1,6 +1,6 @@
-import { api } from '../../../endpoints/api';
-import { AppThunk } from '../../../types';
-import { authorizationReducerActions } from './authorizationSlice';
+import { api } from '../../../endpoints/api.js';
+import { AppThunk } from '../../../types.js';
+import { authorizationReducerActions } from './authorizationSlice.js';
 
 const ACTION_RESET_STORE = 'store/reset';
 

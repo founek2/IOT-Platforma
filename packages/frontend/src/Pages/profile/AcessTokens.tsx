@@ -1,20 +1,36 @@
-import { IAccessToken, IUser } from 'common/src/models/interface/userInterface';
-import { assoc, prop } from 'ramda';
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import EditAccessToken from './accessTokens/EditAccessToken';
-import { useAppSelector } from '../../hooks';
-import { getCurrentUser } from '../../selectors/getters';
-import { Box, Button, Card, CardContent, DialogContentText, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery } from '@mui/material';
-import { AccessToken, NewAccessTokenData, useAccessTokensQuery, useCreateAccessTokenMutation, useDeleteAccessTokenMutation, useUpdateAccessTokenMutation } from '../../endpoints/accessTokens';
-import { useForm } from '../../hooks/useForm';
-import FieldConnector from '../../components/FieldConnector';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Dialog } from '../../components/Dialog';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import EditAccessToken from './accessTokens/EditAccessToken.js';
+import { useAppSelector } from '../../hooks/index.js';
+import { getCurrentUser } from '../../selectors/getters.js';
+import {
+    Box,
+    Button,
+    DialogContentText,
+    IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material';
+import {
+    NewAccessTokenData,
+    useAccessTokensQuery,
+    useCreateAccessTokenMutation,
+    useDeleteAccessTokenMutation,
+    useUpdateAccessTokenMutation,
+} from '../../endpoints/accessTokens.js';
+import { useForm } from '../../hooks/useForm.js';
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Dialog } from '../../components/Dialog.js';
 import { logger } from 'common/src/logger';
-import useTheme from '@mui/material/styles/useTheme';
 
 enum OpenDialog {
     Delete,

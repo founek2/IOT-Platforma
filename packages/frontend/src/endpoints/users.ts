@@ -1,6 +1,5 @@
-import { IDevice } from 'common/src/models/interface/device';
-import { api } from './api';
-import { SignInResponse, User } from './signIn';
+import { api } from './api.js';
+import { SignInResponse, User } from './signIn.js';
 
 export interface RegisterUserForm {
     info: {

@@ -1,11 +1,9 @@
-import Paper from '@mui/material/Paper';
 import type { SxProps, Theme } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/index';
-import { getDevice } from '../../selectors/getters';
+import { useAppSelector } from '../../hooks/index.js';
+import { getDevice } from '../../selectors/getters.js';
+import { Paper, Typography } from '@mui/material';
 
 interface ThingWidgetProps {
     id: string;

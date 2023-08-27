@@ -22,8 +22,8 @@ import {
 } from '@mui/material/colors';
 // import { HuePicker, TwitterPicker } from 'react-color';
 import { RgbColorPicker } from 'react-colorful';
-import Paper from '@mui/material/Paper';
-import { Dialog } from './Dialog';
+import { Dialog } from './Dialog.js';
+import { Paper } from '@mui/material';
 
 const COLORS = [
     '#FFFFFF',
@@ -75,7 +75,7 @@ function ColorPicker({ value, disabled, onChange }: SwitchMyProps) {
             try {
                 const [r, g, b] = value.split(',').map((v) => parseInt(v));
                 setPickedColor({ r, g, b });
-            } catch (err) {}
+            } catch (err) { }
         }
     }, [setPickedColor, value]);
 

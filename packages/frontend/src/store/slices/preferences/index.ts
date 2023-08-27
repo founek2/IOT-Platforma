@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import devices from './deviceSlice';
-import things from './thingSlice';
-import setting from './setting';
-import locations from './locationSlice';
+import devices from './deviceSlice.js';
+import things from './thingSlice.js';
+import setting from './setting.js';
+import locations from './locationSlice.js';
 
 export default combineReducers({
     devices,

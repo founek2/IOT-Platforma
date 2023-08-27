@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { signInApi, User } from '../../../endpoints/signIn';
-import { usersApi } from '../../../endpoints/users';
+import { signInApi, User } from '../../../endpoints/signIn.js';
+import { usersApi } from '../../../endpoints/users.js';
 
 export interface AuthorizationState {
     loggedIn: boolean;
@@ -55,7 +55,7 @@ export const authorizationSlice = createSlice({
             state.currentUser = payload.user;
         });
         builder.addMatcher(usersApi.endpoints.users.matchFulfilled, (state, { payload }) => {
-            const currentUser = payload.find(user => user._id === state.currentUser?._id)
+            const currentUser = payload.find((user: User) => user._id === state.currentUser?._id)
             if (currentUser) {
                 state.currentUser = currentUser
             }

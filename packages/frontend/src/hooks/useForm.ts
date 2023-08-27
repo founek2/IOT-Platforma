@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAppDispatch } from '.';
-import { formsDataActions } from '../store/slices/formDataActions';
-import { Paths } from '../types';
+import { useAppDispatch } from './index.js';
+import { formsDataActions } from '../store/slices/formDataActions.js';
+import { Paths } from '../types.js';
 
 export function useForm<T = FormData>(formName: string) {
     const dispatch = useAppDispatch();

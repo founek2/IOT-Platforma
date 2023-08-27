@@ -1,11 +1,9 @@
-import { DeviceStatus, IDeviceStatus } from 'common/src/models/interface/device';
+import { DeviceStatus, IDeviceStatus } from 'common/src/models/interface/device.js';
 import React, { useState } from 'react';
-import getCircleColor, { CircleColors, getCircleTooltipText } from '../utils/getCircleColor';
-import { format } from '../utils/date-fns';
+import getCircleColor, { CircleColors, getCircleTooltipText } from '../utils/getCircleColor.js';
+import { format } from '../utils/date-fns.js';
 import { grey } from '@mui/material/colors';
-import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
-import type { SxProps, Theme } from '@mui/material';
+import { Box, Tooltip, type SxProps, type Theme } from '@mui/material';
 
 const colors = {
     green: 'initial',

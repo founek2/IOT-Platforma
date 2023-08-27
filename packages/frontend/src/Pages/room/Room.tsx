@@ -1,21 +1,19 @@
-import DoneIcon from '@mui/icons-material/Done';
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Draggable, DraggableProvider } from '../../components/Draggable';
-import { useAppDispatch, useAppSelector } from '../../hooks/index';
-import { useAppBarContext } from '../../hooks/useAppBarContext';
-import { getRoomLocation } from '../../selectors/getters';
-import { thingPreferencesReducerActions } from '../../store/slices/preferences/thingSlice';
-import { byPreferences } from '../../utils/sort';
-import { LocationTypography } from '../../components/LocationTypography';
-import { ThingWidget } from './widgets/ThingWidget';
-import { Dictionary } from '@reduxjs/toolkit';
-import { DeviceWidget } from './widgets/DeviceWidget';
-import { devicePreferencesReducerActions } from '../../store/slices/preferences/deviceSlice';
+import { Draggable, DraggableProvider } from '../../components/Draggable.js';
+import { useAppDispatch, useAppSelector } from '../../hooks/index.js';
+import { useAppBarContext } from '../../hooks/useAppBarContext.js';
+import { getRoomLocation } from '../../selectors/getters.js';
+import { thingPreferencesReducerActions } from '../../store/slices/preferences/thingSlice.js';
+import { byPreferences } from '../../utils/sort.js';
+import { LocationTypography } from '../../components/LocationTypography.js';
+import { ThingWidget } from './widgets/ThingWidget.js';
+import { DeviceWidget } from './widgets/DeviceWidget.js';
+import { devicePreferencesReducerActions } from '../../store/slices/preferences/deviceSlice.js';
+import { Box, Grid, IconButton } from '@mui/material';
+import { Done as DoneIcon } from '@mui/icons-material';
+import { Dictionary } from 'ramda';
 
 interface RoomContentProps {
     thingIDs: string[];

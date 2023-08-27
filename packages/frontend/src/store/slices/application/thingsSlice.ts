@@ -1,8 +1,8 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IThing } from 'common/src/models/interface/thing';
-import { devicesApi } from '../../../endpoints/devices';
-import { thingsApi } from '../../../endpoints/thing';
-import { normalizeDevices } from '../../../utils/normalizr';
+import { IThing } from 'common/src/models/interface/thing.js';
+import { devicesApi } from '../../../endpoints/devices.js';
+import { thingsApi } from '../../../endpoints/thing.js';
+import { normalizeDevices } from '../../../utils/normalizr.js';
 
 export interface PropertyState {
     value?: string | number | boolean;
@@ -15,7 +15,7 @@ export type Thing = Omit<IThing, '_id' | 'state'> & {
     state?: Record<string, PropertyState | undefined>;
 };
 
-const thingsAdapter = createEntityAdapter<Thing>({
+const thingsAdapter = createEntityAdapter<Thing, string>({
     selectId: (thing) => thing._id,
     sortComparer: (a, b) => a.config.name.localeCompare(b.config.name),
 });

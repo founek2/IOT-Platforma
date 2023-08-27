@@ -1,11 +1,11 @@
 import { ActionFromReducersMapObject, combineReducers, Reducer, StateFromReducersMapObject } from '@reduxjs/toolkit';
-import { api } from '../../endpoints/api';
-import application from './application';
-import formsData from './formDataSlice';
-import notifications from './notificationSlice';
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import { api } from '../../endpoints/api.js';
+import application from './application/index.js';
+import formsData from './formDataSlice.js';
+import notifications from './notificationSlice.js';
+import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-import preferences from './preferences';
+import preferences from './preferences/index.js';
 
 const reducers = {
     [api.reducerPath]: api.reducer,

@@ -1,4 +1,4 @@
-import { Permission } from "common/src/models/interface/userInterface";
+import { Permission } from "common/src/models/interface/userInterface.js";
 
 export const TokenPermissions = [{
     label: "čtení",

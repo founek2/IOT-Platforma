@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { PropertyState, Thing, thingsReducerActions } from '../store/slices/application/thingsSlice';
-import { useLazyDevicesQuery } from '../endpoints/devices';
-import { Device, devicesReducerActions } from '../store/slices/application/devicesSlice';
+import { useAppDispatch, useAppSelector } from '../hooks/index.js';
+import { PropertyState, Thing, thingsReducerActions } from '../store/slices/application/thingsSlice.js';
+import { useLazyDevicesQuery } from '../endpoints/devices.js';
+import { Device, devicesReducerActions } from '../store/slices/application/devicesSlice.js';
 import { io, Socket } from 'socket.io-client';
-import { Discovery, discoveryReducerActions } from '../store/slices/application/discoverySlice';
-import { getAccessToken } from '../selectors/getters';
+import { Discovery, discoveryReducerActions } from '../store/slices/application/discoverySlice.js';
+import { getAccessToken } from '../selectors/getters.js';
 
 export type SocketUpdateThingState = {
     _id: Device['_id'];
