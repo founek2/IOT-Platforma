@@ -9,7 +9,7 @@ import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { Actions } from '../services/actionsService';
 import { ObjectId } from '../utils/objectId';
-import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm';
+import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;
