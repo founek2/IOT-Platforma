@@ -2,9 +2,7 @@ import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { DeviceModel } from 'common/lib/models/deviceModel';
 import { RequestWithAuth } from 'common/lib/types';
-import { getThing } from 'common/lib/utils/getThing';
-import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
-import checkControlPerm from 'common/src/middlewares/device/checkControlPerm';
+import checkControlPerm from 'common/lib/middlewares/device/checkControlPerm';
 import { ObjectId } from '../utils/objectId';
 
 type Params = { deviceId: string };
