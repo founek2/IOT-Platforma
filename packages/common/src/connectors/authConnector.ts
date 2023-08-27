@@ -1,8 +1,5 @@
 import { Just, Nothing, Maybe } from 'purify-ts/Maybe';
-import type { RequestInfo, RequestInit } from 'node-fetch';
-import type { URL } from 'url';
-
-const fetch = (url: URL | RequestInfo, init?: RequestInit | undefined) => import('node-fetch').then(({ default: fetch }) => fetch(url, init));
+import fetch from 'node-fetch';
 
 // /api/auth/rabbitmq/pass
 export function AuthConnector(endpointUri: string) {
