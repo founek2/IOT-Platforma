@@ -52,7 +52,6 @@
         "@types/node-fetch": "^2.6.4",
         "@types/nodemailer": "^6.4.0",
         "@types/ramda": "0.27.34",
-        "@types/socket.io": "^2.1.12",
         "@types/supertest": "^2.0.11",
         "@types/testing-library__dom": "^7.5.0",
         "agendash": "^2.0.0",
