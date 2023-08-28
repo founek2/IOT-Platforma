@@ -83,7 +83,7 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
                 {appropriateThing ? (
                     <Box sx={{ display: 'flex', justifyContent: 'inherit' }}>
                         <PropertyRowPlain
-                            value={thing.state?.[appropriateThing.propertyId]?.value}
+                            state={thing.state?.[appropriateThing.propertyId]}
                             property={appropriateThing}
                             disabled={disabled}
                             onChange={(value) =>

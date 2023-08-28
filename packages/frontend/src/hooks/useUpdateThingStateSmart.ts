@@ -28,8 +28,8 @@ export function useUpdateThingStateSmart(thingId: Thing['_id']) {
         }) => {
             if (!thing) return logger.error('Thing was not provided');
 
-            const requestTimestamp = Date.now();
-            const oldValue = thing.state?.[propertyId]?.value;
+            // const requestTimestamp = Date.now();
+            // const oldValue = thing.state?.[propertyId]?.value;
             updatePropertyState({
                 deviceId: thing.deviceId,
                 nodeId: thing.config.nodeId,
@@ -38,27 +38,27 @@ export function useUpdateThingStateSmart(thingId: Thing['_id']) {
                 value,
             });
 
-            setTimeout(() => {
-                if (ref.current?.state) {
-                    const { timestamp, value } = ref.current.state[propertyId] || {};
+            // setTimeout(() => {
+            //     if (ref.current?.state) {
+            //         const { timestamp, value } = ref.current.state[propertyId] || {};
 
-                    // Revert value to old when no update recieved within 400ms
-                    if (!timestamp || new Date(timestamp).getTime() < requestTimestamp) {
-                        dispatch(
-                            thingsReducerActions.updateOneState({
-                                id: thing._id,
-                                changes: { [propertyId]: { value: oldValue } },
-                            })
-                        );
-                        dispatch(
-                            notificationActions.add({
-                                message: 'Zařízení nepotvrdilo změnu',
-                                options: { variant: 'error' },
-                            })
-                        );
-                    }
-                }
-            }, SECOND_1);
+            //         // Revert value to old when no update recieved within 400ms
+            //         if (!timestamp || new Date(timestamp).getTime() < requestTimestamp) {
+            //             dispatch(
+            //                 thingsReducerActions.updateOneState({
+            //                     id: thing._id,
+            //                     changes: { [propertyId]: { value: oldValue } },
+            //                 })
+            //             );
+            //             dispatch(
+            //                 notificationActions.add({
+            //                     message: 'Zařízení nepotvrdilo změnu',
+            //                     options: { variant: 'error' },
+            //                 })
+            //             );
+            //         }
+            //     }
+            // }, SECOND_1);
         },
         [dispatch, updatePropertyState, ref, thing]
     );

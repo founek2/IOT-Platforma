@@ -18,34 +18,37 @@ type CircleComponentProps = {
     color: CircleColors;
     className?: string;
     sx?: SxProps<Theme>;
+    title?: string
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-const CircleComponent = React.forwardRef(function ({ color, className, sx, ...props }: CircleComponentProps, ref: any) {
+export const CircleComponent = React.forwardRef(function ({ color, className, sx, title, ...props }: CircleComponentProps, ref: any) {
     return (
-        <Box
-            {...props}
-            ref={ref}
-            className={className}
-            sx={[
-                {
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: 22,
-                    height: 22,
-                    borderRadius: '50%',
-                },
-                ...(Array.isArray(sx) ? sx : [sx]),
-            ]}
-        >
+        <Tooltip title={title} placement="bottom" arrow={true}>
             <Box
-                sx={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    backgroundColor: colors[color],
-                }}
-            />
-        </Box>
+                {...props}
+                ref={ref}
+                className={className}
+                sx={[
+                    {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: 22,
+                        height: 22,
+                        borderRadius: '50%',
+                    },
+                    ...(Array.isArray(sx) ? sx : [sx]),
+                ]}
+            >
+                <Box
+                    sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: '50%',
+                        backgroundColor: colors[color],
+                    }}
+                />
+            </Box>
+        </Tooltip>
     );
 });
 
@@ -67,14 +70,13 @@ function Circle({ status, className, inTransition, sx }: CircleProps) {
     const title = showDate ? titleDate : titleText;
 
     return (
-        <Tooltip title={title} placement="bottom" arrow={true}>
-            <CircleComponent
-                color={getCircleColor(inTransition, status?.value || DeviceStatus.disconnected)}
-                className={className}
-                onClick={() => setShowDate(!showDate)}
-                sx={sx}
-            />
-        </Tooltip>
+        <CircleComponent
+            color={getCircleColor(inTransition, status?.value || DeviceStatus.disconnected)}
+            className={className}
+            onClick={() => setShowDate(!showDate)}
+            sx={sx}
+            title={title}
+        />
     );
 }
 

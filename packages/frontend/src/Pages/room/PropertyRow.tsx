@@ -5,7 +5,7 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import type { SxProps } from '@mui/material';
+import { Fade, SxProps } from '@mui/material';
 import {
     IThingProperty,
     IThingPropertyEnum,
@@ -28,60 +28,66 @@ import { Measurement } from 'common/src/types';
 import type { Theme } from '@mui/material';
 import ColorPicker from '../../components/ColorPicker';
 import { PropertyState } from '../../store/slices/application/thingsSlice';
+import { CircleComponent } from '../../components/OnlineCircle';
+import { CircleColors } from '../../utils/getCircleColor';
 
 interface PropertyRowComponentProps {
-    value: string | number | boolean | undefined;
+    state?: PropertyState;
     property: IThingProperty;
     onChange: (newValue: string | number) => void;
     disabled?: boolean;
 }
-function PropertyRowComponent({ value, property, onChange, disabled }: PropertyRowComponentProps) {
+function PropertyRowComponent({ state, property, onChange, disabled: disabledOverride }: PropertyRowComponentProps) {
+    const value = state?.value;
     const [stateValue, setStateValue] = useState(value); // TODO rozbije se při příchozí změně z websocketu (desync)
+    const disabled = disabledOverride || !property.settable;
 
-    if (property.settable) {
-        if (property.dataType === PropertyDataType.enum) {
-            const propertyEnum = property as IThingPropertyEnum;
+    let component: JSX.Element;
 
-            return propertyEnum.format.length === 1 ? (
-                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} disabled={disabled} />
-                </CopyUrlContext>
-            ) : (
-                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <Select
-                        value={value || ''}
-                        onChange={(e) => onChange(e.target.value as string)}
-                        variant="standard"
-                        disabled={disabled}
-                    >
-                        {(property as IThingPropertyEnum).format.map((label) => (
-                            <MenuItem value={label} key={label}>
-                                {label}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </CopyUrlContext>
-            );
-        } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format) {
-            const propertyNumeric = property as IThingPropertyNumeric;
-            return (
-                // TODO debounce bude lepší
-                <CopyUrlContext propertyId={property.propertyId} value={value as number}>
-                    <Slider
-                        sx={{ width: '80px' }}
-                        onChangeCommitted={(e, newValue) => onChange(newValue as number)}
-                        value={stateValue !== undefined ? Number(stateValue) : propertyNumeric.format?.min}
-                        onChange={(e, newValue) => setStateValue(newValue as number)}
-                        min={propertyNumeric.format?.min}
-                        max={propertyNumeric.format?.max}
-                        aria-labelledby="discrete-slider"
-                        valueLabelDisplay="auto"
-                        disabled={disabled}
-                    />
-                </CopyUrlContext>
-            );
-        } else if (property.dataType === PropertyDataType.boolean) {
-            return (
+    if (property.dataType === PropertyDataType.enum) {
+        const propertyEnum = property as IThingPropertyEnum;
+
+        component = propertyEnum.format.length === 1 ? (
+            <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} disabled={disabled} />
+            </CopyUrlContext>
+        ) : (
+            <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                <Select
+                    value={value || ''}
+                    onChange={(e) => onChange(e.target.value as string)}
+                    variant="standard"
+                    disabled={disabled}
+                >
+                    {(property as IThingPropertyEnum).format.map((label) => (
+                        <MenuItem value={label} key={label}>
+                            {label}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </CopyUrlContext>
+        );
+    } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format) {
+        const propertyNumeric = property as IThingPropertyNumeric;
+        component = (
+            // TODO debounce bude lepší
+            <CopyUrlContext propertyId={property.propertyId} value={value as number}>
+                <Slider
+                    sx={{ width: '80px' }}
+                    onChangeCommitted={(e, newValue) => onChange(newValue as number)}
+                    value={stateValue !== undefined ? Number(stateValue) : propertyNumeric.format?.min}
+                    onChange={(e, newValue) => setStateValue(newValue as number)}
+                    min={propertyNumeric.format?.min}
+                    max={propertyNumeric.format?.max}
+                    aria-labelledby="discrete-slider"
+                    valueLabelDisplay="auto"
+                    disabled={disabled}
+                />
+            </CopyUrlContext>
+        );
+    } else if (property.dataType === PropertyDataType.boolean) {
+        component = (
+            <Box sx={{ position: "relative" }}>
                 <CopyUrlContext propertyId={property.propertyId} value={value as string}>
                     <Switch
                         onClick={() => {
@@ -91,22 +97,26 @@ function PropertyRowComponent({ value, property, onChange, disabled }: PropertyR
                         disabled={disabled}
                     />
                 </CopyUrlContext>
-            );
-        } else if (property.dataType === PropertyDataType.color) {
-            return (
-                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <ColorPicker
-                        value={value as string}
-                        onChange={(e) => {
-                            onChange(e.target.value);
-                        }}
-                        disabled={disabled}
-                    />
-                </CopyUrlContext>
-            );
-        }
+                <Fade in={state?.inTransition}>
+                    <CircleComponent color={CircleColors.Orange} title="Čeká se na potvrzení" sx={{ position: "absolute", right: -25, top: 0, bottom: 0, margin: "auto" }} />
+                </Fade>
+            </Box>
+        );
+    } else if (property.dataType === PropertyDataType.color) {
+        component = (
+            <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                <ColorPicker
+                    value={value as string}
+                    onChange={(e) => {
+                        onChange(e.target.value);
+                    }}
+                    disabled={disabled}
+                />
+            </CopyUrlContext>
+        );
+    } else if (property.settable) {
         const isNum = isNumericDataType(property.dataType);
-        return (
+        component = (
             <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
                 <TextField
                     focused={stateValue ? String(stateValue) !== String(value) : undefined}
@@ -122,23 +132,29 @@ function PropertyRowComponent({ value, property, onChange, disabled }: PropertyR
             </CopyUrlContext>
         );
     }
-
-    const val = value === undefined ? '-' : value;
-    return (
-        <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
-            <Typography component="span" sx={disabled ? { opacity: 0.6 } : undefined}>
-                {val}
-            </Typography>
-        </CopyUrlContext>
-    );
+    else {
+        component = (
+            <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
+                <Typography component="span" sx={disabledOverride ? { opacity: 0.6 } : undefined}>
+                    {value === undefined ? "-" : value}
+                </Typography>
+            </CopyUrlContext>
+        );
+    }
+    return <Box sx={{ position: "relative" }}>
+        {component}
+        <Fade in={state?.inTransition} timeout={{ enter: 1500, exit: 500 }}>
+            <CircleComponent color={CircleColors.Orange} title="Čeká se na potvrzení" sx={{ position: "absolute", right: -25, top: 0, bottom: 0, margin: "auto" }} />
+        </Fade>
+    </Box>
 }
 
-export function PropertyRowPlain({ value, property, onChange, disabled }: PropertyRowComponentProps) {
+export function PropertyRowPlain({ state, property, onChange, disabled }: PropertyRowComponentProps) {
     const { unitOfMeasurement } = property;
 
     return (
         <>
-            <PropertyRowComponent value={value} property={property} onChange={onChange} disabled={disabled} />
+            <PropertyRowComponent state={state} property={property} onChange={onChange} disabled={disabled} />
             <Typography
                 component="span"
                 sx={{ paddingLeft: unitOfMeasurement ? '0.4em' : '0', opacity: disabled ? 0.6 : 1 }}
@@ -197,7 +213,7 @@ const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function Proper
                 <Typography component="span" onClick={toogleDetail} pr={2} sx={{ cursor: 'pointer' }}>
                     {name}
                 </Typography>
-                <PropertyRowPlain property={property} value={state?.value} onChange={onChange} />
+                <PropertyRowPlain property={property} state={state} onChange={onChange} />
             </Box>
             {showDetail && state?.timestamp ? (
                 <UpdatedBefore

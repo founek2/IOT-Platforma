@@ -7,6 +7,7 @@ import { normalizeDevices } from '../../../utils/normalizr';
 export interface PropertyState {
     value?: string | number | boolean;
     timestamp: string;
+    inTransition?: boolean
 }
 
 export type Thing = Omit<IThing, '_id' | 'state'> & {
@@ -50,7 +51,7 @@ export const thingsSlice = createSlice({
 
                     if (!thing.state![propertyId]) thing.state![propertyId] = {} as any;
 
-                    thing.state![propertyId]! = { ...thing.state![propertyId]!, ...changes[propertyId] };
+                    thing.state![propertyId]! = { ...thing.state![propertyId]!, inTransition: false, ...changes[propertyId] };
                 });
             }
         },
@@ -79,7 +80,7 @@ export const thingsSlice = createSlice({
             const { thingId, value, propertyId } = meta.arg.originalArgs;
 
             thingsSlice.caseReducers.updateOneState(state, {
-                payload: { id: thingId, changes: { [propertyId]: { value } } },
+                payload: { id: thingId, changes: { [propertyId]: { value, inTransition: true } } },
                 type: 'things/updateOneState',
             });
         });
