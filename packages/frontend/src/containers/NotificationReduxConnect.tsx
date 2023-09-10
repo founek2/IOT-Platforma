@@ -29,8 +29,6 @@ export function NotificationReduxConnect() {
                 key,
                 autoHideDuration,
                 onExited: (event, myKey) => {
-                    // remove this snackbar from redux store
-                    dispatch(notificationActions.remove(myKey));
                     // removeDisplayed(myKey);
                     if (typeof onExited === 'function') onExited(event, myKey);
                     // closeSnackbar(key);
@@ -41,6 +39,9 @@ export function NotificationReduxConnect() {
 
             // keep track of snackbars that we've displayed
             storeDisplayed(key);
+
+            // remove this snackbar from redux store - Trying to get rid of persistenting notifications
+            dispatch(notificationActions.remove(key));
         });
     }, [notifications, closeSnackbar, enqueueSnackbar, dispatch]);
 
