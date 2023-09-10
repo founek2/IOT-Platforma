@@ -6,6 +6,7 @@ import api from '../api';
 import api2 from '../api/v2';
 import { Config } from '../types';
 import path from 'path';
+import cors from "cors"
 
 function getMaxSize(req: Request) {
     // if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'
@@ -18,6 +19,7 @@ const sizeLimitter: RequestHandler = (req, res, next) => {
         limit: getMaxSize(req),
     })(req, res, next);
 };
+
 export default async ({ app, config }: { app: Application; config: Config }) => {
     app.disable('x-powered-by');
 
@@ -29,6 +31,9 @@ export default async ({ app, config }: { app: Application; config: Config }) => 
 
     // JSON parser with limited body size
     app.use(sizeLimitter as RequestHandler);
+
+    // Cors
+    app.use(cors())
 
     // server static frontend files
     const frontend_path = path.join(__dirname, '../../../frontend/build');
