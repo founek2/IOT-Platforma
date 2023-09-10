@@ -16,8 +16,8 @@ const proxyTarget =
     process.env.PROXY === 'dev'
         ? 'https://dev.iotdomu.cz'
         : process.env.PROXY === 'prod'
-        ? 'https://iotdomu.cz'
-        : 'http://localhost:8085';
+            ? 'https://iotdomu.cz'
+            : 'http://localhost:8085';
 
 console.log('Proxy target: ', proxyTarget, process.env.NODE_ENV);
 const config = {
@@ -49,7 +49,7 @@ const config = {
     },
     resolveLoader: {
         plugins: [
-          PnpWebpackPlugin.moduleLoader(module),
+            PnpWebpackPlugin.moduleLoader(module),
         ],
     },
     module: {
@@ -86,12 +86,12 @@ const config = {
     plugins: [
         !isEnvProduction && new ReactRefreshWebpackPlugin(),
         !isEnvProduction &&
-            new ForkTsCheckerWebpackPlugin({
-                typescript: {
-                    mode: 'write-references',
-                    build: true,
-                },
-            }),
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                mode: 'write-references',
+                build: true,
+            },
+        }),
         new CopyPlugin({
             patterns: [
                 { from: path.join(__dirname, 'public/assets'), to: 'assets' },
@@ -124,12 +124,12 @@ const config = {
         }),
         !isEnvProduction && new webpack.HotModuleReplacementPlugin(),
         isEnvProduction &&
-            new WorkboxPlugin.InjectManifest({
-                swSrc: './src/service-worker.ts',
-                swDest: 'service-worker.js',
-                maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
-                exclude: [/\.map$/, /^manifest.*\.js$/, /\/dist\//],
-            }),
+        new WorkboxPlugin.InjectManifest({
+            swSrc: './src/service-worker.ts',
+            swDest: 'service-worker.js',
+            maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
+            exclude: [/\.map$/, /^manifest.*\.js$/, /\/dist\//],
+        }),
     ].filter(Boolean),
     devServer: {
         proxy: {
