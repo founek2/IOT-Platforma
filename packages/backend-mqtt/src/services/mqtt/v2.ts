@@ -64,7 +64,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 
         const thing = getThing(device, nodeId);
         const property = getProperty(thing, propertyId);
-        const result = validateValue(property, message.toString());
+        const result = validateValue(property, message);
         if (!result.valid) return logger.debug('mqtt - Got invalid data');
 
         DeviceModel.updateOne(

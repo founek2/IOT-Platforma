@@ -19,6 +19,7 @@ export enum PropertyDataType {
     integer = 'integer',
     color = 'color',
     enum = 'enum',
+    binary = 'binary',
 }
 
 export enum StringFormat {

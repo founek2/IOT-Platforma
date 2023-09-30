@@ -5,39 +5,48 @@ import { IThingProperty, PropertyDataType, IThingPropertyEnum, IThingPropertyNum
  */
 export function validateValue(
     property: IThingProperty,
-    value: string
+    valueBuff: Buffer
 ): { valid: true; value: string | number } | { valid: false } {
     if (property.dataType === PropertyDataType.float) {
-        const val = parseFloat(value);
+        const val = parseFloat(valueBuff.toString());
         return !Number.isNaN(val) && isInRange(val, (property as IThingPropertyNumeric).format)
             ? { valid: true, value: val }
             : { valid: false };
     }
 
     if (property.dataType === PropertyDataType.integer) {
-        const val = parseInt(value);
+        const val = parseInt(valueBuff.toString());
         return !Number.isNaN(val) && isInRange(val, (property as IThingPropertyNumeric).format)
             ? { valid: true, value: val }
             : { valid: false };
     }
 
     if (property.dataType === PropertyDataType.enum) {
+        const value = valueBuff.toString()
         return (property as IThingPropertyEnum).format.includes(value)
-            ? { valid: true, value: value }
+            ? { valid: true, value }
             : { valid: false };
     }
     if (property.dataType === PropertyDataType.boolean) {
-        return value === 'true' || value === 'false' ? { valid: true, value: value } : { valid: false };
+        const value = valueBuff.toString()
+        return value === 'true' || value === 'false' ? { valid: true, value } : { valid: false };
     }
     if (property.dataType === PropertyDataType.string) {
-        return { valid: true, value: value };
+        const value = valueBuff.toString()
+        return { valid: true, value };
+    }
+
+    if (property.dataType === PropertyDataType.binary) {
+        const value = valueBuff.toString("base64");
+        return { valid: true, value };
     }
 
     if (property.dataType === PropertyDataType.color) {
+        const value = valueBuff.toString();
         const channels = value.split(',');
         if (channels.length !== 3 || !channels.every((val) => parseInt(val) >= 0)) return { valid: false };
 
-        return { valid: true, value: value };
+        return { valid: true, value };
     }
 
     return { valid: false };
