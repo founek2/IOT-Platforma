@@ -42,7 +42,7 @@ export default () =>
             if (!propertyId || !value) return res.sendStatus(400);
 
             const property = getProperty(thing, propertyId);
-            const result = validateValue(property, value.toString());
+            const result = validateValue(property, Buffer.from(value));
             if (!result.valid) return res.sendStatus(400);
 
             (await Actions.deviceSetProperty(deviceId, nodeId, propertyId, value, doc))
