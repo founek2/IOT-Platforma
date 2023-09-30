@@ -37,16 +37,8 @@ interface MqttConf {
 type GetUser = () => Promise<Maybe<{ userName: string; password: string }>>;
 type ClientCb = (client: MqttClient) => void;
 
-function connect(config: MqttConf, getUser: GetUser, cb: ClientCb, forceNow = false) {
-    return new Promise<MqttClient>((res) =>
-        setTimeout(
-            async () => {
-                logger.info(`Trying to connect to MQTT ove WS host=${config.url} port=${config.port}`);
-                res(await reconnect(config, getUser, cb));
-            },
-            forceNow ? 0 : SECONDS_20
-        )
-    );
+function connect(config: MqttConf, getUser: GetUser, cb: ClientCb) {
+    return reconnect(config, getUser, cb)
 }
 
 async function reconnect(config: MqttConf, getUser: GetUser, cb: ClientCb): Promise<MqttClient> {
@@ -56,7 +48,6 @@ async function reconnect(config: MqttConf, getUser: GetUser, cb: ClientCb): Prom
         const client = mqtt.connect(config.url, {
             username: `${user.userName}`,
             password: `${user.password}`,
-            reconnectPeriod: 0,
             port: config.port,
             rejectUnauthorized: false,
             keepalive: 30,
@@ -97,7 +88,6 @@ function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser:
 
     cl.on('close', async function () {
         logger.info('mqtt closed connection');
-        client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser), true);
     });
     cl.on('disconnect', async function () {
         logger.info('mqtt disconnected');
@@ -109,5 +99,5 @@ function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser:
 
 /* Initialize MQTT client connection */
 export default async (io: serverIO, config: MqttConf, getUser: GetUser) => {
-    client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser), true);
+    client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
 };
