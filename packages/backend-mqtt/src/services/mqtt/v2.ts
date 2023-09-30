@@ -11,10 +11,11 @@ import { SocketUpdateThingState } from 'common/lib/types';
 import { uniq } from 'ramda';
 import { InfluxService } from 'common/lib/services/influxService';
 
-type cbFn = (topic: string, message: any, groups: string[]) => void;
+type cbFn = (topic: string, message: Buffer, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO) {
     handle('v2/+/+/$state', async function (topic, data, [realm, deviceId]) {
-        const status: DeviceStatus = data.toString();
+        // TODO add validation
+        const status = data.toString() as DeviceStatus;
         const timestamp = new Date();
         logger.debug('got', status, realm, deviceId);
         const device = await DeviceModel.findOneAndUpdate(

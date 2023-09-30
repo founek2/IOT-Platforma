@@ -16,6 +16,7 @@ export const NotfyTypeForDataType: { [dataType in PropertyDataType]: NotifyType[
     [PropertyDataType.boolean]: [NotifyType.equal, NotifyType.always],
     [PropertyDataType.enum]: [NotifyType.equal, NotifyType.always],
     [PropertyDataType.color]: [NotifyType.equal, NotifyType.always],
+    [PropertyDataType.binary]: [NotifyType.always],
 };
 
 export const NotifyTypeText: { [dataType in NotifyType]: string } = {
