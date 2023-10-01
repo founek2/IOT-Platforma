@@ -99,7 +99,7 @@ const CREATE_DEVICE = {
             required: true,
             label: 'Název',
             name: 'title',
-            validations: [validationFactory('isString', { min: 4, max: 20 })],
+            validations: [validationFactory('isString', { min: 2, max: 20 })],
         },
         location: {
             building: {
@@ -143,7 +143,7 @@ const EDIT_DEVICE: FormFieldDescriptors = {
             required: true,
             label: 'Název',
             name: 'title',
-            validations: [validationFactory('isString', { min: 4, max: 20 })],
+            validations: [validationFactory('isString', { min: 2, max: 20 })],
         },
         location: {
             building: {
@@ -291,7 +291,7 @@ const FORGOT_PASSWORD: FormFieldDescriptors = {
         required: true,
         label: 'Heslo',
         name: 'password',
-        validations: [validationFactory('isString', { min: 4, max: 20 })],
+        validations: [validationFactory('isString', { min: 4, max: 40 })],
     },
     token: {
         deepPath: 'FORGOT_PASSWORD.token',
