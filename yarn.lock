@@ -8549,6 +8549,7 @@ __metadata:
     firebase-admin: ^9.0.0
     hat: ^0.0.3
     jest: 26.6.0
+    mongoose: ^5.13.2
     morgan: ^1.9.1
     mqtt: ^5.0.5
     nodemon: ^2.0.4
@@ -9811,6 +9812,8 @@ __metadata:
     "@types/react": ^18.0.21
     argon2: ^0.28.5
     date-fns: ^2.15.0
+    dotenv: ^8.2.0
+    express: ^4.17.1
     express-async-handler: ^1.1.4
     hat: ^0.0.3
     jest: 26.6.0
