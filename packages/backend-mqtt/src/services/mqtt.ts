@@ -1,11 +1,10 @@
-import mqtt, { IClientPublishOptions, MqttClient } from 'mqtt';
+import * as mqtt from 'mqtt';
 import { Server as serverIO } from 'socket.io';
 import handlePrefix from './mqtt/prefix';
 import handleV2 from './mqtt/v2';
 import { logger } from 'common/lib/logger';
-import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
-import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import { isNil } from 'ramda';
+import { Maybe } from 'purify-ts/Maybe';
+import type { IClientPublishOptions, MqttClient, IClientOptions } from 'mqtt';
 
 let client: mqtt.MqttClient | undefined;
 
@@ -37,29 +36,34 @@ interface MqttConf {
 type GetUser = () => Promise<Maybe<{ userName: string; password: string }>>;
 type ClientCb = (client: MqttClient) => void;
 
-function connect(config: MqttConf, getUser: GetUser, cb: ClientCb) {
-    return reconnect(config, getUser, cb)
-}
+async function connect(config: MqttConf, getUser: GetUser, cb: ClientCb): Promise<MqttClient> {
+    let user = (await getUser()).extractNullable()
+    // Refresh every 10 mins
+    setInterval(async () => {
+        user = (await getUser()).extractNullable()
+    }, 10 * 60 * 1000)
 
-async function reconnect(config: MqttConf, getUser: GetUser, cb: ClientCb): Promise<MqttClient> {
-    const connection = await MaybeAsync(async ({ fromPromise }) => {
-        const user = await fromPromise(getUser());
+    const transformWsUrl: IClientOptions["transformWsUrl"] = (url, options, client) => {
+        client.options.username = user?.userName;
+        client.options.password = user?.password;
 
-        const client = mqtt.connect(config.url, {
-            username: `${user.userName}`,
-            password: `${user.password}`,
-            port: config.port,
-            rejectUnauthorized: false,
-            keepalive: 30,
-        });
-        cb(client);
-        return client;
+        return url;
+    }
+
+    logger.info("Connecting to mqtt", config.url)
+    const client = mqtt.connect(config.url, {
+        username: user?.userName,
+        password: user?.password,
+        port: config.port,
+        rejectUnauthorized: false,
+        keepalive: 30,
+        transformWsUrl
     });
-
-    return connection.extract() || connect(config, getUser, cb);
+    cb(client);
+    return client;
 }
 
-function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser: GetUser) {
+function applyListeners(io: serverIO, cl: MqttClient) {
     cl.on('connect', function () {
         logger.info('mqtt connected');
 
@@ -82,22 +86,13 @@ function applyListeners(io: serverIO, cl: MqttClient, config: MqttConf, getUser:
 
     cl.on('error', async function (err) {
         logger.error('mqtt connection error', err);
-        cl.end();
-        // client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
     });
-
-    cl.on('close', async function () {
-        logger.info('mqtt closed connection');
-    });
-    cl.on('disconnect', async function () {
-        logger.info('mqtt disconnected');
-    });
-    cl.on('offline', async function () {
-        logger.info('mqtt offline');
+    cl.on('disconnect', async function (err) {
+        logger.error('mqtt connection disconnect', err);
     });
 }
 
 /* Initialize MQTT client connection */
 export default async (io: serverIO, config: MqttConf, getUser: GetUser) => {
-    client = await connect(config, getUser, (cl) => applyListeners(io, cl, config, getUser));
+    client = await connect(config, getUser, (cl) => applyListeners(io, cl));
 };
