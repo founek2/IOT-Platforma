@@ -102,6 +102,15 @@ function PropertyRowComponent({ state, property, onChange, disabled: disabledOve
                 </Fade>
             </Box>
         );
+    } else if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/")) {
+        // const data = Buffer.from(value, "base64")
+        component = (
+            <Box sx={{ position: "relative" }}>
+                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                    <Box component="img" src={`data:${property.format};base64,` + value} />
+                </CopyUrlContext>
+            </Box>
+        );
     } else if (property.dataType === PropertyDataType.color) {
         component = (
             <CopyUrlContext propertyId={property.propertyId} value={value as string}>
@@ -165,7 +174,9 @@ export function PropertyRowPlain({ state, property, onChange, disabled }: Proper
     );
 }
 
-function showDetailVisualization(property: IThingProperty, historyData: Measurement[]) {
+function DetailVisualization({ property, historyData }: { property: IThingProperty, historyData: Measurement[] }) {
+    const [selected, setSelected] = useState<number>()
+
     if (isNumericDataType(property.dataType))
         return <PlotifyNumeric data={[convertNumericHistoryToGraphData(historyData, property.propertyId)]} />;
     if (property.dataType === PropertyDataType.boolean)
@@ -173,18 +184,28 @@ function showDetailVisualization(property: IThingProperty, historyData: Measurem
 
     const data = convertNumericHistoryToGraphData(historyData, property.propertyId);
     return (
-        <div style={{ textAlign: 'center' }}>
-            {data.x
-                .slice(-3)
-                .reverse()
-                .map((date, i) => {
-                    return (
-                        <Typography key={date.getTime()}>
-                            {format(date, 'd. L. HH:mm')} - {data.y[i]}
-                        </Typography>
-                    );
-                })}
-        </div>
+        <Box textAlign="center" display="flex" alignItems="center" flexDirection="column" gap={1} >
+            {
+                data.x
+                    .slice(-3)
+                    .reverse()
+                    .map((date, i) => {
+                        if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/"))
+                            return <Box key={date.getTime()} display="flex" flexDirection="row" gap={2} onClick={() => setSelected(selected === i ? undefined : i)}>
+                                <Typography >
+                                    {format(date, 'd. L. HH:mm')}
+                                </Typography>
+                                <Box component="img" src={`data:${property.format};base64,` + data.y[i]} sx={{ maxWidth: selected === i ? "none" : 50 }} />
+                            </Box>
+
+                        return (
+                            <Typography key={date.getTime()}>
+                                {format(date, 'd. L. HH:mm')} - {data.y[i]}
+                            </Typography>
+                        );
+                    })
+            }
+        </Box >
     );
 }
 
@@ -224,7 +245,7 @@ const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function Proper
                 />
             ) : null}
             {showDetail && history?.some((v) => v.propertyId === property.propertyId)
-                ? showDetailVisualization(property, history)
+                ? <DetailVisualization property={property} historyData={history} />
                 : null}
         </Box>
     );
