@@ -38,7 +38,7 @@ export function convertDiscoveryThing(thing: IDiscoveryThing): IThing {
                 o(convertProperty, (propertyId) =>
                     assocPath(['propertyId'], propertyId, thing.config.properties[propertyId])
                 ),
-                thing.config.propertyIds!
+                (thing.config.propertyIds || []).filter(Boolean)
             )
         )
     )(thing) as unknown as IThing;
