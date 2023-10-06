@@ -2,15 +2,8 @@ import type { SxProps, Theme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import { useAppSelector } from '../../../hooks/index';
-import { getDevice, getThing } from '../../../selectors/getters';
-import { Link } from 'react-router-dom';
-import { ThingContext } from '../../../hooks/useThing';
 import { ComponentType, PropertyDataType } from 'common/src/models/interface/thing';
 import { Thing } from '../../../store/slices/application/thingsSlice';
-import { PropertyRowPlain } from '../PropertyRow';
-import Box from '@mui/material/Box';
-import { useUpdateThingStateMutation } from '../../../endpoints/thing';
 import Circle from '../../../components/OnlineCircle';
 import { DeviceStatus } from 'common/src/models/interface/device';
 import { Discovery } from '../../../endpoints/discovery';
@@ -83,7 +76,7 @@ export const DiscoveredWidget = React.forwardRef<HTMLDivElement, DiscoveredDevic
                         opacity: disabled ? 0.6 : 1,
                     }}
                 >
-                    {Object.entries(device.things)
+                    {Object.entries(device.things || {})
                         .map(([key, thing]) => thing.config.name)
                         .join(', ')}
                 </Typography>

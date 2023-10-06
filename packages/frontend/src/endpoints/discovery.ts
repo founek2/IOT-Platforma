@@ -1,7 +1,7 @@
+import { IDiscovery, IDiscoveryThing } from 'common/src/models/interface/discovery';
 import { api } from './api';
-import { IDiscovery } from 'common/src/models/interface/discovery';
 
-export type Discovery = IDiscovery & { _id: string };
+export type Discovery = Omit<IDiscovery, "_id" | "name" | "things"> & { _id: string, name?: string, things: { [nodeId: string]: IDiscoveryThing } };
 
 export interface CreateDeviceForm {
     info: {

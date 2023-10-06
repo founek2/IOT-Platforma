@@ -4,8 +4,9 @@ import { PropertyState, Thing, thingsReducerActions } from '../store/slices/appl
 import { useLazyDevicesQuery } from '../endpoints/devices';
 import { Device, devicesReducerActions } from '../store/slices/application/devicesSlice';
 import { io, Socket } from 'socket.io-client';
-import { Discovery, discoveryReducerActions } from '../store/slices/application/discoverySlice';
+import { discoveryReducerActions } from '../store/slices/application/discoverySlice';
 import { getAccessToken } from '../selectors/getters';
+import { Discovery } from '../endpoints/discovery';
 
 export type SocketUpdateThingState = {
     _id: Device['_id'];
