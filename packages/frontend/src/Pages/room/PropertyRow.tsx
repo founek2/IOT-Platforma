@@ -5,7 +5,7 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Fade, SxProps } from '@mui/material';
+import { CardMedia, Fade, SxProps } from '@mui/material';
 import {
     IThingProperty,
     IThingPropertyEnum,
@@ -30,6 +30,8 @@ import ColorPicker from '../../components/ColorPicker';
 import { PropertyState } from '../../store/slices/application/thingsSlice';
 import { CircleComponent } from '../../components/OnlineCircle';
 import { CircleColors } from '../../utils/getCircleColor';
+import { VideoStream } from '../../components/VideoStream';
+import { isUrl } from "common/src/utils/isUrl"
 
 interface PropertyRowComponentProps {
     state?: PropertyState;
@@ -102,12 +104,12 @@ function PropertyRowComponent({ state, property, onChange, disabled: disabledOve
                 </Fade>
             </Box>
         );
-    } else if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/")) {
+    } else if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/") && typeof value === "string") {
         // const data = Buffer.from(value, "base64")
         component = (
             <Box sx={{ position: "relative" }}>
-                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <Box component="img" src={`data:${property.format};base64,` + value} />
+                <CopyUrlContext propertyId={property.propertyId} value={value}>
+                    <CardMedia component="img" src={`data:${property.format};base64,` + value} />
                 </CopyUrlContext>
             </Box>
         );
@@ -122,6 +124,22 @@ function PropertyRowComponent({ state, property, onChange, disabled: disabledOve
                     disabled={disabled}
                 />
             </CopyUrlContext>
+        );
+    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("image/") && isUrl(value)) {
+        component = (
+            <Box sx={{ position: "relative" }}>
+                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                    <CardMedia component="img" src={value as string} />
+                </CopyUrlContext>
+            </Box>
+        );
+    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("video/") && isUrl(value)) {
+        component = (
+            <Box sx={{ position: "relative" }}>
+                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                    <VideoStream src={value as string} />
+                </CopyUrlContext>
+            </Box>
         );
     } else if (property.settable) {
         const isNum = isNumericDataType(property.dataType);
@@ -164,12 +182,13 @@ export function PropertyRowPlain({ state, property, onChange, disabled }: Proper
     return (
         <>
             <PropertyRowComponent state={state} property={property} onChange={onChange} disabled={disabled} />
-            <Typography
-                component="span"
-                sx={{ paddingLeft: unitOfMeasurement ? '0.4em' : '0', opacity: disabled ? 0.6 : 1 }}
-            >
-                {unitOfMeasurement ? unitOfMeasurement : ''}
-            </Typography>
+            {unitOfMeasurement ?
+                <Typography
+                    component="span"
+                    sx={{ paddingLeft: unitOfMeasurement ? '0.4em' : '0', opacity: disabled ? 0.6 : 1 }}
+                >
+                    {unitOfMeasurement}
+                </Typography> : null}
         </>
     );
 }
@@ -190,17 +209,21 @@ function DetailVisualization({ property, historyData }: { property: IThingProper
                     .slice(-3)
                     .reverse()
                     .map((date, i) => {
+                        const value = data.y[i];
+                        if (property.dataType === PropertyDataType.string && property.format?.startsWith("video/") && isUrl(value))
+                            return null
+
                         if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/"))
                             return <Box key={date.getTime()} display="flex" flexDirection="row" gap={2} onClick={() => setSelected(selected === i ? undefined : i)}>
                                 <Typography >
                                     {format(date, 'd. L. HH:mm')}
                                 </Typography>
-                                <Box component="img" src={`data:${property.format};base64,` + data.y[i]} sx={{ maxWidth: selected === i ? "none" : 50 }} />
+                                <CardMedia component="img" src={`data:${property.format};base64,` + value} sx={{ maxWidth: selected === i ? "none" : 50 }} />
                             </Box>
 
                         return (
                             <Typography key={date.getTime()}>
-                                {format(date, 'd. L. HH:mm')} - {data.y[i]}
+                                {format(date, 'd. L. HH:mm')} - {value}
                             </Typography>
                         );
                     })
