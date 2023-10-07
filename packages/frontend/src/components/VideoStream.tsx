@@ -1,5 +1,4 @@
-import { Box, CardMedia, CircularProgress, CircularProgressProps } from "@mui/material"
-import { grey } from "@mui/material/colors";
+import { CardMedia, CircularProgress, CircularProgressProps, Paper } from "@mui/material"
 import React, { useState } from "react"
 import { styled } from '@mui/material/styles';
 
@@ -18,8 +17,8 @@ interface VideoStreamProps {
 export function VideoStream({ src }: VideoStreamProps) {
     const [loaded, setLoaded] = useState(false)
 
-    return <Box position="relative">
+    return <Paper sx={{ position: "relative" }}>
         {loaded ? null : <Loader />}
-        <CardMedia component="video" src={src} autoPlay onLoadedData={() => setLoaded(true)} sx={{ background: grey[300] }} />
-    </Box>
+        <CardMedia component="video" src={src} autoPlay onLoadedData={() => setLoaded(true)} />
+    </Paper>
 }
