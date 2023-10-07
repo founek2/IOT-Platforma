@@ -50,128 +50,93 @@ function PropertyRowComponent({ state, property, onChange, disabled: disabledOve
         const propertyEnum = property as IThingPropertyEnum;
 
         component = propertyEnum.format.length === 1 ? (
-            <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} disabled={disabled} />
-            </CopyUrlContext>
+            <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} disabled={disabled} />
         ) : (
-            <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                <Select
-                    value={value || ''}
-                    onChange={(e) => onChange(e.target.value as string)}
-                    variant="standard"
-                    disabled={disabled}
-                >
-                    {(property as IThingPropertyEnum).format.map((label) => (
-                        <MenuItem value={label} key={label}>
-                            {label}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </CopyUrlContext>
+            <Select
+                value={value || ''}
+                onChange={(e) => onChange(e.target.value as string)}
+                variant="standard"
+                disabled={disabled}
+            >
+                {(property as IThingPropertyEnum).format.map((label) => (
+                    <MenuItem value={label} key={label}>
+                        {label}
+                    </MenuItem>
+                ))}
+            </Select>
         );
     } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format) {
         const propertyNumeric = property as IThingPropertyNumeric;
         component = (
             // TODO debounce bude lepší
-            <CopyUrlContext propertyId={property.propertyId} value={value as number}>
-                <Slider
-                    sx={{ width: '80px' }}
-                    onChangeCommitted={(e, newValue) => onChange(newValue as number)}
-                    value={stateValue !== undefined ? Number(stateValue) : propertyNumeric.format?.min}
-                    onChange={(e, newValue) => setStateValue(newValue as number)}
-                    min={propertyNumeric.format?.min}
-                    max={propertyNumeric.format?.max}
-                    aria-labelledby="discrete-slider"
-                    valueLabelDisplay="auto"
-                    disabled={disabled}
-                />
-            </CopyUrlContext>
+            <Slider
+                sx={{ width: '80px' }}
+                onChangeCommitted={(e, newValue) => onChange(newValue as number)}
+                value={stateValue !== undefined ? Number(stateValue) : propertyNumeric.format?.min}
+                onChange={(e, newValue) => setStateValue(newValue as number)}
+                min={propertyNumeric.format?.min}
+                max={propertyNumeric.format?.max}
+                aria-labelledby="discrete-slider"
+                valueLabelDisplay="auto"
+                disabled={disabled}
+            />
         );
     } else if (property.dataType === PropertyDataType.boolean) {
         component = (
-            <Box sx={{ position: "relative" }}>
-                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <Switch
-                        onClick={() => {
-                            onChange(toogleSwitchVal(value));
-                        }}
-                        checked={value === 'true'}
-                        disabled={disabled}
-                    />
-                </CopyUrlContext>
-                <Fade in={state?.inTransition}>
-                    <CircleComponent color={CircleColors.Orange} title="Čeká se na potvrzení" sx={{ position: "absolute", right: -25, top: 0, bottom: 0, margin: "auto" }} />
-                </Fade>
-            </Box>
+            <Switch
+                onClick={() => {
+                    onChange(toogleSwitchVal(value));
+                }}
+                checked={value === 'true'}
+                disabled={disabled}
+            />
         );
     } else if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/") && typeof value === "string") {
-        // const data = Buffer.from(value, "base64")
-        component = (
-            <Box sx={{ position: "relative" }}>
-                <CopyUrlContext propertyId={property.propertyId} value={value}>
-                    <CardMedia component="img" src={`data:${property.format};base64,` + value} />
-                </CopyUrlContext>
-            </Box>
-        );
+        component = <CardMedia component="img" src={`data:${property.format};base64,` + value} />
     } else if (property.dataType === PropertyDataType.color) {
-        component = (
-            <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                <ColorPicker
-                    value={value as string}
-                    onChange={(e) => {
-                        onChange(e.target.value);
-                    }}
-                    disabled={disabled}
-                />
-            </CopyUrlContext>
-        );
+        component = <ColorPicker
+            value={value as string}
+            onChange={(e) => {
+                onChange(e.target.value);
+            }}
+            disabled={disabled}
+        />
     } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("image/") && isUrl(value)) {
-        component = (
-            <Box sx={{ position: "relative" }}>
-                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <CardMedia component="img" src={value as string} />
-                </CopyUrlContext>
-            </Box>
-        );
+        component = <CardMedia component="img" src={value as string} />
     } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("video/") && isUrl(value)) {
-        component = (
-            <Box sx={{ position: "relative" }}>
-                <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-                    <VideoStream src={value as string} />
-                </CopyUrlContext>
-            </Box>
-        );
+        component = <VideoStream src={value as string} />
     } else if (property.settable) {
         const isNum = isNumericDataType(property.dataType);
         component = (
-            <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
-                <TextField
-                    focused={stateValue ? String(stateValue) !== String(value) : undefined}
-                    value={stateValue || ''}
-                    inputProps={{ inputMode: isNum ? 'numeric' : "text", pattern: isNum ? '[0-9]*' : "" }}
-                    onChange={(e) => setStateValue(isNum ? Number(e.target.value) : e.target.value)}
-                    onKeyDown={onEnterRun((e: any) => {
-                        const val = isNum ? Number(e.target.value) : e.target.value;
-                        onChange(val);
-                    })}
-                    disabled={disabled}
-                />
-            </CopyUrlContext>
+            <TextField
+                focused={stateValue ? String(stateValue) !== String(value) : undefined}
+                value={stateValue || ''}
+                inputProps={{ inputMode: isNum ? 'numeric' : "text", pattern: isNum ? '[0-9]*' : "" }}
+                onChange={(e) => setStateValue(isNum ? Number(e.target.value) : e.target.value)}
+                onKeyDown={onEnterRun((e: any) => {
+                    const val = isNum ? Number(e.target.value) : e.target.value;
+                    onChange(val);
+                })}
+                disabled={disabled}
+            />
         );
     }
     else {
         component = (
-            <CopyUrlContext propertyId={property.propertyId} value={stateValue as string}>
-                <Typography component="span" sx={disabledOverride ? { opacity: 0.6 } : undefined}>
-                    {value === undefined ? "-" : value}
-                </Typography>
-            </CopyUrlContext>
+            <Typography component="span" sx={disabledOverride ? { opacity: 0.6 } : undefined}>
+                {value === undefined ? "-" : value}
+            </Typography>
         );
     }
     return <Box sx={{ position: "relative" }}>
-        {component}
+        <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+            {component}
+        </CopyUrlContext>
         <Fade in={state?.inTransition} timeout={{ enter: 1500, exit: 500 }}>
-            <CircleComponent color={CircleColors.Orange} title="Čeká se na potvrzení" sx={{ position: "absolute", right: -25, top: 0, bottom: 0, margin: "auto" }} />
+            <CircleComponent color={CircleColors.Orange} title="Čeká se na potvrzení" sx={{
+                position: "absolute", right: -24, top: 0, bottom: 0,
+                margin: "auto"
+            }} />
         </Fade>
     </Box>
 }
