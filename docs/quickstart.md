@@ -14,23 +14,23 @@ cat jwtRS256.key.pub
 
 Pro funkčnost aplikace je potřeba nastavit enviroment promněné, buď pomocí `.env` souboru v rootu projektu nebo v rámci systému. Promněné jsou následující:
 
--   **HOME_PAGE** - url of main page - ex. https://iotplatforma.cloud
--   **INFLUXDB_PASSWORD** - password for admin account to InfluxDB database
--   **INFLUXDB_ADMIN_TOKEN** - admin access token to InfluxDB database
+- **HOME_PAGE** - url of main page - ex. <https://iotplatforma.cloud>
+- **INFLUXDB_PASSWORD** - password for admin account to InfluxDB database
+- **INFLUXDB_ADMIN_TOKEN** - admin access token to InfluxDB database
 
 [Optional]
 
--   **JWT_EXPIRES_IN** - lifespan of JWT token [default 14 days]
--   **FIREBASE_ADMIN_PATH** - path to firebase account credentials file, required only for notification feature
--   **OAUTH_SEZNAM_CLIENT_ID** - OAuth2 client id for `Seznam` provider
--   **OAUTH_SEZNAM_CLIENT_SECRET** - OAuth2 secret for `Seznam` provider
--   **AGENDA_JOB_TYPES** - which agenda jobs are enabled separeted with comma - email, clean
--   **LOG_LEVEL** - set logging level, 0 = error, 1 = warning, 2 = info [default], 3 = dev, 4 = debug, 5 = silly
+- **JWT_EXPIRES_IN** - lifespan of JWT token [default 14 days]
+- **FIREBASE_ADMIN_PATH** - path to firebase account credentials file, required only for notification feature
+- **OAUTH_SEZNAM_CLIENT_ID** - OAuth2 client id for `Seznam` provider
+- **OAUTH_SEZNAM_CLIENT_SECRET** - OAuth2 secret for `Seznam` provider
+- **AGENDA_JOB_TYPES** - which agenda jobs are enabled separeted with comma - email, clean
+- **LOG_LEVEL** - set logging level, 0 = error, 1 = warning, 2 = info [default], 3 = dev, 4 = debug, 5 = silly
 
--   **EMAIL_HOST** - smtp email server
--   **EMAIL_PORT** - port on which smtp listen, ssl/tls is required [465]
--   **EMAIL_USERNAME** - username to email account
--   **EMAIL_PASSWORD** - password to email account
+- **EMAIL_HOST** - smtp email server
+- **EMAIL_PORT** - port on which smtp listen, ssl/tls is required [465]
+- **EMAIL_USERNAME** - username to email account
+- **EMAIL_PASSWORD** - password to email account
 
 > email is required only for forgot password feature
 
@@ -42,8 +42,8 @@ Pro spuštění aplikace pro lokální vývoj jsou potřeba tyto příkazy:
 # instalace potřebných závislostí (node_modules)
 yarn
 
-git clone https://github.com/founek2/IOT-Platforma.git iot-platforma
-cd iot-platforma
+git clone https://github.com/founek2/IOT-Platform.git iot-platform
+cd iot-platform
 
 # spustí server obsluhující API požadavky
 yarn --cwd packages/backend dev

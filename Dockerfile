@@ -9,7 +9,7 @@ COPY Dockerfile assets.zip* ./
 RUN yarn global add --silent --cache-folder /tmp/.junk pm2 && rm -rf /tmp/.junk
 
 # Download latest release if no assets.zip present
-RUN if [ ! -e "assets.zip" ]; then echo "Downloading latest release" && wget https://github.com/founek2/IOT-Platforma/releases/latest/download/assets.zip ; else echo "WARNING Using local release assets.zip"; fi
+RUN if [ ! -e "assets.zip" ]; then echo "Downloading latest release" && wget https://github.com/founek2/IOT-Platform/releases/latest/download/assets.zip ; else echo "WARNING Using local release assets.zip"; fi
 
 # Unzip and install dependencies
 RUN ./ci/jenkins/docker-build.sh

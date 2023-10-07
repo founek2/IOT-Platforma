@@ -5,7 +5,7 @@ tag=$(git describe --abbrev=0)
 name=founek2/iot-platform
 name_private="docker-registry-write.iotdomu.cz/iot-platform/server"
 
-wget https://github.com/founek2/IOT-Platforma/releases/download/v2.0.0-beta/assets.zip -O assets.zip
+wget https://github.com/founek2/IOT-Platform/releases/download/v2.0.0-beta/assets.zip -O assets.zip
 
 docker build -t $name_private:$tag-beta -t $name_private:latest-beta --progress plain .
 

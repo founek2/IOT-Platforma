@@ -2,25 +2,25 @@
 
 [![Build Status](https://jenkins.iotdomu.cz/buildStatus/icon?job=IoT+Platform%2Frelease)](https://jenkins.iotdomu.cz/job/IoT%20Platform/job/release/)
 
-[Documentation](https://founek2.github.io/IOT-Platforma/)
+[Documentation](https://founek2.github.io/IOT-Platform/)
 
 ## Up and running
 
 ### 1. Clone the hosting repo
 
-To get started quickly, download the IoT-Platforma-hosting repo as a starting point. It has everything you need to boot up your own IoT Platform server.
+To get started quickly, download the IoT-Platform-hosting repo as a starting point. It has everything you need to boot up your own IoT Platform server.
 
 ```bash
-git clone https://github.com/founek2/IOT-Platforma-hosting.git
-cd IOT-Platforma-hosting
+git clone https://github.com/founek2/IOT-Platform-hosting.git
+cd IOT-Platform-hosting
 ```
 
 Alternatively, you can download and extract the repo as a zip.
 
 ```bash
-wget https://github.com/founek2/IOT-Platforma-hosting/archive/refs/heads/master.zip
+wget https://github.com/founek2/IOT-Platform-hosting/archive/refs/heads/master.zip
 unzip master.zip
-cd IOT-Platforma-hosting-master
+cd IOT-Platform-hosting-master
 cp .env.example .env
 ```
 
