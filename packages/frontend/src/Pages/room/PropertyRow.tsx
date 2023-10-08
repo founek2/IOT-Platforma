@@ -32,6 +32,7 @@ import { CircleComponent } from '../../components/OnlineCircle';
 import { CircleColors } from '../../utils/getCircleColor';
 import { VideoStream } from '../../components/VideoStream';
 import { isUrl } from "common/src/utils/isUrl"
+import { WebRtcStream } from '../../components/WebRtcStream';
 
 interface PropertyRowComponentProps {
     state?: PropertyState;
@@ -105,6 +106,8 @@ function PropertyRowComponent({ state, property, onChange, disabled: disabledOve
         component = <CardMedia component="img" src={value as string} />
     } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("video/") && isUrl(value)) {
         component = <VideoStream src={value as string} />
+    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("webrtc") && isUrl(value)) {
+        component = <WebRtcStream src={value as string} />
     } else if (property.settable) {
         const isNum = isNumericDataType(property.dataType);
         component = (
@@ -176,6 +179,8 @@ function DetailVisualization({ property, historyData }: { property: IThingProper
                     .map((date, i) => {
                         const value = data.y[i];
                         if (property.dataType === PropertyDataType.string && property.format?.startsWith("video/") && isUrl(value))
+                            return null
+                        if (property.dataType === PropertyDataType.string && property.format?.startsWith("webrtc") && isUrl(value))
                             return null
 
                         if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/"))
