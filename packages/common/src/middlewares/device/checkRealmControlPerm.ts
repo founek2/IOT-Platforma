@@ -10,7 +10,7 @@ import { Permission } from '../../models/interface/userInterface';
  */
 export default function (options: { paramKey: string } = { paramKey: 'id' }) {
     return async (req: RequestWithAuthOpt, res: express.Response, next: express.NextFunction) => {
-        checkDevice(options)(req, res, async () => {
+        checkDevice({ ...options, type: "metadata" })(req, res, async () => {
             const { params, user } = req;
             const realm = params['realm'];
             const deviceId = params[options.paramKey];

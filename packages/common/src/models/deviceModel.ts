@@ -35,6 +35,7 @@ export interface IDeviceModel extends Model<IDeviceDocument> {
     findForUser(userId: string): Promise<IDeviceDocument[]>;
     login(realm: string, deviceId: string, apiKey: string): Promise<boolean>;
     checkExists(id: IDevice['_id']): Promise<boolean>;
+    checkExistsByMetadata(deviceId: IDevice['metadata']["deviceId"]): Promise<boolean>;
     checkWritePerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
     checkReadPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
     checkControlPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
@@ -131,6 +132,12 @@ deviceSchema.statics.login = async function (realm: string, deviceId: string, ap
 deviceSchema.statics.checkExists = function (id: IDevice['_id']) {
     return this.exists({
         _id: ObjectId(id),
+    });
+};
+
+deviceSchema.statics.checkExistsByMetadata = function (deviceId: IDevice['metadata']["deviceId"]) {
+    return this.exists({
+        'metadata.deviceId': deviceId,
     });
 };
 
