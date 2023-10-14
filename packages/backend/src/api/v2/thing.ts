@@ -19,7 +19,7 @@ export default () =>
     resource({
         mergeParams: true,
         middlewares: {
-            modify: [tokenAuthMIddleware(), checkRealmControlPerm({ paramKey: 'deviceId' })],
+            create: [tokenAuthMIddleware(), checkRealmControlPerm({ paramKey: 'deviceId' })],
         },
 
         async index(req: Request, res) {
