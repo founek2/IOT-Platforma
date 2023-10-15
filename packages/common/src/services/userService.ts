@@ -196,6 +196,9 @@ export const UserService = {
         const doc = await UserModel.findById(userID).lean();
         if (!doc) return Left('unableToCreate');
 
+        const hashedToken = await argon2.hash(newRawToken.token, {
+            salt: saltFromUserName(doc.info.userName)
+        })
         await UserModel.updateOne(
             {
                 _id: ObjectId(userID),
@@ -203,9 +206,7 @@ export const UserService = {
             {
                 $push: {
                     accessTokens: {
-                        ...newRawToken, token: argon2.hash(newRawToken.token, {
-                            salt: saltFromUserName(doc.info.userName)
-                        })
+                        ...newRawToken, token: hashedToken
                     }
                 },
             },
