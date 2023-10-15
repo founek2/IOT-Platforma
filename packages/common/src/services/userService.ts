@@ -25,6 +25,10 @@ function comparePasswd(plainText: string, hash: string) {
     return argon2.verify(hash, plainText);
 }
 
+function saltFromUserName(userName: string): Buffer {
+    return Buffer.from(userName.repeat(2))
+}
+
 export type UserWithToken = { doc: IUser; token: string };
 export type CredentialData = {
     userName: IUser['info']['userName'];
@@ -200,7 +204,7 @@ export const UserService = {
                 $push: {
                     accessTokens: {
                         ...newRawToken, token: argon2.hash(newRawToken.token, {
-                            salt: Buffer.from(doc.info.userName)
+                            salt: saltFromUserName(doc.info.userName)
                         })
                     }
                 },
@@ -217,8 +221,9 @@ export const UserService = {
         try {
             const rawAccessToken = Buffer.from(accessToken, "base64").toString()
             const [userName, rawToken] = rawAccessToken.split(":")
+
             const hashedToken = await argon2.hash(rawToken, {
-                salt: Buffer.from(userName)
+                salt: saltFromUserName(userName),
             })
 
             logger.debug("hashedToken", hashedToken)
