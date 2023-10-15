@@ -13,6 +13,7 @@ import { IToken, TokenModel, TokenType } from '../models/tokenModel';
 import { UserModel } from '../models/userModel';
 import { JwtService } from '../services/jwtService';
 import { Security } from './SecurityService';
+import { IUserDocument } from '../models/schema/userSchema';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -182,26 +183,96 @@ export const UserService = {
     },
 
     async createAccessToken(data: { name: string; permissions: Permission[]; validTo?: Date }, userID: IUser['_id']) {
-        // : Promise<null | IAccessToken>
-        const newToken = {
+        const newRawToken: IAccessToken = {
             ...data,
-            token: Security.getRandomAsciToken(30),
+            token: Security.getRandomToken(30),
             createdAt: new Date(),
         };
-        if (await UserModel.exists({ 'accessTokens.token': newToken.token })) return Left('unableToCreate');
+        if (await UserModel.exists({ 'accessTokens.token': newRawToken.token })) return Left('unableToCreate');
+        const doc = await UserModel.findById(userID).lean();
+        if (!doc) return Left('unableToCreate');
 
-        const doc = await UserModel.findOneAndUpdate(
+        await UserModel.updateOne(
             {
                 _id: ObjectId(userID),
             },
             {
-                $push: { accessTokens: newToken },
+                $push: {
+                    accessTokens: {
+                        ...newRawToken, token: argon2.hash(newRawToken.token, {
+                            salt: Buffer.from(doc.info.userName)
+                        })
+                    }
+                },
             },
             { new: true, fields: 'accessTokens' }
         ).lean();
-        if (!doc) return Left('unableToCreate');
 
-        return Right(doc.accessTokens?.pop() as IAccessToken);
+
+        const encodedToken = Buffer.from(`${doc.info.userName}:${newRawToken.token}`).toString("base64");
+        return Right({ ...newRawToken, token: encodedToken });
+    },
+
+    async validateAccessToken(accessToken: string): Promise<Either<"invalid", [mongoose.LeanDocument<IUserDocument>, IAccessToken]>> {
+        try {
+            const rawAccessToken = Buffer.from(accessToken, "base64").toString()
+            const [userName, rawToken] = rawAccessToken.split(":")
+            const hashedToken = await argon2.hash(rawToken, {
+                salt: Buffer.from(userName)
+            })
+
+            logger.debug("hashedToken", hashedToken)
+
+            const user = await UserModel.findOne(
+                {
+                    "info.userName": userName,
+                    $or: [{
+                        'accessTokens': {
+                            $elemMatch: {
+                                token: hashedToken,
+                                validTo: { $lte: new Date() }
+                            }
+                        }
+                    }, {
+                        'accessTokens': {
+                            $elemMatch: {
+                                token: hashedToken,
+                                validTo: null
+                            }
+                        }
+                    }],
+                }, 'accessTokens.$ groups'
+            ).lean();
+            if (!user) return Left('invalid');
+
+            return Right([user, user.accessTokens![0]])
+        } catch (_err) {
+        }
+
+        const user = await UserModel.findOne(
+            {
+                $or: [{
+                    'accessTokens': {
+                        $elemMatch: {
+                            token: accessToken,
+                            validTo: { $lte: new Date() }
+                        }
+                    }
+                }, {
+                    'accessTokens': {
+                        $elemMatch: {
+                            token: accessToken,
+                            validTo: null
+                        }
+                    }
+                }],
+            },
+            'accessTokens.$ groups'
+        ).lean();
+        if (!user) return Left('invalid');
+
+        logger.warning("Access token v1 detected for user", user.info.userName)
+        return Right([user, user.accessTokens![0]])
     },
 
     async deleteAccessToken(tokenId: IAccessToken['_id'], userID: IUser['_id']) {

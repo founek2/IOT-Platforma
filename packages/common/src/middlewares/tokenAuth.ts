@@ -5,6 +5,7 @@ import express from 'express';
 import { Permission } from '../models/interface/userInterface';
 import { UserModel } from '../models/userModel';
 import { RequestWithAuth } from '../types';
+import { UserService } from '../services/userService';
 
 /**
  * Middleware validating JWT token in headers and binding User object to request
@@ -56,27 +57,23 @@ export default function (
                 logger.error('token problem', err);
                 res.status(400).send({ error: 'invalidToken' });
             }
-        } else if (accessToken) {
-            const user = await UserModel.findOne(
-                {
-                    'accessTokens.token': accessToken,
-                    $or: [{ 'accessTokens.validTo': { $lte: new Date() } }, { 'accessTokens.validTo': null }],
-                },
-                'accessTokens.$ groups'
-            ).lean();
-            if (!user || !user.accessTokens?.length) return res.status(400).send({ error: 'invalidToken' });
+        } else if (typeof accessToken === "string") {
+            const validationResult = await UserService.validateAccessToken(accessToken);
+            validationResult
+                .ifLeft(() => res.status(400).send({ error: 'invalidToken' }))
+                .ifRight(([user, { permissions }]) => {
+                    const req2 = req as RequestWithAuth;
+                    req2.user = user;
+                    req2.user.accessPermissions = permissions;
 
-            const req2 = req as RequestWithAuth;
-            req2.user = user;
-            req2.user.accessPermissions = user.accessTokens[0].permissions;
+                    // full access
+                    if (req2.user.accessPermissions.some((b) => b === Permission.write)) {
+                        if (req2.user.groups.some((v) => v === 'root')) req2.root = true;
+                        if (req2.user.groups.some((v) => v === 'admin')) req2.user.admin = true;
+                    }
 
-            // full access
-            if (req2.user.accessPermissions.some((b) => b === Permission.write)) {
-                if (req2.user.groups.some((v) => v === 'root')) req2.root = true;
-                if (req2.user.groups.some((v) => v === 'admin')) req2.user.admin = true;
-            }
-
-            next();
+                    next();
+                })
         } else if (!restricted) {
             next();
         } else {
