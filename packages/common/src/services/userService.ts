@@ -237,7 +237,7 @@ export const UserService = {
                             validTo: { $not: { $gt: new Date() } }
                         }
                     }
-                }, 'accessTokens.$ groups'
+                }, 'accessTokens.$ groups info'
             ).lean();
             if (!user) return Left('invalid');
 
@@ -255,7 +255,7 @@ export const UserService = {
                     }
                 }
             },
-            'accessTokens.$ groups'
+            'accessTokens.$ groups info'
         ).lean();
         if (!user) return Left('invalid');
 
