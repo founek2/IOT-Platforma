@@ -209,8 +209,7 @@ export const UserService = {
                         ...newRawToken, token: hashedToken
                     }
                 },
-            },
-            { new: true, fields: 'accessTokens' }
+            }
         ).lean();
 
 
@@ -232,46 +231,29 @@ export const UserService = {
             const user = await UserModel.findOne(
                 {
                     "info.userName": userName,
-                    $or: [{
-                        'accessTokens': {
-                            $elemMatch: {
-                                token: hashedToken,
-                                validTo: { $lte: new Date() }
-                            }
+                    'accessTokens': {
+                        $elemMatch: {
+                            token: hashedToken,
+                            validTo: { $not: { $gt: new Date() } }
                         }
-                    }, {
-                        'accessTokens': {
-                            $elemMatch: {
-                                token: hashedToken,
-                                validTo: null
-                            }
-                        }
-                    }],
+                    }
                 }, 'accessTokens.$ groups'
             ).lean();
             if (!user) return Left('invalid');
 
             return Right([user, user.accessTokens![0]])
-        } catch (_err) {
+        } catch (err) {
+            logger.debug(err)
         }
 
         const user = await UserModel.findOne(
             {
-                $or: [{
-                    'accessTokens': {
-                        $elemMatch: {
-                            token: accessToken,
-                            validTo: { $lte: new Date() }
-                        }
+                'accessTokens': {
+                    $elemMatch: {
+                        token: accessToken,
+                        validTo: { $not: { $gt: new Date() } }
                     }
-                }, {
-                    'accessTokens': {
-                        $elemMatch: {
-                            token: accessToken,
-                            validTo: null
-                        }
-                    }
-                }],
+                }
             },
             'accessTokens.$ groups'
         ).lean();
