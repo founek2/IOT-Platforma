@@ -1,5 +1,4 @@
-import { Config } from './types';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 import path from 'path';
 
 function areWeTestingWithJest() {
@@ -23,7 +22,7 @@ require('dotenv').config({
 });
 logger.info(`loading .env from ${finalPath}, env=${process.env.NODE_ENV}`);
 
-const config: Config = {
+const config = {
     port: Number(process.env.PORT) || 8085,
     bodyLimit: mustGetString('BODY_LIMIT', '100kb'),
     homepage: mustGetString('HOME_PAGE'),
@@ -70,5 +69,7 @@ const config: Config = {
         },
     },
 };
+
+export type Config = typeof config;
 
 export default config;

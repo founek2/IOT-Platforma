@@ -3,7 +3,7 @@ import { DeviceModel } from 'common/lib/models/deviceModel';
 import { HistoricalModel } from 'common/lib/models/historyModel';
 import { logger } from 'common/lib/logger';
 import { InfluxService } from 'common/lib/services/influxService';
-import { Config } from '../types';
+import { Config } from '../config';
 
 export async function up(config: Config) {
     await InfluxService.deleteAndCreateBucket(config.influxDb.organization, config.influxDb.bucket);

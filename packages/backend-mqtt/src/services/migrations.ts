@@ -2,7 +2,7 @@ import { MigrateModel, IMigrateDocument } from 'common/lib/models/migrateModel';
 import { logger } from 'common/lib/logger';
 import fs from 'fs/promises';
 import path from 'path';
-import { Config } from '../types';
+import { Config } from '../config';
 
 const migrationFolder = path.join(__dirname, '../migrations');
 

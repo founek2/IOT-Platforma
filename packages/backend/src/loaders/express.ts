@@ -4,9 +4,9 @@ import bodyParser from 'body-parser';
 import mongoSanitize from 'express-mongo-sanitize';
 import api from '../api';
 import api2 from '../api/v2';
-import { Config } from '../types';
 import path from 'path';
 import cors from "cors"
+import { Config } from '../config';
 
 function getMaxSize(req: Request) {
     // if (req.url == '/api/device' && (req.method == 'POST' || req.method == 'PATCH')) return '5mb'

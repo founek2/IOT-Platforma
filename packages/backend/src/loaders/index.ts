@@ -1,13 +1,13 @@
 import { Application } from 'express';
 import { logger } from 'common/lib/logger';
-import type * as types from '../types';
 import expressLoader from './express';
 import mongoLoader from './mongodb';
 import subscribers from './subscribers';
 import '../agenda'; // Agenda init
+import { Config } from '../config';
 
 /* Load appropriate loaders */
-export default async ({ app, config }: { app: Application; config: types.Config }) => {
+export default async ({ app, config }: { app: Application; config: Config }) => {
     const mongoConnection = await mongoLoader(config);
     if (!mongoConnection) throw Error('Unable to connect to Mongo DB');
 

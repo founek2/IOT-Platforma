@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
-import * as types from '../types';
-import type { IDevice, DeviceCommand } from 'common/lib/models/interface/device';
+import type { IDevice } from 'common/lib/models/interface/device';
 import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
 import { IUser } from 'common/lib/models/interface/userInterface';
 

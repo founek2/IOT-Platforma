@@ -1,6 +1,6 @@
 import { Router } from 'express';
+import { Config } from '../../config';
 import thing from './thing';
-import { Config } from '../../types';
 
 export default ({ config }: { config: Config }) => {
     let api = Router();

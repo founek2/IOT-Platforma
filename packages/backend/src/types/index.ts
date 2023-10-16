@@ -22,54 +22,6 @@ export interface UserBasic {
     };
 }
 
-export interface Config {
-    port: number;
-    bodyLimit: string;
-    homepage: string;
-    portAuth: number;
-    serviceMqttUri: string;
-    serviceAuthUri: string;
-    dbUri: string;
-    influxDb: {
-        url: string;
-        apiKey: string;
-        organization: string;
-        bucket: string;
-    };
-    jwt: {
-        privateKey: string;
-        publicKey: string;
-        expiresIn: string;
-    };
-    notification: {
-        vapidPublicKey: string
-    },
-    mqtt: {
-        url: string,
-        managementPort: number
-    }
-    email?: {
-        host: string;
-        port: number;
-        secure: boolean;
-        userName: string;
-        password: string;
-    };
-    agenda: {
-        collection: string;
-        jobs?: string;
-    };
-    oauth: {
-        seznam: {
-            clientSecret?: string;
-            clientId?: string;
-            iconUrl: string;
-            endpoint: string;
-            scopes: string[];
-        };
-    };
-}
-
 export type RequestWithAuthOpt = Request & {
     user?: IUser & { admin?: boolean; accessPermissions?: Permission[] };
     root?: boolean;

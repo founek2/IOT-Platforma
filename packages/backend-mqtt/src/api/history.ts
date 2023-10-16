@@ -1,5 +1,3 @@
-import { HistoricalModel } from 'common/lib/models/historyModel';
-import express from 'express';
 import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';

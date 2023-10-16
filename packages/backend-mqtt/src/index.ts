@@ -1,5 +1,5 @@
 import bodyParser from 'body-parser';
-import config from './config';
+import config, { Config } from './config';
 import { InfluxService } from 'common/lib/services/influxService';
 import { JwtService } from 'common/lib/services/jwtService';
 import { connectMongoose } from 'common/lib/utils/connectMongoose';
@@ -14,7 +14,6 @@ import * as FireBase from './services/FireBase';
 import { migrate } from './services/migrations';
 import mqttService from './services/mqtt';
 import initSubscribers from './subscribers';
-import { Config } from './types';
 import { AuthConnector } from 'common/lib/connectors/authConnector';
 import { NotificationService } from './services/NotificationService';
 

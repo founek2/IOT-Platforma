@@ -4,7 +4,7 @@ import { logger } from 'common/lib/logger';
 import http from 'http';
 import loadersInit from './loaders';
 import { MailerService } from './services/mailerService';
-import { Config } from './types';
+import { Config } from './config';
 
 export interface MyApp extends Application {
     server: http.Server;

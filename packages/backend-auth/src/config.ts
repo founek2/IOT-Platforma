@@ -1,6 +1,5 @@
-import { Config } from './types';
 import path from 'path';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 
 function areWeTestingWithJest() {
     return process.env.JEST_WORKER_ID !== undefined;
@@ -23,7 +22,7 @@ require('dotenv').config({
 });
 logger.info(`loading .env from ${finalPath}, env=${process.env.NODE_ENV}`);
 
-const config: Config = {
+const config = {
     portAuth: Number(process.env.AUTH_SERVICE_PORT) || 8084,
     dbUri: mustGetString('DATABASE_URI'),
     jwt: {
@@ -42,4 +41,5 @@ const config: Config = {
     },
 };
 
+export type Config = typeof config;
 export default config;

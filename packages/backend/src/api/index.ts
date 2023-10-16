@@ -9,7 +9,7 @@ import accessToken from './accessToken';
 import notification from './notification';
 import broker from './broker';
 import configApi from './config';
-import { Config } from '../types';
+import { Config } from '../config';
 
 export default ({ config }: { config: Config }) => {
     let api = Router();

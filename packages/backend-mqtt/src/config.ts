@@ -1,6 +1,5 @@
-import { Config } from './types';
 import path from 'path';
-import { logger } from 'common/src/logger';
+import { logger } from 'common/lib/logger';
 
 function areWeTestingWithJest() {
     return process.env.JEST_WORKER_ID !== undefined;
@@ -23,7 +22,7 @@ require('dotenv').config({
 });
 logger.info(`loading .env from ${finalPath}, env=${process.env.NODE_ENV}`);
 
-const config: Config = {
+const config = {
     homepage: mustGetString('HOME_PAGE'),
     portMqtt: Number(process.env.MQTT_SERVICE_PORT) || 8083,
     serviceAuthUri: mustGetString('SERVICE_AUTH_URI', 'http://localhost:8084'),
@@ -51,4 +50,5 @@ const config: Config = {
     },
 };
 
+export type Config = typeof config;
 export default config;

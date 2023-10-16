@@ -1,5 +1,5 @@
 import bodyParser from 'body-parser';
-import config from './config';
+import config, { Config } from './config';
 import { JwtService } from 'common/lib/services/jwtService';
 import { connectMongoose } from 'common/lib/utils/connectMongoose';
 import express, { Application } from 'express';
@@ -10,7 +10,6 @@ import { Server as serverIO } from 'socket.io';
 import api from './api';
 import eventEmitter from './services/eventEmitter';
 import initSubscribers from './subscribers';
-import { Config } from './types';
 
 interface customApp extends Application {
     server: http.Server;

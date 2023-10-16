@@ -2,7 +2,7 @@ import { compose, lensProp, over, pick } from 'ramda';
 import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { checkIsRoot } from 'common/lib/middlewares/user/checkIsRoot';
-import { Config } from '../types';
+import { Config } from '../config';
 
 /**
  * URL prefix /user
