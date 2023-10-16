@@ -20,6 +20,7 @@ type Request = RequestWithAuth<Params>;
  */
 export default () =>
     resource({
+        mergeParams: true,
         middlewares: {
             create: [
                 tokenAuthMIddleware(),
