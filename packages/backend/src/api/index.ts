@@ -14,15 +14,15 @@ import { Config } from '../config';
 export default ({ config }: { config: Config }) => {
     let api = Router();
     // mount the user resource
-    api.use('/user', user());
     api.use('/user/:userId/accessToken', accessToken());
     api.use('/user/:userId/notification', notification());
+    api.use('/user', user());
 
 
-    api.use('/device', device());
-    api.use('/device/:deviceId/thing/:nodeId', thing());
     api.use('/device/:deviceId/thing/:nodeId/state', thingState());
     api.use('/device/:deviceId/thing/:nodeId/notify', notify());
+    api.use('/device/:deviceId/thing/:nodeId', thing());
+    api.use('/device', device());
 
     api.use('/discovery', discovery());
 
