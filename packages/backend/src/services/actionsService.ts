@@ -1,4 +1,4 @@
-import config from 'common/lib/config';
+import config from '../config';
 import { IDevice, DeviceCommand } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
 import { IThing, IThingProperty } from 'common/lib/models/interface/thing';

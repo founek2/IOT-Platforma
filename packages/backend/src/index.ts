@@ -1,4 +1,4 @@
-import config from 'common/lib/config';
+import config from './config';
 import { logger } from 'common/lib/logger';
 import mongoose from 'mongoose';
 import { createApp, MyApp } from './main';

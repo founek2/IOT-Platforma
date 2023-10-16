@@ -44,6 +44,10 @@ export interface Config {
     notification: {
         vapidPublicKey: string
     },
+    mqtt: {
+        url: string,
+        managementPort: number
+    }
     email?: {
         host: string;
         port: number;

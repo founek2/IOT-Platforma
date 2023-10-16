@@ -1,5 +1,5 @@
 import bodyParser from 'body-parser';
-import config from 'common/lib/config';
+import config from './config';
 import { JwtService } from 'common/lib/services/jwtService';
 import { connectMongoose } from 'common/lib/utils/connectMongoose';
 import express, { Application } from 'express';

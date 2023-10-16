@@ -1,5 +1,5 @@
 import bodyParser from 'body-parser';
-import config from 'common/lib/config';
+import config from './config';
 import { InfluxService } from 'common/lib/services/influxService';
 import { JwtService } from 'common/lib/services/jwtService';
 import { connectMongoose } from 'common/lib/utils/connectMongoose';
@@ -25,7 +25,6 @@ interface customApp extends Application {
 
 async function startServer(config: Config) {
     JwtService.init(config.jwt);
-    FireBase.init(config);
     InfluxService.init(config.influxDb);
     const notificationService = new NotificationService({ publicVapidKey: config.notification.vapidPublicKey, privateVapidKey: config.notification.vapidPrivateKey })
 

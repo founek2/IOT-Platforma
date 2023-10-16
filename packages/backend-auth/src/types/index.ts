@@ -6,6 +6,15 @@ export interface Config {
         publicKey: string;
         expiresIn: string;
     };
+    oauth: {
+        seznam: {
+            clientSecret?: string;
+            clientId?: string;
+            iconUrl: string;
+            endpoint: string;
+            scopes: string[];
+        };
+    };
 }
 
 export interface UpdateThingState {

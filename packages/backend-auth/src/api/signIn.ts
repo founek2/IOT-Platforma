@@ -1,4 +1,4 @@
-import config from 'common/lib/config';
+import config from '../config';
 import fieldDescriptors from 'common/lib/fieldDescriptors';
 import { OAuthProvider } from 'common/lib/models/interface/userInterface';
 import { UserService } from 'common/lib/services/userService';

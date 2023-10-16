@@ -1,5 +1,5 @@
 import { OverView } from '../types/rabbitmq';
-import config from 'common/lib/config';
+import config from '../config';
 import { Actions } from './actionsService';
 import { addMinutes, isAfter } from 'date-fns';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';

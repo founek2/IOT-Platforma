@@ -1,4 +1,4 @@
-import config from 'common/lib/config';
+import config from '../config';
 import { OAuthProvider } from 'common/lib/models/interface/userInterface';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { logger } from 'common/lib/logger';
