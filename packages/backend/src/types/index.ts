@@ -41,6 +41,9 @@ export interface Config {
         publicKey: string;
         expiresIn: string;
     };
+    notification: {
+        vapidPublicKey: string
+    },
     email?: {
         host: string;
         port: number;

@@ -3,11 +3,12 @@ import { compose, lensProp, over, pick } from 'ramda';
 import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { checkIsRoot } from 'common/lib/middlewares/user/checkIsRoot';
+import { Config } from '../types';
 
 /**
  * URL prefix /user
  */
-export default () =>
+export default (config: Config) =>
     resource({
         mergeParams: true,
         middlewares: {
@@ -23,7 +24,7 @@ export default () =>
             const data = compose(
                 over(lensProp('email'), pick(['host', 'port', 'secure', 'userName'])),
                 // @ts-ignore
-                over(lensProp('mqtt'), pick(['url', 'port']))
+                over(lensProp('mqtt'), pick(['url', 'port'])),
                 // @ts-ignore
             )(picked);
             res.send({ data });

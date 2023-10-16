@@ -22,6 +22,7 @@
         "hat": "^0.0.3",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.13.2",
+        "node-dotify": "^1.1.0",
         "node-fetch": "^2.6.7",
         "purify-ts": "^1.2.2",
         "ramda": "^0.27.1",

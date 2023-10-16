@@ -39,7 +39,7 @@ export default () =>
             replaceId: [
                 tokenAuthMIddleware(),
                 checkWritePerm(),
-                formDataChecker(fieldDescriptors, { allowedForms: ['EDIT_USER', 'FIREBASE_ADD'] }),
+                formDataChecker(fieldDescriptors, { allowedForms: ['EDIT_USER', "ADD_PUSH_SUBSCRIPTION"] }),
             ],
             deleteId: [tokenAuthMIddleware(), checkWritePerm()],
         },
@@ -148,6 +148,9 @@ export default () =>
                     .ifLeft((error) => res.status(400).send({ error }));
             } else if (body.formData.FIREBASE_ADD) {
                 await UserModel.addNotifyToken(id, body.formData.FIREBASE_ADD.token);
+                res.sendStatus(204);
+            } else if (body.formData.ADD_PUSH_SUBSCRIPTION) {
+                await UserModel.addNotifyToken(id, body.formData.ADD_PUSH_SUBSCRIPTION);
                 res.sendStatus(204);
             } else res.sendStatus(400);
         },

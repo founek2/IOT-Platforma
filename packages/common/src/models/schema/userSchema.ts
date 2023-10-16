@@ -1,10 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 import { IUser } from '../interface/userInterface';
 
-const Schema = mongoose.Schema;
-const ObjectId = mongoose.Types.ObjectId;
-
-export interface IUserDocument extends IUser, Document {}
+export interface IUserDocument extends IUser, Document { }
 
 export const userSchemaPlain = {
     info: {
@@ -29,6 +26,7 @@ export const userSchemaPlain = {
     devices: Object, // {sensors: {order: [id, id, id]}, }
     // preferences: {colorMode: light, devices: [{_id: xxx, order: 10, {things: [{_id: xxx, order: 11}]}}]}
     notifyTokens: [],
+    pushSubscriptions: [],
     accessTokens: [
         {
             name: String,

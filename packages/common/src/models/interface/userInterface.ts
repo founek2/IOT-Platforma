@@ -26,6 +26,15 @@ export interface IOauth {
     provider: OAuthProvider;
 }
 
+export interface PushSubscription {
+    endpoint: string,
+    expirationTime: null | string
+    keys: {
+        auth: string,
+        p256dh: string
+    }
+}
+
 export interface IUser {
     _id?: any;
     info: {
@@ -42,6 +51,7 @@ export interface IUser {
     realm: string;
     groups: ('user' | 'admin' | 'root' | 'flow')[];
     notifyTokens: string[];
+    pushSubscriptions: PushSubscription[]
     accessTokens?: IAccessToken[];
     createdAt: Date;
     updatedAt: Date;

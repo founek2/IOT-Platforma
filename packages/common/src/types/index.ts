@@ -25,15 +25,17 @@ export interface Config {
         publicKey: string;
         expiresIn: string;
     };
-    email:
-    | {
+    notification: {
+        vapidPrivateKey: string
+        vapidPublicKey: string
+    }
+    email?: {
         host: string;
         port: number;
         secure: boolean;
         userName: string;
         password: string;
-    }
-    | undefined;
+    };
     agenda: {
         collection: string;
         jobs?: string;

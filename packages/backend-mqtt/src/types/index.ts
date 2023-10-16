@@ -10,6 +10,10 @@ export interface Config {
         publicKey: string;
         expiresIn: string;
     };
+    notification: {
+        vapidPrivateKey: string
+        vapidPublicKey: string
+    }
     influxDb: {
         url: string;
         apiKey: string;

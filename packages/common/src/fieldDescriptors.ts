@@ -253,16 +253,42 @@ const DISCOVERY_DEVICES: FormFieldDescriptors = {
     },
 };
 
-const FIREBASE_ADD: FormFieldDescriptors = {
-    token: {
-        deepPath: 'FIREBASE_ADD.token',
-        label: 'Token',
+const ADD_PUSH_SUBSCRIPTION: FormFieldDescriptors = {
+    endpoint: {
+        deepPath: 'ADD_PUSH_SUBSCRIPTION.endpoint',
+        label: 'Endpoint',
         required: true,
         validations: [
             validationFactory('isString', {
-                min: 100,
+                min: 5,
             }),
         ],
+    },
+    keys: {
+        auth: {
+            deepPath: 'ADD_PUSH_SUBSCRIPTION.keys.auth',
+            label: 'Auth',
+            required: true,
+            validations: [
+                validationFactory('isString', {
+                    min: 5,
+                }),
+            ],
+        },
+        p256dh: {
+            deepPath: 'ADD_PUSH_SUBSCRIPTION.keys.p256dh',
+            label: 'p256dh',
+            required: true,
+            validations: [
+                validationFactory('isString', {
+                    min: 5,
+                }),
+            ],
+        },
+        expirationTime: {
+            deepPath: 'ADD_PUSH_SUBSCRIPTION.keys.expirationTime',
+            label: 'expirationTime',
+        },
     },
 };
 
@@ -346,7 +372,7 @@ const descriptors: FieldDescriptors = {
     EDIT_DEVICE,
     EDIT_PERMISSIONS,
     EDIT_NOTIFY,
-    FIREBASE_ADD,
+    ADD_PUSH_SUBSCRIPTION,
     DISCOVERY_DEVICES,
     DEVICE_SEND,
     FORGOT,

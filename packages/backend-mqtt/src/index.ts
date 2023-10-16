@@ -16,6 +16,7 @@ import mqttService from './services/mqtt';
 import initSubscribers from './subscribers';
 import { Config } from './types';
 import { AuthConnector } from 'common/lib/connectors/authConnector';
+import { NotificationService } from './services/NotificationService';
 
 interface customApp extends Application {
     server: http.Server;
@@ -26,6 +27,7 @@ async function startServer(config: Config) {
     JwtService.init(config.jwt);
     FireBase.init(config);
     InfluxService.init(config.influxDb);
+    const notificationService = new NotificationService({ publicVapidKey: config.notification.vapidPublicKey, privateVapidKey: config.notification.vapidPrivateKey })
 
     initSubscribers(eventEmitter);
 

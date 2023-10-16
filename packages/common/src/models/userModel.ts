@@ -1,5 +1,5 @@
 import mongoose, { Model } from 'mongoose';
-import { IUser } from './interface/userInterface';
+import { IUser, PushSubscription } from './interface/userInterface';
 import { IUserDocument, userSchemaPlain } from './schema/userSchema';
 import { NotifyModel } from './notifyModel';
 import { DeviceModel } from './deviceModel';
@@ -26,13 +26,13 @@ export interface IUserModel extends Model<IUserDocument> {
     findAll(): Promise<IUserDocument[]>;
     removeUsers(ids: Array<IUser['_id']>): Promise<{ deletedCount?: number }>;
     findAllUserNames(): Promise<Array<{ _id: IUserDocument['_id']; info: { userName: string } }>>;
-    addNotifyToken(userId: IUser['_id'], token: string): Promise<void>;
+    addNotifyToken(userId: IUser['_id'], subscription: PushSubscription): Promise<void>;
     removeNotifyTokens(tokens: string[]): Promise<void>;
     getNotifyTokens(userId: IUser['_id']): Promise<{ notifyTokens: string[] }>;
     checkExists(userId?: string): Promise<boolean>;
 }
 
-userSchema.statics.findByUserName = function (userName) {
+userSchema.statics.findByUserName = function (userName: string) {
     return this.findOne({ 'info.userName': userName }).lean();
 };
 
@@ -67,8 +67,8 @@ userSchema.statics.findAllUserNames = function () {
     return this.find({}, 'info.userName').lean().sort({ 'info.userName': 1 });
 };
 
-userSchema.statics.addNotifyToken = function (userID: IUser['_id'], token: string) {
-    return this.updateOne({ _id: ObjectId(userID) }, { $addToSet: { notifyTokens: token } });
+userSchema.statics.addNotifyToken = function (userID: IUser['_id'], subscription: PushSubscription) {
+    return this.updateOne({ _id: ObjectId(userID) }, { $addToSet: { pushSubscriptions: subscription } });
 };
 
 userSchema.statics.removeNotifyTokens = function (tokens) {

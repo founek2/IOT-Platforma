@@ -14,6 +14,7 @@
     "author": "Martin Skalický",
     "dependencies": {
         "@influxdata/influxdb-client": "^1.24.0",
+        "@types/web-push": "^3.6.1",
         "body-parser": "^1.20.2",
         "common": "workspace:packages/common",
         "date-fns": "^2.15.0",
@@ -27,7 +28,8 @@
         "mqtt": "^5.0.5",
         "purify-ts": "^1.2.2",
         "ramda": "^0.27.1",
-        "socket.io": "^4.7.2"
+        "socket.io": "^4.7.2",
+        "web-push": "^3.6.6"
     },
     "devDependencies": {
         "@types/body-parser": "^1.19.2",

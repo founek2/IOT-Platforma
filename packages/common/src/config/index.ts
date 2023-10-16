@@ -6,6 +6,16 @@ function areWeTestingWithJest() {
     return process.env.JEST_WORKER_ID !== undefined;
 }
 
+function mustGetString(key: string, defaultValue?: string): string {
+    const value = process.env[key];
+    if (!value && !defaultValue) {
+        logger.error(`Requred env ${key} missing`)
+        throw new Error(`Requred env ${key} missing`)
+    }
+
+    return value ?? defaultValue as string;
+}
+
 const pathRef = path.join(__dirname, areWeTestingWithJest() ? '../../../../.test.env' : '../../../../.env');
 const finalPath = process.env.ENV_CONFIG_PATH ? process.env.ENV_CONFIG_PATH : path.resolve(pathRef);
 require('dotenv').config({
@@ -15,38 +25,42 @@ logger.info(`loading .env from ${finalPath}, env=${process.env.NODE_ENV}`);
 
 const config: Config = {
     port: Number(process.env.PORT) || 8085,
-    bodyLimit: process.env.BODY_LIMIT || '100kb',
-    homepage: process.env.HOME_PAGE as string,
+    bodyLimit: mustGetString('BODY_LIMIT', '100kb'),
+    homepage: mustGetString('HOME_PAGE'),
     portAuth: Number(process.env.AUTH_SERVICE_PORT) || 8084,
     portMqtt: Number(process.env.MQTT_SERVICE_PORT) || 8083,
-    serviceAuthUri: (process.env.SERVICE_AUTH_URI as string) || 'http://localhost:8084',
-    serviceMqttUri: (process.env.SERVICE_MQTT_URI as string) || 'http://localhost:8083',
+    serviceAuthUri: mustGetString('SERVICE_AUTH_URI', 'http://localhost:8084'),
+    serviceMqttUri: mustGetString('SERVICE_MQTT_URI', 'http://localhost:8083'),
     firebaseAdminPath: process.env.FIREBASE_ADMIN_PATH as string,
-    dbUri: process.env.DATABASE_URI as string,
+    dbUri: mustGetString('DATABASE_URI'),
     influxDb: {
-        url: process.env.INFLUX_URL || 'http://localhost:8086',
-        apiKey: process.env.INFLUX_API_KEY as string,
-        organization: process.env.INFLUX_ORGANIZATION as string,
-        bucket: process.env.INFLUX_BUCKET as string,
+        url: mustGetString('INFLUX_URL', 'http://localhost:8086'),
+        apiKey: mustGetString('INFLUX_API_KEY'),
+        organization: mustGetString('INFLUX_ORGANIZATION'),
+        bucket: mustGetString('INFLUX_BUCKET'),
     },
     jwt: {
-        privateKey: process.env.JWT_PRIVATE_KEY || '/keys/jwtRS256.key',
-        publicKey: process.env.JWT_PUBLIC_KEY || '/keys/jwtRS256.key.pub',
-        expiresIn: process.env.JWT_EXPIRES_IN || '14d',
+        privateKey: mustGetString('JWT_PRIVATE_KEY', '/keys/jwtRS256.key'),
+        publicKey: mustGetString('JWT_PUBLIC_KEY', '/keys/jwtRS256.key.pub'),
+        expiresIn: mustGetString('JWT_EXPIRES_IN', '14d'),
     },
-    email: {
+    notification: {
+        vapidPrivateKey: mustGetString('VAPID_PRIVATE_KEY'),
+        vapidPublicKey: mustGetString('VAPID_PUBLIC_KEY')
+    },
+    email: process.env.EMAIL_HOST ? {
         host: process.env.EMAIL_HOST as string,
         port: Number(process.env.EMAIL_PORT) || 465,
         secure: true,
         userName: process.env.EMAIL_USERNAME as string,
         password: process.env.EMAIL_PASSWORD as string,
-    },
+    } : undefined,
     agenda: {
         collection: 'agendaJobs',
         jobs: process.env.AGENDA_JOB_TYPES,
     },
     mqtt: {
-        url: process.env.MQTT_URL as string,
+        url: mustGetString('MQTT_URL'),
         port: Number(process.env.MQTT_PORT) || 8883,
         managementPort: Number(process.env.MQTT_MANAGEMENT_PORT) || 15672,
     },
