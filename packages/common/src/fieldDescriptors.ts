@@ -260,9 +260,13 @@ const ADD_PUSH_SUBSCRIPTION: FormFieldDescriptors = {
         required: true,
         validations: [
             validationFactory('isString', {
-                min: 5,
+                startsWith: "https://"
             }),
         ],
+    },
+    expirationTime: {
+        deepPath: 'ADD_PUSH_SUBSCRIPTION.expirationTime',
+        label: 'expirationTime',
     },
     keys: {
         auth: {
@@ -270,9 +274,7 @@ const ADD_PUSH_SUBSCRIPTION: FormFieldDescriptors = {
             label: 'Auth',
             required: true,
             validations: [
-                validationFactory('isString', {
-                    min: 5,
-                }),
+                validationFactory('isString'),
             ],
         },
         p256dh: {
@@ -284,10 +286,6 @@ const ADD_PUSH_SUBSCRIPTION: FormFieldDescriptors = {
                     min: 5,
                 }),
             ],
-        },
-        expirationTime: {
-            deepPath: 'ADD_PUSH_SUBSCRIPTION.keys.expirationTime',
-            label: 'expirationTime',
         },
     },
 };
