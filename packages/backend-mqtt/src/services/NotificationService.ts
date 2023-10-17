@@ -74,6 +74,7 @@ export class NotificationService {
         } = { unSatisfiedItems: [], satisfiedItems: [] };
 
         docs.forEach(({ _id, userId, things }) => {
+            logger.silly("_id", _id, "user", userId)
             // per USER
             things.forEach((thing) =>
                 thing.properties.forEach(
@@ -173,6 +174,7 @@ function processNotifications(
     return ({ type, value: limit, advanced, _id: prop_id, tmp }: INotifyThingProperty) => {
         /* Check validity */
         const result = functions[type](value, limit, advanced, tmp);
+        logger.debug("result of processing")
         if (result.ruleSatisfied) {
             if (result.valid) {
                 if (!output[userID]) output[userID] = [];
