@@ -29,6 +29,7 @@ export interface IUserModel extends Model<IUserDocument> {
     addNotifyToken(userId: IUser['_id'], subscription: PushSubscription): Promise<void>;
     removeNotifyTokens(tokens: string[]): Promise<void>;
     getNotifyTokens(userId: IUser['_id']): Promise<{ notifyTokens: string[] }>;
+    getSubscriptions(userId: IUser['_id']): Promise<{ subscriptions: PushSubscription[] }>;
     checkExists(userId?: string): Promise<boolean>;
 }
 
@@ -85,6 +86,11 @@ userSchema.statics.removeNotifyTokens = function (tokens) {
 userSchema.statics.getNotifyTokens = function (userID: IUser['_id']) {
     return this.findOne({ _id: ObjectId(userID) })
         .select('notifyTokens')
+        .lean();
+};
+userSchema.statics.getSubscriptions = function (userID: IUser['_id']) {
+    return this.findOne({ _id: ObjectId(userID) })
+        .select('pushSubscriptions')
         .lean();
 };
 

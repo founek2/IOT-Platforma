@@ -6,13 +6,13 @@ import { getThing } from 'common/lib/utils/getThing';
 import { getProperty } from 'common/lib/utils/getProperty';
 import { validateValue } from 'common/lib/utils/validateValue';
 import { HistoricalModel } from 'common/lib/models/historyModel';
-import * as FireBaseService from '../FireBase';
 import { SocketUpdateThingState } from 'common/lib/types';
 import { uniq } from 'ramda';
 import { InfluxService } from 'common/lib/services/influxService';
+import { NotificationService } from '../NotificationService';
 
 type cbFn = (topic: string, message: Buffer, groups: string[]) => void;
-export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO) {
+export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO, notificationService: NotificationService) {
     handle('v2/+/+/$state', async function (topic, data, [realm, deviceId]) {
         // TODO add validation
         const status = data.toString() as DeviceStatus;
@@ -86,7 +86,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
         sendToUsers(io, device, nodeId, propertyId, result.value, timestamp);
 
         HistoricalModel.saveData(device._id, thing._id, propertyId, result.value, timestamp);
-        FireBaseService.processData(device, nodeId, propertyId, result.value);
+        notificationService.processData(device, nodeId, propertyId, result.value);
 
         const sample = InfluxService.createMeasurement(
             device._id.toString(),

@@ -5,6 +5,7 @@ import handleV2 from './mqtt/v2';
 import { logger } from 'common/lib/logger';
 import { Maybe } from 'purify-ts/Maybe';
 import type { IClientPublishOptions, MqttClient, IClientOptions } from 'mqtt';
+import { NotificationService } from './NotificationService';
 
 let client: mqtt.MqttClient | undefined;
 
@@ -63,7 +64,7 @@ async function connect(config: MqttConf, getUser: GetUser, cb: ClientCb): Promis
     return client;
 }
 
-function applyListeners(io: serverIO, cl: MqttClient) {
+function applyListeners(io: serverIO, cl: MqttClient, notificationService: NotificationService) {
     cl.on('connect', function () {
         logger.info('mqtt connected');
 
@@ -81,7 +82,7 @@ function applyListeners(io: serverIO, cl: MqttClient) {
         // handle all messages in unauthenticated world
         if (topic.startsWith('prefix/')) handlePrefix(handle, io);
         // handle all message in authenticated prefix
-        else if (topic.startsWith('v2/')) handleV2(handle, io);
+        else if (topic.startsWith('v2/')) handleV2(handle, io, notificationService);
     });
 
     cl.on('error', async function (err) {
@@ -93,6 +94,6 @@ function applyListeners(io: serverIO, cl: MqttClient) {
 }
 
 /* Initialize MQTT client connection */
-export default async (io: serverIO, config: MqttConf, getUser: GetUser) => {
-    client = await connect(config, getUser, (cl) => applyListeners(io, cl));
+export default async (io: serverIO, config: MqttConf, getUser: GetUser, notificationService: NotificationService) => {
+    client = await connect(config, getUser, (cl) => applyListeners(io, cl, notificationService));
 };

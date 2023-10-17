@@ -29,6 +29,10 @@ export interface IOauth {
 export interface PushSubscription {
     endpoint: string,
     expirationTime: null | string
+    keys: {
+        auth: string
+        p256dh: string
+    }
 }
 
 export interface IUser {

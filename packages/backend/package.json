@@ -27,7 +27,6 @@
         "email-templates": "^8.0.3",
         "express": "^4.17.1",
         "express-mongo-sanitize": "^2.0.2",
-        "firebase-admin": "^9.0.0",
         "http-proxy-middleware": "^2.0.6",
         "mongoose": "^5.13.2",
         "morgan": "^1.9.1",

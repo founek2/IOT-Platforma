@@ -10,7 +10,6 @@ import morgan from 'morgan';
 import { Server as serverIO } from 'socket.io';
 import api from './api';
 import eventEmitter from './services/eventEmitter';
-import * as FireBase from './services/FireBase';
 import { migrate } from './services/migrations';
 import mqttService from './services/mqtt';
 import initSubscribers from './subscribers';
@@ -25,7 +24,11 @@ interface customApp extends Application {
 async function startServer(config: Config) {
     JwtService.init(config.jwt);
     InfluxService.init(config.influxDb);
-    const notificationService = new NotificationService({ publicVapidKey: config.notification.vapidPublicKey, privateVapidKey: config.notification.vapidPrivateKey })
+    const notificationService = new NotificationService({
+        publicVapidKey: config.notification.vapidPublicKey,
+        privateVapidKey: config.notification.vapidPrivateKey,
+        homepageUrl: config.homepage
+    })
 
     initSubscribers(eventEmitter);
 
@@ -49,7 +52,7 @@ async function startServer(config: Config) {
         logger.info(`Started on port ${(app.server?.address() as any).port}`);
 
         if (app.io)
-            setTimeout(() => mqttService(app.io, config.mqtt, AuthConnector(config.serviceAuthUri).getPass), 1000); //init
+            setTimeout(() => mqttService(app.io, config.mqtt, AuthConnector(config.serviceAuthUri).getPass, notificationService), 1000);
     });
 }
 
