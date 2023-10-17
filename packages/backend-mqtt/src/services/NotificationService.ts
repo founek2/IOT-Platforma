@@ -86,14 +86,17 @@ export class NotificationService {
             );
         });
 
+        logger.silly("sended", sended)
+        logger.silly("notSended", notSended)
+
         // Notify.refreshControlItems(deviceId, sended, notSended);
         NotifyService.refreshSendedItems(sended, nodeId);
         NotifyService.refreshNotSendedItems(notSended, nodeId);
 
         const notificationsToSend = await prepareNotifications(output, sended);
-        const results = Promise.all(notificationsToSend.map((data) => this.sendNotification(data.notification, data.subscription)))
+        const results = await Promise.all(notificationsToSend.map((data) => this.sendNotification(data.notification, data.subscription)))
 
-        logger.debug("notifications result", JSON.stringify(results))
+        if (results.length) logger.debug("notifications result", notificationsToSend.length, JSON.stringify(results))
         // const response = await messaging.sendAll(messages);
         // logger.debug(response.successCount + ' of ' + messages.length + ' messages were sent successfully');
 
