@@ -1,12 +1,12 @@
-import { logger } from "common/src/logger";
-import { IDevice } from "common/src/models/interface/device";
-import { INotify, INotifyThingProperty } from "common/src/models/interface/notifyInterface";
-import { IThing, IThingProperty } from "common/src/models/interface/thing";
-import { PushSubscription, IUser } from "common/src/models/interface/userInterface"
-import { NotifyModel } from "common/src/models/notifyModel";
-import { UserModel } from "common/src/models/userModel";
-import { getProperty } from "common/src/utils/getProperty";
-import { getThing } from "common/src/utils/getThing";
+import { logger } from "common/lib/logger";
+import { IDevice } from "common/lib/models/interface/device";
+import { INotify, INotifyThingProperty } from "common/lib/models/interface/notifyInterface";
+import { IThing, IThingProperty } from "common/lib/models/interface/thing";
+import { PushSubscription, IUser } from "common/lib/models/interface/userInterface"
+import { NotifyModel } from "common/lib/models/notifyModel";
+import { UserModel } from "common/lib/models/userModel";
+import { getProperty } from "common/lib/utils/getProperty";
+import { getThing } from "common/lib/utils/getThing";
 import { uniq } from "ramda";
 import webpush from "web-push"
 import functions from "./notification/functions";
