@@ -29,7 +29,8 @@ export interface IUserModel extends Model<IUserDocument> {
     addNotifyToken(userId: IUser['_id'], subscription: PushSubscription): Promise<void>;
     removeNotifyTokens(tokens: string[]): Promise<void>;
     getNotifyTokens(userId: IUser['_id']): Promise<{ notifyTokens: string[] }>;
-    getSubscriptions(userId: IUser['_id']): Promise<{ subscriptions: PushSubscription[] }>;
+    getSubscriptions(userId: IUser['_id']): Promise<Pick<IUser, "_id" | "pushSubscriptions">>;
+    removeSubscription(userId: IUser['_id'], subscription: PushSubscription): Promise<void>;
     checkExists(userId?: string): Promise<boolean>;
 }
 
@@ -92,6 +93,13 @@ userSchema.statics.getSubscriptions = function (userID: IUser['_id']) {
     return this.findOne({ _id: ObjectId(userID) })
         .select('pushSubscriptions')
         .lean();
+};
+userSchema.statics.removeSubscription = function (userId: IUser['_id'], subscription: PushSubscription) {
+    return this.updateOne({ _id: ObjectId(userId) }, {
+        $pull: {
+            "pushSubscriptions": { endpoint: subscription.endpoint }
+        }
+    }).exec()
 };
 
 userSchema.statics.checkExists = async function (userID: IUser['_id']) {

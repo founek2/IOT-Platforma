@@ -8,7 +8,7 @@ import { IUser } from "./interface/userInterface";
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
 
-export interface INotifyDocument extends INotify, Document {}
+export interface INotifyDocument extends INotify, Document { }
 
 export interface INotifyModel extends Model<INotifyDocument> {
     getForThing(
@@ -98,7 +98,8 @@ notifySchema.statics.getForProperty = async function (
             "things.properties.propertyId": propertyId,
         },
         "things.$ deviceId userId"
-    );
+    ).lean();
+
     return docs.map((doc) => ({
         _id: doc._id,
         userId: doc.userId,

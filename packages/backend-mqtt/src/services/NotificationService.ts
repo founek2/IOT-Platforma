@@ -65,6 +65,7 @@ export class NotificationService {
         const property = getProperty(deviceThing, propertyId);
 
         const docs = await NotifyModel.getForProperty(device._id, nodeId, propertyId);
+        if (docs.length === 0) return;
 
         const output: Output = {};
         const sended: { _id: INotify['_id']; userId: IUser['_id']; prop_id: IThingProperty['_id'] }[] = [];
@@ -87,35 +88,31 @@ export class NotificationService {
             );
         });
 
-        logger.silly("sended", sended)
-        logger.silly("notSended", notSended)
-
         // Notify.refreshControlItems(deviceId, sended, notSended);
         NotifyService.refreshSendedItems(sended, nodeId);
         NotifyService.refreshNotSendedItems(notSended, nodeId);
 
+        const invalidTokens: PreparedNotification[] = [];
+        const validTokens: PreparedNotification[] = [];
+
         const notificationsToSend = await prepareNotifications(output, sended);
-        const results = await Promise.all(notificationsToSend.map((data) => this.sendNotification(data.notification, data.subscription)))
+        const results = await Promise.all(notificationsToSend.map((data) => this.sendNotification(data.notification, data.subscription).then((result) => ({ result })).catch((err: webpush.WebPushError) => ({ result: err }))))
+        results.forEach(({ result }, idx) => {
+            if (result.statusCode == 410) {
+                invalidTokens.push(notificationsToSend[idx]);
+            } else if (200 <= result.statusCode && result.statusCode < 299) {
+                validTokens.push(notificationsToSend[idx]);
+            }
+        })
 
-        if (results.length) logger.debug("notifications result", notificationsToSend.length, JSON.stringify(results))
-        // const response = await messaging.sendAll(messages);
-        // logger.debug(response.successCount + ' of ' + messages.length + ' messages were sent successfully');
+        logger.debug(validTokens.length + ' of ' + results.length + ' messages were sent successfully');
 
-        // const invalidTokens: string[] = [];
-        // if (response.successCount !== messages.length) {
-        //     response.responses.forEach(({ error }: any, idx: number) => {
-        //         if (error) {
-        //             if (error.code === 'messaging/registration-token-not-registered') {
-        //                 invalidTokens.push(messages[idx].token);
-        //             } else logger.debug(error);
-        //         }
-        //     });
-        // }
 
-        // if (invalidTokens.length) {
-        //     UserModel.removeNotifyTokens(invalidTokens);
-        //     logger.debug('Deleting notify Tokens>', invalidTokens.length);
-        // }
+        const deleteResults = await Promise.all(invalidTokens.map(({ userId, subscription }) => {
+            UserModel.removeSubscription(userId, subscription);
+        }))
+        if (deleteResults.length) logger.debug('Deleted push subscriptions>', deleteResults.length)
+
     }
 }
 
@@ -143,15 +140,11 @@ type Output = { [userId: string]: { title: string; body: string; icon: string; c
 
 
 async function getSubscriptionsPerUser(IDs: string[]) {
-    const promises: Promise<{ subscriptions: PushSubscription[] }>[] = [];
+    // const promises: Promise<{ pushSubscriptions: PushSubscription[] }>[] = [];
     const userIds: string[] = [];
-    IDs.forEach((userID) => {
-        promises.push(UserModel.getSubscriptions(userID));
-        userIds.push(userID);
-    });
+    const promises = IDs.map((userID) => UserModel.getSubscriptions(userID));
 
-    const arr = await Promise.all(promises);
-    return arr.map((obj, i) => ({ subscriptions: obj.subscriptions, userId: userIds[i] }));
+    return Promise.all(promises);
 }
 
 function isLastSatisfied(tmp: INotifyThingProperty['tmp']) {
@@ -197,21 +190,23 @@ async function prepareNotifications(output: Output, sended: { _id: IThingPropert
     return buildNotifications(arrOfTokensPerUser, output);
 }
 
+type PreparedNotification = { subscription: PushSubscription, notification: Notification, userId: string };
 /**
  *
  * @param {Array} arrOfTokens - array of objects {_id: ..., notifyTokens: []}
  * @param {Object} objPerUser - userID as key and array of notifications as value
  */
-async function buildNotifications(arrOfTokens: { userId: string; subscriptions: PushSubscription[] }[], objPerUser: Record<IUser["_id"], Notification[]>) {
-    const messages: { subscription: PushSubscription, notification: Notification }[] = [];
-    arrOfTokens.forEach(({ subscriptions, userId }) => {
-        subscriptions.forEach((subscription) => {
+async function buildNotifications(arrOfTokens: (Pick<IUser, "_id" | "pushSubscriptions">)[], objPerUser: Record<IUser["_id"], Notification[]>) {
+    const messages: PreparedNotification[] = [];
+    arrOfTokens.forEach(({ pushSubscriptions, _id: userId }) => {
+        pushSubscriptions.forEach((subscription) => {
             const notifications = objPerUser[userId];
             notifications.forEach((notification) => {
                 // TODO neposkládat do jedné notifikace maybe?
                 messages.push({
                     notification,
                     subscription,
+                    userId: userId,
                 });
             });
         });
