@@ -43,9 +43,9 @@ export const formsDataSlice = createSlice({
             const { deepPath, value } = action.payload;
             const fieldState: FieldState = getInPath('registeredFields.' + deepPath, state);
 
-            if (value.errorMessages) fieldState.errorMessages = value.errorMessages;
-            if (value.pristine) fieldState.pristine = value.pristine;
-            if (value.valid) fieldState.valid = value.valid;
+            if (value.errorMessages !== undefined) fieldState.errorMessages = value.errorMessages;
+            if (value.pristine !== undefined) fieldState.pristine = value.pristine;
+            if (value.valid !== undefined) fieldState.valid = value.valid;
         },
         updateRegisteredFields: (state, action: PayloadAction<any>) => {
             state.registeredFields = mergeDeepLeft(action.payload, state.registeredFields);
