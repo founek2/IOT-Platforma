@@ -37,9 +37,7 @@ function PropertyPart({ id, config }: PropertyPartProps) {
                 <FieldConnector
                     component="Select"
                     deepPath={`EDIT_NOTIFY.propertyId.${id}`}
-                    fieldProps={{
-                        fullWidth: true,
-                    }}
+                    fullWidth
                     options={config.properties.map(({ name, propertyId }) => (
                         { label: name, value: propertyId }
                     ))}
@@ -55,9 +53,7 @@ function PropertyPart({ id, config }: PropertyPartProps) {
                         <FieldConnector
                             component="Select"
                             deepPath={`EDIT_NOTIFY.type.${id}`}
-                            fieldProps={{
-                                fullWidth: true,
-                            }}
+                            fullWidth
                             onChange={() => {
                                 updateFormField(`EDIT_NOTIFY.value.${id}`, '');
                             }}
@@ -73,8 +69,8 @@ function PropertyPart({ id, config }: PropertyPartProps) {
                             {isEnum ? <FieldConnector
                                 component='Select'
                                 deepPath={`EDIT_NOTIFY.value.${id}`}
+                                fullWidth
                                 fieldProps={{
-                                    fullWidth: true,
                                     type: isNumerical ? 'number' : 'text',
                                 }}
                                 options={(selectedProperty as IThingPropertyEnum).format.map((label) => (
@@ -84,8 +80,8 @@ function PropertyPart({ id, config }: PropertyPartProps) {
                             /> : <FieldConnector
                                 component='TextField'
                                 deepPath={`EDIT_NOTIFY.value.${id}`}
+                                fullWidth
                                 fieldProps={{
-                                    fullWidth: true,
                                     type: isNumerical ? 'number' : 'text',
                                 }}
                             />}

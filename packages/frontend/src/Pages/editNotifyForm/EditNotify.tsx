@@ -75,9 +75,7 @@ function EditNotify({ id, onDelete, config }: EditNotifyProps) {
                             component="Select"
                             deepPath={`EDIT_NOTIFY.advanced.interval.${id}`}
                             options={NotifyIntervals}
-                            fieldProps={{
-                                fullWidth: true,
-                            }}
+                            fullWidth
                         />
                     </Grid>
                     <Grid item md={2} xs={6}>
@@ -85,9 +83,9 @@ function EditNotify({ id, onDelete, config }: EditNotifyProps) {
                             deepPath={`EDIT_NOTIFY.advanced.from.${id}`}
                             fieldProps={{
                                 // defaultValue: "00:00",
-                                fullWidth: true,
                                 type: 'time',
                             }}
+                            fullWidth
                         />
                     </Grid>
                     <Grid item md={2} xs={6}>
@@ -95,9 +93,9 @@ function EditNotify({ id, onDelete, config }: EditNotifyProps) {
                             deepPath={`EDIT_NOTIFY.advanced.to.${id}`}
                             fieldProps={{
                                 // defaultValue: "23:59",
-                                fullWidth: true,
                                 type: 'time',
                             }}
+                            fullWidth
                         />
                     </Grid>
                     {/* </div> */}
