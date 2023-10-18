@@ -41,6 +41,8 @@ export const api = createApi({
         'Users',
         'DiscoveredDevices',
         'AccessTokens',
+        'NotificationConfig',
+        'ThingNotifications',
     ],
     /**
      * This api has endpoints injected in adjacent files,

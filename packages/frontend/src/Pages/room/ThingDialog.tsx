@@ -1,5 +1,7 @@
+import { MenuItem } from '@mui/material';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Dialog } from '../../components/Dialog';
 import { Draggable, DraggableProvider } from '../../components/Draggable';
@@ -88,12 +90,28 @@ export function ThingDialog() {
         ))
         : <></>;
 
+    const menu = [{ label: "Uspořádat", onClick: () => setEditMode(!editMode) }, { label: "Notifikace", path: `/device/${thing?.deviceId}/thing/${thingId}/notification` }]
     return (
         <Dialog
             open={Boolean(thing)}
             onClose={() => handleClose()}
             title={thing?.config.name}
-            onMenuItem={() => setEditMode(!editMode)}
+            menuItems={(closeMenu) =>
+                menu.map(({ label, path, onClick }) => {
+                    const item = <MenuItem key={label} onClick={() => { closeMenu(); if (onClick) onClick(); }}>{label}</MenuItem>
+                    return path ? <Link key={label} to={path}>{item}</Link> : item
+                })
+                //    ( <MenuItem onClick={() => {
+                //         closeMenu()
+                //         setEditMode(!editMode)
+                //     }}>Uspořádat</MenuItem>
+                //     <Link to={`/device/${thing?.deviceId}/thing/${thingId}/notification`}>
+                //         <MenuItem onClick={() => {
+                //             closeMenu()
+                //         }}>Notifikace</MenuItem>
+                //     </Link>
+                //    )
+            }
             fullWidth
         >
             <>

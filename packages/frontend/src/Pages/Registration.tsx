@@ -12,13 +12,9 @@ import { useForm } from '../hooks/useForm';
 
 export default function Registration() {
     const [registerAndSignIn, setRegisterAndSignIn] = useState(true);
-    const { validateForm, resetForm } = useForm<RegisterUserForm>('REGISTRATION');
+    const { validateForm, resetForm } = useForm<RegisterUserForm>('REGISTRATION', { resetOnUnmount: true });
     const [registerAndSignInMutation] = useRegisterAndSignInMutation();
     const [registerMutation] = useRegisterMutation();
-
-    useEffect(() => {
-        resetForm();
-    }, []);
 
     async function handleRegister() {
         const result = validateForm();
@@ -27,7 +23,7 @@ export default function Registration() {
         (registerAndSignIn ? registerAndSignInMutation(result.data) : registerMutation(result.data))
             .unwrap()
             .then(() => resetForm())
-            .catch(() => {});
+            .catch(() => { });
     }
 
     return (

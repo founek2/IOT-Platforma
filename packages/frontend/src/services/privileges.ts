@@ -26,6 +26,8 @@ const RoomLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room
 
 const ProfileLazy = lazy(() => import(/* webpackChunkName: 'Profile' */ '../Pages/Profile'));
 
+const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'NotifyForm' */ '../Pages/EditNotifyForm'));
+
 const userRoutes: Route[] = [
     {
         path: '/building/:building/room/:room',
@@ -50,11 +52,7 @@ const userRoutes: Route[] = [
     { path: '/management/building', Component: LocationsManagementLazy, name: 'deviceControl', Icon: DevicesOtherIcon },
     { path: '/management/building/:building', Component: LocationsManagementLazy, name: 'deviceControl' },
     { path: '/management/building/:building/room/:room', Component: DeviceManagementLazy, name: 'deviceControl' },
-    // {
-    //     path: '/management/building/:building/room/:room',
-    //     Component: RoomsLazy,
-    // },
-    // { path: '/device/:deviceId/thing/:nodeId/notify', Component: EditNotifyFormLazy },
+    { path: '/device/:deviceId/thing/:nodeId/notification', Component: EditNotifyFormLazy },
 ];
 const adminRoutes = append(
     { path: '/userManagement', Component: UserManagement, name: 'userManagement', Icon: PeopleIcon },

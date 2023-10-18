@@ -1,10 +1,12 @@
-self.addEventListener("push", e => {
-    const { title, ...options } = e.data.json();
+self.addEventListener("push", event => {
+    const { title, ...options } = event.data.json();
     console.log("recieved notification title")
-    self.registration.showNotification(
+    const promiseChain = self.registration.showNotification(
         title, // title of the notification
         options,
     );
+
+    event.waitUntil(promiseChain);
 });
 
 self.addEventListener('message', (event) => {

@@ -1,10 +1,13 @@
-import React from 'react';
-import { useAppDispatch } from '.';
+import React, { useEffect, useState } from 'react';
+import { useStore } from 'react-redux';
+import { useAppDispatch, useAppStore } from '.';
 import { formsDataActions } from '../store/slices/formDataActions';
 import { Paths } from '../types';
 
-export function useForm<T = FormData>(formName: string) {
+export function useForm<T = FormData>(formName: string, options?: { resetOnUnmount: boolean }) {
     const dispatch = useAppDispatch();
+    const store = useAppStore();
+
     const validateForm = React.useCallback(
         () => dispatch(formsDataActions.validateForm(formName)) as { data: T; valid: boolean },
         [dispatch]
@@ -22,9 +25,19 @@ export function useForm<T = FormData>(formName: string) {
         (formData: T) => dispatch(formsDataActions.setFormData({ formName: formName, data: formData } as any)),
         [dispatch]
     );
+    const getFormData = React.useCallback(
+        () => store.getState().formsData[formName] as unknown as T,
+        [dispatch]
+    );
     const resetForm = React.useCallback(() => {
         dispatch(formsDataActions.removeForm(formName));
     }, [dispatch]);
+
+    useEffect(() => {
+        return () => {
+            if (options?.resetOnUnmount) resetForm()
+        }
+    }, [options?.resetOnUnmount])
 
     return {
         validateField,
@@ -32,5 +45,6 @@ export function useForm<T = FormData>(formName: string) {
         setFieldValue,
         resetForm,
         setFormData,
+        getFormData,
     };
 }

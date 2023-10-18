@@ -7,9 +7,6 @@ export interface EditDeviceFormData {
     info: Device['info'];
     permissions: Device['permissions'];
 }
-interface HistoryResponse {
-    docs: Measurement[];
-}
 export const devicesApi = api.injectEndpoints({
     endpoints: (build) => ({
         updateDevice: build.mutation<{}, { deviceID: string; data: EditDeviceFormData }>({

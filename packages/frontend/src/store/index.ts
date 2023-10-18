@@ -52,6 +52,7 @@ if (process.env.NODE_ENV !== 'production' && module.hot) {
     module.hot.accept('./slices', () => store.replaceReducer(rootReducer));
 }
 
+export type AppStore = typeof store;
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof rootReducer>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}

@@ -1,3 +1,4 @@
+import { INotifyThing, NotifyType } from 'common/src/models/interface/notifyInterface';
 import { IThingProperty } from 'common/src/models/interface/thing';
 import { Measurement } from 'common/src/types';
 import { subDays } from 'date-fns';
@@ -18,6 +19,18 @@ export interface UpdateThingStateArgs {
 export interface EditThingFormData {
     config: Thing["config"];
 }
+export interface EditNotificationsFormData {
+    propertyId: string[]
+    type: NotifyType[]
+    value: string[]
+    advanced: {
+        daysOfWeek: number[][]
+        interval: number[]
+        from: string[]
+        to: string[]
+    }
+    count: number
+}
 export const thingsApi = api.injectEndpoints({
     endpoints: (build) => ({
         thingHistory: build.query<HistoryResponse['docs'], { deviceID: Device['_id']; thingID: Thing['config']['nodeId'] }>({
@@ -26,13 +39,19 @@ export const thingsApi = api.injectEndpoints({
             transformResponse: (res: HistoryResponse) => res.docs,
             providesTags: ['History'],
         }),
+        thingNotifications: build.query<INotifyThing, { deviceID: Device['_id']; thingID: Thing['config']['nodeId'] }>({
+            query: ({ deviceID, thingID }) =>
+                `device/${deviceID}/thing/${thingID}/notify`,
+            transformResponse: (res: any) => res.doc.thing,
+            providesTags: ['ThingNotifications'],
+        }),
         updateThingState: build.mutation<undefined, UpdateThingStateArgs>({
             query: ({ deviceId, nodeId, propertyId, value }) => ({
                 url: `device/${deviceId}/thing/${nodeId}?property=${propertyId}&value=${value}`,
                 method: 'POST',
             }),
         }),
-        updateThing: build.mutation<undefined, {deviceId: string, nodeId: string, data: EditThingFormData}>({
+        updateThing: build.mutation<undefined, { deviceId: string, nodeId: string, data: EditThingFormData }>({
             query: ({ deviceId, nodeId, data }) => ({
                 url: `device/${deviceId}/thing/${nodeId}`,
                 method: 'PUT',
@@ -40,7 +59,15 @@ export const thingsApi = api.injectEndpoints({
                 invalidatesTags: ["Devices"]
             }),
         }),
+        updateThingNotifications: build.mutation<undefined, { deviceId: string, nodeId: string, data: EditNotificationsFormData }>({
+            query: ({ deviceId, nodeId, data }) => ({
+                url: `device/${deviceId}/thing/${nodeId}/notify`,
+                method: 'PUT',
+                body: { formData: { EDIT_NOTIFY: data } },
+                invalidatesTags: ["ThingNotifications"]
+            }),
+        }),
     }),
 });
 
-export const { useLazyThingHistoryQuery, useUpdateThingStateMutation, useUpdateThingMutation } = thingsApi;
+export const { useLazyThingHistoryQuery, useUpdateThingStateMutation, useUpdateThingMutation, useThingNotificationsQuery, useUpdateThingNotificationsMutation } = thingsApi;
