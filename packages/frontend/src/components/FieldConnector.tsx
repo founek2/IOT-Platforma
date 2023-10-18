@@ -4,7 +4,7 @@ import fieldDescriptors from 'common/src/fieldDescriptors';
 import { logger } from 'common/src/logger';
 import chainHandler from 'common/src/utils/chainHandler';
 import getInPath from 'common/src/utils/getInPath';
-import { getFieldVal, getFormData, getRegisteredField } from 'common/src/utils/getters';
+import { getFieldDescriptor, getFieldVal, getFormData, getRegisteredField } from 'common/src/utils/getters';
 import { onEnterRun } from 'common/src/utils/onEnter';
 import { isRequired } from 'common/src/validations';
 import React, { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '../hooks';
 import { formsDataActions as formsActions } from '../store/slices/formDataActions';
 import Autocomplete, { AutocompleteOption } from './fieldConnector/Autocomplete';
 import ChipArray from './fieldConnector/ChipArray';
+import Select from './fieldConnector/Select';
 import PasswordField from './fieldConnector/PasswordField';
 
 const { registerField, unregisterField, setFormField, validateField, validateForm, updateRegisteredField } =
@@ -26,6 +27,7 @@ const Components = {
     // InputField: InputField,
     // FileLoader: FileLoader,
     ChipArray: ChipArray,
+    Select: Select,
     // CheckBox: CheckBox,
     // Autocomplete: Autocomplete
 };
@@ -64,7 +66,7 @@ type FieldConnectorProps<T extends componentKeys> = {
     fullWidth?: boolean;
     variant?: 'filled' | 'outlined' | 'standard';
 };
-type FieldConnectorAutocomplete = FieldConnectorProps<'Autocomplete' | 'ChipArray'> & {
+type FieldConnectorAutocomplete = FieldConnectorProps<'Autocomplete' | 'ChipArray' | "Select"> & {
     options: AutocompleteOption[];
 };
 
@@ -97,7 +99,7 @@ function FieldConnector({
     const [dirty, setDirty] = useState(false);
     const formData = useAppSelector(getFormData(deepPath.split('.')[0]));
     const registeredField = useAppSelector(getRegisteredField(deepPath));
-    const descriptor = getInPath(deepPath, fieldDescriptors);
+    const descriptor = getFieldDescriptor(deepPath)({ fieldDescriptors });
     const value = useAppSelector((state) => getFieldVal(deepPath)(state));
 
     useEffect(() => {
@@ -137,7 +139,7 @@ function FieldConnector({
         const Component = typeof component === 'string' ? Components[component] : component;
 
         let anotherProps = {};
-        if (component === 'Autocomplete' || component === 'ChipArray') {
+        if (component === 'Autocomplete' || component === 'ChipArray' || component === 'Select') {
             const autoProps = props as FieldConnectorAutocomplete;
             anotherProps = { options: autoProps.options };
         }

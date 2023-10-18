@@ -6,15 +6,6 @@ import { VideoStream } from "./videoStream/video-stream";
 console.log("Registering video-stream")
 if (!customElements.get("video-stream")) customElements.define("video-stream", VideoStream);
 
-const Loader = styled(CircularProgress)<CircularProgressProps>({
-    position: "absolute",
-    left: 0,
-    right: 0,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    top: 'calc(50% - 20px)',
-});
-
 interface VideoStreamProps {
     src: string
 }

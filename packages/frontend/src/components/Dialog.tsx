@@ -9,6 +9,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Menu, MenuItem, SxProps, Theme } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Link } from 'react-router-dom';
 
 export interface DialogProps {
     open: boolean;
@@ -16,13 +17,13 @@ export interface DialogProps {
     onClose: () => any;
     onAgree?: () => any;
     onDisagree?: () => any;
-    onMenuItem?: () => any;
     agreeText?: string;
     disagreeText?: string;
     children?: JSX.Element | null;
     fullWidth?: boolean;
     sx?: SxProps<Theme>;
     disabled?: boolean;
+    menuItems?: (onClose: () => void) => JSX.Element | JSX.Element[]
 }
 export function Dialog({
     open,
@@ -36,7 +37,7 @@ export function Dialog({
     sx,
     fullWidth,
     disabled,
-    onMenuItem,
+    menuItems
 }: DialogProps) {
     const isSmall = useMediaQuery('(max-width:450px)');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -52,7 +53,7 @@ export function Dialog({
             <DialogTitle id="alert-dialog-title" display="flex">
                 {title ? title : null}
                 <Box flexGrow={1} />
-                {onMenuItem ? <>
+                {menuItems ? <>
                     <IconButton
                         aria-label="close"
                         onClick={handleClick}
@@ -71,10 +72,7 @@ export function Dialog({
                             'aria-labelledby': 'basic-button',
                         }}
                     >
-                        <MenuItem onClick={() => {
-                            onMenuItem()
-                            handleCloseMenu()
-                        }}>Uspořádat</MenuItem>
+                        {menuItems(handleCloseMenu)}
                     </Menu></> : null}
                 {isSmall ? (
                     <IconButton
