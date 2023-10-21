@@ -27,6 +27,7 @@ async function startServer(config: Config) {
     const notificationService = new NotificationService({
         publicVapidKey: config.notification.vapidPublicKey,
         privateVapidKey: config.notification.vapidPrivateKey,
+        emailVapid: config.notification.vapidEmail,
         homepageUrl: config.homepage
     })
 

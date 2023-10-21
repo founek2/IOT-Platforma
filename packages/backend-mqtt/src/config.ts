@@ -42,7 +42,8 @@ const config = {
     },
     notification: {
         vapidPrivateKey: mustGetString('VAPID_PRIVATE_KEY'),
-        vapidPublicKey: mustGetString('VAPID_PUBLIC_KEY')
+        vapidPublicKey: mustGetString('VAPID_PUBLIC_KEY'),
+        vapidEmail: mustGetString('VAPID_MAILTO'),
     },
     mqtt: {
         url: mustGetString('MQTT_URL'),

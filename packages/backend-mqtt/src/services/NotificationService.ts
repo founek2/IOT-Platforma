@@ -42,8 +42,8 @@ export interface Notification {
 export class NotificationService {
     homepageUrl: string;
 
-    constructor({ publicVapidKey, privateVapidKey, homepageUrl }: { publicVapidKey: string, privateVapidKey: string, homepageUrl: string }) {
-        webpush.setVapidDetails("mailto: martin.skalicky@iotdomu.cz", publicVapidKey, privateVapidKey)
+    constructor({ publicVapidKey, privateVapidKey, emailVapid, homepageUrl }: { publicVapidKey: string, privateVapidKey: string, emailVapid: string, homepageUrl: string }) {
+        webpush.setVapidDetails(`mailto:${emailVapid}`, publicVapidKey, privateVapidKey)
         this.homepageUrl = homepageUrl;
     }
 
