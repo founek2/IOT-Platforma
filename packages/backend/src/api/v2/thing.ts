@@ -44,7 +44,7 @@ export default () =>
             if (!result.valid) return res.sendStatus(400);
 
             (await Actions.deviceSetProperty(deviceId, nodeId, propertyId, value, doc))
-                ? res.sendStatus(204)
+                ? res.sendStatus(200)
                 : res.sendStatus(400);
         },
     });
