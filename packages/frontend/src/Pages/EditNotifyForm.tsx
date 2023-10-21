@@ -4,25 +4,24 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import IconButton from '@mui/material/IconButton';
-import { makeStyles } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import AddCircle from '@mui/icons-material/AddCircle';
-import { NOTIFY_INTERVALS } from 'common/src/constants';
 import { clone } from 'ramda';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-// import { getToken } from '../firebase';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import EditNotify, { defaultAdvancedValues } from './editNotifyForm/EditNotify';
-import { getFieldVal, getFormData } from 'common/src/utils/getters';
+import { getFieldVal } from 'common/src/utils/getters';
 import { getThing } from '../selectors/getters';
-import { devicesReducerActions } from '../store/slices/application/devicesSlice';
 import { Box, CircularProgress, Grid } from '@mui/material';
 import { useWebPush } from '../hooks/useWebPush';
 import { useForm } from '../hooks/useForm';
 import { EditNotificationsFormData } from '../endpoints/thing';
 import { useThingNotificationsQuery, useUpdateThingNotificationsMutation } from '../endpoints/thing';
 import { transformNotifyForFE } from "common/src/utils/transform"
+import { notificationActions } from '../store/slices/notificationSlice';
+import SuccessMessages from 'common/src/localization/succcess';
+import { logger } from 'common/src/logger';
 
 const FIELDS: (keyof Omit<EditNotificationsFormData, "count" | "advanced">)[] = ['propertyId', 'type', 'value'];
 const FIELDS_ADVANCED: (keyof EditNotificationsFormData["advanced"])[] = ['interval', 'from', 'to', 'daysOfWeek'];
@@ -92,7 +91,11 @@ export default function EditNotifyPage() {
         const { valid, data } = form.validateForm();
         if (!valid || !params.deviceId || !thing?.config.nodeId) return;
 
-        updateNotificationMutation({ deviceId: params.deviceId, nodeId: thing?.config.nodeId, data })
+        updateNotificationMutation({ deviceId: params.deviceId, nodeId: thing?.config.nodeId, data }).unwrap().then(() => {
+            dispatch(notificationActions.add({ message: SuccessMessages.getMessage("successfullyUpdated") }))
+        }).catch(err => {
+            logger.error(err)
+        })
     };
 
 
