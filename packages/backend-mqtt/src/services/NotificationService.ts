@@ -102,6 +102,8 @@ export class NotificationService {
                 invalidTokens.push(notificationsToSend[idx]);
             } else if (200 <= result.statusCode && result.statusCode < 299) {
                 validTokens.push(notificationsToSend[idx]);
+            } else {
+                logger.error("Unexpected web push status", result.statusCode, result.body)
             }
         })
 
@@ -167,7 +169,6 @@ function processNotifications(
     return ({ type, value: limit, advanced, _id: prop_id, tmp }: INotifyThingProperty) => {
         /* Check validity */
         const result = functions[type](value, limit, advanced, tmp);
-        logger.debug("result of processing")
         if (result.ruleSatisfied) {
             if (result.valid) {
                 if (!output[userID]) output[userID] = [];
