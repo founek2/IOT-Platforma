@@ -76,7 +76,6 @@ export function ThingDialog() {
                             property={property}
                             state={thing.state?.[property.propertyId]}
                             onChange={(value) => {
-                                console.log('clicked');
                                 mutateThingState({
                                     propertyId: property.propertyId,
                                     value,

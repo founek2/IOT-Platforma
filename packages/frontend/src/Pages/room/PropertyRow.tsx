@@ -5,7 +5,7 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { CardMedia, Fade, SxProps } from '@mui/material';
+import { CardMedia, Fade, styled, SxProps } from '@mui/material';
 import {
     IThingProperty,
     IThingPropertyEnum,
@@ -22,7 +22,6 @@ import React, { forwardRef, useCallback, useState } from 'react';
 import { ActivatorButton } from '../../components/ActivatorButton';
 import { CopyUrlContext } from './helpers/CopyUrl';
 import { toogleSwitchVal } from './helpers/toogleSwitchVal';
-import { onEnterRun } from 'common/src/utils/onEnter';
 import { SensorIcons } from '../../constants/sensorIcons';
 import { Measurement } from 'common/src/types';
 import type { Theme } from '@mui/material';
@@ -33,14 +32,20 @@ import { CircleColors } from '../../utils/getCircleColor';
 import { VideoStream } from '../../components/VideoStream';
 import { isUrl } from "common/src/utils/isUrl"
 import { WebRtcStream } from '../../components/WebRtcStream';
+import { onEnterRun } from 'common/src/utils/onEnter';
 
-interface PropertyRowComponentProps {
+const ConfirmationCircle = styled(CircleComponent)({
+    position: "absolute", right: -24, top: 0, bottom: 0,
+    margin: "auto"
+})
+
+interface PropertyRowPlainProps {
     state?: PropertyState;
     property: IThingProperty;
     onChange: (newValue: string | number) => void;
     disabled?: boolean;
 }
-function PropertyRowComponent({ state, property, onChange, disabled: disabledOverride }: PropertyRowComponentProps) {
+export function PropertyRowPlain({ state, property, onChange, disabled: disabledOverride }: PropertyRowPlainProps) {
     const value = state?.value;
     const [stateValue, setStateValue] = useState(value); // TODO rozbije se při příchozí změně z websocketu (desync)
     const disabled = disabledOverride || !property.settable;
@@ -120,6 +125,12 @@ function PropertyRowComponent({ state, property, onChange, disabled: disabledOve
                     const val = isNum ? Number(e.target.value) : e.target.value;
                     onChange(val);
                 })}
+                onBlur={(e) => {
+                    const val = isNum ? Number(e.target.value) : e.target.value;
+                    if (val === value) return;
+
+                    onChange(val);
+                }}
                 disabled={disabled}
             />
         );
@@ -131,34 +142,21 @@ function PropertyRowComponent({ state, property, onChange, disabled: disabledOve
             </Typography>
         );
     }
-    return <Box sx={{ position: "relative" }}>
+    return <Box display="flex" alignItems="center" position="relative">
         <CopyUrlContext propertyId={property.propertyId} value={value as string}>
             {component}
         </CopyUrlContext>
+        {property.unitOfMeasurement ?
+            <Typography
+                component="span"
+                sx={{ paddingLeft: property.unitOfMeasurement ? '0.4em' : '0', opacity: disabledOverride ? 0.6 : 1 }}
+            >
+                {property.unitOfMeasurement}
+            </Typography> : null}
         <Fade in={state?.inTransition} timeout={{ enter: 1500, exit: 500 }}>
-            <CircleComponent color={CircleColors.Orange} title="Čeká se na potvrzení" sx={{
-                position: "absolute", right: -24, top: 0, bottom: 0,
-                margin: "auto"
-            }} />
+            <ConfirmationCircle color={CircleColors.Orange} title="Čeká se na potvrzení" />
         </Fade>
     </Box>
-}
-
-export function PropertyRowPlain({ state, property, onChange, disabled }: PropertyRowComponentProps) {
-    const { unitOfMeasurement } = property;
-
-    return (
-        <>
-            <PropertyRowComponent state={state} property={property} onChange={onChange} disabled={disabled} />
-            {unitOfMeasurement ?
-                <Typography
-                    component="span"
-                    sx={{ paddingLeft: unitOfMeasurement ? '0.4em' : '0', opacity: disabled ? 0.6 : 1 }}
-                >
-                    {unitOfMeasurement}
-                </Typography> : null}
-        </>
-    );
 }
 
 function DetailVisualization({ property, historyData }: { property: IThingProperty, historyData: Measurement[] }) {
