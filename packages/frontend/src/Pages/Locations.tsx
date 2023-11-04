@@ -134,27 +134,19 @@ export default function Locations({ title, pathPrefix }: DevicesProps) {
         prepareEditMode(mode);
     }
 
-    const content = (
-        <>
-            {isLoading ? (
-                <CircularProgress />
-            ) : (
-                <DevicesContent
-                    buildingsData={data}
-                    editEnabled={isEditMode}
-                    editMode={editMode}
-                    onMove={onMove}
-                    pathPrefix={pathPrefix}
-                />
-            )}
+    if (isLoading) return <CircularProgress />;
 
-            <EditModeDialog
-                open={isEditMode && !editMode}
-                onClose={(v) => (v ? handleSelectEditMode(v) : leaveEditMode())}
-            />
-        </>
-    );
-
-    if (editMode) return <DraggableProvider>{content}</DraggableProvider>;
-    return content;
+    return <DraggableProvider disabled={!editMode}>
+        <DevicesContent
+            buildingsData={data}
+            editEnabled={isEditMode}
+            editMode={editMode}
+            onMove={onMove}
+            pathPrefix={pathPrefix}
+        />
+        <EditModeDialog
+            open={isEditMode && !editMode}
+            onClose={(v) => (v ? handleSelectEditMode(v) : leaveEditMode())}
+        />
+    </DraggableProvider>;
 }

@@ -103,8 +103,11 @@ export function Draggable({ dragDisabled, render, ...props }: DraggableComponent
 
 const checkIfTouchScreen = () => matchMedia('(hover: none), (pointer: coarse)').matches;
 
-export function DraggableProvider({ children }: { children: React.ReactElement | React.ReactElement[] }) {
+export function DraggableProvider({ children, disabled }: { children: React.ReactElement | React.ReactElement[], disabled?: boolean }) {
     const isTouchScreen = checkIfTouchScreen();
+
+    if (disabled)
+        return <>{children}</>;
 
     if (isTouchScreen) {
         logger.debug('Using TouchBackend');

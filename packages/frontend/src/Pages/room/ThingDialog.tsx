@@ -114,7 +114,7 @@ export function ThingDialog() {
             fullWidth
         >
             <>
-                {editMode ? <DraggableProvider>{content}</DraggableProvider> : content}
+                {<DraggableProvider disabled={!editMode}>{content}</DraggableProvider>}
             </>
         </Dialog>
     );

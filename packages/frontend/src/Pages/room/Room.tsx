@@ -144,19 +144,14 @@ export default function Room({ title, mode, pathPrefix }: RoomProps) {
         } else resetAppHeader();
     }, [title, editMode, navigate, prepareEditMode]);
 
-    const content = (
-        <>
-            <LocationTypography location={{ building, room }} pathPrefix={pathPrefix} />
-            <RoomContent
-                thingIDs={IDs || []}
-                editMode={editMode}
-                onMove={onMove}
-                mode={mode}
-                preferencies={preferencies}
-            />
-        </>
-    );
-
-    if (editMode) return <DraggableProvider>{content}</DraggableProvider>;
-    return content;
+    return <DraggableProvider disabled={!editMode}>
+        <LocationTypography location={{ building, room }} pathPrefix={pathPrefix} />
+        <RoomContent
+            thingIDs={IDs || []}
+            editMode={editMode}
+            onMove={onMove}
+            mode={mode}
+            preferencies={preferencies}
+        />
+    </DraggableProvider>;
 }

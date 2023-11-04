@@ -60,15 +60,14 @@ export default function LocationsManagement({ title }: DevicesProps) {
                             },
                         })}
                     >
-                        {searchText
-                            ? devices
+                        {
+                            devices
                                 .filter(searchByText(searchText))
                                 .map((device) => <DeviceWidget id={device._id} key={device._id} />)
-                            : null}
+                        }
                     </Box>
                 </Grid>
             </Grid>
-            {searchText ? null : <Locations title={title} pathPrefix="/management" />}
             <DeviceDialogForm
                 title={selectedDevice?.info.name}
                 open={Boolean(selectedDevice)}
