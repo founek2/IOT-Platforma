@@ -38,7 +38,7 @@ export const DeviceWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>((
                 inTransition={false}
                 sx={{ position: 'absolute', top: 5, right: 5 }}
             />
-            <Link to={{ search: `deviceId=${device._id}` }}>
+            <Link to={{ search: `deviceId=${device._id}` }} replace>
                 <Typography
                     sx={{
                         overflow: 'hidden',

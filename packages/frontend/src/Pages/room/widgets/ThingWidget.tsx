@@ -67,7 +67,7 @@ export const ThingWidget = React.forwardRef<HTMLDivElement, ThingWidgetProps>(({
                     inTransition={false}
                     sx={{ position: 'absolute', top: 5, right: 5 }}
                 />
-                <Link to={{ search: `thingId=${thing._id}` }}>
+                <Link to={{ search: `thingId=${thing._id}` }} replace>
                     <Typography
                         sx={{
                             overflow: 'hidden',
