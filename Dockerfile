@@ -14,7 +14,6 @@ RUN if [ ! -e "assets.zip" ]; then echo "Downloading latest release" && wget htt
 # Unzip and install dependencies
 RUN ./ci/jenkins/docker-build.sh
 
-COPY ./ci/jenkins/docker-entrypoint.sh .
+COPY ./ci/jenkins/docker-entrypoint.sh ./ci/jenkins/generate-jwt-certs.sh .
 
 CMD [ "./docker-entrypoint.sh" ]
-
