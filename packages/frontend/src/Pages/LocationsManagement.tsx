@@ -26,7 +26,8 @@ function searchByText(text: string) {
         device.info.name.toLowerCase().includes(search) ||
         device.metadata.deviceId.toLowerCase().includes(search) ||
         device.info.location.building.toLowerCase().includes(search) ||
-        device.info.location.room.toLowerCase().includes(search);
+        device.info.location.room.toLowerCase().includes(search) ||
+        `${device.info.location.building}/${device.info.location.room}`.toLowerCase().startsWith(search)
 }
 
 interface DevicesProps {
