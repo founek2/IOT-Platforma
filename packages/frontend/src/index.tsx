@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
@@ -12,15 +12,17 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 const container = document.getElementById('root');
 const root = createRoot(container!);
 root.render(
-    <ErrorBoundary
-        onError={() => {
-            localStorage.clear();
-            document.location.reload();
-        }}
-        actionText="Odhlásit a restartovat rozhraní"
-    >
-        <App />
-    </ErrorBoundary>
+    <StrictMode>
+        <ErrorBoundary
+            onError={() => {
+                localStorage.clear();
+                document.location.reload();
+            }}
+            actionText="Odhlásit a restartovat rozhraní"
+        >
+            <App />
+        </ErrorBoundary>
+    </StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
