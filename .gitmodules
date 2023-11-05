@@ -1,3 +1,0 @@
-[submodule "docker-hosting"]
-	path = docker-hosting
-	url = git@github.com:founek2/IOT-Platform-hosting.git
