@@ -1,4 +1,4 @@
-import { IDevice } from 'common/src/models/interface/device';
+import { DeviceCommand, IDevice } from 'common/src/models/interface/device';
 import { Measurement } from 'common/src/types';
 import { Device } from '../store/slices/application/devicesSlice';
 import { api } from './api';
@@ -29,7 +29,14 @@ export const devicesApi = api.injectEndpoints({
 
             providesTags: ['Devices'],
         }),
+        sendDeviceCommand: build.mutation<undefined, { deviceID: string, command: DeviceCommand }>({
+            query: ({ deviceID, command }) => ({
+                url: `device/${deviceID}`,
+                method: 'POST',
+                body: { formData: { DEVICE_SEND: { command: command } } },
+            }),
+        }),
     }),
 });
 
-export const { useDevicesQuery, useLazyDevicesQuery, useUpdateDeviceMutation, useDeleteDeviceMutation } = devicesApi;
+export const { useDevicesQuery, useLazyDevicesQuery, useUpdateDeviceMutation, useDeleteDeviceMutation, useSendDeviceCommandMutation } = devicesApi;

@@ -12,7 +12,7 @@ export default function RoomPage({ title }: RoomProps) {
 
     return (
         <>
-            {isLoading ? <CircularProgress /> : <Room title={title} mode="things" />}
+            {isLoading ? <CircularProgress /> : <Room title={title} />}
             <ThingDialog />
         </>
     );

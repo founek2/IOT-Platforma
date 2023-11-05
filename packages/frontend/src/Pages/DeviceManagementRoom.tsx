@@ -23,7 +23,7 @@ export default function DeviceManagement({ title }: DeviceManagementProps) {
     }
     return (
         <>
-            {isLoading ? <CircularProgress /> : <Room title={title} mode="devices" pathPrefix="/management" />}
+            {isLoading ? <CircularProgress /> : <Room title={title} pathPrefix="/management" />}
             <DeviceDialogForm
                 title={selectedDevice?.info.name}
                 open={Boolean(selectedDevice)}

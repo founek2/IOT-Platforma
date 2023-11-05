@@ -22,9 +22,8 @@ interface RoomContentProps {
     editMode: boolean;
     onMove: (dragId: string, hoverId: string) => any;
     preferencies: Dictionary<{ _id: string; order: number }>;
-    mode: 'things' | 'devices';
 }
-function RoomContent({ thingIDs, onMove, editMode, mode, preferencies }: RoomContentProps) {
+function RoomContent({ thingIDs, onMove, editMode, preferencies }: RoomContentProps) {
     return (
         <Grid container justifyContent="center">
             <Grid item xs={12} md={7} lg={6} xl={5}>
@@ -51,21 +50,12 @@ function RoomContent({ thingIDs, onMove, editMode, mode, preferencies }: RoomCon
                                 type="thing"
                                 dragDisabled={!editMode}
                                 render={(isDragable: boolean, ref) =>
-                                    mode === 'things' ? (
-                                        <ThingWidget
-                                            id={id}
-                                            sx={{ opacity: isDragable ? 0.4 : 1 }}
-                                            ref={ref}
-                                            className={clsx({ floating: editMode })}
-                                        />
-                                    ) : (
-                                        <DeviceWidget
-                                            id={id}
-                                            sx={{ opacity: isDragable ? 0.4 : 1 }}
-                                            ref={ref}
-                                            className={clsx({ floating: editMode })}
-                                        />
-                                    )
+                                    <ThingWidget
+                                        id={id}
+                                        sx={{ opacity: isDragable ? 0.4 : 1 }}
+                                        ref={ref}
+                                        className={clsx({ floating: editMode })}
+                                    />
                                 }
                             />
                         ))}
@@ -77,50 +67,37 @@ function RoomContent({ thingIDs, onMove, editMode, mode, preferencies }: RoomCon
 
 export interface RoomProps {
     title?: string;
-    mode: 'things' | 'devices';
     pathPrefix?: string;
 }
-export default function Room({ title, mode, pathPrefix }: RoomProps) {
+export default function Room({ title, pathPrefix }: RoomProps) {
     const { room, building } = useParams() as unknown as { building: string; room: string };
     const dispatch = useAppDispatch();
-    const preferencies = useAppSelector((state) => state.preferences[mode].entities);
+    const preferencies = useAppSelector((state) => state.preferences.things.entities);
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const roomLocation = useAppSelector(getRoomLocation(building, room));
     const { setAppHeader, resetAppHeader } = useAppBarContext();
     const editMode = searchParams.has('edit');
 
-    const IDs = mode === 'things' ? roomLocation?.thingIDs : roomLocation?.deviceIDs;
+    const IDs = roomLocation?.thingIDs;
 
     const onMove = useCallback(
         (dragId: string, hoverId: string) => {
-            if (mode === 'things') {
-                dispatch(thingPreferencesReducerActions.swapOrderFor([dragId, hoverId]));
-            } else dispatch(devicePreferencesReducerActions.swapOrderFor([dragId, hoverId]));
+            dispatch(thingPreferencesReducerActions.swapOrderFor([dragId, hoverId]));
         },
         [dispatch]
     );
 
     const prepareEditMode = useCallback(() => {
         if (IDs)
-            if (mode === 'things') {
-                dispatch(
-                    thingPreferencesReducerActions.resetOrderFor(
-                        IDs.map((id) => ({ id: id }))
-                            .sort(byPreferences(preferencies))
-                            .map((r) => r.id)
-                    )
-                );
-            } else {
-                dispatch(
-                    devicePreferencesReducerActions.resetOrderFor(
-                        IDs.map((id) => ({ id: id }))
-                            .sort(byPreferences(preferencies))
-                            .map((r) => r.id)
-                    )
-                );
-            }
-    }, [dispatch, IDs, mode]);
+            dispatch(
+                devicePreferencesReducerActions.resetOrderFor(
+                    IDs.map((id) => ({ id: id }))
+                        .sort(byPreferences(preferencies))
+                        .map((r) => r.id)
+                )
+            );
+    }, [dispatch, IDs]);
 
     useEffect(() => {
         return () => resetAppHeader();
@@ -150,7 +127,6 @@ export default function Room({ title, mode, pathPrefix }: RoomProps) {
             thingIDs={IDs || []}
             editMode={editMode}
             onMove={onMove}
-            mode={mode}
             preferencies={preferencies}
         />
     </DraggableProvider>;
