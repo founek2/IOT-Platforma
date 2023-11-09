@@ -4696,19 +4696,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@influxdata/influxdb-client-apis@npm:^1.24.0":
-  version: 1.24.0
-  resolution: "@influxdata/influxdb-client-apis@npm:1.24.0"
+"@influxdata/influxdb-client-apis@npm:^1.33.2":
+  version: 1.33.2
+  resolution: "@influxdata/influxdb-client-apis@npm:1.33.2"
   peerDependencies:
     "@influxdata/influxdb-client": "*"
-  checksum: cb61a75ecd91331a2cbac0c627156b6344f3f7bea0ff0468ce67ec0f68b500fd4d713e4864766eccd7a66b1e998c794961ca09b9f12f40a0fbc1b3ffce95d664
+  checksum: 1d9b97c626c681662413dce643a7d41deec1abe1a964669927c535e159b8201ebf7e0be7171bb552ebefb7bf63ef7ad90d221022a58c0128c1f99273ed4d5d41
   languageName: node
   linkType: hard
 
-"@influxdata/influxdb-client@npm:^1.24.0":
-  version: 1.24.0
-  resolution: "@influxdata/influxdb-client@npm:1.24.0"
-  checksum: 3f2eeb46720d7fc7e6490fc052feddef2271fe2f6315875407b899192d94cdb9c20794e88f7d6d7be6f241f91297663116adde3db28c9577f80538137ff2a60d
+"@influxdata/influxdb-client@npm:^1.33.2":
+  version: 1.33.2
+  resolution: "@influxdata/influxdb-client@npm:1.33.2"
+  checksum: f3f054ddc180adfe114cbcc51ac1b9eb22daca4aecf678778fccf5241398fbda87e8d1a405ae5d73b293e2ef3d26e73789e245287bf29050d4bb9437b5a1990c
   languageName: node
   linkType: hard
 
@@ -8420,7 +8420,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend-mqtt@workspace:packages/backend-mqtt"
   dependencies:
-    "@influxdata/influxdb-client": ^1.24.0
+    "@influxdata/influxdb-client": ^1.33.2
     "@types/body-parser": ^1.19.2
     "@types/express": ^4.17.9
     "@types/express-mongo-sanitize": ^1.3.2
@@ -8461,8 +8461,6 @@ __metadata:
     "@babel/core": ^7.5.5
     "@babel/node": ^7.5.5
     "@babel/preset-env": ^7.5.5
-    "@influxdata/influxdb-client": ^1.24.0
-    "@influxdata/influxdb-client-apis": ^1.24.0
     "@types/agenda": ^2.0.9
     "@types/body-parser": ^1.19.2
     "@types/cors": ^2.8.14
@@ -9696,8 +9694,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "common@workspace:packages/common"
   dependencies:
-    "@influxdata/influxdb-client": ^1.24.0
-    "@influxdata/influxdb-client-apis": ^1.24.0
+    "@influxdata/influxdb-client": ^1.33.2
+    "@influxdata/influxdb-client-apis": ^1.33.2
     "@material-ui/lab": ^4.0.0-alpha.60
     "@types/express": ^4.17.9
     "@types/hat": ^0.0.1

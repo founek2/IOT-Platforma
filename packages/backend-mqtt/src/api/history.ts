@@ -2,7 +2,6 @@ import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
 import { InfluxService } from 'common/lib/services/influxService';
-
 /**
  * URL prefix /device/:deviceId/thing/:thingId/history
  */
@@ -20,14 +19,13 @@ export default () =>
          * @return json { docs: IHistorical[] }
          */
         async index({ params, query: { from, to } }, res) {
-            const { deviceId, thingId, aggregatePeriod } = params;
+            const { deviceId, thingId } = params;
 
             const rows = await InfluxService.getMeasurements(
                 deviceId,
                 thingId,
                 new Date(Number(from)),
-                new Date(to ? Number(to) : new Date()),
-                aggregatePeriod,
+                new Date(to ? Number(to) : new Date())
             );
 
             // const docs = await HistoricalModel.getData(
