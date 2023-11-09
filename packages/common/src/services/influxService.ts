@@ -101,12 +101,13 @@ export class InfluxService {
         await bucketsApi.postBuckets({ body: { orgID: organization.id!, name, retentionRules: [] } });
     }
 
-    public static async getMeasurements(deviceId: IDevice['_id'], thingId: IThing['_id'], from: Date, to: Date) {
+    public static async getMeasurements(deviceId: IDevice['_id'], thingId: IThing['_id'], from: Date, to: Date, aggregatePeriod = "5m") {
         const fluxQuery = `
         from(bucket: "${BUCKET}")
         |> range(start: ${from.toISOString()}, stop: ${to.toISOString()})
         |> filter(fn: (r) => r["deviceId"] == "${deviceId}")
         |> filter(fn: (r) => r["thingId"] == "${thingId}")
+        |> aggregateWindow(every: ${aggregatePeriod}, fn: mean, createEmpty: false)
        `;
         //    |> filter(fn: (r) => r["_field"] == "value_float" or r["_field"] == "value_int")
         //            |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)

@@ -20,13 +20,14 @@ export default () =>
          * @return json { docs: IHistorical[] }
          */
         async index({ params, query: { from, to } }, res) {
-            const { deviceId, thingId } = params;
+            const { deviceId, thingId, aggregatePeriod } = params;
 
             const rows = await InfluxService.getMeasurements(
                 deviceId,
                 thingId,
                 new Date(Number(from)),
-                new Date(to ? Number(to) : new Date())
+                new Date(to ? Number(to) : new Date()),
+                aggregatePeriod,
             );
 
             // const docs = await HistoricalModel.getData(
