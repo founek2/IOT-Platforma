@@ -11,8 +11,8 @@
         "test": "jest"
     },
     "dependencies": {
-        "@influxdata/influxdb-client": "^1.24.0",
-        "@influxdata/influxdb-client-apis": "^1.24.0",
+        "@influxdata/influxdb-client": "^1.33.2",
+        "@influxdata/influxdb-client-apis": "^1.33.2",
         "@material-ui/lab": "^4.0.0-alpha.60",
         "argon2": "^0.28.5",
         "date-fns": "^2.15.0",

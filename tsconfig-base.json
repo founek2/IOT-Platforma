@@ -1,8 +1,10 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es2019",
-        "lib": ["ES2019.Array", "ES2020.String"],
+        "target": "es2020",
+        "lib": [
+            "ES2020"
+        ],
         "composite": true,
         "incremental": true,
         "sourceMap": true,
@@ -15,6 +17,12 @@
         "noImplicitAny": true,
         "strict": true
     },
-    "exclude": ["node_modules", "dist", "lib"],
-    "files": ["types/global.d.ts"]
+    "exclude": [
+        "node_modules",
+        "dist",
+        "lib"
+    ],
+    "files": [
+        "types/global.d.ts"
+    ]
 }

@@ -2,7 +2,6 @@ import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
 import { InfluxService } from 'common/lib/services/influxService';
-
 /**
  * URL prefix /device/:deviceId/thing/:thingId/history
  */

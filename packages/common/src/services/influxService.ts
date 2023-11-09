@@ -1,6 +1,6 @@
 import { IThing, IThingProperty, PropertyDataType } from '../models/interface/thing';
-import { OrgsAPI, BucketsAPI, Organization, QueryAPI } from '@influxdata/influxdb-client-apis';
-import { InfluxDB, Point, WriteApi, QueryApi } from '@influxdata/influxdb-client';
+import { OrgsAPI, BucketsAPI, Organization } from '@influxdata/influxdb-client-apis';
+import { InfluxDB, Point, WriteApi, QueryApi, flux, fluxDuration, fluxDateTime, fluxString } from '@influxdata/influxdb-client';
 import { Config, Measurement } from '../types';
 import { DeviceStatus, IDevice } from '../models/interface/device';
 import { logger } from '../logger';
@@ -102,14 +102,12 @@ export class InfluxService {
     }
 
     public static async getMeasurements(deviceId: IDevice['_id'], thingId: IThing['_id'], from: Date, to: Date) {
-        const fluxQuery = `
-        from(bucket: "${BUCKET}")
-        |> range(start: ${from.toISOString()}, stop: ${to.toISOString()})
-        |> filter(fn: (r) => r["deviceId"] == "${deviceId}")
-        |> filter(fn: (r) => r["thingId"] == "${thingId}")
+        const fluxQuery = flux`
+        from(bucket: ${fluxString(BUCKET)})
+        |> range(start: ${fluxDateTime(from.toISOString())}, stop: ${fluxDateTime(to.toISOString())})
+        |> filter(fn: (r) => r["deviceId"] == ${fluxString(deviceId)})
+        |> filter(fn: (r) => r["thingId"] == ${fluxString(thingId)})
        `;
-        //    |> filter(fn: (r) => r["_field"] == "value_float" or r["_field"] == "value_int")
-        //            |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
 
         const rows: Measurement[] = [];
 
