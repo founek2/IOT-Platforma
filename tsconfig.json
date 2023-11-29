@@ -1,0 +1,24 @@
+{
+    "exclude": [
+        "node_modules",
+        "dist",
+        "lib"
+    ],
+    "files": [
+        "types/global.d.ts"
+    ],
+    "references": [
+        {
+            "path": "./modules/common"
+        },
+        {
+            "path": "./modules/backend"
+        },
+        {
+            "path": "./modules/backend-auth"
+        },
+        {
+            "path": "./modules/backend-mqtt"
+        }
+    ]
+}

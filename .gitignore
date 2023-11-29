@@ -56,18 +56,16 @@ typings/
 .yarn-integrity
 
 # End of https://www.gitignore.io/api/node
-packages/*/*.tsbuildinfo
+modules/*/*.tsbuildinfo
 **/.DS_Store
 **/dist
 **/lib
 !**/src/**/lib
 **/*.env 
 **/package-lock.json
+
 #**/yarn.lock
 .history
 .VSCodeCounter
 build.zip
 assets.zip
-
-# ignore old frontend
-packages/frontend-old

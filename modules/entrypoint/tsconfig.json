@@ -1,0 +1,29 @@
+{
+    "extends": "../../tsconfig-base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "moduleResolution": "node"
+    },
+    "references": [
+        {
+            "path": "../backend"
+        },
+        {
+            "path": "../backend-auth"
+        },
+        {
+            "path": "../backend-mqtt"
+        },
+        {
+            "path": "../common"
+        }
+    ],
+    "include": [
+        "./src"
+    ],
+    "exclude": [
+        "./dist"
+    ]
+}

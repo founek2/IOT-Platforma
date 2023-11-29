@@ -4,10 +4,10 @@
     "author": "Martin Skalický",
     "private": true,
     "scripts": {
-        "build:packages": "tsc -b packages/backend/tsconfig.build.json packages/backend-mqtt/tsconfig.build.json packages/backend-auth/tsconfig.build.json && yarn workspaces foreach --all run copyFiles && yarn workspace frontend build",
+        "build:packages": "tsc -b modules/backend/tsconfig.build.json modules/backend-mqtt/tsconfig.build.json modules/backend-auth/tsconfig.build.json && yarn workspaces foreach --all run copyFiles && yarn workspace frontend build",
         "clean:all": "yarn workspaces foreach --all -pt run clean",
         "test": "yarn workspaces foreach --all -pt run test",
-        "build:common": "tsc -b packages/common",
+        "build:common": "tsc -b modules/common",
         "dev:be": "yarn workspace backend dev",
         "dev:mqtt": "yarn workspace backend-mqtt dev",
         "dev:auth": "yarn workspace backend-auth dev",
@@ -18,7 +18,7 @@
         "typescript": "^4.9.5"
     },
     "workspaces": [
-        "packages/*"
+        "modules/*"
     ],
     "packageManager": "yarn@3.6.2",
     "dependencies": {
