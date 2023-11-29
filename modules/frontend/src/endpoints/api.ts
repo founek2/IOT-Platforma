@@ -1,29 +1,41 @@
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
+import { logger } from "common/src/logger"
+import internalStorage from '../services/internalStorage';
+import parseJwt from 'common/src/utils/parseJwtToken';
+
+const SECONDS_60 = 60;
 
 // Create our baseQuery instance
 const baseQuery = fetchBaseQuery({
     baseUrl: '/api',
     prepareHeaders: async (headers, { getState }) => {
         // By default, if we have a token in the store, let's use that for authenticated requests
+        const accessToken = internalStorage.getAccessToken()
         const authorization = (getState() as RootState).application.authorization;
-        if (!authorization.loggedIn) return headers
+        if (!accessToken || !authorization.loggedIn) return headers
 
-        const expired = authorization.accessTokenExpiresAt < Date.now() / 1000;
-        if (authorization.accessToken && !expired) {
-            headers.set('Authorization', `Bearer ${authorization.accessToken}`);
-        }
+        const expired = accessToken.expiresAt < Date.now() / 1000 + SECONDS_60;
+        if (!expired) {
+            headers.set('Authorization', `Bearer ${accessToken.token}`);
+        } else {
+            try {
+                const res = await fetch("/api/auth/user/signIn/refresh", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ formData: { REFRESH_TOKEN: { token: authorization.refreshToken } } }),
+                })
+                const body = await res.json()
 
-        // TODO handle error cases - expired, atd...
-        // TODO should use localStorage for storing access token
-        if (expired) {
-            const res = await fetch("/api/auth/user/signIn/refresh", {
-                method: "POST",
-                body: JSON.stringify({ formData: { REFRESH_TOKEN: { token: authorization.refreshToken } } }),
-            })
-            const body = await res.json()
+                headers.set('Authorization', `Bearer ${body.accessToken}`);
 
-            headers.set('Authorization', `Bearer ${body.accessToken}`);
+                const tokenPayload = parseJwt(body.accessToken)
+                internalStorage.emit("new_access_token", { token: body.accessToken, expiresAt: tokenPayload.exp })
+            } catch (err) {
+                logger.error(err)
+            }
         }
 
         return headers;

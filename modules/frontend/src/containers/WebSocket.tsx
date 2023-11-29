@@ -5,8 +5,9 @@ import { useLazyDevicesQuery } from '../endpoints/devices';
 import { Device, devicesReducerActions } from '../store/slices/application/devicesSlice';
 import { io, Socket } from 'socket.io-client';
 import { discoveryReducerActions } from '../store/slices/application/discoverySlice';
-import { getAccessToken } from '../selectors/getters';
 import { Discovery } from '../endpoints/discovery';
+import internalStorage from '../services/internalStorage';
+import { isLoggedIn } from "../selectors/getters"
 
 export type SocketUpdateThingState = {
     _id: Device['_id'];
@@ -18,26 +19,33 @@ export type SocketUpdateThingState = {
 };
 
 function WebSocket() {
-    const token = useAppSelector(getAccessToken);
+    const loggedIn = useAppSelector(isLoggedIn)
     const [lastFetchAt, setLastFetchAt] = useState<Date>();
     const [fetchDevices] = useLazyDevicesQuery();
     const dispatch = useAppDispatch();
     const [socket, setSocket] = useState<Socket>();
 
     useEffect(() => {
-        if (token) {
+        if (!loggedIn) return;
+
+        function refreshConnection(accessToken: { token: string }) {
             if (socket) socket.close();
 
             const newCon = io({
                 path: '/socket.io',
                 query: {
-                    token,
+                    token: accessToken.token,
                 },
             });
             newCon.open();
             setSocket(newCon);
         }
-    }, [token]);
+        const accessToken = internalStorage.getAccessToken()
+        if (accessToken) refreshConnection(accessToken)
+
+        internalStorage.on("new_access_token", refreshConnection)
+        return () => internalStorage.off("new_access_token", refreshConnection)
+    }, [loggedIn]);
 
     useEffect(() => {
         if (!socket) return;
@@ -79,7 +87,7 @@ function WebSocket() {
 
             const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 5 * 60 * 1000;
 
-            if (token && (isOld || socket?.disconnected)) {
+            if (loggedIn && (isOld || socket?.disconnected)) {
                 console.log('refreshing on focus', isOld, socket?.disconnected);
                 // Add little bit of timeout to give device time to setup network after waking from sleep
                 setTimeout(async () => {
@@ -98,7 +106,7 @@ function WebSocket() {
             window.removeEventListener('focus', handler);
             document.removeEventListener('visibilitychange', handler);
         };
-    }, [lastFetchAt, fetchDevices, socket]);
+    }, [lastFetchAt, fetchDevices, socket, loggedIn]);
 
     return null;
 }

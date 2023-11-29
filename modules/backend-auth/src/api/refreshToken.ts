@@ -26,7 +26,6 @@ export default () =>
                     .ifLeft((error) => res.status(401).send({ error }))
                     .ifRight(({ accessToken }) => {
                         res.send({
-                            token: accessToken,
                             accessToken,
                         });
                     });

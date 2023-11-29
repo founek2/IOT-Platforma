@@ -26,11 +26,6 @@ export async function bindServer(app: Express, config: Config) {
 
     await connectMongoose(config.dbUri);
 
-    app.use((req, res, next) => {
-        console.log("auth", req.path, req.body)
-        next()
-    })
-
     app.use("/api/auth", (req: any, res, next) => {
         req.context = context
         next()

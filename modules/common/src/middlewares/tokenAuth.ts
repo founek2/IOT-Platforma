@@ -36,20 +36,11 @@ export default function (
 
         if (jwtToken) {
             try {
-                const obj = await jwtService.verify(jwtToken);
+                const payload = await (await jwtService.verify(jwtToken)).unsafeCoerce();
 
-                const days7_sec = 7 * 24 * 60 * 60;
-                const now_sec = new Date().getTime() / 1000;
-
-                if (obj.exp - now_sec < days7_sec) {
-                    logger.info('Resigning jwt token');
-                    const newToken = await jwtService.sign({ id: obj.id });
-                    res.set('Authorization-JWT-new', newToken);
-                }
                 const req2 = req as RequestWithAuth;
 
-                const user = await UserModel.findById(obj.id).exec();
-
+                const user = await UserModel.findById(payload.sub).exec();
                 if (user) {
                     logger.debug(`Verified user=${user.info.userName}, groups=${user.groups.join(',')}`);
                     req2.user = user.toObject();

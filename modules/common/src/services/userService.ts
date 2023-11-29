@@ -52,7 +52,7 @@ export class UserService {
      */
     async create(
         object: Omit<IUser, 'realm' | 'groups' | 'createdAt' | 'updatedAt' | 'notifyTokens'>
-    ): Promise<UserWithToken> {
+    ): Promise<{ doc: IUser }> {
         const { password, oauth } = object.auth;
 
         logger.debug('user creating:', object);
@@ -73,8 +73,7 @@ export class UserService {
         const obj = await user.save();
         const plainUser = obj.toObject();
 
-        const token = await this.jwtService.sign(plainUser);
-        return { doc: plainUser, token };
+        return { doc: plainUser };
     }
 
     /**
@@ -93,50 +92,56 @@ export class UserService {
         const matched = await comparePasswd(password, doc.auth.password as string);
         if (!matched) return Left('passwordMissmatch');
 
-        return EitherAsync<string, { doc: IUser; accessToken: string, refreshToken: string }>(async ({ fromPromise }) => {
-            const refreshTokenDoc = await fromPromise(this.createRefreshToken(doc._id))
-            const accessToken = await this.jwtService.sign({ id: doc._id, rti: refreshTokenDoc._id });
-            const refreshToken = await this.jwtService.signRefreshToken({ id: refreshTokenDoc._id, userId: doc._id });
+        const tokens = await this.createTokens(doc)
+
+
+        return tokens.map(t => ({ ...t, doc }))
+    }
+
+    async createTokens(user: IUser): Promise<Either<string, { accessToken: string, refreshToken: string }>> {
+        return EitherAsync<string, { accessToken: string, refreshToken: string }>(async ({ fromPromise }) => {
+            const refreshTokenDoc = await fromPromise(this.createRefreshToken(user._id))
+            const refreshToken = await this.jwtService.signRefreshToken({ jti: refreshTokenDoc._id, sub: user._id });
+            const accessToken = await this.jwtService.sign({ sub: user._id, iss: refreshTokenDoc._id, groups: user.groups });
 
             return {
                 accessToken,
                 refreshToken,
-                doc: doc.toObject(),
             }
         }).run()
     }
 
-    async refreshToken(refreshToken: string): Promise<Either<string, { doc: IUser; accessToken: string }>> {
-        const token = await this.jwtService.verifyRefreshToken(refreshToken)
+    //Promise<Either<"unknownUser", { doc: IUser; accessToken: string }>>
+    async refreshToken(refreshToken: string) {
+        return EitherAsync.fromPromise(() => this.jwtService.verifyRefreshToken(refreshToken)).chain(async token => {
+            const doc = await UserModel.findOne({ '_id': new ObjectId(token.sub) })
+            if (!doc) return Left("unknownUser");
 
-        const doc = await UserModel.findOne({ '_id': new ObjectId(token.userId) });
-        if (!doc) return Left('unknownUser');
+            const refreshTokenDoc = doc.refreshTokens?.find((r) => r._id.toString() === token.jti)
+            if (!refreshTokenDoc) return Left('invalidToken');
+            if (refreshTokenDoc?.validTo && Date.now() > refreshTokenDoc.validTo.getTime()) {
+                return Left('invalidToken');
+            }
 
-        const refreshTokenDoc = doc.refreshTokens?.find((r) => r._id.toString() === token.id)
-        if (!refreshTokenDoc) return Left('invalidToken');
-
-        if (!refreshTokenDoc?.validTo || Date.now() < refreshTokenDoc.validTo.getTime()) {
-            const accessToken = await this.jwtService.sign({ id: doc._id, rti: refreshTokenDoc._id });
+            const accessToken = await this.jwtService.sign({ sub: doc._id, iss: refreshTokenDoc._id, groups: doc.groups });
             return Right({
                 accessToken,
                 doc: doc.toObject(),
             })
-        }
-
-        return Left('invalidToken');
+        }).run()
     }
 
     /**
      * Compare credentials with one saved in DB
      */
-    async refreshAuthorization(
+    async refreshOauthAuthorization(
         email: string,
         userName: string,
         oauth: IOauth
-    ): Promise<Maybe<{ token: string; doc: IUser; oldOauth?: IOauth }>> {
+    ): Promise<Either<string, { accessToken: string; refreshToken: string; doc: IUser; oldOauth?: IOauth }>> {
         let doc = await UserModel.findOneAndUpdate({ 'info.email': email }, { 'auth.oauth': oauth });
         if (!doc) {
-            const { doc, token } = await this.create({
+            const { doc } = await this.create({
                 info: {
                     userName,
                     email,
@@ -146,19 +151,26 @@ export class UserService {
                 },
             } as any);
 
-            return Just({
-                token,
-                doc: doc,
-                oldOauth: undefined,
-            });
+            return (await this.createTokens(doc)).map(t => ({
+                doc,
+                oldOAuth: undefined,
+                ...t
+            }))
         }
 
-        const token = await this.jwtService.sign({ id: doc._id, groups: doc.groups });
-        return Just({
-            token,
-            doc: doc.toObject(),
-            oldOauth: doc.auth.oauth,
-        });
+        return (await this.createTokens(doc)).map(t => ({
+            ...t,
+            doc: doc!.toObject(),
+        }))
+
+
+
+        // const token = await this.jwtService.sign({ sub: doc._id, iss: groups: doc.groups });
+        // return Just({
+        //     token,
+        //     doc: doc.toObject(),
+        //     oldOauth: doc.auth.oauth,
+        // });
     }
 
     removeAuthorization(id: IUser['_id']) {

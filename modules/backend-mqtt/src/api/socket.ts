@@ -12,14 +12,16 @@ type socketWithUser = {
  */
 export default (io: serverIO, jwtService: JwtService) => {
     /* Login middleware to authenticate using JWT token */
-    io.use((socket: socketWithUser, next) => {
+    io.use(async (socket: socketWithUser, next) => {
         let token = socket.handshake.query.token as string;
-        jwtService.verify(token)
-            .then((payload) => {
-                socket.request.user = payload;
-                next();
+        const payload = await jwtService.verify(token);
+        console.log("payload", payload)
+        payload
+            .ifRight(p => {
+                socket.request.user = { id: p.sub }
+                next()
             })
-            .catch(() => next());
+            .ifLeft(() => next())
     });
 
     io.on('connection', (socket: socketWithUser) => {

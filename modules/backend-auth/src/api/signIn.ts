@@ -1,4 +1,4 @@
-import { fieldDescriptors } from 'common';
+import { fieldDescriptors, logger } from 'common';
 import { OAuthProvider } from 'common/lib/models/interface/userInterface';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 import formDataChecker from 'common/lib/middlewares/formDataChecker';
@@ -7,6 +7,7 @@ import resource from 'common/lib/middlewares/resource-router-middleware';
 import eventEmitter from '../services/eventEmitter';
 import { Request } from 'express';
 import { HasContext } from '../types';
+import { EitherAsync } from 'purify-ts';
 
 /**
  * URL prefix /authorization
@@ -42,28 +43,31 @@ export default () =>
 
             if (formData.LOGIN) {
                 (await context.userService.checkCreditals(formData.LOGIN))
-                    .ifLeft((error) => res.status(401).send({ error }))
+                    .ifLeft((error) => {
+                        logger.error(error)
+                        res.status(401).send({ error })
+                    })
                     .ifRight(({ doc, accessToken, refreshToken }) => {
                         res.send({
                             user: doc,
-                            token: accessToken,
                             accessToken,
                             refreshToken,
                         });
                         eventEmitter.emit('user_login', doc);
                     });
             } else if (formData.AUTHORIZATION) {
-                const processAuth = MaybeAsync(async ({ fromPromise, liftMaybe }) => {
-                    const auth = await fromPromise(
-                        context.oauthService.requestAuthorization(
-                            body.formData.AUTHORIZATION.code,
-                            body.formData.AUTHORIZATION.redirectUri,
-                            OAuthProvider.seznam
-                        )
-                    );
+                const oauthMaybe = await context.oauthService.requestAuthorization(
+                    body.formData.AUTHORIZATION.code,
+                    body.formData.AUTHORIZATION.redirectUri,
+                    OAuthProvider.seznam
+                )
 
-                    return await fromPromise(
-                        context.userService.refreshAuthorization(
+                const oauthEither = oauthMaybe.toEither("unexpectedError")
+
+                EitherAsync
+                    .liftEither(oauthEither)
+                    .chain((auth) =>
+                        context.userService.refreshOauthAuthorization(
                             auth.email,
                             auth.email.replace(/@.*$/, '').replace(/\./g, ''),
                             {
@@ -74,13 +78,10 @@ export default () =>
                                 provider: OAuthProvider.seznam,
                             }
                         )
-                    );
-                });
-
-                (await processAuth.run())
-                    .ifJust(({ doc, token, oldOauth }) => {
-                        res.send({ user: doc, token });
+                    ).ifRight(({ doc, accessToken, refreshToken, oldOauth }) => {
+                        res.send({ user: doc, accessToken, refreshToken });
                         eventEmitter.emit('user_login', doc);
+
                         if (oldOauth)
                             context.oauthService.revokeToken(
                                 oldOauth.accessToken,
@@ -88,8 +89,8 @@ export default () =>
                                 'refresh_token',
                                 oldOauth.provider
                             );
-                    })
-                    .ifNothing(() => res.sendStatus(500));
+                    }).ifLeft(() => res.sendStatus(500))
+                    .run()
             } else res.sendStatus(400);
         },
     });

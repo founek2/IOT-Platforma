@@ -106,13 +106,19 @@ export default () =>
                     return res.status(409).send({ error: 'emailAlreadyExist' });
                 }
 
-                const { doc, token } = await userService.create(formData.REGISTRATION);
+                const { doc } = await userService.create(formData.REGISTRATION);
+                const tokens = await userService.createTokens(doc)
 
-                res.send({
-                    user: doc,
-                    token,
-                });
-                eventEmitter.emit('user_signup', { id: doc._id, info: doc.info });
+                tokens.ifRight(({ accessToken, refreshToken }) => {
+                    res.send({
+                        user: doc,
+                        accessToken,
+                        refreshToken
+                    });
+                    eventEmitter.emit('user_signup', { id: doc._id, info: doc.info });
+                }).ifLeft(error => {
+                    res.sendStatus(400).send({ error });
+                })
             } else if (formData.FORGOT) {
                 eventEmitter.emit('user_forgot', { email: formData.FORGOT.email });
                 res.sendStatus(204);

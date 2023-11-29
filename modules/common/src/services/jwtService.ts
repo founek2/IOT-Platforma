@@ -1,11 +1,20 @@
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import { logger } from '../logger';
+import { Either, Left, Right } from 'purify-ts';
+import { IUser } from '../models/interface/userInterface';
 
 interface RefreshTokenPayload {
-    id: string, userId: string
+    jti: string,
+    sub: string
 }
-
+interface AccessTokenPayload {
+    // user ID
+    sub: string,
+    // refresh token ID
+    iss: string
+    groups: IUser["groups"]
+}
 export class JwtService {
     privKey: jwt.Secret
     pubKey: jwt.Secret
@@ -34,9 +43,9 @@ export class JwtService {
      * @param object
      * @return JWTtoken
      */
-    sign(object: any): Promise<string> {
+    sign(object: AccessTokenPayload): Promise<string> {
         return new Promise((resolve, reject) => {
-            jwt.sign(object, this.privKey, { algorithm: 'RS256', expiresIn: "15min" }, function (err, token) {
+            jwt.sign(object, this.privKey, { algorithm: 'RS256', expiresIn: "1min" }, function (err, token) {
                 if (!err && token) {
                     resolve(token);
                 } else {
@@ -55,7 +64,7 @@ export class JwtService {
 
     signRefreshToken(object: RefreshTokenPayload): Promise<string> {
         return new Promise((resolve, reject) => {
-            jwt.sign(object, this.privKey, { algorithm: 'RS256', subject: "refreshToken" }, function (err, token) {
+            jwt.sign(object, this.privKey, { algorithm: 'RS256', audience: "refreshToken" }, function (err, token) {
                 if (!err && token) {
                     resolve(token);
                 } else {
@@ -70,25 +79,25 @@ export class JwtService {
      * @param token
      * @return token content
      */
-    verify(token: string): Promise<any> {
-        return new Promise((resolve, reject) => {
+    verify(token: string) {
+        return new Promise<Either<'invalidToken', AccessTokenPayload>>((resolve) => {
             jwt.verify(token, this.pubKey, { algorithms: ['RS256'] }, function (err, payload) {
                 if (!err) {
-                    resolve(payload);
+                    resolve(Right(payload as any));
                 } else {
-                    reject('invalidToken');
+                    resolve(Left('invalidToken'));
                 }
             });
         });
     }
 
-    verifyRefreshToken(token: string): Promise<RefreshTokenPayload> {
-        return new Promise((resolve, reject) => {
-            jwt.verify(token, this.pubKey, { algorithms: ['RS256'], subject: "refreshToken" }, function (err, payload) {
+    verifyRefreshToken(token: string) {
+        return new Promise<Either<'invalidToken', RefreshTokenPayload>>((resolve) => {
+            jwt.verify(token, this.pubKey, { algorithms: ['RS256'], audience: "refreshToken" }, function (err, payload) {
                 if (!err && payload) {
-                    resolve(payload as any);
+                    resolve(Right(payload as any));
                 } else {
-                    reject('invalidToken');
+                    resolve(Left('invalidToken'));
                 }
             });
         });
