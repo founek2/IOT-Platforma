@@ -103,6 +103,7 @@ export default function LocationsManagement({ title }: DevicesProps) {
                     />
                     <Box
                         sx={(theme) => ({
+                            mt: 2,
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fill, minmax(8rem, 1fr))',
                             gap: 2,
