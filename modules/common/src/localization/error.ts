@@ -28,6 +28,7 @@ export const messages = {
     notificationsDisabled: 'Toto zařízení má vypnuté notifikace',
     deviceNotReady: 'Zařízení není připravené',
     deviceIdTaken: 'Zařízení s daným ID již existuje',
+    offlineMode: "Není k dispozici připojení k internetu"
 };
 export type ErrorMessageKey = keyof typeof messages;
 export const ErrorMessages = messageFactory(messages);

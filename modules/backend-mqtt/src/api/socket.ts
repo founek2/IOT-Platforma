@@ -15,7 +15,7 @@ export default (io: serverIO, jwtService: JwtService) => {
     io.use(async (socket: socketWithUser, next) => {
         let token = socket.handshake.query.token as string;
         const payload = await jwtService.verify(token);
-        console.log("payload", payload)
+
         payload
             .ifRight(p => {
                 socket.request.user = { id: p.sub }

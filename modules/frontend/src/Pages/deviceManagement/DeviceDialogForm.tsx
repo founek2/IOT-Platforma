@@ -15,7 +15,7 @@ import { Device } from '../../store/slices/application/devicesSlice';
 import { useUserNamesQuery } from '../../endpoints/users';
 import { EditDeviceFormData, useDeleteDeviceMutation } from '../../endpoints/devices';
 import { EditDeviceFields } from './EditDeviceFields';
-import { DialogContentText } from '@mui/material';
+import { DialogContentText, useMediaQuery } from '@mui/material';
 
 const formName = 'EDIT_DEVICE';
 interface DeviceFormProps {
@@ -34,6 +34,7 @@ export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }:
     const selectedBuildingName = useAppSelector(getFieldVal(`${formName}.info.location.building`)) as string;
     const selectedRoomName = useAppSelector(getFieldVal(`${formName}.info.location.room`)) as string;
     const [deleteMutation, { isLoading: isLoadingDelete }] = useDeleteDeviceMutation();
+    const isSmall = useMediaQuery('(max-width:450px)');
 
     const selectedBuilding = buildings.find((building) => building.name === selectedBuildingName);
     const availableRooms = selectedBuilding ? selectedBuilding.rooms.map((room) => room.name) : [];
@@ -77,7 +78,7 @@ export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }:
 
     return (
         <>
-            <Dialog open={open} onClose={onClose} title={title}>
+            <Dialog open={open} onClose={onClose} title={title} fullScreen={isSmall}>
                 <DialogContent>
                     <Grid container spacing={4}>
                         <EditDeviceFields
@@ -107,6 +108,9 @@ export function DeviceDialogForm({ open, onClose, title, onSave, deviceToEdit }:
                 <DialogActions>
                     <Button onClick={() => setOpenConfirmation(true)} disabled={isLoading} color="secondary">
                         Smazat
+                    </Button>
+                    <Button onClick={onClose} disabled={isLoading} >
+                        Zrušit
                     </Button>
                     <Button onClick={handleSave} disabled={isLoading}>
                         Uložit

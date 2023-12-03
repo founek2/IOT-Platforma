@@ -88,7 +88,8 @@ export function Dialog({
                 ) : null}
             </DialogTitle>
             <DialogContent>{children}</DialogContent>
-            <DialogActions>
+            {/* TODO look into safe-area and how it looks on Phone */}
+            <DialogActions sx={{ mb: "env(safe-area-inset-bottom)" }}>
                 {disagreeText ? (
                     <Button onClick={onDisagree || onClose} color="secondary" disabled={disabled}>
                         {disagreeText}

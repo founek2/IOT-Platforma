@@ -8,6 +8,7 @@ import { discoveryReducerActions } from '../store/slices/application/discoverySl
 import { Discovery } from '../endpoints/discovery';
 import internalStorage from '../services/internalStorage';
 import { isLoggedIn } from "../selectors/getters"
+import NetworkStatus from './NetworkStatus';
 
 export type SocketUpdateThingState = {
     _id: Device['_id'];
@@ -108,7 +109,7 @@ function WebSocket() {
         };
     }, [lastFetchAt, fetchDevices, socket, loggedIn]);
 
-    return null;
+    return <NetworkStatus socket={socket} />;
 }
 
 export default WebSocket;
