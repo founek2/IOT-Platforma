@@ -36,7 +36,7 @@ export async function bindServer(app: Express, config: Config, server: Server) {
 
     const io = new serverIO(server, { path: '/socket.io' });
 
-    app.use("/actions", (req: any, res, next) => {
+    app.use("/api", (req: any, res, next) => {
         req.context = context
         next()
     })

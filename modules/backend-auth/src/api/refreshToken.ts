@@ -1,7 +1,7 @@
 import { fieldDescriptors } from 'common';
 import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter';
 import resource from 'common/lib/middlewares/resource-router-middleware';
-import formDataChecker from 'common/src/middlewares/formDataChecker';
+import formDataChecker from 'common/lib/middlewares/formDataChecker';
 import { Request } from 'express';
 import { HasContext } from '../types';
 
