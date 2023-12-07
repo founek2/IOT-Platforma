@@ -24,7 +24,7 @@ export const devicesApi = api.injectEndpoints({
             }),
             invalidatesTags: ['Devices'],
         }),
-        devices: build.query<{ docs: IDevice[] }, undefined>({
+        devices: build.query<{ docs: IDevice[] }, void>({
             query: () => `device`,
 
             providesTags: ['Devices'],

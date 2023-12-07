@@ -1,5 +1,5 @@
 import { AuthType } from 'common/src/constants';
-import { IUser } from 'common/src/models/interface/userInterface';
+import { IRefreshToken, IUser } from 'common/src/models/interface/userInterface';
 import { buildRedirectUri } from '../utils/redirectUri';
 import { api } from './api';
 
@@ -21,6 +21,20 @@ export type AuthProvider = {
     authUrl: string;
     iconUrl: string;
 };
+
+export interface ActiveSignInResponse {
+    activeRefreshTokens: {
+        _id: string,
+        validTo?: string,
+        createdAt: string,
+        userAgent?: {
+            browser: { name: string, version: string },
+            engine: { name: string, version: string },
+            os: { name: string, version: string },
+            device: { vendor: string, model: string }
+        }
+    }[]
+}
 
 export const signInApi = api.injectEndpoints({
     endpoints: (build) => ({
@@ -57,6 +71,15 @@ export const signInApi = api.injectEndpoints({
             query: (userName) => `user/${userName}?attribute=authType`,
             providesTags: ['UserAuthTypes'],
         }),
+        getActiveSignIn: build.query<ActiveSignInResponse["activeRefreshTokens"], void>({
+            query: () => `auth/user/signIn/active`,
+            providesTags: ['ActiveSignIn'],
+            transformResponse: (body: ActiveSignInResponse) => {
+                console.log("body", body)
+                return body.activeRefreshTokens
+                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            }
+        }),
         getAuthProviders: build.query<{ oauth: AuthProvider[] }, void>({
             query: () => `/auth/user/signIn`,
             providesTags: ['AuthProviders'],
@@ -72,5 +95,5 @@ export const signInApi = api.injectEndpoints({
     }),
 });
 
-export const { useSignInMutation, useLazyGetAuthTypesQuery, useGetAuthProvidersQuery, useSignInOauthMutation } =
+export const { useSignInMutation, useLazyGetAuthTypesQuery, useGetAuthProvidersQuery, useSignInOauthMutation, useGetActiveSignInQuery } =
     signInApi;

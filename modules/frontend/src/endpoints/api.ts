@@ -61,6 +61,7 @@ export const api = createApi({
      */
     tagTypes: [
         'SignIn',
+        "ActiveSignIn",
         'Devices',
         'AuthProviders',
         'UserAuthTypes',

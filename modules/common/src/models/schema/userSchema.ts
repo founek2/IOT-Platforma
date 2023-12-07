@@ -39,6 +39,7 @@ export const userSchemaPlain = {
     refreshTokens: [{
         validTo: Date,
         createdAt: Date,
+        userAgent: String,
     }],
     realm: String,
 };

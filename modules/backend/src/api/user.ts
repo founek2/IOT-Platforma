@@ -107,7 +107,7 @@ export default () =>
                 }
 
                 const { doc } = await userService.create(formData.REGISTRATION);
-                const tokens = await userService.createTokens(doc)
+                const tokens = await userService.createTokens(doc, req.headers["user-agent"] || "")
 
                 tokens.ifRight(({ accessToken, refreshToken }) => {
                     res.send({

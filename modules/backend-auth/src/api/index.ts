@@ -3,6 +3,7 @@ import auth from './auth';
 import pass from './pass';
 import signIn from './signIn';
 import signOut from './signOut';
+import activeSignIn from './activeSignIn';
 import refresh from './refreshToken';
 
 export default ({ }) => {
@@ -17,6 +18,8 @@ export default ({ }) => {
     api.use('/user/signIn/refresh', refresh());
 
     api.use('/user/signOut', signOut());
+
+    api.use('/user/signIn/active', activeSignIn());
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {

@@ -39,6 +39,7 @@ export interface IRefreshToken {
     _id: any,
     validTo?: Date,
     createdAt: Date,
+    userAgent: string
 }
 
 export interface IUser {

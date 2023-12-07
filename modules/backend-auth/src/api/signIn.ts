@@ -38,11 +38,11 @@ export default () =>
             });
         },
 
-        async create({ body, context }: Request & HasContext, res) {
+        async create({ body, context, headers }: Request & HasContext, res) {
             const { formData } = body;
 
             if (formData.LOGIN) {
-                (await context.userService.checkCreditals(formData.LOGIN))
+                (await context.userService.checkCreditals(formData.LOGIN, headers["user-agent"] || ""))
                     .ifLeft((error) => {
                         logger.error(error)
                         res.status(401).send({ error })
@@ -76,7 +76,8 @@ export default () =>
                                 refreshToken: auth.refresh_token,
                                 tokenType: auth.token_type,
                                 provider: OAuthProvider.seznam,
-                            }
+                            },
+                            headers["user-agent"] || ""
                         )
                     ).ifRight(({ doc, accessToken, refreshToken, oldOauth }) => {
                         res.send({ user: doc, accessToken, refreshToken });

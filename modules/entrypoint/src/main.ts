@@ -42,9 +42,9 @@ export async function createServer() {
 
     // const modules: Module<any>[] = [backendModule, authModule, mqttModule];
     // Promise.all(modules.map((mod) => mod.bindServer(app, mod.loadConfig(), server)))
-    await backendModule.bindServer(app, backendModule.loadConfig())
     await authModule.bindServer(app, authModule.loadConfig())
     await mqttModule.bindServer(app, mqttModule.loadConfig(), server)
+    await backendModule.bindServer(app, backendModule.loadConfig())
 
     app.use("/api/*", (req, res) => {
         console.log("llll 404")

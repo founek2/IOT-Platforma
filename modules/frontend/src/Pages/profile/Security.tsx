@@ -1,9 +1,28 @@
+import { Card, CardContent, CardHeader, Grid, Paper, Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import React from 'react';
+import { useGetActiveSignInQuery } from '../../endpoints/signIn';
 
 function Security() {
+    const { data, isLoading } = useGetActiveSignInQuery()
+
     return (
-        <div>
-            {'Není implementováno...'}
+        <Grid container maxWidth={600} spacing={1}>
+            {data?.map((t) => {
+                const createdAt = new Date(t.createdAt)
+                const title = t.userAgent ? `${t.userAgent.device.vendor} ${t.userAgent.device.model}, ${t.userAgent.os.name} ${t.userAgent.os.version}, ${t.userAgent.browser.name} ${t.userAgent.browser.version}` : "Neznámé zařízení";
+                return <Grid item xs={12} key={t._id}>
+                    <Paper sx={{ p: 2 }}>
+                        <Typography fontWeight={500}>{title}</Typography>
+                        <Typography variant='body2' color={grey[500]}>{createdAt.toLocaleDateString()}, {createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Typography>
+                        {/* <CardHeader title={title} />
+                        <CardContent>
+                            <Typography>{createdAt.toLocaleDateString()}, {createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Typography>
+                        </CardContent> */}
+                    </Paper>
+                </Grid>
+            })}
+
             {/* {!loading && <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <caption>Zobrazeno posledních 15 přihlášení</caption>
@@ -27,7 +46,7 @@ function Security() {
                     </TableBody>
                 </Table>
             </TableContainer>} */}
-        </div>
+        </Grid>
     );
 }
 

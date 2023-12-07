@@ -83,7 +83,7 @@ export class UserService {
         userName,
         authType,
         password,
-    }: CredentialData): Promise<EitherAsync<string, { doc: IUser; accessToken: string, refreshToken: string }>> {
+    }: CredentialData, userAgent: string): Promise<EitherAsync<string, { doc: IUser; accessToken: string, refreshToken: string }>> {
         if (authType !== AuthType.passwd) return Left('notImplemented');
 
         const doc = await UserModel.findOne({ 'info.userName': userName, 'auth.types': authType });
@@ -92,15 +92,15 @@ export class UserService {
         const matched = await comparePasswd(password, doc.auth.password as string);
         if (!matched) return Left('passwordMissmatch');
 
-        const tokens = await this.createTokens(doc)
+        const tokens = await this.createTokens(doc, userAgent)
 
 
         return tokens.map(t => ({ ...t, doc }))
     }
 
-    async createTokens(user: IUser): Promise<Either<string, { accessToken: string, refreshToken: string }>> {
+    async createTokens(user: IUser, userAgent: string): Promise<Either<string, { accessToken: string, refreshToken: string }>> {
         return EitherAsync<string, { accessToken: string, refreshToken: string }>(async ({ fromPromise }) => {
-            const refreshTokenDoc = await fromPromise(this.createRefreshToken(user._id))
+            const refreshTokenDoc = await fromPromise(this.createRefreshToken(user._id, userAgent))
             const refreshToken = await this.jwtService.signRefreshToken({ jti: refreshTokenDoc._id, sub: user._id });
             const accessToken = await this.jwtService.sign({ sub: user._id, iss: refreshTokenDoc._id, groups: user.groups });
 
@@ -137,7 +137,8 @@ export class UserService {
     async refreshOauthAuthorization(
         email: string,
         userName: string,
-        oauth: IOauth
+        oauth: IOauth,
+        userAgent: string
     ): Promise<Either<string, { accessToken: string; refreshToken: string; doc: IUser; oldOauth?: IOauth }>> {
         let doc = await UserModel.findOneAndUpdate({ 'info.email': email }, { 'auth.oauth': oauth });
         if (!doc) {
@@ -151,14 +152,14 @@ export class UserService {
                 },
             } as any);
 
-            return (await this.createTokens(doc)).map(t => ({
+            return (await this.createTokens(doc, userAgent)).map(t => ({
                 doc,
                 oldOAuth: undefined,
                 ...t
             }))
         }
 
-        return (await this.createTokens(doc)).map(t => ({
+        return (await this.createTokens(doc, userAgent)).map(t => ({
             ...t,
             doc: doc!.toObject(),
         }))
@@ -229,13 +230,14 @@ export class UserService {
         ).exec();
     }
 
-    async createRefreshToken(userID: IUser['_id']): Promise<Either<"unableToCreate", IRefreshToken>> {
+    async createRefreshToken(userID: IUser['_id'], userAgent: string): Promise<Either<"unableToCreate", IRefreshToken>> {
         const doc = await UserModel.findById(userID).lean();
         if (!doc) return Left('unableToCreate');
 
-        const data = {
+        const data: IRefreshToken = {
             _id: new ObjectId(),
             createdAt: new Date(),
+            userAgent
         }
 
         await UserModel.updateOne(

@@ -64,7 +64,7 @@ router.post('/user', async function (req, res) {
             userName: username,
             password,
             authType: AuthType.passwd,
-        });
+        }, "MQTT client/3");
 
         result
             .ifRight(

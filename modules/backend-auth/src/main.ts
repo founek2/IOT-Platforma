@@ -19,7 +19,8 @@ export async function bindServer(app: Express, config: Config) {
     const oauthService = new OAuthService(config.oauth); // used in WebSocket middleware
     const context: Context = {
         oauthService,
-        userService
+        userService,
+        jwtService,
     }
 
     initSubscribers(eventEmitter);

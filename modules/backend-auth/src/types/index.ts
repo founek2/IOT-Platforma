@@ -1,4 +1,4 @@
-import { UserService } from "common";
+import { JwtService, UserService } from "common";
 import { OAuthService } from "../services/oauthService";
 
 export interface UpdateThingState {
@@ -8,6 +8,7 @@ export interface UpdateThingState {
 export type Context = {
     oauthService: OAuthService
     userService: UserService
+    jwtService: JwtService
 }
 
 export type HasContext = {

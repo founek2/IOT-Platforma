@@ -7182,6 +7182,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/ua-parser-js@npm:^0.7.39":
+  version: 0.7.39
+  resolution: "@types/ua-parser-js@npm:0.7.39"
+  checksum: 81046605eb2815b098228743b7dfde887cc8990369f2ad56e71f1400b4cef5078481c7ca91ca3dddf2e8d4e183fe93224bfdeee13bfe034a1e62d55cfbac9e26
+  languageName: node
+  linkType: hard
+
 "@types/use-sync-external-store@npm:^0.0.3":
   version: 0.0.3
   resolution: "@types/use-sync-external-store@npm:0.0.3"
@@ -8394,6 +8401,7 @@ __metadata:
     "@types/node-fetch": ^2.6.4
     "@types/ramda": 0.27.34
     "@types/testing-library__dom": ^7.5.0
+    "@types/ua-parser-js": ^0.7.39
     body-parser: ^1.20.2
     common: "workspace:modules/common"
     date-fns: ^2.15.0
@@ -8413,6 +8421,7 @@ __metadata:
     ts-node-dev: ^2.0.0
     typescript: ^4.9.5
     typescript-transform-paths: ^3.3.1
+    ua-parser-js: ^1.0.37
   languageName: unknown
   linkType: soft
 
@@ -22438,6 +22447,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 1f8f3b6aaea19f0f67cba79057674ba580438a7db55057eb89cc06950483c5d632115c14077f6663ea76fd09fce3c190e6414bb98582ec80aa5a4eaf345d5b68
+  languageName: node
+  linkType: hard
+
+"ua-parser-js@npm:^1.0.37":
+  version: 1.0.37
+  resolution: "ua-parser-js@npm:1.0.37"
+  checksum: 4d481c720d523366d7762dc8a46a1b58967d979aacf786f9ceceb1cd767de069f64a4bdffb63956294f1c0696eb465ddb950f28ba90571709e33521b4bd75e07
   languageName: node
   linkType: hard
 
