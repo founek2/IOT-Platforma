@@ -7,6 +7,8 @@ import { lazy } from 'react';
 
 import { allowedGroups } from 'common/src/constants/privileges';
 import { append } from '../utils/ramda';
+import { LocationsLoader } from '../Pages/Locations.loader';
+import { RoomLoader } from '../Pages/Room.loader';
 
 const UserManagement = lazy(() => import(/* webpackChunkName: 'UserManagement' */ '../Pages/UserManagement'));
 
@@ -33,15 +35,18 @@ const userRoutes: Route[] = [
         path: '/building/:building/room/:room',
         name: 'devices',
         Component: RoomLazy,
+        Loader: RoomLoader,
     },
     {
         path: '/building/:building',
         name: 'devices',
         Component: LocationsLazy,
+        Loader: LocationsLoader
     },
     {
         path: '/building',
         Component: LocationsLazy,
+        Loader: LocationsLoader,
         name: 'devices',
         Icon: CloudIcon,
     },
@@ -50,8 +55,8 @@ const userRoutes: Route[] = [
         Component: ProfileLazy,
     },
     { path: '/management/building', Component: LocationsManagementLazy, name: 'deviceControl', Icon: DevicesOtherIcon },
-    { path: '/management/building/:building', Component: LocationsManagementLazy, name: 'deviceControl' },
-    { path: '/management/building/:building/room/:room', Component: DeviceManagementLazy, name: 'deviceControl' },
+    // { path: '/management/building/:building', Component: LocationsManagementLazy, name: 'deviceControl' },
+    // { path: '/management/building/:building/room/:room', Component: DeviceManagementLazy, name: 'deviceControl' },
     { path: '/device/:deviceId/thing/:nodeId/notification', Component: EditNotifyFormLazy },
 ];
 const adminRoutes = append(

@@ -21,8 +21,7 @@ export type SocketUpdateThingState = {
 
 function WebSocket() {
     const loggedIn = useAppSelector(isLoggedIn)
-    const [lastFetchAt, setLastFetchAt] = useState<Date>();
-    const [fetchDevices] = useLazyDevicesQuery();
+    const [fetchDevices, { fulfilledTimeStamp }] = useLazyDevicesQuery();
     const dispatch = useAppDispatch();
     const [socket, setSocket] = useState<Socket>();
 
@@ -86,15 +85,12 @@ function WebSocket() {
         async function handler() {
             if (document.visibilityState === "hidden") return;
 
-            const isOld = !lastFetchAt || Date.now() - new Date(lastFetchAt).getTime() > 5 * 60 * 1000;
-
+            const isOld = !fulfilledTimeStamp || Date.now() - new Date(fulfilledTimeStamp).getTime() > 5 * 60 * 1000;
             if (loggedIn && (isOld || socket?.disconnected)) {
                 console.log('refreshing on focus', isOld, socket?.disconnected);
                 // Add little bit of timeout to give device time to setup network after waking from sleep
                 setTimeout(async () => {
                     if (mounted) await fetchDevices(undefined)
-
-                    if (mounted) setLastFetchAt(new Date());
                 }, window.navigator.onLine ? 0 : 500);
             }
         }
@@ -107,7 +103,7 @@ function WebSocket() {
             window.removeEventListener('focus', handler);
             document.removeEventListener('visibilitychange', handler);
         };
-    }, [lastFetchAt, fetchDevices, socket, loggedIn]);
+    }, [fulfilledTimeStamp, fetchDevices, socket, loggedIn]);
 
     return <NetworkStatus socket={socket} />;
 }

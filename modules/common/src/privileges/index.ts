@@ -14,16 +14,12 @@ type LazyComponent = React.LazyExoticComponent<({ title }: { title?: string }) =
 export interface Route {
     path: string;
     Component?: LazyComponent;
+    Loader?: () => JSX.Element;
     name?: UiMessageKey;
     Icon?: any;
 }
 
-export interface RouteWithComponent {
-    path: string;
-    Component: LazyComponent;
-    name?: UiMessageKey;
-    Icon?: React.ReactNode;
-}
+export type RouteWithComponent = Route & Required<Pick<Route, "Component">>
 
 export interface RouteMenu {
     path: string;

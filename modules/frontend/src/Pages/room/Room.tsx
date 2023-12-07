@@ -16,6 +16,7 @@ import { ThingWidget } from './widgets/ThingWidget';
 import { Dictionary } from '@reduxjs/toolkit';
 import { DeviceWidget } from './widgets/DeviceWidget';
 import { devicePreferencesReducerActions } from '../../store/slices/preferences/deviceSlice';
+import { GridRoom } from '../../components/GridRoom';
 
 interface RoomContentProps {
     thingIDs: string[];
@@ -27,17 +28,7 @@ function RoomContent({ thingIDs, onMove, editMode, preferencies }: RoomContentPr
     return (
         <Grid container justifyContent="center">
             <Grid item xs={12} md={7} lg={6} xl={5}>
-                <Box
-                    sx={(theme) => ({
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(8rem, 1fr))',
-                        gap: 2,
-                        padding: 2,
-                        [theme.breakpoints.up('md')]: {
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(12rem, 1fr))',
-                        },
-                    })}
-                >
+                <GridRoom>
                     {thingIDs
                         .map((id) => ({ id: id }))
                         .sort(byPreferences(preferencies))
@@ -59,7 +50,7 @@ function RoomContent({ thingIDs, onMove, editMode, preferencies }: RoomContentPr
                                 }
                             />
                         ))}
-                </Box>
+                </GridRoom>
             </Grid>
         </Grid>
     );

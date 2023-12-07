@@ -19,6 +19,7 @@ import { byPreferences } from '../utils/sort';
 import { Draggable, DraggableProvider } from '../components/Draggable';
 import clsx from 'clsx';
 import { DeviceConfigDialog } from './deviceManagement/DeviceConfigDialog';
+import { GridRoom } from '../components/GridRoom';
 
 function searchByText(text: string) {
     const search = text.toLowerCase();
@@ -101,17 +102,7 @@ export default function LocationsManagement({ title }: DevicesProps) {
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                     />
-                    <Box
-                        sx={(theme) => ({
-                            mt: 2,
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(8rem, 1fr))',
-                            gap: 2,
-                            [theme.breakpoints.up('md')]: {
-                                gridTemplateColumns: 'repeat(auto-fill, minmax(12rem, 1fr))',
-                            },
-                        })}
-                    >
+                    <GridRoom>
                         <DraggableProvider disabled={!editMode}>
                             {
                                 devices
@@ -134,7 +125,7 @@ export default function LocationsManagement({ title }: DevicesProps) {
                                     />)
                             }
                         </DraggableProvider>
-                    </Box>
+                    </GridRoom>
                 </Grid>
             </Grid>
             <DeviceDialogForm

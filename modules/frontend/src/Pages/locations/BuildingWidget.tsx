@@ -8,31 +8,7 @@ import { useAppSelector } from '../../hooks';
 import { byPreferences } from '../../utils/sort';
 import { LocationTypography } from '../../components/LocationTypography';
 import RoomWidget from './buildingWidget/RoomWidget';
-
-const roomsContainerStyle: SxProps<Theme> = (theme) => ({
-    display: 'grid',
-    // gridTemplateColumns: 'repeat(1, 1fr)',
-    gridTemplateColumns: 'repeat(1, 1fr)',
-    gap: 1,
-    paddingLeft: 1,
-    paddingRight: 1,
-    [theme.breakpoints.up('xl')]: {
-        gridTemplateColumns: 'repeat(auto-fill, minmax(29rem, 1fr))',
-        // gap: 4,
-    },
-    [theme.breakpoints.up('lg')]: {
-        gridTemplateColumns: 'repeat(auto-fill, minmax(23rem, 1fr))',
-        // gap: 3,
-        // paddingLeft: 5,
-        // paddingRight: 5,
-    },
-    [theme.breakpoints.up('xs')]: {
-        gridTemplateColumns: 'repeat(auto-fill, minmax(20rem, 1fr))',
-        gap: 2,
-        paddingLeft: 2,
-        paddingRight: 2,
-    },
-});
+import { GridLocations } from '../../components/GridLocations';
 
 interface BuildingWidgetProps {
     isDragable?: boolean;
@@ -68,7 +44,7 @@ export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetPro
                 ref={ref}
             >
                 <LocationTypography location={{ building: building.name }} pathPrefix={pathPrefix} />
-                <Box sx={roomsContainerStyle}>
+                <GridLocations>
                     {building.rooms.sort(byPreferences(locationPreferences)).map((room, idx) => (
                         <Draggable
                             id={room.id}
@@ -88,7 +64,7 @@ export const BuildingWidget = React.forwardRef<HTMLDivElement, BuildingWidgetPro
                             )}
                         />
                     ))}
-                </Box>
+                </GridLocations>
             </Grid>
         );
     }

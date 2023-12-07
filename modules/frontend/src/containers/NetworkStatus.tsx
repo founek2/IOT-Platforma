@@ -11,15 +11,22 @@ export default function NetworkStatus({ socket }: NetworkStatusProps) {
     const ref = useRef<SnackbarKey>();
 
     useEffect(() => {
+        let timeout: NodeJS.Timeout | undefined;
+
         function handleConnect() {
+            if (timeout) {
+                clearTimeout(timeout)
+                timeout = undefined
+            }
             if (!ref.current) return
 
             closeSnackbar(ref.current)
             ref.current = undefined
         }
 
-        let timeout: NodeJS.Timeout | undefined;
         function handleDisconnect() {
+            if (timeout) clearTimeout(timeout)
+
             timeout = setTimeout(() => {
                 const snackbarKey = enqueueSnackbar(ErrorMessages.getMessage("offlineMode"), { persist: true })
                 ref.current = snackbarKey
@@ -34,13 +41,11 @@ export default function NetworkStatus({ socket }: NetworkStatusProps) {
             handleConnect()
         }
 
-        console.log("socket", socket)
-
         socket?.on("connect", handleConnect)
         socket?.on("disconnect", handleDisconnect)
 
         return () => {
-            clearTimeout(timeout)
+            if (timeout) clearTimeout(timeout)
             socket?.removeListener("connect", handleConnect)
             socket?.removeListener("disconnect", handleDisconnect)
         }
