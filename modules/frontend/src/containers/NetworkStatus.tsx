@@ -2,15 +2,20 @@ import React, { useEffect, useRef, useState } from "react"
 import ErrorMessages from "common/src/localization/error";
 import { SnackbarKey, useSnackbar } from "notistack";
 import { Socket } from "socket.io-client"
+import { useAppSelector } from "../hooks";
+import { isLoggedIn } from "../selectors/getters";
 
 interface NetworkStatusProps {
     socket?: Socket
 }
 export default function NetworkStatus({ socket }: NetworkStatusProps) {
+    const loggedIn = useAppSelector(isLoggedIn)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const ref = useRef<SnackbarKey>();
 
     useEffect(() => {
+        if (!loggedIn) return;
+
         let timeout: NodeJS.Timeout | undefined;
 
         function handleConnect() {
@@ -49,7 +54,7 @@ export default function NetworkStatus({ socket }: NetworkStatusProps) {
             socket?.removeListener("connect", handleConnect)
             socket?.removeListener("disconnect", handleDisconnect)
         }
-    }, [socket])
+    }, [socket, loggedIn])
 
     return null
 }
