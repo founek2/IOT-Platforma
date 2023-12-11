@@ -36,22 +36,27 @@ export default function (
 
         if (jwtToken) {
             try {
-                const payload = await (await jwtService.verify(jwtToken)).unsafeCoerce();
+                const payload = (await jwtService.verify(jwtToken)).unsafeCoerce();
 
                 const req2 = req as RequestWithAuth;
 
-                const user = await UserModel.findById(payload.sub).exec();
-                if (user) {
-                    logger.debug(`Verified user=${user.info.userName}, groups=${user.groups.join(',')}`);
-                    req2.user = user.toObject();
-                    req2.user.accessPermissions = [Permission.write, Permission.read, Permission.control];
-                    if (req2.user.groups.some((v) => v === 'root')) req2.root = true;
-                    if (req2.user.groups.some((v) => v === 'admin')) req2.user.admin = true;
-                    next();
-                } else {
-                    logger.debug('userNotExist');
-                    res.status(404).send({ error: 'userNotExist', command: 'logOut' });
+                // const user = await UserModel.findById(payload.sub).exec();
+                // if (user) {
+                logger.debug(`Verified user=${payload.sub}, groups=${payload.groups.join(',')}`);
+                req2.user = {
+                    _id: payload.sub,
+                    groups: payload.groups,
+                    accessPermissions: [Permission.write, Permission.read, Permission.control],
+                    // root: payload.groups.some((v) => v === 'root'),
+                    admin: payload.groups.some((v) => v === 'admin'),
+                    refreshTokenId: payload.iss
                 }
+
+                next();
+                // } else {
+                //     logger.debug('userNotExist');
+                //     res.status(404).send({ error: 'userNotExist', command: 'logOut' });
+                // }
             } catch (err) {
                 logger.error('token problem', err);
                 res.status(400).send({ error: 'invalidToken' });
@@ -67,7 +72,6 @@ export default function (
 
                     // full access
                     if (req2.user.accessPermissions.some((b) => b === Permission.write)) {
-                        if (req2.user.groups.some((v) => v === 'root')) req2.root = true;
                         if (req2.user.groups.some((v) => v === 'admin')) req2.user.admin = true;
                     }
 

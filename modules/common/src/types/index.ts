@@ -88,7 +88,7 @@ export type SocketUpdateThingState = {
 };
 type Dict = { [key: string]: any };
 export type RequestWithAuth<P = {}, ReqQuery = {}> = Request<P, any, any, ReqQuery> & {
-    user: IUser & { admin?: boolean; accessPermissions?: Permission[] };
+    user: Pick<IUser, "_id" | "groups"> & { admin?: boolean; accessPermissions?: Permission[], refreshTokenId?: string };
     root?: boolean;
 };
 

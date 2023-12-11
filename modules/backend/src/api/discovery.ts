@@ -4,19 +4,16 @@ import { DeviceModel } from 'common/lib/models/deviceModel';
 import { DeviceStatus } from 'common/lib/models/interface/device';
 import { RequestWithAuth } from 'common/lib/types';
 import mongoose from 'mongoose';
-import { assocPath, equals, map } from 'ramda';
+import { assocPath, map } from 'ramda';
 import checkDiscovery from 'common/lib/middlewares/discovery/checkDiscovery';
 import formDataChecker from 'common/lib/middlewares/formDataChecker';
 import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { Actions } from '../services/actionsService';
 import eventEmitter from '../services/eventEmitter';
 import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
 import { IThing } from 'common/lib/models/interface/thing';
-import { extractPlainConfig } from '../utils/extractPlainConfig';
-import util from 'util';
-import { logger } from 'common/lib/logger';
 import { HasContext } from '../types';
+import { UserModel } from 'common';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -43,11 +40,14 @@ export default () =>
          * @return json { docs: IDiscovery[] }
          */
         async index({ user }: Request, res) {
+            const userDoc = await UserModel.findById(user._id).lean()
+            if (!userDoc) return res.sendStatus(404)
+
             const docs = await DiscoveryModel.find({
                 'state.status.value': {
                     $exists: true,
                 },
-                realm: user.realm,
+                realm: userDoc.realm,
                 pairing: { $ne: true },
             });
 

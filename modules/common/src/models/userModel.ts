@@ -1,5 +1,5 @@
 import mongoose, { Model } from 'mongoose';
-import { IUser, PushSubscription } from './interface/userInterface';
+import { IUser, PushSubscription, IRefreshToken } from './interface/userInterface';
 import { IUserDocument, userSchemaPlain } from './schema/userSchema';
 import { NotifyModel } from './notifyModel';
 import { DeviceModel } from './deviceModel';
@@ -33,6 +33,7 @@ export interface IUserModel extends Model<IUserDocument> {
     getSubscriptions(userId: IUser['_id']): Promise<Pick<IUser, "_id" | "pushSubscriptions">>;
     removeSubscription(userId: IUser['_id'], subscription: PushSubscription): Promise<void>;
     checkExists(userId?: string): Promise<boolean>;
+    invalidateRefreshToken(userID: IUser['_id'], refreshTokenId: IRefreshToken["_id"]): Promise<mongoose.UpdateWriteOpResult>
 }
 
 userSchema.statics.findByUserName = function (userName: string) {
@@ -104,9 +105,23 @@ userSchema.statics.removeSubscription = function (userId: IUser['_id'], subscrip
 };
 
 userSchema.statics.checkExists = async function (userID: IUser['_id']) {
-    return await this.exists({
+    return this.exists({
         _id: mongoose.Types.ObjectId(userID),
     });
 };
+
+userSchema.statics.invalidateRefreshToken = async function (userID: IUser['_id'], refreshTokenId: IRefreshToken["_id"]) {
+    // {
+    //     _id: new ObjectId(),
+    //     createdAt: new Date(),
+    //     userAgent
+    // }
+    return this.updateOne({
+        _id: mongoose.Types.ObjectId(userID),
+        "refreshTokens._id": refreshTokenId,
+    }, {
+        "refreshTokens.$.validTo": new Date()
+    }).exec();
+}
 
 export const UserModel = mongoose.model<IUserDocument, IUserModel>('User', userSchema);

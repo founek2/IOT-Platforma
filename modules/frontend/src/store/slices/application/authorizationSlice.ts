@@ -36,7 +36,7 @@ export const authorizationSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase('store/reset', (state) => {
-            internalStorage.delete()
+            internalStorage.deleteAccessToken()
 
             return initialState
         });

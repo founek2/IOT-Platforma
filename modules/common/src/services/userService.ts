@@ -83,17 +83,30 @@ export class UserService {
         userName,
         authType,
         password,
-    }: CredentialData, userAgent: string): Promise<EitherAsync<string, { doc: IUser; accessToken: string, refreshToken: string }>> {
+    }: CredentialData, userAgent: string): Promise<Either<string, IUser>> {
         if (authType !== AuthType.passwd) return Left('notImplemented');
 
-        const doc = await UserModel.findOne({ 'info.userName': userName, 'auth.types': authType });
+        const doc = await UserModel.findOne({ 'info.userName': userName, 'auth.types': authType }).lean();
         if (!doc) return Left('unknownUser');
 
         const matched = await comparePasswd(password, doc.auth.password as string);
         if (!matched) return Left('passwordMissmatch');
 
-        const tokens = await this.createTokens(doc, userAgent)
+        return Right(doc)
+    }
 
+    async checkAndCreateCreditals({
+        userName,
+        authType,
+        password,
+    }: CredentialData, userAgent: string): Promise<Either<string, { doc: IUser; accessToken: string, refreshToken: string }>> {
+        const checked = await this.checkCreditals({ userName, authType, password }, userAgent)
+        if (checked.isLeft())
+            // return checked.leftOrDefault("failed")
+            return Left(checked.leftOrDefault(""))
+
+        const doc = checked.unsafeCoerce()
+        const tokens = await this.createTokens(doc, userAgent)
 
         return tokens.map(t => ({ ...t, doc }))
     }
@@ -120,7 +133,7 @@ export class UserService {
             const refreshTokenDoc = doc.refreshTokens?.find((r) => r._id.toString() === token.jti)
             if (!refreshTokenDoc) return Left('invalidToken');
             if (refreshTokenDoc?.validTo && Date.now() > refreshTokenDoc.validTo.getTime()) {
-                return Left('invalidToken');
+                return Left('disabledToken');
             }
 
             const accessToken = await this.jwtService.sign({ sub: doc._id, iss: refreshTokenDoc._id, groups: doc.groups });

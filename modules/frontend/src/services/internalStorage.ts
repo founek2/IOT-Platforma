@@ -26,30 +26,32 @@ class MyEmitter<T extends EventMap> implements Emitter<T> {
     }
 }
 
-type AccessTokenData = {
+export type AccessTokenData = {
     token: string
     expiresAt: Number
 };
 export interface EmitterEvents {
     new_access_token: AccessTokenData;
+    invalid_token: void;
 }
 
+const STORAGE_KEY = "accessToken"
 class InternalStorage extends MyEmitter<EmitterEvents> {
     constructor() {
         super()
 
         this.on("new_access_token", (data) => {
-            localStorage.setItem("accessToken", JSON.stringify(data))
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
         })
     }
 
     getAccessToken(): AccessTokenData | undefined {
-        const data = localStorage.getItem("accessToken")
+        const data = localStorage.getItem(STORAGE_KEY)
         return data ? JSON.parse(data) : data
     }
 
-    delete() {
-        localStorage.removeItem("accessToken")
+    deleteAccessToken() {
+        localStorage.removeItem(STORAGE_KEY)
     }
 }
 

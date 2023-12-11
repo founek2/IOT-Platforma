@@ -68,7 +68,7 @@ router.post('/user', async function (req, res) {
 
         result
             .ifRight(
-                ({ doc }) =>
+                (doc) =>
                     doc.groups.some((group) => group === 'root' || group === 'admin') && res.send('allow administrator')
             )
             .ifLeft(() => sendDeny('/user user', res));

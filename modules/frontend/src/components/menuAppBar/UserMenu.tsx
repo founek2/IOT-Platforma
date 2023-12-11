@@ -11,6 +11,7 @@ import { authorizationActions } from '../../store/slices/application/authorizati
 import { preferencesActions } from '../../store/slices/preferences/setting';
 import { getColorMode, getCurrentUserId, getCurrentUserName } from '../../selectors/getters';
 import { useNavigate } from 'react-router-dom';
+import { useSignOutMutation } from '../../endpoints/signOut';
 
 export function UserMenu() {
     const userName = useAppSelector(getCurrentUserName);
@@ -19,6 +20,7 @@ export function UserMenu() {
     const open = Boolean(anchorEl);
     const colorMode = useAppSelector(getColorMode);
     const navigate = useNavigate();
+    const [signOutMutation] = useSignOutMutation()
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -27,6 +29,7 @@ export function UserMenu() {
         setAnchorEl(null);
     };
     const handleSignOut = () => {
+        signOutMutation();
         dispatch(authorizationActions.signOut());
         handleClose();
     };

@@ -47,7 +47,6 @@ export async function createServer() {
     await backendModule.bindServer(app, backendModule.loadConfig())
 
     app.use("/api/*", (req, res) => {
-        console.log("llll 404")
         res.sendStatus(404)
     })
     // fallback

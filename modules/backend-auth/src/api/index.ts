@@ -13,13 +13,11 @@ export default ({ }) => {
 
     api.use('/temporaryPass', pass);
 
+    api.use('/user/signIn/refresh', refresh());
+    api.use('/user/signIn/active', activeSignIn());
     api.use('/user/signIn', signIn());
 
-    api.use('/user/signIn/refresh', refresh());
-
     api.use('/user/signOut', signOut());
-
-    api.use('/user/signIn/active', activeSignIn());
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {

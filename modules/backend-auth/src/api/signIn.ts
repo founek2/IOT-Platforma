@@ -1,4 +1,4 @@
-import { fieldDescriptors, logger } from 'common';
+import { fieldDescriptors, logger, UserModel } from 'common';
 import { OAuthProvider } from 'common/lib/models/interface/userInterface';
 import { MaybeAsync } from 'purify-ts/MaybeAsync';
 import formDataChecker from 'common/lib/middlewares/formDataChecker';
@@ -8,6 +8,8 @@ import eventEmitter from '../services/eventEmitter';
 import { Request } from 'express';
 import { HasContext } from '../types';
 import { EitherAsync } from 'purify-ts';
+import tokenAuth from 'common/lib/middlewares/tokenAuth';
+import { RequestWithAuth } from 'common/lib/types';
 
 /**
  * URL prefix /authorization
@@ -20,6 +22,7 @@ export default () =>
                 rateLimiterMiddleware,
                 formDataChecker(fieldDescriptors, { allowedForms: ['AUTHORIZATION', 'LOGIN'] }),
             ],
+            deleteId: [tokenAuth()]
         },
 
         async index(req: Request & HasContext, res) {
@@ -42,7 +45,7 @@ export default () =>
             const { formData } = body;
 
             if (formData.LOGIN) {
-                (await context.userService.checkCreditals(formData.LOGIN, headers["user-agent"] || ""))
+                (await context.userService.checkAndCreateCreditals(formData.LOGIN, headers["user-agent"] || ""))
                     .ifLeft((error) => {
                         logger.error(error)
                         res.status(401).send({ error })
@@ -94,4 +97,14 @@ export default () =>
                     .run()
             } else res.sendStatus(400);
         },
+
+        async deleteId({ user, params }: RequestWithAuth<{ id: string }>, res) {
+            const refreshTokenId = params.id;
+
+            console.log("rr", refreshTokenId, user._id)
+            const result = await UserModel.invalidateRefreshToken(user._id, refreshTokenId)
+            if (result.nModified !== 1) return res.sendStatus(404)
+
+            res.sendStatus(204)
+        }
     });

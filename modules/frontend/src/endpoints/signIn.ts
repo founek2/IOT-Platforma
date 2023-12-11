@@ -92,8 +92,17 @@ export const signInApi = api.injectEndpoints({
                 };
             },
         }),
+        removeActiveSignIn: build.mutation<void, string>({
+            query(id) {
+                return {
+                    url: `auth/user/signIn/${id}`,
+                    method: 'DELETE',
+                };
+            },
+            invalidatesTags: ["ActiveSignIn"]
+        }),
     }),
 });
 
-export const { useSignInMutation, useLazyGetAuthTypesQuery, useGetAuthProvidersQuery, useSignInOauthMutation, useGetActiveSignInQuery } =
+export const { useSignInMutation, useLazyGetAuthTypesQuery, useGetAuthProvidersQuery, useSignInOauthMutation, useGetActiveSignInQuery, useRemoveActiveSignInMutation } =
     signInApi;

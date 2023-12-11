@@ -17,8 +17,8 @@ export const rtkQueryErrorLogger: Middleware =
                     console.error(action)
                     // console.warn('We got a rejected action!');
                     //   toast.warn({ title: 'Async error!', message: action.error.data.message })
-                    if (action.payload?.data?.error === 'invalidToken') {
-                        // dispatch(authorizationActions.signOut() as any);
+                    if (action.payload?.data?.error === 'disabledToken') {
+                        dispatch(authorizationActions.signOut() as any);
                         dispatch(notificationActions.add({ message: errorMessages.getMessage("invalidToken"), options: { variant: 'warning' } }))
                     } else if (action?.payload?.data?.error) {
                         dispatch(

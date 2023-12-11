@@ -27,12 +27,22 @@ const baseQuery = fetchBaseQuery({
                     },
                     body: JSON.stringify({ formData: { REFRESH_TOKEN: { token: authorization.refreshToken } } }),
                 })
-                const body = await res.json()
+                if (res.ok) {
+                    const body = await res.json()
 
-                headers.set('Authorization', `Bearer ${body.accessToken}`);
+                    headers.set('Authorization', `Bearer ${body.accessToken}`);
 
-                const tokenPayload = parseJwt(body.accessToken)
-                internalStorage.emit("new_access_token", { token: body.accessToken, expiresAt: tokenPayload.exp })
+                    const tokenPayload = parseJwt(body.accessToken)
+                    internalStorage.emit("new_access_token", { token: body.accessToken, expiresAt: tokenPayload.exp })
+                } else {
+                    const body = await res.json()
+
+                    if (body.error === "disabledToken") {
+                        internalStorage.emit("invalid_token", undefined)
+                    }
+                }
+
+
             } catch (err) {
                 logger.error(err)
             }
