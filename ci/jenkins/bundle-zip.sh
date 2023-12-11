@@ -3,4 +3,4 @@ set -e
 
 # pack all release files
 rm -f assets.zip
-zip -qr assets.zip packages/backend/{dist,package.json} packages/backend-mqtt/{dist,package.json} packages/backend-auth/{dist,package.json}  packages/common/{lib,package.json} packages/framework-ui/{lib,package.json} packages/frontend/build package.json license.md process.json yarn.lock
+zip -qr assets.zip modules/backend/{dist,package.json} modules/backend-mqtt/{dist,package.json} modules/backend-auth/{dist,package.json}  modules/common/{lib,package.json} modules/entrypoint/{dist,package.json} modules/frontend/build package.json license.md yarn.lock
