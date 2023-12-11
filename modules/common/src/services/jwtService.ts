@@ -18,7 +18,6 @@ interface AccessTokenPayload {
 export class JwtService {
     privKey: jwt.Secret
     pubKey: jwt.Secret
-    expiresIn: string = "14d"
 
     constructor({
         privateKey,
@@ -31,11 +30,10 @@ export class JwtService {
     }) {
         if (!privateKey) logger.error('JWT invalid privateKey path:', privateKey);
         if (!publicKey) logger.error('JWT invalid publicKey path:', publicKey);
-        if (!exIn) logger.error('JWT invalid expiresIn:', exIn);
+        // if (!exIn) logger.error('JWT invalid expiresIn:', exIn);
 
         this.privKey = fs.readFileSync(privateKey);
         this.pubKey = fs.readFileSync(publicKey);
-        this.expiresIn = exIn;
     }
 
     /**
@@ -45,7 +43,7 @@ export class JwtService {
      */
     sign(object: AccessTokenPayload): Promise<string> {
         return new Promise((resolve, reject) => {
-            jwt.sign(object, this.privKey, { algorithm: 'RS256', expiresIn: "1min" }, function (err, token) {
+            jwt.sign(object, this.privKey, { algorithm: 'RS256', expiresIn: "20min" }, function (err, token) {
                 if (!err && token) {
                     resolve(token);
                 } else {
