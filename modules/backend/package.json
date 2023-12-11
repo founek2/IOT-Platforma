@@ -8,7 +8,7 @@
         "dev": "ts-node-dev ./src/index.ts",
         "build": "tsc -b tsconfig.build.json && yarn copyFiles",
         "copyFiles": "copyfiles -u 1 src/templates/**/*.pug dist/",
-        "clean": "rm -rf tsconfig.build.tsbuildinfo dist",
+        "clean": "rm -rf tsconfig.tsbuildinfo tsconfig.build.tsbuildinfo dist",
         "test": "jest",
         "coverage": "yarn test --collectCoverage",
         "runAgenda": "ts-node src/runAgendaDash.ts"

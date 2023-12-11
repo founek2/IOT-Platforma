@@ -4,7 +4,7 @@
     "author": "Martin Skalický",
     "private": true,
     "scripts": {
-        "build:packages": "tsc -b modules/backend/tsconfig.build.json modules/backend-mqtt/tsconfig.build.json modules/backend-auth/tsconfig.build.json && yarn workspaces foreach --all run copyFiles && yarn workspace frontend build",
+        "build:all": "yarn workspace entrypoint build && yarn workspaces foreach --all run copyFiles && yarn workspace frontend build",
         "clean:all": "yarn workspaces foreach --all -pt run clean",
         "test": "yarn workspaces foreach --all -pt run test",
         "build:common": "tsc -b modules/common",

@@ -6,7 +6,7 @@
     "main": "lib/index.js",
     "scripts": {
         "build": "tsc -b tsconfig.build.json",
-        "clean": "rm -rf tsconfig.build.tsbuildinfo ./lib",
+        "clean": "rm -rf tsconfig.build.tsbuildinfo tsconfig.tsbuildinfo ./lib",
         "dev": "tsc -w",
         "test": "jest"
     },

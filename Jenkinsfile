@@ -18,8 +18,7 @@ pipeline {
         
         stage ('Build') {
             steps {
-                sh "yarn build:common"
-                sh "yarn build:packages"
+                sh "yarn build:all"
                 sh "ci/jenkins/bundle-zip.sh"
             }
         }

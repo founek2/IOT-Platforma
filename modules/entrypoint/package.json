@@ -3,7 +3,8 @@
   "packageManager": "yarn@3.6.2",
   "scripts": {
     "build": "tsc --build",
-    "dev": "ts-node-dev ./src/index.ts"
+    "dev": "ts-node-dev ./src/index.ts",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
     "backend": "workspace:modules/backend",
