@@ -35,12 +35,13 @@ const menu = [
 ];
 
 function Profile() {
+    const location = useLocation()
+
     return (
         <Grid container pt={2} alignItems="center" flexDirection="column" pl={1} pr={1} >
             <Grid item>
                 <Breadcrumbs aria-label="breadcrumb">
                     {menu.map(({ icon: Icon, text, link }) => (
-
                         <Link to={link} key={link} className="util--flex">
                             <Box display="flex" >
                                 <Icon />
