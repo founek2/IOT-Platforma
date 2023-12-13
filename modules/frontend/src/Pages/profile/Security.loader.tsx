@@ -1,25 +1,13 @@
-import { Grid, Skeleton } from "@mui/material"
+import { Grid, Skeleton, Typography } from "@mui/material"
 import React from "react"
 
+const items = [0, 1, 2, 3, 4, 5, 6]
 export function SecurityLoader() {
-    return <Grid container maxWidth={600} spacing={1}>
-        <Grid item>
-            <Skeleton variant="rectangular" height={76} width={600} />
-        </Grid>
-        <Grid item>
-            <Skeleton variant="rectangular" height={76} width={600} />
-        </Grid>
-        <Grid item>
-            <Skeleton variant="rectangular" height={76} width={600} />
-        </Grid>
-        <Grid item>
-            <Skeleton variant="rectangular" height={76} width={600} />
-        </Grid>
-        <Grid item>
-            <Skeleton variant="rectangular" height={76} width={600} />
-        </Grid>
-        <Grid item>
-            <Skeleton variant="rectangular" height={76} width={600} />
-        </Grid>
+    return <Grid container spacing={1} width="100%" maxWidth={600}>
+        {items.map((i) =>
+            <Grid item xs={12} key={i}>
+                <Skeleton variant="rectangular" height={76} />
+            </Grid>
+        )}
     </Grid>
 }

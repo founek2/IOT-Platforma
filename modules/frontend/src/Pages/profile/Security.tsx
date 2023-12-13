@@ -14,7 +14,7 @@ function Security() {
     if (isLoading) return <SecurityLoader />
 
     return (
-        <Grid container maxWidth={600} spacing={1}>
+        <Grid container spacing={1} maxWidth={600}>
             {data?.map((t) => {
                 const createdAt = new Date(t.createdAt)
                 const title = t.userAgent ? `${t.userAgent.device.vendor} ${t.userAgent.device.model}, ${t.userAgent.os.name} ${t.userAgent.os.version}, ${t.userAgent.browser.name} ${t.userAgent.browser.version}` : "Neznámé zařízení";

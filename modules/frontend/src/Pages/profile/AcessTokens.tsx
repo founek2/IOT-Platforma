@@ -15,6 +15,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Dialog } from '../../components/Dialog';
 import { logger } from 'common/src/logger';
 import useTheme from '@mui/material/styles/useTheme';
+import { SecurityLoader } from './Security.loader';
+
+
 
 enum OpenDialog {
     Delete,
@@ -34,7 +37,7 @@ function AccessTokens() {
     const theme = useTheme();
     const isSmall = useMediaQuery(theme.breakpoints.down('xs'));
     const dispatch = useDispatch();
-    const { data: accessTokens } = useAccessTokensQuery({ userID: user?._id! }, { skip: !user?._id });
+    const { data: accessTokens, isLoading } = useAccessTokensQuery({ userID: user?._id! }, { skip: !user?._id });
     const [deleteMutation] = useDeleteAccessTokenMutation();
     const [createMutation] = useCreateAccessTokenMutation();
     const [updateMutation] = useUpdateAccessTokenMutation();
@@ -70,6 +73,8 @@ function AccessTokens() {
     function clearApiToken() {
         setApiToken(undefined);
     }
+
+    if (isLoading) return <SecurityLoader />
 
     return (
         <>

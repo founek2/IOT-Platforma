@@ -14,8 +14,10 @@ function Account() {
     if (!user) return <p>Načítám data...</p>;
 
     return (
-        <Grid container>
-            <Button variant='contained' onClick={() => navigate({ search: `?editUser=current` })}>Upravit informace</Button>
+        <Grid container justifyContent="center">
+            <Grid item>
+                <Button variant='contained' onClick={() => navigate({ search: `?editUser=current` })}>Upravit informace</Button>
+            </Grid>
         </Grid>
     );
 }

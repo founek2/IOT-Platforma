@@ -12,13 +12,13 @@ export function RoomLoader() {
         <Grid container justifyContent="center">
             <Grid item xs={12} md={7} lg={6} xl={5}>
                 <GridRoom>
-                    <Skeleton variant="rectangular" width="216" height={112} />
-                    <Skeleton variant="rectangular" width="216" height={112} />
-                    <Skeleton variant="rectangular" width="216" height={112} />
-                    <Skeleton variant="rectangular" width="216" height={112} />
-                    <Skeleton variant="rectangular" width="216" height={112} />
-                    <Skeleton variant="rectangular" width="216" height={112} />
-                    <Skeleton variant="rectangular" width="216" height={112} />
+                    <Skeleton variant="rectangular" height={112} />
+                    <Skeleton variant="rectangular" height={112} />
+                    <Skeleton variant="rectangular" height={112} />
+                    <Skeleton variant="rectangular" height={112} />
+                    <Skeleton variant="rectangular" height={112} />
+                    <Skeleton variant="rectangular" height={112} />
+                    <Skeleton variant="rectangular" height={112} />
                 </GridRoom>
             </Grid>
         </Grid>
