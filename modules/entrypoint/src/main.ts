@@ -49,9 +49,13 @@ export async function createServer() {
     app.use("/api/*", (req, res) => {
         res.sendStatus(404)
     })
-    // fallback
-    // TODO fallback only for non-api path
-    app.get('/*', (req, res) => res.sendFile(path.join(frontend_path, 'index.html')));
+
+    // fallback for paths without file extension
+    app.get(/\.[^.\/]+$/, (req, res) => res.sendFile(path.join(frontend_path, 'index.html')));
+
+    app.use("*", (req, res) => {
+        res.sendStatus(404)
+    })
 
     const port = parseInt(String(process.env.PORT)) || 8085
     server.listen(port, () => {
