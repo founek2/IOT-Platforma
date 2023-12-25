@@ -40,6 +40,7 @@ export interface IDeviceModel extends Model<IDeviceDocument> {
     checkReadPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
     checkControlPerm(id: IDevice['_id'], userId: IUser['_id']): Promise<boolean>;
     checkRealmControlPerm(metadata: RealmMetadata, userId: IUser['_id']): Promise<boolean>;
+    checkRealmReadPerm(metadata: RealmMetadata, userId: IUser['_id']): Promise<boolean>;
     updateByFormData(id: IDevice['_id'], object: Partial<IDevice>): Promise<void>;
 
     findAllRealms(): Promise<Realm[]>;
@@ -174,6 +175,17 @@ deviceSchema.statics.checkRealmControlPerm = function (
         'metadata.realm': metadata.realm,
         'metadata.deviceId': metadata.deviceId,
         'permissions.control': userID,
+    });
+};
+deviceSchema.statics.checkRealmReadPerm = function (
+    metadata: RealmMetadata,
+    userId: IUser['_id']
+): Promise<boolean> {
+    const userID = ObjectId(userId);
+    return this.exists({
+        'metadata.realm': metadata.realm,
+        'metadata.deviceId': metadata.deviceId,
+        'permissions.read': userID,
     });
 };
 

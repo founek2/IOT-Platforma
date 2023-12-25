@@ -8,6 +8,7 @@ import { validateValue } from 'common/lib/utils/validateValue';
 import { Actions } from '../../services/actionsService';
 import checkRealmControlPerm from 'common/lib/middlewares/device/checkRealmControlPerm';
 import { HasContext } from '../../types';
+import checkRealmReadPerm from 'common/src/middlewares/device/checkRealmReadPerm';
 
 type Params = { realm: string; deviceId: string; nodeId: string };
 type Request = RequestWithAuth<Params>;
@@ -21,10 +22,19 @@ export default () =>
         mergeParams: true,
         middlewares: {
             create: [tokenAuthMIddleware(), checkRealmControlPerm({ paramKey: 'deviceId' })],
+            index: [tokenAuthMIddleware(), checkRealmReadPerm({ paramKey: 'deviceId' })],
         },
 
-        async index(req: Request, res) {
-            res.send('Z bezpečnostích důvodů není metoda GET podporována. Použijte matodu POST.');
+        async index({ params }: Request, res) {
+            const { realm, deviceId, nodeId } = params;
+
+            const doc = await DeviceModel.findByRealm(realm, deviceId);
+            if (!doc) return res.sendStatus(404);
+
+            const thing = getThing(doc, nodeId);
+            if (!thing) return res.status(404).send("Thing not found");
+
+            res.send(thing.state || {})
         },
 
         async create({ params, query, context }: RequestQuery & HasContext, res) {
