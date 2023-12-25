@@ -5,10 +5,9 @@ import { RequestWithAuth } from 'common/lib/types';
 import { getProperty } from 'common/lib/utils/getProperty';
 import { getThing } from 'common/lib/utils/getThing';
 import { validateValue } from 'common/lib/utils/validateValue';
-import { Actions } from '../../services/actionsService';
 import checkRealmControlPerm from 'common/lib/middlewares/device/checkRealmControlPerm';
 import { HasContext } from '../../types';
-import checkRealmReadPerm from 'common/src/middlewares/device/checkRealmReadPerm';
+import checkRealmReadPerm from 'common/lib/middlewares/device/checkRealmReadPerm';
 
 type Params = { realm: string; deviceId: string; nodeId: string };
 type Request = RequestWithAuth<Params>;
@@ -25,7 +24,12 @@ export default () =>
             index: [tokenAuthMIddleware(), checkRealmReadPerm({ paramKey: 'deviceId' })],
         },
 
-        async index({ params }: Request, res) {
+        async index({ params, query }: RequestQuery, res) {
+            // Check if query params for POST provided -> show error
+            if (query.value)
+                return res.send('Z bezpečnostích důvodů není metoda GET podporována. Použijte matodu POST pro ovládání nebo odeberte query parametry z url.');
+
+
             const { realm, deviceId, nodeId } = params;
 
             const doc = await DeviceModel.findByRealm(realm, deviceId);
