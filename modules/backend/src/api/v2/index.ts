@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { Config } from '../../config';
 import thing from './thing';
 import property from './property';
-import thingState from '../thingState';
+import thingState from './thingState';
 
 export default ({ config }: { config: Config }) => {
     let api = Router();
