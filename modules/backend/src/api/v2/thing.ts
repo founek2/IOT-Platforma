@@ -24,21 +24,8 @@ export default () =>
             index: [tokenAuthMIddleware(), checkRealmReadPerm({ paramKey: 'deviceId' })],
         },
 
-        async index({ params, query }: RequestQuery, res) {
-            // Check if query params for POST provided -> show error
-            if (query.value)
-                return res.send('Z bezpečnostích důvodů není metoda GET podporována. Použijte matodu POST pro ovládání nebo odeberte query parametry z url.');
-
-
-            const { realm, deviceId, nodeId } = params;
-
-            const doc = await DeviceModel.findByRealm(realm, deviceId);
-            if (!doc) return res.sendStatus(404);
-
-            const thing = getThing(doc, nodeId);
-            if (!thing) return res.status(404).send("Thing not found");
-
-            res.send(thing.state || {})
+        async index(req: Request, res) {
+            return res.send('Z bezpečnostích důvodů není metoda GET podporována. Použijte matodu POST pro ovládání nebo odeberte query parametry z url.');
         },
 
         async create({ params, query, context }: RequestQuery & HasContext, res) {
