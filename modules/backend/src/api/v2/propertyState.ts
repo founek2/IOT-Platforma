@@ -11,7 +11,7 @@ type Params = { realm: string; deviceId: string; nodeId: string, propertyId: str
 type RequestQuery = RequestWithAuth<Params, { property?: string; value?: string }>;
 
 /**
- * URL prefix /device/:deviceId/thing/:nodeId
+ * URL prefix /device/:deviceId/thing/:nodeId/property/:propertyId/state
  */
 export default () =>
     resource({
