@@ -170,7 +170,7 @@ function processNotifications(
 
                 output[userID].push(createNotification({
                     title: data.deviceThing.config.name,
-                    body: renderTemplate(textTemplate || "${property.name} je {value}", { ...data, value }),
+                    body: renderTemplate(textTemplate || "${property.name} je ${value}", { ...data, value }),
                     homepageUrl
                 }));
                 sended.push({ _id, userId: userID, prop_id });
