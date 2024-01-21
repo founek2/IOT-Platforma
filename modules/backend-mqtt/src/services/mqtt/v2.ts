@@ -61,7 +61,7 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
         })
             .lean()
             .exec();
-        if (!device) return logger.warning('mqtt - Got data from invalid/misconfigured device');
+        if (!device) return logger.warning('mqtt - Got data from invalid/misconfigured device, topic', topic);
 
         const thing = getThing(device, nodeId);
         const property = getProperty(thing, propertyId);
