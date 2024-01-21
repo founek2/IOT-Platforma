@@ -24,7 +24,11 @@ export async function createServer() {
     app.use(express.urlencoded({ extended: true }));
 
     // Logger
-    app.use(morgan('dev'));
+    if (process.env.DEBUG_RABBITMQ) {
+        app.use(morgan('dev'));
+    } else {
+        app.use(/^(?!\/api\/auth\/rabbitmq\/).+/, morgan('dev'));
+    }
 
     // Cors
     app.use(cors())

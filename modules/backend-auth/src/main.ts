@@ -32,7 +32,6 @@ export async function bindServer(app: Express, config: Config) {
         next()
     })
 
-    app.use("/api/auth", morgan('dev'));
     app.use('/api/auth', bodyParser.json({ limit: '100kb' }));
     app.use('/api/auth', api({ context }));
 
