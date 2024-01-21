@@ -10,6 +10,7 @@ import { getThing } from "common/lib/utils/getThing";
 import { uniq } from "ramda";
 import webpush from "web-push"
 import functions from "./notification/functions";
+import { renderTemplate } from "./notification/templateEngine";
 import { NotifyService } from "./notifyService";
 
 type VibratePattern = number | number[];
@@ -80,9 +81,8 @@ export class NotificationService {
             things.forEach((thing) =>
                 thing.properties.forEach(
                     processNotifications(_id, userId, value, output, sended, notSended, {
-                        title: deviceThing.config.name,
-                        name: property.name,
-                        unitOfMeasurement: property.unitOfMeasurement,
+                        deviceThing,
+                        property,
                     }, this.homepageUrl)
                 )
             );
@@ -119,20 +119,15 @@ export class NotificationService {
 }
 
 interface CreateNotificationsOptions {
-    value: number | string;
+    title: string;
     homepageUrl: string;
-    data: { title: string; name: string; unitOfMeasurement?: string };
+    body: string,
 }
-function createNotification(options: CreateNotificationsOptions) {
-    const {
-        data: { name, unitOfMeasurement, title },
-        value,
-        homepageUrl,
-    } = options;
-    const units = unitOfMeasurement ? ' ' + unitOfMeasurement : '';
+function createNotification({ homepageUrl, title, body }: CreateNotificationsOptions) {
     return {
         title,
-        body: `${name} je ${value}${units}`,
+        // body: `${name} je ${value}${units}`,
+        body,
         icon: '/favicon.png',
         click_action: homepageUrl,
     };
@@ -163,17 +158,21 @@ function processNotifications(
         unSatisfiedItems: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }[];
         satisfiedItems: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }[];
     },
-    data: CreateNotificationsOptions['data'],
+    data: { property: IThingProperty, deviceThing: IThing },
     homepageUrl: string
 ) {
-    return ({ type, value: limit, advanced, _id: prop_id, tmp }: INotifyThingProperty) => {
+    return ({ type, value: limit, advanced, _id: prop_id, textTemplate, tmp }: INotifyThingProperty) => {
         /* Check validity */
         const result = functions[type](value, limit, advanced, tmp);
         if (result.ruleSatisfied) {
             if (result.valid) {
                 if (!output[userID]) output[userID] = [];
 
-                output[userID].push(createNotification({ data, value, homepageUrl }));
+                output[userID].push(createNotification({
+                    title: data.deviceThing.config.name,
+                    body: renderTemplate(textTemplate || "${property.name} je {value}", { ...data, value }),
+                    homepageUrl
+                }));
                 sended.push({ _id, userId: userID, prop_id });
             } else {
                 if (isLastSatisfied(tmp)) notSended.satisfiedItems.push({ _id, prop_id });

@@ -90,6 +90,12 @@ function PropertyPart({ id, config }: PropertyPartProps) {
                     ) : null}
                 </Fragment>
             ) : null}
+            <Grid item xs={12}>
+                <FieldConnector
+                    deepPath={`EDIT_NOTIFY.textTemplate.${id}`}
+                    fullWidth
+                />
+            </Grid>
         </Fragment>
     );
 }

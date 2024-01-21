@@ -5,6 +5,7 @@ interface INotifyFE {
     type: NotifyType[];
     value: any[];
     count: number;
+    textTemplate: string[];
     advanced: {
         interval: number[];
         from: string[];
@@ -15,13 +16,14 @@ interface INotifyFE {
 /**
  * Transform notify form from FE to BE representation
  */
-export function transformNotifyForBE({ propertyId = [], type = [], value = [], count, advanced }: INotifyFE) {
+export function transformNotifyForBE({ propertyId = [], type = [], value = [], textTemplate = [], count, advanced }: INotifyFE) {
     const resultArr = [];
     for (let i = 0; i < count; i++) {
         resultArr.push({
             propertyId: propertyId[i],
             type: type[i],
             value: value[i],
+            textTemplate: textTemplate[i],
             advanced: {
                 interval: advanced?.interval[i],
                 daysOfWeek: advanced?.daysOfWeek[i],
@@ -43,6 +45,7 @@ export function transformNotifyForFE(arrayOfNotify: INotifyThingProperty[]) {
         propertyId: [],
         type: [],
         value: [],
+        textTemplate: [],
         count: len,
         advanced: {
             interval: [],
@@ -55,6 +58,7 @@ export function transformNotifyForFE(arrayOfNotify: INotifyThingProperty[]) {
         resultObj['propertyId'].push(arrayOfNotify[i].propertyId);
         resultObj['type'].push(arrayOfNotify[i].type);
         resultObj['value'].push(arrayOfNotify[i].value);
+        resultObj['textTemplate'].push(arrayOfNotify[i].textTemplate);
         resultObj['advanced']['interval'].push(arrayOfNotify[i]?.advanced?.interval);
         resultObj['advanced']['from'].push(arrayOfNotify[i]?.advanced?.from);
         resultObj['advanced']['to'].push(arrayOfNotify[i]?.advanced?.to);

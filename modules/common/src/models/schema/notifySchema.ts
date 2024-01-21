@@ -9,6 +9,7 @@ export const notifyPropertySchema = new Schema(
 		propertyId: String,
 		type: String,
 		value: String,
+		textTemplate: String,
 		advanced: {
 			interval: { $type: Number, default: -1 },
 			from: { $type: String, default: "00:00" },

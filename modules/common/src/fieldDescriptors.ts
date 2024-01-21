@@ -198,6 +198,13 @@ const EDIT_NOTIFY: FormFieldDescriptors = {
         when: ({ type }, { i }) => isNil(type) || isNil(i) || type[i] !== NotifyType.always,
         // validations: [validationFactory("isNumber")],
     },
+    'textTemplate[]': {
+        deepPath: 'EDIT_NOTIFY.textTemplate[]',
+        getLength: ({ count }) => count,
+        label: 'Šablona pro text notifikace',
+        required: true,
+        validations: [validationFactory("isString")],
+    },
     advanced: {
         'daysOfWeek[]': {
             deepPath: 'EDIT_NOTIFY.advanced.daysOfWeek[]',

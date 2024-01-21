@@ -31,6 +31,7 @@ export interface INotifyThingProperty {
     propertyId: IThingProperty['propertyId'];
     type: NotifyType;
     value: string | number;
+    textTemplate: string;
     advanced: {
         interval: number;
         from: string;
