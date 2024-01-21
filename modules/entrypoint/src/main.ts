@@ -55,7 +55,7 @@ export async function createServer() {
     })
 
     // fallback for paths without file extension
-    app.get(/\.[^.\/]+$/, (req, res) => res.sendFile(path.join(frontend_path, 'index.html')));
+    app.get(/[\/][^.]+$/, (req, res) => res.sendFile(path.join(frontend_path, 'index.html')));
 
     app.use("*", (req, res) => {
         res.sendStatus(404)
