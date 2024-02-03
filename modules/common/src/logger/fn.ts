@@ -9,6 +9,7 @@ const styleArray = {
 };
 
 const levelMaping: { [key: string]: number } = {
+    NONE: -1,
     ERROR: 0,
     WARNING: 1,
     INFO: 2,
@@ -17,7 +18,7 @@ const levelMaping: { [key: string]: number } = {
     SILLY: 5
 }
 function getLoggerLevel(): Number {
-    const level = process.env.LOG_LEVEL || process.env.REACT_APP_LOG_LEVEL || ""
+    const level = process.env.LOG_LEVEL ?? process.env.REACT_APP_LOG_LEVEL ?? ""
 
     return levelMaping[level] ?? (parseInt(level) || 2)
 }
