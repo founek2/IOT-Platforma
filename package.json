@@ -20,7 +20,7 @@
     "workspaces": [
         "modules/*"
     ],
-    "packageManager": "yarn@3.6.2",
+    "packageManager": "yarn@4.1.0",
     "dependencies": {
         "node-gyp": "^9.4.0"
     }
