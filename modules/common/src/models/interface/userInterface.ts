@@ -58,7 +58,7 @@ export interface IUser {
     realm: string;
     groups: ('user' | 'admin' | 'root' | 'flow')[];
     notifyTokens: string[];
-    pushSubscriptions: PushSubscription[]
+    pushSubscriptions?: PushSubscription[]
     accessTokens?: IAccessToken[];
     refreshTokens?: IRefreshToken[]
     createdAt: Date;

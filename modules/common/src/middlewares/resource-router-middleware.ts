@@ -84,5 +84,5 @@ function apply(key: keyes, fn: middleware, router: Express.Router) {
         url = '/';
     }
 
-    router[method](url, asyncHandler(fn));
+    router[method](url, asyncHandler(fn as any));
 }

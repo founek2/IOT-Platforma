@@ -51,7 +51,7 @@ export class UserService {
      * Create new user
      */
     async create(
-        object: Omit<IUser, 'realm' | 'groups' | 'createdAt' | 'updatedAt' | 'notifyTokens'>
+        object: Omit<IUser, 'realm' | 'groups' | 'createdAt' | 'updatedAt' | 'notifyTokens' | 'pushSubscriptions'>
     ): Promise<{ doc: IUser }> {
         const { password, oauth } = object.auth;
 

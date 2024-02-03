@@ -18,7 +18,7 @@ export const rateLimiterMiddleware = (req: Express.Request, res: Express.Respons
     if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') next();
     else
         rateLimiter
-            .consume(req.ip)
+            .consume(req.ip!)
             .then(() => {
                 next();
             })
