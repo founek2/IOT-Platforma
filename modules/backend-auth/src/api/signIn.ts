@@ -101,7 +101,6 @@ export default () =>
         async deleteId({ user, params }: RequestWithAuth<{ id: string }>, res) {
             const refreshTokenId = params.id;
 
-            console.log("rr", refreshTokenId, user._id)
             const result = await UserModel.invalidateRefreshToken(user._id, refreshTokenId)
             if (result.nModified !== 1) return res.sendStatus(404)
 

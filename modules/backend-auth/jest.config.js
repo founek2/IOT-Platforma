@@ -1,6 +1,7 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
     // All imported modules in your tests should be mocked automatically
     // automock: false,
@@ -52,10 +53,10 @@ module.exports = {
     // forceCoverageMatch: [],
 
     // A path to a module which exports an async function that is triggered once before all test suites
-    // globalSetup: undefined,
+    globalSetup: '<rootDir>/__tests__/setup/setup.ts',
 
     // A path to a module which exports an async function that is triggered once after all test suites
-    // globalTeardown: undefined,
+    globalTeardown: '<rootDir>/__tests__/setup/teardown.ts',
 
     // A set of global variables that need to be available in all test environments
     // globals: {},
@@ -82,7 +83,7 @@ module.exports = {
     // moduleNameMapper: {},
 
     // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
-    modulePathIgnorePatterns: [ 'dist' ],
+    modulePathIgnorePatterns: ['dist'],
 
     // Activates notifications for test results
     // notify: false,
@@ -126,7 +127,7 @@ module.exports = {
     // setupFiles: [],
 
     // A list of paths to modules that run some code to configure or set up the testing framework before each test
-    // setupFilesAfterEnv: [],
+    setupFilesAfterEnv: ['<rootDir>/__tests__/setup/setupAfterEnv.ts'],
 
     // The number of seconds after which a test is considered as slow and reported as such in the results.
     // slowTestThreshold: 5,
@@ -135,7 +136,7 @@ module.exports = {
     // snapshotSerializers: [],
 
     // The test environment that will be used for testing
-    testEnvironment: 'node'
+    testEnvironment: 'node',
 
     // Options that will be passed to the testEnvironment
     // testEnvironmentOptions: {},
@@ -144,10 +145,10 @@ module.exports = {
     // testLocationInResults: false,
 
     // The glob patterns Jest uses to detect test files
-    // testMatch: [
-    //   "**/__tests__/**/*.[jt]s?(x)",
-    //   "**/?(*.)+(spec|test).[tj]s?(x)"
-    // ],
+    testMatch: [
+        "**/__tests__/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[tj]s?(x)"
+    ],
 
     // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
     // testPathIgnorePatterns: [
