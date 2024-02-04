@@ -1,4 +1,4 @@
-import DatabaseHelper from '../helpers/database';
+import DatabaseHelper from 'common/__test__/helpers/database';
 import prepareDb from '../helpers/prepareDb';
 import config from "../resources/config";
 
