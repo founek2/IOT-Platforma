@@ -43,7 +43,7 @@ export async function bindServer(app: Express, config: Config, bus: BusEmitterTy
         req.context = context
         next()
     })
-    app.use('/api', api({ io, context }));
+    app.use('/api', api({ io, context, bus }));
 
     const { userName, password } = config.mqtt;
     const getPass = userName && password ? async () => Just({ userName, password }) : () => passKeper.getPass()

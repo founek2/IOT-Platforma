@@ -4,13 +4,15 @@ import webSocket from './socket';
 import { Server as serverIO } from 'socket.io';
 import history from './history';
 import { Context } from '../types';
+import { BusEmitterType } from 'common/src/interfaces/asyncEmitter';
 
-export default ({ io, context }: { io: serverIO, context: Context }) => {
+export default ({ io, context, bus }: { io: serverIO, context: Context, bus: BusEmitterType }) => {
     let api = Router();
 
     api.use('/device/:deviceId/thing/:thingId/history', history());
 
-    api.use('/actions', actions);
+    // api.use('/actions', actions({bus}));
+    actions({ bus });
 
     webSocket(io, context.jwtService);
 
