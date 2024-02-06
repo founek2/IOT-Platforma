@@ -1,3 +1,6 @@
+// TODO handle refresh - since not suppoerted in Chrome, leaving it for now
+// https://stackoverflow.com/questions/61487043/why-are-my-pushsubscriptions-expiring-so-quickly
+
 self.addEventListener("push", event => {
     const { title, ...options } = event.data.json();
     console.log("recieved notification title")

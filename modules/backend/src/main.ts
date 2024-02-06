@@ -6,31 +6,34 @@ import { MailerService } from './services/mailerService';
 import { Config } from './config';
 import { Actions } from './services/actionsService';
 import { BrokerService } from './services/brokerService';
+import { BusEmitterType, PassKeeper } from "common/src/interfaces/asyncEmitter"
 
 export interface MyApp extends Application {
     server: http.Server;
 }
 
 export * from "./config"
-export async function bindServer(app: Express, config: Config) {
+export async function bindServer(app: Express, config: Config, bus: BusEmitterType) {
     /* INITIALIZE */
     const jwtService = new JwtService(config.jwt); // used in WebSocket middleware
     const mailerService = new MailerService(config);
     const userService = new UserService(jwtService)
-    const actionsService = new Actions(config.serviceAuthUri, config.serviceMqttUri)
-    const brokerService = new BrokerService(actionsService, config.mqtt)
+    const actionsService = new Actions(bus)
+    const passKeper = new PassKeeper(bus);
+    const brokerService = new BrokerService(actionsService, config.mqtt, passKeper)
+    const context = {
+        jwtService,
+        mailerService,
+        userService,
+        actionsService,
+        brokerService,
+    };
 
     await loadersInit({
-        app, config, context: {
-            jwtService,
-            mailerService,
-            userService,
-            actionsService,
-            brokerService,
-        }
+        app, config, context
     });
 
-    return app
+    return { app, context }
 }
 
 // export function createApp(config: Config) {

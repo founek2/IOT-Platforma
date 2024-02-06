@@ -10,17 +10,21 @@ import api from './api';
 import { Context } from './types';
 import { JwtService } from 'common';
 import { UserService } from 'common';
+import { TemporaryPass } from './services/TemporaryPass';
+import { BusEmitterType } from 'common/src/interfaces/asyncEmitter';
 
 export * from "./config"
-export async function bindServer(app: Express, config: Config) {
+export async function bindServer(app: Express, config: Config, bus: BusEmitterType) {
     /* INITIALIZE */
     const jwtService = new JwtService(config.jwt); // used in WebSocket middleware
     const userService = new UserService(jwtService)
     const oauthService = new OAuthService(config.oauth); // used in WebSocket middleware
+    const temporaryPassService = new TemporaryPass(bus);
     const context: Context = {
         oauthService,
         userService,
         jwtService,
+        temporaryPassService,
     }
 
     initSubscribers(eventEmitter);

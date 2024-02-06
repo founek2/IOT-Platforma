@@ -5,15 +5,16 @@ import eventEmitter from './services/eventEmitter';
 import { Config } from './config';
 import api from './api';
 import { Context } from './types';
-import { JwtService, InfluxService, AuthConnector } from 'common';
+import { JwtService, InfluxService } from 'common';
 import { Server } from 'http';
 import { Server as serverIO } from 'socket.io';
 import { MqttService } from './services/mqtt';
 import { NotificationService } from './services/NotificationService';
 import { Just } from 'purify-ts';
+import { BusEmitterType, PassKeeper } from 'common/src/interfaces/asyncEmitter';
 
 export * from "./config"
-export async function bindServer(app: Express, config: Config, server: Server) {
+export async function bindServer(app: Express, config: Config, bus: BusEmitterType, server: Server) {
     /* INITIALIZE */
     const jwtService = new JwtService(config.jwt); // used in WebSocket middleware
     const influxService = new InfluxService(config.influxDb)
@@ -24,6 +25,7 @@ export async function bindServer(app: Express, config: Config, server: Server) {
         homepageUrl: config.homepage
     })
     const mqttService = new MqttService(config.mqtt, notificationService, influxService);
+    const passKeper = new PassKeeper(bus);
     const context: Context = {
         jwtService,
         influxService,
@@ -43,7 +45,7 @@ export async function bindServer(app: Express, config: Config, server: Server) {
     app.use('/api', api({ io, context }));
 
     const { userName, password } = config.mqtt;
-    const getPass = userName && password ? async () => Just({ userName, password }) : AuthConnector(config.serviceAuthUri).getPass
+    const getPass = userName && password ? () => Just({ userName, password }) : passKeper.getPass
 
     setTimeout(() => {
         mqttService.connect(io, getPass)

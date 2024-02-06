@@ -199,7 +199,7 @@ type PreparedNotification = { subscription: PushSubscription, notification: Noti
 async function buildNotifications(arrOfTokens: (Pick<IUser, "_id" | "pushSubscriptions">)[], objPerUser: Record<IUser["_id"], Notification[]>) {
     const messages: PreparedNotification[] = [];
     arrOfTokens.forEach(({ pushSubscriptions, _id: userId }) => {
-        pushSubscriptions.forEach((subscription) => {
+        pushSubscriptions?.forEach((subscription) => {
             const notifications = objPerUser[userId];
             notifications.forEach((notification) => {
                 // TODO neposkládat do jedné notifikace maybe?

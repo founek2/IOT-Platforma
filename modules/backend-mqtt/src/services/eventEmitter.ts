@@ -34,7 +34,7 @@ export interface deviceSetState {
     device: IDevice;
     nodeId: IThing['config']['nodeId'];
     propertyId: IThingProperty['propertyId'];
-    value: string | number;
+    value: string | number | boolean;
 }
 
 export interface EmitterEvents {

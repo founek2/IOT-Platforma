@@ -6,5 +6,3 @@ export * from "./services/jwtService"
 export * from "./services/SecurityService"
 export * from "./services/userService"
 export * from "./services/influxService"
-
-export * from "./connectors/authConnector"

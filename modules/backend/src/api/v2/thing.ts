@@ -45,7 +45,7 @@ export default () =>
             const result = validateValue(property, Buffer.from(value));
             if (!result.valid) return res.sendStatus(400);
 
-            (await context.actionsService.deviceSetProperty(deviceId, nodeId, propertyId, value, doc))
+            (await context.actionsService.deviceSetProperty(nodeId, propertyId, value, doc))
                 ? res.sendStatus(200)
                 : res.sendStatus(400);
         },

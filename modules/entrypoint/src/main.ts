@@ -10,7 +10,7 @@ import cors from "cors"
 import mongoSanitize from 'express-mongo-sanitize';
 import path from "path"
 import bodyParser from 'body-parser';
-
+import { BusEmitter } from "common/src/interfaces/asyncEmitter"
 
 interface Module<T> {
     bindServer: (app: Express, config: T, server: http.Server) => Promise<Express>,
@@ -46,9 +46,18 @@ export async function createServer() {
 
     // const modules: Module<any>[] = [backendModule, authModule, mqttModule];
     // Promise.all(modules.map((mod) => mod.bindServer(app, mod.loadConfig(), server)))
-    await authModule.bindServer(app, authModule.loadConfig())
-    await mqttModule.bindServer(app, mqttModule.loadConfig(), server)
-    await backendModule.bindServer(app, backendModule.loadConfig())
+    const bus = new BusEmitter();
+
+    // intercept all events
+    const old_emit = bus.emit;
+    bus.emit = function () {
+        logger.debug("Event", arguments[0]);
+        old_emit.apply(bus, arguments as any);
+    }
+
+    await authModule.bindServer(app, authModule.loadConfig(), bus)
+    await mqttModule.bindServer(app, mqttModule.loadConfig(), bus, server)
+    await backendModule.bindServer(app, backendModule.loadConfig(), bus)
 
     app.use("/api/*", (req, res) => {
         res.sendStatus(404)

@@ -1,11 +1,11 @@
-import { Emitter } from '../services/eventEmitter';
+import { BackendEmitter } from '../services/eventEmitter';
 import * as types from '../types';
 import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda';
 import { UserService } from 'common/lib/services/userService';
 import { logger } from 'common/lib/logger';
 import Agenda from 'agenda';
 
-export default function (eventEmitter: Emitter<types.EmitterEvents>, agenda: Agenda, userService: UserService) {
+export default function (eventEmitter: BackendEmitter, agenda: Agenda, userService: UserService) {
     eventEmitter.on('user_login', async (user) => {
         logger.debug('user_login', user.info.userName);
     });

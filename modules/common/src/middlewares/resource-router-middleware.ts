@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler';
 import Express from 'express';
 import { Router } from 'express';
 
-type keyes =
+export type ActionKeys =
     | 'index'
     | 'read'
     | 'create'
@@ -14,7 +14,7 @@ type keyes =
     | 'delete'
     | 'deleteId';
 
-const map: { [key in keyes]: 'get' | 'post' | 'put' | 'delete' | 'patch' } = {
+export const actionMap: { [key in ActionKeys]: 'get' | 'post' | 'put' | 'delete' | 'patch' } = {
     index: 'get',
     read: 'get',
     create: 'post',
@@ -29,13 +29,13 @@ const map: { [key in keyes]: 'get' | 'post' | 'put' | 'delete' | 'patch' } = {
 
 type middleware = (req: any, res: Express.Response, next: Express.NextFunction) => any;
 type IRouteBase = {
-    [key in keyes]?: middleware;
+    [key in ActionKeys]?: middleware;
 };
 type IRoute = IRouteBase & {
     mergeParams?: boolean;
     middleware?: middleware;
     middlewares?: {
-        [key in keyes]?: middleware[];
+        [key in ActionKeys]?: middleware[];
     };
 };
 
@@ -55,13 +55,13 @@ export default function ResourceRouter(route: IRoute) {
 }
 
 type combinedRoute = {
-    [key in keyes]?: middleware | middleware[];
+    [key in ActionKeys]?: middleware | middleware[];
 };
 
 export function mapper(route: combinedRoute, router: Express.Router) {
-    let key: keyes;
+    let key: ActionKeys;
     for (key in route) {
-        const routeHandler = route[key as keyes];
+        const routeHandler = route[key as ActionKeys];
         if (typeof routeHandler === 'function') {
             apply(key, routeHandler, router);
         } else if (Array.isArray(routeHandler)) {
@@ -72,8 +72,8 @@ export function mapper(route: combinedRoute, router: Express.Router) {
     }
 }
 
-function apply(key: keyes, fn: middleware, router: Express.Router) {
-    const method = map[key] || key;
+function apply(key: ActionKeys, fn: middleware, router: Express.Router) {
+    const method = actionMap[key] || key;
     if (typeof router[method] != 'function') return;
 
     let url;

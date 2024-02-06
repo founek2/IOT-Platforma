@@ -1,19 +1,17 @@
 import { IDevice, DeviceCommand } from 'common/lib/models/interface/device';
 import { IDiscovery } from 'common/lib/models/interface/discovery';
 import { IThing, IThingProperty } from 'common/lib/models/interface/thing';
-import { AuthConnector } from 'common/lib/connectors/authConnector';
+import { BusEmitterType } from 'common/src/interfaces/asyncEmitter';
 import fetch from 'node-fetch';
 
 /**
  * Service to communicate with backend-mqtt, allowing sending data directly to devices
  */
 export class Actions {
-    serviceMqttUri: string
-    serviceAuthUri: string
+    bus: BusEmitterType
 
-    constructor(serviceMqttUri: string, serviceAuthUri: string) {
-        this.serviceMqttUri = serviceMqttUri;
-        this.serviceAuthUri = serviceAuthUri;
+    constructor(bus: BusEmitterType) {
+        this.bus = bus;
     }
 
     /**
@@ -21,40 +19,44 @@ export class Actions {
      * @param {IDiscovery["_id"]} deviceId
      * @param {IDevice["apiKey"]} apiKey
      */
-    public async deviceInitPairing(deviceId: IDiscovery['_id'], apiKey: string): Promise<boolean> {
-        const res = await fetch(this.serviceMqttUri + '/api/actions/device/' + deviceId + '/pairing/init', {
-            method: 'PUT',
-            body: JSON.stringify({ apiKey }),
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        });
-        return res.status === 204;
+    public async deviceInitPairing(device: IDevice) {
+        this.bus.emit("pairing_new_device", device)
+        return true;
+        // const res = await fetch(this.serviceMqttUri + '/api/actions/device/' + deviceId + '/pairing/init', {
+        //     method: 'PUT',
+        //     body: JSON.stringify({ apiKey }),
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        // });
+        // return res.status === 204;
     }
 
     /**
      * Set status of devices`s property (control it) over MQTT
      */
     public async deviceSetProperty(
-        deviceId: IDevice['_id'],
         nodeId: IThing['config']['nodeId'],
         propertyId: IThingProperty['propertyId'],
-        value: string | number,
+        value: string | number | boolean,
         device: IDevice
     ): Promise<boolean> {
-        const res = await fetch(
-            `${this.serviceMqttUri}/api/actions/device/${deviceId}/thing/${nodeId}/property/${propertyId}`,
-            {
-                method: 'PATCH',
-                body: JSON.stringify({ value, device }),
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
-        return res.status === 204;
+        this.bus.emit("device_set_property_value", { device, nodeId, propertyId, value })
+        // const res = await fetch(
+        //     `${this.serviceMqttUri}/api/actions/device/${deviceId}/thing/${nodeId}/property/${propertyId}`,
+        //     {
+        //         method: 'PATCH',
+        //         body: JSON.stringify({ value, device }),
+        //         headers: {
+        //             Accept: 'application/json',
+        //             'Content-Type': 'application/json',
+        //         },
+        //     }
+        // );
+        // return res.status === 204
+
+        return true;
     }
 
     /**
@@ -62,23 +64,19 @@ export class Actions {
      * @param {IDevice} doc
      * @param {DeviceCommand} command
      */
-    public async deviceSendCommand(doc: IDevice, command: DeviceCommand): Promise<boolean> {
-        const res = await fetch(`${this.serviceMqttUri}/api/actions/device/${doc._id}`, {
-            method: 'POST',
-            body: JSON.stringify({ command, device: doc }),
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        });
-        return res.status === 204;
-    }
+    public async deviceSendCommand(device: IDevice, command: DeviceCommand): Promise<boolean> {
+        this.bus.emit("device_send_command", { device, command })
 
-    public async getBrokerAuth() {
-        const result = await AuthConnector(`${this.serviceAuthUri}`).getPass();
-        return result.map((pass) => {
-            const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
-            return auth;
-        });
+        // const res = await fetch(`${this.serviceMqttUri}/api/actions/device/${doc._id}`, {
+        //     method: 'POST',
+        //     body: JSON.stringify({ command, device: doc }),
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        // });
+        // return res.status === 204;
+
+        return true;
     }
 }

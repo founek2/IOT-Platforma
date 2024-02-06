@@ -1,6 +1,5 @@
-import config from 'common/lib/config';
+import path from 'path';
+import { loadConfig } from '../../src/config';
 
-export default {
-    url: `localhost:${config.port}`,
-    ...config,
-};
+const config = loadConfig(path.join(__dirname, '.env.test'));
+export default config;

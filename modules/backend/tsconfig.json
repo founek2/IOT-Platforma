@@ -4,7 +4,9 @@
         "baseUrl": ".",
         "rootDir": "./src",
         "outDir": "./dist",
-        "moduleResolution": "node"
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
+        "target": "ES2022"
     },
     "references": [{ "path": "../common" }],
     "include": ["./src"],

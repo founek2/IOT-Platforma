@@ -26,7 +26,7 @@ interface MqttConf {
     url: string;
     port: number;
 }
-type GetUser = () => Promise<Maybe<{ userName: string; password: string }>>;
+type GetUser = () => Maybe<{ userName: string; password: string }>;
 type ClientCb = (client: MqttClient) => void;
 
 // async function connect(config: MqttConf, getUser: GetUser, cb: ClientCb): Promise<MqttClient> {
@@ -75,11 +75,11 @@ export class MqttService {
     }
 
     connect = async (io: serverIO, getUser: GetUser) => {
-        let user = (await getUser()).extractNullable()
+        let user = getUser().extractNullable()
 
         // Refresh every 10 mins
-        setInterval(async () => {
-            user = (await getUser()).extractNullable()
+        setInterval(() => {
+            user = getUser().extractNullable()
         }, 10 * 60 * 1000)
 
         const transformWsUrl: IClientOptions["transformWsUrl"] = (url, options, client) => {

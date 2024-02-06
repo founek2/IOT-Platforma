@@ -4,5 +4,7 @@
     "**/.yarn": true,
     "**/.pnp.*": true
   },
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "jest.jestCommandLine": "jest",
+  "jest.rootPath": "modules/backend"
 }

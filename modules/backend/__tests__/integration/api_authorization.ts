@@ -1,5 +1,5 @@
 import { server } from '../lib/superTest';
-import { getAdminToken, getUserToken } from '../lib/tokens';
+import { getAdminToken, getUserToken } from '../lib';
 import { credentials } from '../resources/credentials';
 import forms from '../resources/forms/userForms';
 

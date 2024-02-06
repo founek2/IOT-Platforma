@@ -123,15 +123,10 @@ export default () =>
             const newDevice = await getOrCreateDevice(discoverdDevice, things, form);
             if (!newDevice) return res.status(400).send({ error: 'deviceIdTaken' });
 
-            const suuccess = await context.actionsService.deviceInitPairing(discoverdDevice.deviceId, newDevice.apiKey); // initialize pairing proccess
+            await context.actionsService.deviceInitPairing(newDevice); // initialize pairing proccess
 
-            if (suuccess) {
-                discoverdDevice.pairing = true;
-                discoverdDevice.save();
-                res.send({ doc: newDevice });
-            } else {
-                DeviceModel.deleteOne({ _id: newDevice._id });
-                res.sendStatus(500);
-            }
+            discoverdDevice.pairing = true;
+            discoverdDevice.save();
+            res.send({ doc: newDevice });
         },
     });

@@ -5331,7 +5331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/superagent@npm:*":
+"@types/superagent@npm:*, @types/superagent@npm:^8.1.0":
   version: 8.1.3
   resolution: "@types/superagent@npm:8.1.3"
   dependencies:
@@ -5348,6 +5348,16 @@ __metadata:
   dependencies:
     "@types/superagent": "npm:*"
   checksum: 10/2fc998ea698e0467cdbe3bea0ebce2027ea3a45a13e51a6cecb0435f44b486faecf99c34d8702d2d7fe033e6e09fdd2b374af52ecc8d0c69a1deec66b8c0dd52
+  languageName: node
+  linkType: hard
+
+"@types/supertest@npm:^6":
+  version: 6.0.2
+  resolution: "@types/supertest@npm:6.0.2"
+  dependencies:
+    "@types/methods": "npm:^1.1.4"
+    "@types/superagent": "npm:^8.1.0"
+  checksum: 10/4b67fb2d1bfbb7ff0a7dfaaf190cdf2e0014522615fb2dc53c214bdac95b4ee42696dd1df13332c90a7765cc52934c9cc0c428bf0f9e8189167aef01042e7448
   languageName: node
   linkType: hard
 
@@ -6354,10 +6364,12 @@ __metadata:
     "@types/body-parser": "npm:^1.19.2"
     "@types/express": "npm:^4.17.9"
     "@types/express-mongo-sanitize": "npm:^1.3.2"
+    "@types/jest": "npm:^29.5.12"
     "@types/morgan": "npm:^1.9.2"
     "@types/node": "npm:^14.0.20"
     "@types/node-fetch": "npm:^2.6.4"
     "@types/ramda": "npm:0.27.34"
+    "@types/supertest": "npm:^6"
     "@types/testing-library__dom": "npm:^7.5.0"
     "@types/ua-parser-js": "npm:^0.7.39"
     body-parser: "npm:^1.20.2"
@@ -6368,6 +6380,7 @@ __metadata:
     express-mongo-sanitize: "npm:^2.0.2"
     hat: "npm:^0.0.3"
     jest: "npm:~29.0.0"
+    mongodb-memory-server: "npm:^7.3.4"
     mongoose: "npm:^5.13.2"
     morgan: "npm:^1.9.1"
     node-fetch: "npm:^2.6.7"
@@ -6375,7 +6388,8 @@ __metadata:
     purify-ts: "npm:^1.2.2"
     ramda: "npm:^0.27.1"
     socket.io: "npm:^3.0.4"
-    ts-jest: "npm:24.3.0"
+    supertest: "npm:^6.3.4"
+    ts-jest: "npm:29.0.2"
     ts-node-dev: "npm:^2.0.0"
     typescript: "npm:^4.9.5"
     typescript-transform-paths: "npm:^3.3.1"
@@ -7403,6 +7417,7 @@ __metadata:
     "@types/node-fetch": "npm:^2.6.4"
     "@types/ramda": "npm:0.27.34"
     "@types/react": "npm:^18.0.21"
+    "@types/supertest": "npm:^6"
     argon2: "npm:^0.28.5"
     date-fns: "npm:^2.15.0"
     dotenv: "npm:^8.2.0"
@@ -7411,6 +7426,7 @@ __metadata:
     hat: "npm:^0.0.3"
     jest: "npm:~29.0.0"
     jsonwebtoken: "npm:^8.5.1"
+    mongodb-memory-server: "npm:^7.3.4"
     mongoose: "npm:^5.13.2"
     node-dotify: "npm:^1.1.0"
     node-fetch: "npm:^2.6.7"
@@ -7418,6 +7434,7 @@ __metadata:
     ramda: "npm:^0.27.1"
     rate-limiter-flexible: "npm:^2.2.1"
     react: "npm:^18.2.0"
+    supertest: "npm:^6.3.4"
     typescript: "npm:^4.9.5"
     typescript-transform-paths: "npm:^3.3.1"
   languageName: unknown
@@ -16960,7 +16977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supertest@npm:^6.1.4":
+"supertest@npm:^6.1.4, supertest@npm:^6.3.4":
   version: 6.3.4
   resolution: "supertest@npm:6.3.4"
   dependencies:

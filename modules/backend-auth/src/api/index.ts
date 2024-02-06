@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import auth from './auth';
-import pass from './pass';
 import signIn from './signIn';
 import signOut from './signOut';
 import activeSignIn from './activeSignIn';
@@ -9,9 +8,7 @@ import refresh from './refreshToken';
 export default ({ }) => {
     let api = Router();
 
-    api.use('/rabbitmq', auth);
-
-    api.use('/temporaryPass', pass);
+    api.use('/rabbitmq', auth());
 
     api.use('/user/signIn/refresh', refresh());
     api.use('/user/signIn/active', activeSignIn());
