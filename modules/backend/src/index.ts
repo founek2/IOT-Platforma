@@ -3,7 +3,7 @@ import { logger } from 'common/lib/logger';
 import mongoose from 'mongoose';
 import { bindServer, MyApp } from './main';
 import express from "express";
-import { BusEmitter } from 'common/src/interfaces/asyncEmitter';
+import { BusEmitter } from 'common/lib/interfaces/asyncEmitter';
 
 const config = loadConfig();
 const app = express();

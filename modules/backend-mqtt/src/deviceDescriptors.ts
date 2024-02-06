@@ -1,6 +1,6 @@
 import validationFactory from 'common/lib/validations/validationFactory';
 import { ComponentType, PropertyClass, PropertyDataType } from 'common/lib/models/interface/thing';
-import { FormFieldDescriptors } from 'common/src/validations/types';
+import { FormFieldDescriptors } from 'common/lib/validations/types';
 import { transformToForm } from 'common/lib/validations/transformToForm';
 
 const PROPERTY_BASE: FormFieldDescriptors = {

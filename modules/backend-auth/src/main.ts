@@ -11,7 +11,7 @@ import { Context } from './types';
 import { JwtService } from 'common';
 import { UserService } from 'common';
 import { TemporaryPass } from './services/TemporaryPass';
-import { BusEmitterType } from 'common/src/interfaces/asyncEmitter';
+import { BusEmitterType } from 'common/lib/interfaces/asyncEmitter';
 
 export * from "./config"
 export async function bindServer(app: Express, config: Config, bus: BusEmitterType) {

@@ -6,7 +6,7 @@ import { MailerService } from './services/mailerService';
 import { Config } from './config';
 import { Actions } from './services/actionsService';
 import { BrokerService } from './services/brokerService';
-import { BusEmitterType, PassKeeper } from "common/src/interfaces/asyncEmitter"
+import { BusEmitterType, PassKeeper } from "common/lib/interfaces/asyncEmitter"
 
 export interface MyApp extends Application {
     server: http.Server;

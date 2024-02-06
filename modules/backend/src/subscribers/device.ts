@@ -1,7 +1,7 @@
 import * as types from '../types';
 import { AGENDA_JOB_TYPE } from 'common/lib/constants/agenda';
 import Agenda from 'agenda';
-import { Emitter } from 'common/src/emitter/typedEmitter';
+import { Emitter } from 'common/lib/emitter/typedEmitter';
 import { BackendEmitter } from '../services/eventEmitter';
 
 export default function (eventEmitter: BackendEmitter, agenda: Agenda) {

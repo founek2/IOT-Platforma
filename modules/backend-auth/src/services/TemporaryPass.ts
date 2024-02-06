@@ -4,7 +4,7 @@ import isBefore from 'date-fns/isBefore';
 import { UserModel } from 'common/lib/models/userModel';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { logger } from 'common/lib/logger';
-import { BusEmitterType, Pass } from "common/src/interfaces/asyncEmitter"
+import { BusEmitterType, Pass } from "common/lib/interfaces/asyncEmitter"
 
 async function generatePass(): Promise<Maybe<Pass>> {
     logger.debug('Generating new pass');

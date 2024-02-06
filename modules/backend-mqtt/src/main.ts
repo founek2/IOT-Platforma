@@ -11,7 +11,7 @@ import { Server as serverIO } from 'socket.io';
 import { MqttService } from './services/mqtt';
 import { NotificationService } from './services/NotificationService';
 import { Just } from 'purify-ts';
-import { BusEmitterType, PassKeeper } from 'common/src/interfaces/asyncEmitter';
+import { BusEmitterType, PassKeeper } from 'common/lib/interfaces/asyncEmitter';
 
 export * from "./config"
 export async function bindServer(app: Express, config: Config, bus: BusEmitterType, server: Server) {
