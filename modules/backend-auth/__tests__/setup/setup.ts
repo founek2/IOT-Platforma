@@ -9,6 +9,6 @@ export default async function () {
         await spawnDatabase(config)
     }
 
-    const app = await bindServer(express(), config);
+    const { app } = await bindServer(express(), config);
     setGlobalApp(app)
 }

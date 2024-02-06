@@ -3,7 +3,7 @@ import { server } from './helpers/superTest';
 import { credentials } from './resources/credentials';
 import forms from './resources/forms/userForms';
 
-export async function sendSignIn(userName: string, password: string): Promise<{ accessToken: string, refreshToken: string }> {
+async function sendSignIn(userName: string, password: string): Promise<{ accessToken: string, refreshToken: string }> {
     const res = await server
         .post('/api/auth/user/signIn')
         .send(forms.login(userName, password))

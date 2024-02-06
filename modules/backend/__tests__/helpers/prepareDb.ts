@@ -24,8 +24,9 @@ export default async () => {
     //             return db.dropCollection(collectionName);
     //         })
     // );
-
-    await UserService.create({
+    const jwtService = new JwtService(config.jwt);
+    const userService = new UserService(jwtService);
+    await userService.create({
         info: {
             firstName: 'Root',
             lastName: 'Something',
@@ -39,7 +40,7 @@ export default async () => {
     }); // admin
 
     // first created is always admin
-    const data = await UserService.create({
+    const data = await userService.create({
         info: {
             firstName: 'administrator',
             lastName: 'admin',
@@ -51,9 +52,9 @@ export default async () => {
             password: credentials.admin.password,
         },
     }); // admin
-    UserService.updateUser(data.doc._id, { groups: ['admin'] });
+    userService.updateUser(data.doc._id, { groups: ['admin'] });
 
-    await UserService.create({
+    await userService.create({
         info: {
             firstName: 'testik',
             lastName: 'user',

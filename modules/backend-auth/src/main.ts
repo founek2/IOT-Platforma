@@ -35,5 +35,5 @@ export async function bindServer(app: Express, config: Config) {
     app.use('/api/auth', bodyParser.json({ limit: '100kb' }));
     app.use('/api/auth', api({ context }));
 
-    return app
+    return { app, context }
 }
