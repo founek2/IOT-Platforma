@@ -27,8 +27,8 @@ export class TemporaryPass {
     }
 
     async emitPass() {
-        const pass = await generatePass();
-        this.bus.emit("new_pass", pass)
+        this.currentPass = await generatePass();
+        this.bus.emit("new_pass", this.currentPass)
     }
 
     // async getPass(): Promise<Maybe<Pass>> {
