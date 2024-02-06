@@ -14,6 +14,7 @@ import ValiadtionMessages from '../localization/validationMessages';
 import { ErrorMessageKey } from '../localization/error';
 import { FieldDescriptor, FieldDescriptors, FieldState, FormsData } from './types';
 import isObject from '../utils/isObject';
+export * from "./types"
 
 export type types = {
     State: { formsData: FormsData; fieldDescriptors: FieldDescriptors };
