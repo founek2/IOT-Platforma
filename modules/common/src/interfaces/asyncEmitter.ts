@@ -1,4 +1,4 @@
-import { Maybe, Nothing } from "purify-ts";
+import { Maybe } from "purify-ts";
 import { TypedEmitter } from "../emitter/typedEmitter";
 import { DeviceCommand, IDevice } from "../models/interface/device";
 import { IThing, IThingProperty } from "../models/interface/thing";
@@ -21,19 +21,3 @@ export class BusEmitter extends TypedEmitter<Events> { }
 
 export type BusEmitterType = TypedEmitter<Events>
 
-// Move to different folder
-export class PassKeeper {
-    pass: Maybe<Pass>
-
-    constructor(bus: BusEmitterType) {
-        this.pass = Nothing;
-
-        bus.on("new_pass", (result) => {
-            this.pass = result;
-        })
-    }
-
-    getPass(): Maybe<Pass> {
-        return this.pass;
-    }
-}

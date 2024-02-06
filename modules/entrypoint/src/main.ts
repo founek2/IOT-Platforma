@@ -10,7 +10,7 @@ import cors from "cors"
 import mongoSanitize from 'express-mongo-sanitize';
 import path from "path"
 import bodyParser from 'body-parser';
-import { BusEmitter } from "common/src/interfaces/asyncEmitter"
+import { BusEmitter } from "common/lib/interfaces/asyncEmitter"
 
 interface Module<T> {
     bindServer: (app: Express, config: T, server: http.Server) => Promise<Express>,

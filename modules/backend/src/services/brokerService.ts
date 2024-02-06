@@ -4,7 +4,7 @@ import { addMinutes, isAfter } from 'date-fns';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import fetch from 'node-fetch';
 import { Config } from '../config';
-import { BusEmitterType, BusEmitter, Pass, PassKeeper } from 'common/lib/interfaces/asyncEmitter';
+import { PassKeeper } from 'common/lib/services/passKeeperService';
 
 const CACHE_MINUTES = 3;
 

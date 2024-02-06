@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import { Express } from 'express';
 import initSubscribers from './subscribers';
 import { connectMongoose } from 'common/lib/utils/connectMongoose';
 import eventEmitter from './services/eventEmitter';
@@ -11,7 +11,8 @@ import { Server as serverIO } from 'socket.io';
 import { MqttService } from './services/mqtt';
 import { NotificationService } from './services/NotificationService';
 import { Just } from 'purify-ts';
-import { BusEmitterType, PassKeeper } from 'common/lib/interfaces/asyncEmitter';
+import { BusEmitterType } from 'common/lib/interfaces/asyncEmitter';
+import { PassKeeper } from 'common/lib/services/passKeeperService';
 
 export * from "./config"
 export async function bindServer(app: Express, config: Config, bus: BusEmitterType, server: Server) {
