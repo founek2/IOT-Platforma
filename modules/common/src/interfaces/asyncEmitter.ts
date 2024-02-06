@@ -11,7 +11,7 @@ export type Pass = {
 
 export interface Events {
     "new_pass": Maybe<Pass>,
-    "request_pass": void,
+    "request_pass": undefined,
     "pairing_new_device": IDevice,
     "device_set_property_value": { device: IDevice, nodeId: IThing['config']['nodeId'], propertyId: IThingProperty['propertyId'], value: string | number | boolean },
     "device_send_command": { device: IDevice, command: DeviceCommand }

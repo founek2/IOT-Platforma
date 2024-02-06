@@ -8,6 +8,7 @@
         "clean:all": "yarn workspaces foreach --all -pt run clean",
         "test": "yarn workspaces foreach --all -pt run test",
         "build:common": "tsc -b modules/common",
+        "build:entrypoint": "yarn workspace entrypoint build",
         "dev:be": "yarn workspace backend dev",
         "dev:mqtt": "yarn workspace backend-mqtt dev",
         "dev:auth": "yarn workspace backend-auth dev",

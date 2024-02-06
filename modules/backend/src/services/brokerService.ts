@@ -38,7 +38,7 @@ export class BrokerService {
     }
 
     private async getBrokerAuth() {
-        return this.passKeper.getPass().map((pass) => {
+        return (await this.passKeper.getPass()).map((pass) => {
             const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
             return auth;
         });
