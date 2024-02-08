@@ -107,7 +107,7 @@ export class NotificationService {
             }
         })
 
-        logger.debug(validTokens.length + ' of ' + results.length + ' messages were sent successfully');
+        logger.debug(validTokens.length + ' of ' + results.length + ' notifications were sent successfully');
 
 
         const deleteResults = await Promise.all(invalidTokens.map(({ userId, subscription }) => {

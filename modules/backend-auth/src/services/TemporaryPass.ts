@@ -22,8 +22,11 @@ export class TemporaryPass {
     constructor(bus: BusEmitterType) {
         this.bus = bus;
 
+        this.bus.on("request_pass", () => {
+            this.emitPass()
+        });
         this.emitPass();
-        setInterval(this.emitPass, 50 * 60 * 1000)
+        setInterval(() => this.emitPass(), 50 * 60 * 1000)
     }
 
     async emitPass() {

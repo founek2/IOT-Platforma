@@ -11,6 +11,7 @@ import { Actions } from '../services/actionsService';
 import { ObjectId } from '../utils/objectId';
 import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
 import { HasContext } from '../types';
+import { logger } from 'common';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;
@@ -33,7 +34,7 @@ export default () =>
 
         async create({ params, query, context }: RequestQuery & HasContext, res) {
             const { deviceId, nodeId } = params;
-            console.log('property', params, query);
+            logger.silly("Set property", params, query)
 
             const doc: IDevice = await DeviceModel.findById(deviceId).lean();
             const thing = getThing(doc, nodeId);
