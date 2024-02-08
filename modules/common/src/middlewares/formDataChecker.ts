@@ -12,10 +12,10 @@ type FormData = { [key: string]: any };
  */
 export default function formDataChecker(fieldDescriptors: any, { ingoreRequired, allowedForms }: Options = {}) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        logger.silly('formData', req.body.formData);
-
         logger.debug('Validating formData');
-        const formData: FormData = req.body.formData;
+        const formData: FormData = req.body?.formData;
+
+        logger.silly('formData', formData);
 
         if (!formData)
             return res.status(400).send({ error: 'missingFormData' })
