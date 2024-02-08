@@ -70,6 +70,11 @@ export async function createServer() {
         res.sendStatus(404)
     })
 
+    const jsonErrorHandler = (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        res.status(500).send({ error: err });
+    }
+    app.use(jsonErrorHandler)
+
     const port = parseInt(String(process.env.PORT)) || 8085
     server.listen(port, () => {
         const addr = server.address() as AddressInfo;
