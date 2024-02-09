@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { DiscoveryModel } from '../../models/deviceDiscoveryModel';
-import { RequestWithAuthOpt } from '../../types';
+import { RequestWithAuth } from '../../types';
 import { Permission } from '../../models/interface/userInterface';
 
 /**
@@ -9,9 +9,9 @@ import { Permission } from '../../models/interface/userInterface';
  * @param options - params[paramKey] -> IDiscovery["_id"]
  */
 export default function (options: { paramKey: string } = { paramKey: 'id' }) {
-    return async ({ params, user }: RequestWithAuthOpt, res: express.Response, next: express.NextFunction) => {
+    return async ({ params, user }: RequestWithAuth<any>, res: express.Response, next: express.NextFunction) => {
         const discoveryId = params[options.paramKey];
-        if (!mongoose.Types.ObjectId.isValid(discoveryId)) return res.status(208).send({ error: 'InvalidParam' });
+        if (!mongoose.Types.ObjectId.isValid(discoveryId)) return res.status(400).send({ error: 'InvalidParam' });
 
         if (!(await DiscoveryModel.checkExistsNotPairing(discoveryId)))
             return res.status(404).send({ error: 'InvalidDeviceId' });

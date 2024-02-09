@@ -14,6 +14,7 @@ interface AccessTokenPayload {
     // refresh token ID
     iss: string
     groups: IUser["groups"]
+    realm: string
 }
 export class JwtService {
     privKey: jwt.Secret

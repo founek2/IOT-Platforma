@@ -88,12 +88,12 @@ export type SocketUpdateThingState = {
 };
 type Dict = { [key: string]: any };
 export type RequestWithAuth<P = {}, ReqQuery = {}> = Request<P, any, any, ReqQuery> & {
-    user: Pick<IUser, "_id" | "groups"> & { admin?: boolean; accessPermissions?: Permission[], refreshTokenId?: string };
+    user: Pick<IUser, "_id" | "groups" | "realm"> & { admin?: boolean; accessPermissions?: Permission[], refreshTokenId?: string };
     root?: boolean;
 };
 
 export type RequestWithAuthOpt<P = Dict> = Request<P> & {
-    user?: IUser & { admin?: boolean; accessPermissions?: Permission[] };
+    user?: Pick<IUser, "_id" | "groups" | "realm"> & { admin?: boolean; accessPermissions?: Permission[], refreshTokenId?: string };
     root?: boolean;
 };
 

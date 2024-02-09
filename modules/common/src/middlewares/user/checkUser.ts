@@ -12,7 +12,7 @@ export default function (options: { paramKey: string } = { paramKey: 'id' }) {
         const userId = params[options.paramKey];
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             logger.warning("Malformed userId", userId, options.paramKey, params)
-            return res.status(208).send({ error: 'InvalidParam' })
+            return res.status(400).send({ error: 'InvalidParam' })
         };
 
         if (!(await UserModel.checkExists(userId))) return res.status(404).send({ error: 'userNotExist' });

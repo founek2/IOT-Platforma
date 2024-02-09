@@ -11040,6 +11040,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "iot-platform@workspace:."
   dependencies:
+    "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^16.11.7"
     node-gyp: "npm:^9.4.0"
     typescript: "npm:^4.9.5"

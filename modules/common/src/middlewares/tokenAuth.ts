@@ -22,7 +22,7 @@ export default function (
         if (not(methods === undefined || methods.some((method) => method === req.method))) next();
 
         const [type, jwtToken] = (req.get('Authorization') || '').split(' ');
-        const accessToken = req.query.api_key || req.get('X-API-Key');
+        const apiKey = req.query.api_key || req.get('X-API-Key');
 
         if (!req.context?.jwtService) {
             throw Error("Missing jwtService in context")
@@ -47,6 +47,7 @@ export default function (
                     _id: payload.sub,
                     groups: payload.groups,
                     accessPermissions: [Permission.write, Permission.read, Permission.control],
+                    realm: payload.realm,
                     // root: payload.groups.some((v) => v === 'root'),
                     admin: payload.groups.some((v) => v === 'admin'),
                     refreshTokenId: payload.iss
@@ -61,8 +62,8 @@ export default function (
                 logger.error('token problem', err);
                 res.status(400).send({ error: 'invalidToken' });
             }
-        } else if (typeof accessToken === "string") {
-            const validationResult = await userService.validateAccessToken(accessToken);
+        } else if (typeof apiKey === "string") {
+            const validationResult = await userService.validateAccessToken(apiKey);
             validationResult
                 .ifLeft(() => res.status(400).send({ error: 'invalidToken' }))
                 .ifRight(([user, { permissions }]) => {

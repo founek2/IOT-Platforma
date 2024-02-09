@@ -115,7 +115,7 @@ export class UserService {
         return EitherAsync<string, { accessToken: string, refreshToken: string }>(async ({ fromPromise }) => {
             const refreshTokenDoc = await fromPromise(this.createRefreshToken(user._id, userAgent))
             const refreshToken = await this.jwtService.signRefreshToken({ jti: refreshTokenDoc._id, sub: user._id });
-            const accessToken = await this.jwtService.sign({ sub: user._id, iss: refreshTokenDoc._id, groups: user.groups });
+            const accessToken = await this.jwtService.sign({ sub: user._id, iss: refreshTokenDoc._id, groups: user.groups, realm: user.realm });
 
             return {
                 accessToken,
@@ -136,7 +136,7 @@ export class UserService {
                 return Left('disabledToken');
             }
 
-            const accessToken = await this.jwtService.sign({ sub: doc._id, iss: refreshTokenDoc._id, groups: doc.groups });
+            const accessToken = await this.jwtService.sign({ sub: doc._id, iss: refreshTokenDoc._id, groups: doc.groups, realm: doc.realm });
             return Right({
                 accessToken,
                 doc: doc.toObject(),
