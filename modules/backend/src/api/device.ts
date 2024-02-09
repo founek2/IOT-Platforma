@@ -28,7 +28,11 @@ export default () =>
                 checkWritePerm(),
                 formDataChecker(fieldDescriptors, { allowedForms: ['EDIT_DEVICE'] }),
             ],
-            createId: [tokenAuthMIddleware(), checkWritePerm()],
+            createId: [
+                tokenAuthMIddleware(),
+                checkWritePerm(),
+                formDataChecker(fieldDescriptors, { allowedForms: ['DEVICE_SEND'] })
+            ],
             deleteId: [tokenAuthMIddleware(), checkWritePerm()],
         },
 
@@ -61,7 +65,8 @@ export default () =>
 
             if (formData.DEVICE_SEND && (await context.actionsService.deviceSendCommand(doc, formData.DEVICE_SEND.command)))
                 return res.sendStatus(204);
-            res.sendStatus(500);
+
+            res.sendStatus(400);
         },
 
         /** PATCH  /:id - Modify provided device

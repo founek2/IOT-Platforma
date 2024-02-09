@@ -1,29 +1,36 @@
 import { server } from "common/__test__/helpers/superTest";
 import { ActionKeys, actionMap } from "common/src/middlewares/resource-router-middleware";
 
-export async function tokenMiddlewareIsPresent(url: string, actions: ActionKeys[]) {
+function expandUrlWithId(url: string, action: ActionKeys, id?: string) {
+    if (action.endsWith("Id") || action === "read") {
+        return `${url}/${id || "123"}`
+    }
+    return url;
+}
+
+export async function tokenMiddlewareIsPresent(url: string, actions: ActionKeys[], { id }: { id?: string } = {}) {
     for (const action of actions) {
         const method = actionMap[action];
-        const res = await server[method](url)
-            .expect('Content-type', /json/)
-            .expect(400);
+        const res = await server[method](expandUrlWithId(url, action, id))
 
+        expect(res.status).toEqual(400);
+        expect(res.headers["content-type"]).toMatch(/json/);
         expect(res.body.error).toEqual("tokenNotProvided");
     }
 }
 
-export async function formDataMiddlewareIsPresent(url: string, actions: ActionKeys[], accessToken?: string) {
+export async function formDataMiddlewareIsPresent(url: string, actions: ActionKeys[], { accessToken, id }: { accessToken?: string, id?: string } = {}) {
     for (const action of actions) {
         const method = actionMap[action];
-        const req = server[method](url)
-            .expect('Content-type', /json/)
-            .expect(400);
+        const req = server[method](expandUrlWithId(url, action, id))
 
         if (accessToken)
             req.set("Authorization", `Bearer ${accessToken}`)
 
         const res = await req;
 
+        expect(res.status).toEqual(400);
+        expect(res.headers["content-type"]).toMatch(/json/);
         expect(res.body.error).toEqual("missingFormData");
     }
 }

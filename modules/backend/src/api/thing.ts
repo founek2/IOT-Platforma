@@ -11,7 +11,8 @@ import { Actions } from '../services/actionsService';
 import { ObjectId } from '../utils/objectId';
 import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
 import { HasContext } from '../types';
-import { logger } from 'common';
+import { fieldDescriptors, logger } from 'common';
+import formDataChecker from 'common/src/middlewares/formDataChecker';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;
@@ -25,7 +26,11 @@ export default () =>
         mergeParams: true,
         middlewares: {
             create: [tokenAuthMIddleware(), checkControlPerm({ paramKey: 'deviceId' })],
-            replace: [tokenAuthMIddleware(), checkWritePerm({ paramKey: 'deviceId' })],
+            replace: [
+                tokenAuthMIddleware(),
+                checkWritePerm({ paramKey: 'deviceId' }),
+                formDataChecker(fieldDescriptors, { allowedForms: ["EDIT_THING"] })
+            ],
         },
 
         async index(req: Request, res) {
