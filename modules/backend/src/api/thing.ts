@@ -12,7 +12,7 @@ import { ObjectId } from '../utils/objectId';
 import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
 import { HasContext } from '../types';
 import { fieldDescriptors, logger } from 'common';
-import formDataChecker from 'common/src/middlewares/formDataChecker';
+import formDataChecker from 'common/lib/middlewares/formDataChecker';
 
 type Params = { nodeId: string; deviceId: string };
 type Request = RequestWithAuth<Params>;

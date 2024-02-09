@@ -26,6 +26,11 @@ export class BrokerService {
         this.url = config.url.split('://')[1];
         this.managementPort = config.managementPort
         this.passKeper = passKeper
+
+        setInterval(() => {
+            // TODO process data and mark disconnected devices as offline
+            this.fetchData();
+        }, 30 * 60 * 1000);
     }
 
     getOverView = async (): Promise<Maybe<OverView>> => {
