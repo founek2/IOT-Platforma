@@ -71,6 +71,7 @@ export async function createServer() {
     })
 
     const jsonErrorHandler = (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        logger.error(err)
         res.status(500).send({ error: err });
     }
     app.use(jsonErrorHandler)
