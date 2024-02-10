@@ -1,10 +1,11 @@
 import { OverView } from '../types/rabbitmq';
 import { Actions } from './actionsService';
-import { addMinutes, isAfter } from 'date-fns';
+import { addMinutes, isBefore } from 'date-fns';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import fetch from 'node-fetch';
 import { Config } from '../config';
 import { PassKeeper } from 'common/lib/services/passKeeperService';
+import { logger } from 'common';
 
 const CACHE_MINUTES = 3;
 
@@ -13,19 +14,19 @@ type BrokerData = {
     overView: OverView;
 };
 
-let data: BrokerData;
-
 export class BrokerService {
     actionsService: Actions
     url: string
     managementPort: number
     passKeper: PassKeeper
+    data: Maybe<BrokerData>;
 
     constructor(actionsService: Actions, config: Config["mqtt"], passKeper: PassKeeper) {
         this.actionsService = actionsService
         this.url = config.url.split('://')[1];
         this.managementPort = config.managementPort
         this.passKeper = passKeper
+        this.data = Nothing;
 
         setInterval(() => {
             // TODO process data and mark disconnected devices as offline
@@ -36,7 +37,7 @@ export class BrokerService {
     getOverView = async (): Promise<Maybe<OverView>> => {
         try {
             await this.fetchData();
-            return Just(data.overView);
+            return this.data.map(d => d.overView)
         } catch (err) {
             return Nothing;
         }
@@ -50,23 +51,23 @@ export class BrokerService {
     }
 
     private fetchData = async () => {
-        if (data?.updatedAt && isAfter(addMinutes(data.updatedAt, CACHE_MINUTES), new Date())) return;
+        if (this.data.map(d => isBefore(new Date(), addMinutes(d.updatedAt, CACHE_MINUTES))).orDefault(false)) return;
 
         const auth = await this.getBrokerAuth();
         if (!auth) return;
 
         console.log('Loading overview Broker data');
-        const res = await fetch(`http://${this.url}:${this.managementPort}/api/overview`, {
+
+        return fetch(`http://${this.url}:${this.managementPort}/api/overview`, {
             headers: {
                 Authorization: 'Basic ' + auth,
             },
-        });
-        const body = await res.json() as any;
-
-        data = {
-            overView: body,
-            updatedAt: new Date(),
-        };
+        }).then(res => res.json()).then((body) => {
+            this.data = Just({
+                overView: body,
+                updatedAt: new Date(),
+            })
+        }).catch(err => logger.error(err))
     }
 }
 

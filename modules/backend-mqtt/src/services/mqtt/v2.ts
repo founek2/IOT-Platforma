@@ -10,6 +10,7 @@ import { SocketUpdateThingState } from 'common/lib/types';
 import { uniq } from 'ramda';
 import { InfluxService } from 'common/lib/services/influxService';
 import { NotificationService } from '../NotificationService';
+import { PropertyDataType } from 'common/src/models/interface/thing';
 
 type cbFn = (topic: string, message: Buffer, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO, notificationService: NotificationService, influxService: InfluxService) {
@@ -81,7 +82,11 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
             }
         ).exec();
 
-        logger.debug('saving data', message.toString());
+        if (property.dataType === PropertyDataType.binary) {
+            logger.debug('saving data "binary"');
+        } else {
+            logger.debug('saving data', message.toString());
+        }
 
         sendToUsers(io, device, nodeId, propertyId, result.value, timestamp);
 
