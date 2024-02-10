@@ -9,7 +9,7 @@ import { notificationActions } from "../store/slices/notificationSlice";
 import { urlBase64ToUint8Array } from "../utils/urlBase64ToUint8Array";
 import { useAsyncEffect } from "./useAsyncEffect";
 
-async function registerNotificationWorker(vapidKey: string, register: ServiceWorkerRegistration) {
+async function subscribeNotificationWorker(vapidKey: string, register: ServiceWorkerRegistration) {
     return register.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidKey)
@@ -24,35 +24,53 @@ export function useWebPush(): [() => void, { permissionState?: PermissionState, 
     const userId = useAppSelector(getCurrentUserId)
     const dispatch = useAppDispatch();
 
-    useAsyncEffect(async (mounted) => {
-        const swRegistration = await navigator.serviceWorker.getRegistration('/notification-worker.js')
-        if (swRegistration && mounted) setRegistration(swRegistration)
-    }, [])
-
-    useAsyncEffect(async (mounted) => {
-        if (!registration) return;
-        const state = await registration.pushManager.permissionState({ userVisibleOnly: true, applicationServerKey: vapidKey })
-
-        // Do not set prompt -> subscribe would be blocked on page load
-        if (mounted && state !== "prompt") setPermissionState(state)
-    }, [registration])
-
-    useAsyncEffect(async (mounted) => {
-        if (!registration || !vapidKey || !userId) return;
-        if (permissionState !== "prompt") return;
+    const subscribeAndSendSubscription = useCallback(async (worker: ServiceWorkerRegistration) => {
+        if (!vapidKey || !userId) return;
 
         try {
-            const subscribe = await registerNotificationWorker(vapidKey, registration)
-            if (mounted)
-                subscribeMutation({ userId, data: subscribe })
-                    .unwrap()
-                    .then(() => setPermissionState("granted"))
-                    .catch((err) => logger.error("Failed to add subscription", err))
+            const subscription = await subscribeNotificationWorker(vapidKey, worker)
+            subscribeMutation({ userId, data: subscription })
+                .unwrap()
+                .then(() => setPermissionState("granted"))
+                .catch((err) => logger.error("Failed to add subscription", err))
         } catch (err) {
             dispatch(notificationActions.add({ message: ErrorMessages.getMessage("notificationsDisabled"), options: { variant: 'error' } }))
             setPermissionState("denied")
         }
-    }, [registration, vapidKey, userId, dispatch, permissionState])
+
+    }, [vapidKey, userId, subscribeMutation, dispatch])
+
+    useAsyncEffect(async (mounted) => {
+        const sw = await navigator.serviceWorker.getRegistration('/notification-worker.js')
+        if (!sw || !mounted) return;
+        setRegistration(sw)
+
+        const state = await sw.pushManager.permissionState({ userVisibleOnly: true, applicationServerKey: vapidKey })
+        // Do not set prompt on page load -> prompt would be blocked by browser
+        if (mounted && state !== "prompt") {
+            setPermissionState(state)
+
+            // if permission granted -> check current subscription and re-subscribe if needed
+            if (state === "granted") {
+                const currentSubscription = await sw.pushManager.getSubscription()
+                if (currentSubscription == null && mounted) {
+                    logger.info("subscription not active, re-subscribing")
+                    subscribeAndSendSubscription(sw);
+                }
+            }
+        }
+    }, [])
+
+    useAsyncEffect(async (mounted) => {
+        if (!registration) return;
+
+    }, [registration])
+
+    useAsyncEffect(async () => {
+        if (!registration || permissionState !== "prompt") return;
+
+        subscribeAndSendSubscription(registration);
+    }, [registration, permissionState])
 
     const callback = useCallback(function () {
         if (!('serviceWorker' in navigator)) return;
