@@ -306,6 +306,11 @@ const ADD_PUSH_SUBSCRIPTION: FormFieldDescriptors = {
     },
 };
 
+const MODIFY_PUSH_SUBSCRIPTION: FormFieldDescriptors = {
+    old: transformToForm("MODIFY_PUSH_SUBSCRIPTION.old", ADD_PUSH_SUBSCRIPTION),
+    new: transformToForm("MODIFY_PUSH_SUBSCRIPTION.new", ADD_PUSH_SUBSCRIPTION),
+};
+
 const DEVICE_SEND: FormFieldDescriptors = {
     command: {
         deepPath: 'DEVICE_SEND.command',
@@ -396,6 +401,7 @@ const descriptors: FieldDescriptors = {
     AUTHORIZATION,
     EDIT_DEVICE_CONFIG,
     REFRESH_TOKEN,
+    MODIFY_PUSH_SUBSCRIPTION,
 };
 
 export default descriptors;

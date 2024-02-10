@@ -6,10 +6,11 @@ import discovery from './discovery';
 import thing from './thing';
 import thingState from './thingState';
 import accessToken from './accessToken';
-import notification from './notification';
+import subscriptionChange from './subscriptionChange';
 import broker from './broker';
 import configApi from './config';
 import { Config } from '../config';
+import notification from './notification';
 
 export default ({ config }: { config: Config }) => {
     let api = Router();
@@ -34,6 +35,7 @@ export default ({ config }: { config: Config }) => {
         res.json({ vapidPublicKey: config.notification.vapidPublicKey });
     });
 
+    api.use('/pushsubscriptionchange', subscriptionChange());
 
     // expose some API metadata at the root
     api.get('/', (req, res) => {
