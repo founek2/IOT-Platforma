@@ -306,8 +306,20 @@ const ADD_PUSH_SUBSCRIPTION: FormFieldDescriptors = {
     },
 };
 
+
 const MODIFY_PUSH_SUBSCRIPTION: FormFieldDescriptors = {
-    old: transformToForm("MODIFY_PUSH_SUBSCRIPTION.old", ADD_PUSH_SUBSCRIPTION),
+    old: {
+        endpoint: {
+            deepPath: 'ADD_PUSH_SUBSCRIPTION.endpoint',
+            label: 'Endpoint',
+            required: true,
+            validations: [
+                validationFactory('isString', {
+                    startsWith: "https://"
+                }),
+            ],
+        },
+    },
     new: transformToForm("MODIFY_PUSH_SUBSCRIPTION.new", ADD_PUSH_SUBSCRIPTION),
 };
 
