@@ -21,7 +21,7 @@ export function RegisterServiceWorker() {
                 });
             },
         };
-        serviceWorker.register(config);
+        serviceWorker.register("/service-worker.js", config);
     }, []);
 
     return (

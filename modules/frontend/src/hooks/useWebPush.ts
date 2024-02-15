@@ -41,8 +41,8 @@ export function useWebPush(): [() => void, { permissionState?: PermissionState, 
     }, [vapidKey, userId, subscribeMutation, dispatch])
 
     useAsyncEffect(async (mounted) => {
-        const sw = await navigator.serviceWorker.getRegistration('/notification-worker.js')
-        if (!sw || !mounted) return;
+        const sw = await navigator.serviceWorker.getRegistration('/subscription')
+        if (!sw?.active?.scriptURL.endsWith("/notification-worker.js") || !mounted) return;
         setRegistration(sw)
 
         const state = await sw.pushManager.permissionState({ userVisibleOnly: true, applicationServerKey: vapidKey })
@@ -61,11 +61,6 @@ export function useWebPush(): [() => void, { permissionState?: PermissionState, 
         }
     }, [])
 
-    useAsyncEffect(async (mounted) => {
-        if (!registration) return;
-
-    }, [registration])
-
     useAsyncEffect(async () => {
         if (!registration || permissionState !== "prompt") return;
 
@@ -74,18 +69,17 @@ export function useWebPush(): [() => void, { permissionState?: PermissionState, 
 
     const callback = useCallback(function () {
         if (!('serviceWorker' in navigator)) return;
+        if (registration) {
+            logger.info("sw already registered")
+            setPermissionState("prompt")
+            return
+        }
 
-        async function run(register: ServiceWorkerRegistration | undefined) {
-            if (registration) {
-                logger.info("sw already registered")
-                setPermissionState("prompt")
-                return
-            }
-
+        async function run() {
             try {
                 logger.info("sw registering")
-                register = await navigator.serviceWorker.register('/notification-worker.js', {
-                    scope: '/'
+                const register = await navigator.serviceWorker.register('/notification-worker.js', {
+                    scope: '/subscription'
                 });
                 const serviceWorker = register.installing || register.waiting || register.active;
                 if (!serviceWorker) return
@@ -105,7 +99,7 @@ export function useWebPush(): [() => void, { permissionState?: PermissionState, 
                 logger.error("failed to subscribe", err)
             }
         }
-        run(registration)
+        run()
     }, [registration])
 
     async function unregister() {

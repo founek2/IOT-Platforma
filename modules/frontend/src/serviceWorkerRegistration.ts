@@ -25,38 +25,38 @@ const isLocalhost = Boolean(
 type Config = {
     onSuccess?: (registration: ServiceWorkerRegistration) => void;
     onUpdate?: (registration: ServiceWorkerRegistration) => void;
+    scope?: string
 };
 
-export function register(config?: Config) {
-    if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-        const handleRegistration = () => {
-            const swUrl = `/service-worker.js`;
+export function register(swUrl: string, config?: Config) {
+    if (process.env.NODE_ENV !== 'production' || !('serviceWorker' in navigator)) return;
 
-            if (isLocalhost) {
-                // This is running on localhost. Let's check if a service worker still exists or not.
-                checkValidServiceWorker(swUrl, config);
+    const handleRegistration = () => {
 
-                // Add some additional logging to localhost, pointing developers to the
-                // service worker/PWA documentation.
-                navigator.serviceWorker.ready.then(() => {
-                    console.log('This web app is being served cache-first by a service worker.');
-                });
-            } else {
-                // Is not localhost. Just register service worker
-                registerValidSW(swUrl, config);
-            }
-        };
+        if (isLocalhost) {
+            // This is running on localhost. Let's check if a service worker still exists or not.
+            checkValidServiceWorker(swUrl, config);
 
-        if (document.readyState == "complete" || document.readyState == "interactive")
-            handleRegistration()
-        else
-            window.addEventListener('load',);
-    }
+            // Add some additional logging to localhost, pointing developers to the
+            // service worker/PWA documentation.
+            navigator.serviceWorker.ready.then(() => {
+                console.log('This web app is being served cache-first by a service worker.');
+            });
+        } else {
+            // Is not localhost. Just register service worker
+            registerValidSW(swUrl, config);
+        }
+    };
+
+    if (document.readyState == "complete" || document.readyState == "interactive")
+        handleRegistration()
+    else
+        window.addEventListener('load', handleRegistration);
 }
 
 function registerValidSW(swUrl: string, config?: Config) {
     navigator.serviceWorker
-        .register(swUrl)
+        .register(swUrl, { scope: config?.scope })
         .then((registration) => {
             // Try to properly show popup when page was reloaded
             if (registration.waiting) {
