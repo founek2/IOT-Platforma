@@ -10,7 +10,7 @@ import { SocketUpdateThingState } from 'common/lib/types';
 import { uniq } from 'ramda';
 import { InfluxService } from 'common/lib/services/influxService';
 import { NotificationService } from '../NotificationService';
-import { PropertyDataType } from 'common/src/models/interface/thing';
+import { PropertyDataType } from 'common/lib/models/interface/thing';
 
 type cbFn = (topic: string, message: Buffer, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO, notificationService: NotificationService, influxService: InfluxService) {
