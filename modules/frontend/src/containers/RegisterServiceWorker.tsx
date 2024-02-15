@@ -22,7 +22,7 @@ export function RegisterServiceWorker() {
             },
         };
         serviceWorker.register(config);
-    });
+    }, []);
 
     return (
         <Snackbar

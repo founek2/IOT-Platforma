@@ -29,7 +29,7 @@ type Config = {
 
 export function register(config?: Config) {
     if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
+        const handleRegistration = () => {
             const swUrl = `/service-worker.js`;
 
             if (isLocalhost) {
@@ -45,7 +45,12 @@ export function register(config?: Config) {
                 // Is not localhost. Just register service worker
                 registerValidSW(swUrl, config);
             }
-        });
+        };
+
+        if (document.readyState == "complete" || document.readyState == "interactive")
+            handleRegistration()
+        else
+            window.addEventListener('load',);
     }
 }
 
