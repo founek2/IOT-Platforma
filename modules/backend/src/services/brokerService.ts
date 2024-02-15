@@ -24,7 +24,8 @@ export class BrokerService {
 
     constructor(actionsService: Actions, config: Config["mqtt"], passKeper: PassKeeper) {
         this.actionsService = actionsService
-        this.url = config.url.split('://')[1];
+        const url = config.url.split('://')[1];
+        this.url = url.split("/")[0];
         this.managementPort = config.managementPort
         this.passKeper = passKeper
         this.data = Nothing;
