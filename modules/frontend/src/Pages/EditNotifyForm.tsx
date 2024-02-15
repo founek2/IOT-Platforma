@@ -23,7 +23,7 @@ import { notificationActions } from '../store/slices/notificationSlice';
 import SuccessMessages from 'common/src/localization/succcess';
 import { logger } from 'common/src/logger';
 
-const FIELDS: (keyof Omit<EditNotificationsFormData, "count" | "advanced">)[] = ['propertyId', 'type', 'value'];
+const FIELDS: (keyof Omit<EditNotificationsFormData, "count" | "advanced">)[] = ['propertyId', 'type', 'value', 'textTemplate'];
 const FIELDS_ADVANCED: (keyof EditNotificationsFormData["advanced"])[] = ['interval', 'from', 'to', 'daysOfWeek'];
 
 export default function EditNotifyPage() {
@@ -85,10 +85,12 @@ export default function EditNotifyPage() {
         form.setFieldValue(defaultAdvancedValues.from, ["advanced", "from", sensorCount]);
         form.setFieldValue(defaultAdvancedValues.to, ["advanced", "to", sensorCount]);
         form.setFieldValue(defaultAdvancedValues.daysOfWeek, ["advanced", "daysOfWeek", sensorCount]);
+        form.setFieldValue("Hodnota je ${value}", ["textTemplate", sensorCount]);
     }
 
     const handleSave = async () => {
         const { valid, data } = form.validateForm();
+        console.log("invalid", data)
         if (!valid || !params.deviceId || !thing?.config.nodeId) return;
 
         updateNotificationMutation({ deviceId: params.deviceId, nodeId: thing?.config.nodeId, data }).unwrap().then(() => {

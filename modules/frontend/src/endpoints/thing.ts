@@ -23,6 +23,7 @@ export interface EditNotificationsFormData {
     propertyId: string[]
     type: NotifyType[]
     value: string[]
+    textTemplate: string[],
     advanced: {
         daysOfWeek: number[][]
         interval: number[]
