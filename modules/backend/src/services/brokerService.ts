@@ -1,4 +1,4 @@
-import { OverView } from '../types/rabbitmq';
+import { Connections, OverView } from '../types/rabbitmq';
 import { Actions } from './actionsService';
 import { addMinutes, isBefore } from 'date-fns';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
@@ -11,7 +11,8 @@ const CACHE_MINUTES = 3;
 
 type BrokerData = {
     updatedAt: Date;
-    overView: OverView;
+    overview: OverView;
+    connections: Connections,
 };
 
 export class BrokerService {
@@ -37,17 +38,26 @@ export class BrokerService {
     getOverView = async (): Promise<Maybe<OverView>> => {
         try {
             await this.fetchData();
-            return this.data.map(d => d.overView)
+            return this.data.map(d => d.overview)
         } catch (err) {
             return Nothing;
         }
     }
 
-    private async getBrokerAuth() {
+    getData = async (): Promise<Maybe<BrokerData>> => {
+        try {
+            await this.fetchData();
+            return this.data
+        } catch (err) {
+            return Nothing;
+        }
+    }
+
+    private async getBrokerAuth(): Promise<string | undefined> {
         return (await this.passKeper.getPass()).map((pass) => {
             const auth = Buffer.from(pass.userName + ':' + pass.password, 'utf-8').toString('base64');
             return auth;
-        });
+        }).extract();
     }
 
     private fetchData = async () => {
@@ -56,18 +66,30 @@ export class BrokerService {
         const auth = await this.getBrokerAuth();
         if (!auth) return;
 
-        console.log('Loading overview Broker data');
-
-        return fetch(`http://${this.url}:${this.managementPort}/api/overview`, {
+        const p1: Promise<OverView> = fetch(`http${this.managementPort === 443 ? "s" : ""}://${this.url}:${this.managementPort}/api/overview`, {
             headers: {
                 Authorization: 'Basic ' + auth,
             },
-        }).then(res => res.json()).then((body) => {
+        }).then(res => res.json())
+
+        const p2: Promise<Connections> = fetch(`http${this.managementPort === 443 ? "s" : ""}://${this.url}:${this.managementPort}/api/connections?page=1&page_size=300&name=&use_regex=false`, {
+            headers: {
+                Authorization: 'Basic ' + auth,
+            },
+        }).then(res => res.json())
+
+        try {
+            const [overview, connections] = await Promise.all([p1, p2])
+            logger.silly('Loaded overview Broker data');
+
             this.data = Just({
-                overView: body,
+                overview,
+                connections,
                 updatedAt: new Date(),
             })
-        }).catch(err => logger.error(err))
+        } catch (err) {
+            logger.error(err)
+        }
     }
 }
 

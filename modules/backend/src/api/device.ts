@@ -40,7 +40,13 @@ export default () =>
          * @header Authorization-JWT
          * @return json device
          */
-        async index({ user }: Request, res) {
+        async index({ user, query }: RequestWithAuth<{}, { filter: string }>, res) {
+            if (user.admin && query.filter === "all") {
+                const docs = await DeviceModel.find({}).select("info permissions createdBy metadata").lean();
+                res.send({ docs });
+                return;
+            }
+
             const docs = await DeviceModel.findForUser(user._id);
             res.send({ docs });
         },

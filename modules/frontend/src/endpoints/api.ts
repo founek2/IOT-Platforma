@@ -73,6 +73,7 @@ export const api = createApi({
         'SignIn',
         "ActiveSignIn",
         'Devices',
+        "DevicesAll",
         'AuthProviders',
         'UserAuthTypes',
         'UserNames',
@@ -82,6 +83,7 @@ export const api = createApi({
         'AccessTokens',
         'NotificationConfig',
         'ThingNotifications',
+        'Broker'
     ],
     /**
      * This api has endpoints injected in adjacent files,

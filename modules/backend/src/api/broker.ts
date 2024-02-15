@@ -20,7 +20,11 @@ export default () =>
          * @header Authorization-JWT
          */
         async index(req: Request, res) {
-            res.send(await req.context.brokerService.getOverView());
+            const data = await req.context.brokerService.getData();
+
+            res.send({
+                data: data.extractNullable()
+            });
         },
 
         // async create({ body, user }: any, res) {

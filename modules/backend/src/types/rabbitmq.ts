@@ -155,51 +155,10 @@ export type VHost = {
 export type OverView = {
     management_version: string;
     rates_mode: string;
-    // "sample_retention_policies": {
-    //   "global": [
-    //     600,
-    //     3600,
-    //     28800,
-    //     86400
-    //   ],
-    //   "basic": [
-    //     600,
-    //     3600
-    //   ],
-    //   "detailed": [
-    //     600
-    //   ]
-    // },
-    // "exchange_types": [
-    //   {
-    //     "name": "direct",
-    //     "description": "AMQP direct exchange, as per the AMQP specification",
-    //     "enabled": true
-    //   },
-    //   {
-    //     "name": "fanout",
-    //     "description": "AMQP fanout exchange, as per the AMQP specification",
-    //     "enabled": true
-    //   },
-    //   {
-    //     "name": "headers",
-    //     "description": "AMQP headers exchange, as per the AMQP specification",
-    //     "enabled": true
-    //   },
-    //   {
-    //     "name": "topic",
-    //     "description": "AMQP topic exchange, as per the AMQP specification",
-    //     "enabled": true
-    //   }
-    // ],
     product_version: string;
     product_name: string;
     rabbitmq_version: string;
     cluster_name: string;
-    // "erlang_version": "24.0.2",
-    // "erlang_full_version": "Erlang/OTP 24 [erts-12.0.2] [source] [64-bit] [smp:12:12] [ds:12:12:10] [async-threads:1] [jit]",
-    // "disable_stats": false,
-    // "enable_queue_totals": false,
     message_stats: {
         ack: number;
         ack_details: {
@@ -309,83 +268,16 @@ export type OverView = {
         exchanges: number;
         queues: number;
     };
-    // "statistics_db_event_queue": 0,
     node: string;
-    // "listeners": [
-    //   {
-    //     "node": "rabbit@martas-ubuntu",
-    //     "protocol": "amqp",
-    //     "ip_address": "127.0.0.1",
-    //     "port": 5672,
-    //     "socket_opts": {
-    //       "backlog": 128,
-    //       "nodelay": true,
-    //       "linger": [
-    //         true,
-    //         0
-    //       ],
-    //       "exit_on_close": false
-    //     }
-    //   },
-    //   {
-    //     "node": "rabbit@martas-ubuntu",
-    //     "protocol": "clustering",
-    //     "ip_address": "::",
-    //     "port": 25672,
-    //     "socket_opts": []
-    //   },
-    //   {
-    //     "node": "rabbit@martas-ubuntu",
-    //     "protocol": "http",
-    //     "ip_address": "::",
-    //     "port": 15672,
-    //     "socket_opts": {
-    //       "cowboy_opts": {
-    //         "sendfile": false
-    //       },
-    //       "port": 15672
-    //     }
-    //   },
-    //   {
-    //     "node": "rabbit@martas-ubuntu",
-    //     "protocol": "mqtt",
-    //     "ip_address": "::",
-    //     "port": 1883,
-    //     "socket_opts": {
-    //       "backlog": 128,
-    //       "nodelay": true
-    //     }
-    //   },
-    //   {
-    //     "node": "rabbit@martas-ubuntu",
-    //     "protocol": "mqtt/ssl",
-    //     "ip_address": "::",
-    //     "port": 8883,
-    //     "socket_opts": {
-    //       "backlog": 128,
-    //       "nodelay": true,
-    //       "versions": [
-    //         "tlsv1.3",
-    //         "tlsv1.2",
-    //         "tlsv1.1",
-    //         "tlsv1"
-    //       ],
-    //       "cacertfile": "/home/martas/Work/keys/mqtt/ca_certificate.pem",
-    //       "certfile": "/home/martas/Work/keys/mqtt/server_certificate.pem",
-    //       "keyfile": "/home/martas/Work/keys/mqtt/server_key.pem",
-    //       "verify": "verify_none",
-    //       "fail_if_no_peer_cert": false
-    //     }
-    //   }
-    // ],
-    // "contexts": [
-    //   {
-    //     "ssl_opts": [],
-    //     "node": "rabbit@martas-ubuntu",
-    //     "description": "RabbitMQ Management",
-    //     "path": "/",
-    //     "cowboy_opts": "[{sendfile,false}]",
-    //     "port": "15672"
-    //   }
-    // ]
 };
+
+export type Connections = {
+    total_count: number
+    item_count: number
+    items: {
+        name: string //"10.10.5.7:47002 -> 10.10.5.5:15675"
+        vhost: string
+        user: string
+        node: string
+    }[]
+}

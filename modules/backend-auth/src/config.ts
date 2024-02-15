@@ -25,6 +25,11 @@ export const loadConfig = (pathToDotEnvFile?: string) => {
     return {
         portAuth: Number(process.env.AUTH_SERVICE_PORT) || 8084,
         dbUri: mustGetString('DATABASE_URI'),
+        mqtt: {
+            // Only optional for local testing
+            userName: process.env.MQTT_USERNAME,
+            password: process.env.MQTT_PASSWORD,
+        },
         jwt: {
             privateKey: mustGetString('JWT_PRIVATE_KEY', '/keys/jwtRS256.key'),
             publicKey: mustGetString('JWT_PUBLIC_KEY', '/keys/jwtRS256.key.pub'),

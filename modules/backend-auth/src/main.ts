@@ -19,7 +19,7 @@ export async function bindServer(app: Express, config: Config, bus: BusEmitterTy
     const jwtService = new JwtService(config.jwt); // used in WebSocket middleware
     const userService = new UserService(jwtService)
     const oauthService = new OAuthService(config.oauth); // used in WebSocket middleware
-    const temporaryPassService = new TemporaryPass(bus);
+    const temporaryPassService = new TemporaryPass(bus, config.mqtt);
     const context: Context = {
         oauthService,
         userService,

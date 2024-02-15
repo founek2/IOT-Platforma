@@ -4,9 +4,8 @@ import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
 import PeopleIcon from '@mui/icons-material/People';
 import { AllowedRoutes, PrivilegesContainer, Route, RouteMenu } from 'common/src/privileges';
 import { lazy } from 'react';
-
+import EqualizerIcon from '@mui/icons-material/Equalizer';
 import { allowedGroups } from 'common/src/constants/privileges';
-import { append } from '../utils/ramda';
 import { LocationsLoader } from '../Pages/Locations.loader';
 import { RoomLoader } from '../Pages/Room.loader';
 
@@ -29,6 +28,8 @@ const RoomLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room
 const ProfileLazy = lazy(() => import(/* webpackChunkName: 'Profile' */ '../Pages/Profile'));
 
 const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'NotifyForm' */ '../Pages/EditNotifyForm'));
+
+const DashboardLazy = lazy(() => import(/* webpackChunkName: 'Dashboard' */ '../Pages/Dashboard'));
 
 const userRoutes: Route[] = [
     {
@@ -59,10 +60,11 @@ const userRoutes: Route[] = [
     // { path: '/management/building/:building/room/:room', Component: DeviceManagementLazy, name: 'deviceControl' },
     { path: '/device/:deviceId/thing/:nodeId/notification', Component: EditNotifyFormLazy },
 ];
-const adminRoutes = append(
+const adminRoutes: Route[] = [
+    ...userRoutes,
     { path: '/userManagement', Component: UserManagement, name: 'userManagement', Icon: PeopleIcon },
-    userRoutes
-);
+    { path: '/dashboard', Component: DashboardLazy, name: 'dashboard', Icon: EqualizerIcon }
+]
 
 export const routes: AllowedRoutes = {
     user: {

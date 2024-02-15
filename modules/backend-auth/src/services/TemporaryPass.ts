@@ -5,6 +5,7 @@ import { UserModel } from 'common/lib/models/userModel';
 import { Maybe, Just, Nothing } from 'purify-ts/Maybe';
 import { logger } from 'common/lib/logger';
 import { BusEmitterType, Pass } from "common/lib/interfaces/asyncEmitter"
+import { Config } from '../config';
 
 async function generatePass(): Promise<Maybe<Pass>> {
     logger.debug('Generating new pass');
@@ -18,9 +19,11 @@ async function generatePass(): Promise<Maybe<Pass>> {
 export class TemporaryPass {
     private currentPass: Maybe<Pass> = Nothing;
     private bus: BusEmitterType
+    private config?: Config["mqtt"]
 
-    constructor(bus: BusEmitterType) {
+    constructor(bus: BusEmitterType, config?: Config["mqtt"]) {
         this.bus = bus;
+        this.config = config;
 
         this.bus.on("request_pass", () => {
             this.emitPass()
@@ -30,8 +33,12 @@ export class TemporaryPass {
     }
 
     async emitPass() {
-        this.currentPass = await generatePass();
-        this.bus.emit("new_pass", this.currentPass)
+        if (this.config?.userName && this.config.password) {
+            this.bus.emit("new_pass", Just({ validTo: addMinutes(new Date(), 60), userName: this.config.userName, password: this.config.password }))
+        } else {
+            this.currentPass = await generatePass();
+            this.bus.emit("new_pass", this.currentPass)
+        }
     }
 
     // async getPass(): Promise<Maybe<Pass>> {

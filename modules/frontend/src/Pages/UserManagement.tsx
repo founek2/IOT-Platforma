@@ -25,9 +25,9 @@ export default function UserManagement() {
     const { isLoading, data } = useUsersQuery(undefined);
     const navigate = useNavigate()
 
-    return isLoading ? (
-        <CircularProgress />
-    ) : (
+    if (isLoading) return <CircularProgress />
+
+    return (
         <>
             <Grid container justifyContent="center">
                 <Grid item xs={12} md={7} lg={6} xl={3}>

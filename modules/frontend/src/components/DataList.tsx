@@ -20,8 +20,9 @@ export interface DataListProps<T extends { _id: string }> {
     getHumanText: (value: T) => string;
     header?: string;
     onClick?: (value: T) => any;
+    searchDisabled?: boolean
 }
-export default function DataList<T extends { _id: string }>({ data, getHumanText, header, onClick }: DataListProps<T>) {
+export default function DataList<T extends { _id: string }>({ data, getHumanText, header, onClick, searchDisabled }: DataListProps<T>) {
     const [value, setValue] = useState('');
 
     function onSearchChange(e: any) {
@@ -30,7 +31,7 @@ export default function DataList<T extends { _id: string }>({ data, getHumanText
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <SearchField value={value} label="Hledat" onChange={onSearchChange} sx={{ paddingBottom: 2 }} />
+            {searchDisabled === false ? <SearchField value={value} label="Hledat" onChange={onSearchChange} sx={{ paddingBottom: 2 }} /> : null}
             <List
                 sx={{
                     width: '100%',
