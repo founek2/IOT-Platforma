@@ -71,7 +71,7 @@ export function PropertyRowPlain({ state, property, onChange, disabled: disabled
                 ))}
             </Select>
         );
-    } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format) {
+    } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format && property.settable) {
         const propertyNumeric = property as IThingPropertyNumeric;
         component = (
             // TODO debounce bude lepší
