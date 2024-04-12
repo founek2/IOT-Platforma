@@ -48,3 +48,12 @@ You can now open browser and see the login screen. First user, who will register
 - [http://localhost:81](http://localhost:82) - INFLUXDB_PORT
 - [localhost:1883](http://localhost:1883) - MQTT
 - [localhost:8883](http://localhost:8883) - MQTT over TLS
+
+# There is more
+
+- Deno library <https://github.com/founek2/IOT-Platform-deno>
+- Arduino library <https://github.com/founek2/IOT-Platform-arduino>
+- Integrations <https://github.com/founek2/IOT-Platform-integration>
+  - zigbee2mqtt
+  - Frigate (NVR)
+  - and much more...
