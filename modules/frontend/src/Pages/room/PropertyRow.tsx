@@ -13,6 +13,7 @@ import {
     PropertyDataType,
 } from 'common/src/models/interface/thing';
 import { isNumericDataType } from 'common/src/utils/isNumericDataType';
+import { numericFormatDiff } from 'common/src/utils/numericFormatDiff';
 import { format } from 'date-fns';
 import UpdatedBefore from '../../components/UpdatedBefore';
 import PlotifyBoolean from '../../components/PlotifyBoolean';
@@ -71,10 +72,10 @@ export function PropertyRowPlain({ state, property, onChange, disabled: disabled
                 ))}
             </Select>
         );
-    } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format && property.settable) {
+    } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format
+        && property.settable && numericFormatDiff(property as IThingPropertyNumeric) <= 300) {
         const propertyNumeric = property as IThingPropertyNumeric;
         component = (
-            // TODO debounce bude lepší
             <Slider
                 sx={{ width: '80px' }}
                 onChangeCommitted={(e, newValue) => onChange(newValue as number)}
