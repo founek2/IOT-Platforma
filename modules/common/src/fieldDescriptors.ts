@@ -5,6 +5,7 @@ import { DeviceCommand } from './models/interface/device';
 import { NotifyType } from './models/interface/notifyInterface';
 import { transformToForm } from './validations/transformToForm';
 import { FieldDescriptor, FieldDescriptors, FormFieldDescriptors } from './validations/types';
+import { ComponentType } from './models/interface/thing';
 
 const LOGIN: FormFieldDescriptors = {
     userName: {
@@ -243,13 +244,35 @@ const EDIT_NOTIFY: FormFieldDescriptors = {
 };
 
 
-const EDIT_DEVICE_CONFIG: FormFieldDescriptors = {
-    "thing[]": {
-        deepPath: 'EDIT_DEVICE_CONFIG.thing[]',
-        required: true,
-        label: 'Název',
-        name: 'title',
-        // validations: [validationFactory('isArray', { min: 1 })],
+const EDIT_THING: FormFieldDescriptors = {
+    "config": {
+        "name": {
+            deepPath: 'EDIT_THING.config.name',
+            required: true,
+            label: 'Název',
+            name: 'name',
+        },
+        "nodeId": {
+            deepPath: 'EDIT_THING.config.nodeId',
+            required: true,
+            label: 'Id uzlu',
+            name: 'nodeId',
+        },
+        "componentType": {
+            deepPath: 'EDIT_THING.config.componentType',
+            required: true,
+            label: 'Typ',
+            name: 'componentType',
+            validations: [validationFactory('isOneOf', { values: Object.values(ComponentType) })]
+        },
+        "properties": {
+            deepPath: 'EDIT_THING.config.properties',
+            required: true,
+            label: 'Vlastnosti',
+            name: 'properties',
+            // TODO provider descriptor for isArray validation
+            validations: [validationFactory('isArray')]
+        },
     },
 };
 
@@ -411,7 +434,7 @@ const descriptors: FieldDescriptors = {
     ADD_ACCESS_TOKEN,
     EDIT_ACCESS_TOKEN,
     AUTHORIZATION,
-    EDIT_DEVICE_CONFIG,
+    EDIT_THING,
     REFRESH_TOKEN,
     MODIFY_PUSH_SUBSCRIPTION,
 };
