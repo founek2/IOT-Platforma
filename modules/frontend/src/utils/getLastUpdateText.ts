@@ -22,13 +22,14 @@ export default function getLastUpdateText(
     const min = Math.floor(diffSec / 60);
     const hours = Math.floor(min / 60);
     const days = Math.floor(hours / 24);
+    const diffMonths = monthDiff(now, time)
 
     if (diff.getTime() <= 0 || diffSec < 60) return [nowText, 60 - diffSec];
 
-    if (now.getFullYear() - time.getFullYear() > 0) {
-        return [prefix + ' ' + Number(now.getFullYear() - time.getFullYear()) + ' rok', null];
-    } else if (diff.getMonth() > 0) {
-        return [prefix + ' ' + diff.getMonth() + ' měsíc', null];
+    if (diffMonths >= 12) {
+        return [prefix + ' ' + Math.round(diffMonths / 12) + ' rok', null];
+    } else if (diffMonths > 0) {
+        return [prefix + ' ' + diffMonths + ' měsíc', null];
     } else if (days >= 1) {
         return [prefix + ' ' + days + ' dny', (days + 1) * 24 * 60 * 60 - diffSec];
     } else if (hours >= 1) {
@@ -36,7 +37,15 @@ export default function getLastUpdateText(
     } else {
         return [prefix + ' ' + min + ' min', (min + 1) * 60 - diffSec];
     }
-    //  else {
-    //      return [prefix + ' ' + diffSec % 60 + ' sec', 1];
-    // }
+}
+
+function monthDiff(d1: Date, d2: Date) {
+    if (d1 > d2) {
+        [d1, d2] = [d2, d1]
+    }
+    let months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth();
+    months += d2.getMonth();
+    return months <= 0 ? 0 : months;
 }
