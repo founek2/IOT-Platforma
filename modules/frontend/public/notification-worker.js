@@ -24,11 +24,12 @@ self.addEventListener('notificationclick', function (event) {
     event.waitUntil(
         clients
             .matchAll({
+                includeUncontrolled: true,
                 type: "window",
             })
             .then((clientList) => {
                 for (const client of clientList) {
-                    if (client.url === "/building" && "focus" in client) {
+                    if (client.url?.startsWith("/building") && "focus" in client) {
                         client.focus();
                         client.navigate(event.notification.data.url);
                         return;
