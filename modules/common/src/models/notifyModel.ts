@@ -4,6 +4,9 @@ import { notifyThingSchema } from "./schema/notifySchema";
 import { IDevice } from "./interface/device";
 import { IThing, IThingProperty } from "./interface/thing";
 import { IUser } from "./interface/userInterface";
+import { INTERNAL_NOTIFY_PROPERTIES, INTERNAL_THING_ID } from "../constants";
+import { NotifyType } from "./interface/notifyInterface"
+import { pushOrNewArray } from "../utils/pushOrNewArray";
 
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
@@ -15,7 +18,7 @@ export interface INotifyModel extends Model<INotifyDocument> {
         deviceId: IDevice["_id"],
         nodeId: IThing["config"]["nodeId"],
         userId: IUser["_id"]
-    ): Promise<INotifyDocument>;
+    ): Promise<INotifyDocument | null>;
     setForThing(
         deviceId: IDevice["_id"],
         nodeId: IThing["config"]["nodeId"],
@@ -25,7 +28,8 @@ export interface INotifyModel extends Model<INotifyDocument> {
     getForProperty(
         deviceId: IDevice["_id"],
         nodeId: IThing["config"]["nodeId"],
-        propertyId: IThingProperty["propertyId"]
+        propertyId: IThingProperty["propertyId"],
+        userIds: IDevice['permissions']['write']
     ): Promise<INotifyDocument[]>;
 }
 
@@ -89,7 +93,8 @@ notifySchema.statics.setForThing = async function (
 notifySchema.statics.getForProperty = async function (
     deviceId: IDevice["_id"],
     nodeId: IThing["config"]["nodeId"],
-    propertyId: IThingProperty["propertyId"]
+    propertyId: IThingProperty["propertyId"],
+    userIds: IDevice['permissions']['write']
 ) {
     const docs = await this.find(
         {
@@ -99,6 +104,15 @@ notifySchema.statics.getForProperty = async function (
         },
         "things.$ deviceId userId"
     ).lean();
+
+    // Make sure internal notifications are present
+    if (nodeId === INTERNAL_THING_ID && docs.length != userIds.length) {
+        await Promise.all(userIds.map(userId => {
+            return this.setForThing(deviceId, nodeId, userId, INTERNAL_NOTIFY_PROPERTIES)
+        }))
+
+        return this.getForProperty(deviceId, nodeId, propertyId, userIds);
+    }
 
     return docs.map((doc) => ({
         _id: doc._id,

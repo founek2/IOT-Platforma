@@ -10,7 +10,7 @@ import { clone } from 'ramda';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import EditNotify, { defaultAdvancedValues } from './editNotifyForm/EditNotify';
+import EditNotify from './editNotifyForm/EditNotify';
 import { getFieldVal } from 'common/src/utils/getters';
 import { getThing } from '../selectors/getters';
 import { Box, CircularProgress, Grid } from '@mui/material';
@@ -22,6 +22,7 @@ import { transformNotifyForFE } from "common/src/utils/transform"
 import { notificationActions } from '../store/slices/notificationSlice';
 import SuccessMessages from 'common/src/localization/succcess';
 import { logger } from 'common/src/logger';
+import { defaultNotifyAdvancedValues } from 'common/src/constants';
 
 const FIELDS: (keyof Omit<EditNotificationsFormData, "count" | "advanced">)[] = ['propertyId', 'type', 'value', 'textTemplate'];
 const FIELDS_ADVANCED: (keyof EditNotificationsFormData["advanced"])[] = ['interval', 'from', 'to', 'daysOfWeek'];
@@ -81,10 +82,10 @@ export default function EditNotifyPage() {
 
     function handleAdd() {
         form.setFieldValue(sensorCount + 1, ['count']);
-        form.setFieldValue(defaultAdvancedValues.interval, ["advanced", "interval", sensorCount]);
-        form.setFieldValue(defaultAdvancedValues.from, ["advanced", "from", sensorCount]);
-        form.setFieldValue(defaultAdvancedValues.to, ["advanced", "to", sensorCount]);
-        form.setFieldValue(defaultAdvancedValues.daysOfWeek, ["advanced", "daysOfWeek", sensorCount]);
+        form.setFieldValue(defaultNotifyAdvancedValues.interval, ["advanced", "interval", sensorCount]);
+        form.setFieldValue(defaultNotifyAdvancedValues.from, ["advanced", "from", sensorCount]);
+        form.setFieldValue(defaultNotifyAdvancedValues.to, ["advanced", "to", sensorCount]);
+        form.setFieldValue(defaultNotifyAdvancedValues.daysOfWeek, ["advanced", "daysOfWeek", sensorCount]);
         form.setFieldValue("Hodnota je ${value}", ["textTemplate", sensorCount]);
     }
 

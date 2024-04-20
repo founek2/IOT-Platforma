@@ -1,3 +1,6 @@
+import { DeviceStatus } from "../models/interface/device";
+import { INotifyThingProperty, NotifyType } from "../models/interface/notifyInterface";
+
 export const DAY_START_HOURS = 6;
 
 export const DAY_END_HOURS = 20;
@@ -107,3 +110,18 @@ export const NotifyIntervals = [
 ];
 
 export const CONTROL_STATE_KEYS = [CONTROL_STATE.ON, CONTROL_STATE.COLOR, CONTROL_STATE.TYPE, CONTROL_STATE.BRIGHT];
+
+
+export const defaultNotifyAdvancedValues: INotifyThingProperty['advanced'] = {
+    interval: NOTIFY_INTERVALS.JUST_ONCE,
+    from: '00:00',
+    to: '23:59',
+    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+};
+
+export const INTERNAL_THING_ID = '_internal';
+export const INTERNAL_PROPERTY_STATE_ID = '_state';
+export const INTERNAL_NOTIFY_PROPERTIES: INotifyThingProperty[] = [{
+    propertyId: INTERNAL_PROPERTY_STATE_ID,
+    type: NotifyType.equal, value: DeviceStatus.alert, textTemplate: 'Zařízení vyžaduje vaší pozornost', advanced: defaultNotifyAdvancedValues
+}]

@@ -65,7 +65,7 @@ export class NotificationService {
         const deviceThing = getThing(device, nodeId);
         const property = getProperty(deviceThing, propertyId);
 
-        const docs = await NotifyModel.getForProperty(device._id, nodeId, propertyId);
+        const docs = await NotifyModel.getForProperty(device._id, nodeId, propertyId, device.permissions.write);
         if (docs.length === 0) return;
 
         const output: Output = {};
