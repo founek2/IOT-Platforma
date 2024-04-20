@@ -31,8 +31,11 @@ self.addEventListener('notificationclick', function (event) {
                 for (const client of clientList) {
                     if ("focus" in client)
                         client.focus();
-                    if ("navigate" in client)
-                        client.navigate(event.notification.data.url);
+
+                    client.postMessage({
+                        action: 'redirect-from-notificationclick',
+                        url: event.notification.data.url,
+                    })
                     return;
                 }
                 if (clients.openWindow) return clients.openWindow(event.notification.data.url);

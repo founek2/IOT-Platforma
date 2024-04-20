@@ -24,6 +24,23 @@ export function RegisterServiceWorker() {
         serviceWorker.register("/service-worker.js", config);
     }, []);
 
+    useEffect(() => {
+        function listener(event: MessageEvent) {
+            if (!event.data.action) {
+                return
+            }
+
+            switch (event.data.action) {
+                case 'redirect-from-notificationclick':
+                    window.location.href = event.data.url
+                    break
+            }
+        }
+
+        navigator.serviceWorker.addEventListener('message', listener)
+        return () => navigator.serviceWorker.removeEventListener("message", listener)
+    }, [])
+
     return (
         <Snackbar
             anchorOrigin={{
