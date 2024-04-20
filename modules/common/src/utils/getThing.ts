@@ -7,7 +7,7 @@ export function getThing(device: IDevice, nodeId: IThing["config"]["nodeId"]): I
 	if (nodeId === INTERNAL_THING_ID) {
 		return {
 			config: {
-				name: 'Stav zařízení',
+				name: device.info.name,
 				nodeId,
 				componentType: ComponentType.generic,
 				properties: [
