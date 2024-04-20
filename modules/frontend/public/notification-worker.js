@@ -29,11 +29,11 @@ self.addEventListener('notificationclick', function (event) {
             })
             .then((clientList) => {
                 for (const client of clientList) {
-                    if (client.url?.startsWith("/building") && "focus" in client) {
+                    if ("focus" in client)
                         client.focus();
+                    if ("navigate" in client)
                         client.navigate(event.notification.data.url);
-                        return;
-                    }
+                    return;
                 }
                 if (clients.openWindow) return clients.openWindow(event.notification.data.url);
             }),
