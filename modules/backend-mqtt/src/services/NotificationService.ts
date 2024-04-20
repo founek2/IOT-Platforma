@@ -83,7 +83,7 @@ export class NotificationService {
                     processNotifications(_id, userId, value, output, sended, notSended, {
                         deviceThing,
                         property,
-                    }, this.homepageUrl)
+                    }, device, deviceThing._id, this.homepageUrl)
                 )
             );
         });
@@ -110,9 +110,9 @@ export class NotificationService {
         logger.debug(validTokens.length + ' of ' + results.length + ' notifications were sent successfully');
 
 
-        const deleteResults = await Promise.all(invalidTokens.map(({ userId, subscription }) => {
-            UserModel.removeSubscription(userId, subscription);
-        }))
+        const deleteResults = await Promise.all(invalidTokens.map(({ userId, subscription }) =>
+            UserModel.removeSubscription(userId, subscription)
+        ))
         if (deleteResults.length) logger.debug('Deleted push subscriptions>', deleteResults.length)
 
     }
@@ -120,16 +120,15 @@ export class NotificationService {
 
 interface CreateNotificationsOptions {
     title: string;
-    homepageUrl: string;
     body: string,
+    click_action: string,
 }
-function createNotification({ homepageUrl, title, body }: CreateNotificationsOptions) {
+function createNotification({ title, body, click_action }: CreateNotificationsOptions) {
     return {
         title,
-        // body: `${name} je ${value}${units}`,
         body,
         icon: '/favicon.png',
-        click_action: homepageUrl,
+        click_action,
     };
 }
 
@@ -159,7 +158,9 @@ function processNotifications(
         satisfiedItems: { _id: INotify['_id']; prop_id: IThingProperty['_id'] }[];
     },
     data: { property: IThingProperty, deviceThing: IThing },
-    homepageUrl: string
+    device: IDevice,
+    thingId: IThing['_id'],
+    homepageUrl: string,
 ) {
     return ({ type, value: limit, advanced, _id: prop_id, textTemplate, tmp }: INotifyThingProperty) => {
         /* Check validity */
@@ -171,7 +172,7 @@ function processNotifications(
                 output[userID].push(createNotification({
                     title: data.deviceThing.config.name,
                     body: renderTemplate(textTemplate || "${property.name} je ${value}", { ...data, value }),
-                    homepageUrl
+                    click_action: `${homepageUrl}/building/${device.info.location.building}/room/${device.info.location.room}?thingId=${thingId}`,
                 }));
                 sended.push({ _id, userId: userID, prop_id });
             } else {

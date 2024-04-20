@@ -1,13 +1,27 @@
 self.addEventListener("push", event => {
-    const { title, ...options } = event.data.json();
+    const { title, click_action, ...options } = event.data.json();
     console.log("recieved notification title")
     const promiseChain = self.registration.showNotification(
         title, // title of the notification
-        options,
+        {
+            ...options,
+            data: { url: click_action }, //the url which we gonna use later
+            actions: [{ action: "open_url", title: "Zobrazit" }]
+        },
     );
 
     event.waitUntil(promiseChain);
 });
+
+self.addEventListener('notificationclick', function (event) {
+
+    switch (event.action) {
+        case 'open_url':
+            clients.openWindow(event.notification.data.url); //which we got from above
+            break;
+    }
+}
+    , false);
 
 self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
