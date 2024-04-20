@@ -178,7 +178,7 @@ function processNotifications(
                 if (isLastSatisfied(tmp)) notSended.satisfiedItems.push({ _id, prop_id });
             }
         } else {
-            if (!isLastSatisfied(tmp)) notSended.unSatisfiedItems.push({ _id, prop_id });
+            if (isLastSatisfied(tmp)) notSended.unSatisfiedItems.push({ _id, prop_id });
         }
     };
 }
