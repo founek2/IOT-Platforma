@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 self.addEventListener("push", event => {
     const { title, click_action, ...options } = event.data.json();
     console.log("recieved notification title")
@@ -14,14 +16,28 @@ self.addEventListener("push", event => {
 });
 
 self.addEventListener('notificationclick', function (event) {
+    console.log("On notification click: ", event.notification.data);
+    event.notification.close();
 
-    switch (event.action) {
-        case 'open_url':
-            clients.openWindow(event.notification.data.url); //which we got from above
-            break;
-    }
-}
-    , false);
+    // This looks to see if the current is already open and
+    // focuses if it is
+    event.waitUntil(
+        clients
+            .matchAll({
+                type: "window",
+            })
+            .then((clientList) => {
+                for (const client of clientList) {
+                    if (client.url === "/building" && "focus" in client) {
+                        client.focus();
+                        client.navigate(event.notification.data.url);
+                        return;
+                    }
+                }
+                if (clients.openWindow) return clients.openWindow(event.notification.data.url);
+            }),
+    );
+}, false);
 
 self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
