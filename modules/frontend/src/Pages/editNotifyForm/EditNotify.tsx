@@ -1,21 +1,16 @@
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import ClearIcon from '@mui/icons-material/Clear';
 import { defaultNotifyAdvancedValues, NotifyIntervals } from 'common/src/constants';
 import { IThing } from 'common/src/models/interface/thing';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useAppSelector } from '../../hooks';
 import DaysOfWeekPicker from './DaysOfWeekPicker';
 import PropertyPart from './editNotify/PropertyPart';
 import { getFieldVal } from 'common/src/utils/getters';
 import FieldConnector from '../../components/FieldConnector';
-import { useVapidKeyQuery } from '../../endpoints/config';
-import { urlBase64ToUint8Array } from '../../utils/urlBase64ToUint8Array';
-import { useSubscribeToNotificationMutation } from '../../endpoints/subscription';
-import { getCurrentUserId } from '../../selectors/getters';
 
 interface EditNotifyProps {
     id: number;
