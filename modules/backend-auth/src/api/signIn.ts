@@ -1,13 +1,13 @@
-import { fieldDescriptors, logger, UserModel } from 'common';
-import { IUser, OAuthProvider } from 'common/lib/models/interface/userInterface';
-import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiterMiddleware';
-import eventEmitter from '../services/eventEmitter';
-import { Context, KoaFormContext, KoaResponseContext } from '../types';
-import { EitherAsync } from 'purify-ts';
 import Router from '@koa/router';
-import Koa from "koa";
+import { fieldDescriptors, logger, UserModel } from 'common';
 import { formDataMiddleware } from 'common/lib/middlewares/formDataMiddleware';
+import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiterMiddleware';
 import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
+import { OAuthProvider } from 'common/lib/models/interface/userInterface';
+import Koa from "koa";
+import { EitherAsync } from 'purify-ts';
+import eventEmitter from '../services/eventEmitter';
+import { Context, KoaResponseContext } from '../types';
 
 export default function (): Router<Koa.DefaultState, Context> {
     const router = new Router<Koa.DefaultState, Context>();
@@ -29,9 +29,9 @@ export default function (): Router<Koa.DefaultState, Context> {
         rateLimiterMiddleware,
         formDataMiddleware(fieldDescriptors, { allowedForms: ['AUTHORIZATION', 'LOGIN'] }),
         async (ctx) => {
-            const formData = ctx.request.body.formData;
+            const formData = ctx.request.body?.formData;
 
-            if (formData.LOGIN) {
+            if (formData?.LOGIN) {
                 (await ctx.userService.checkAndCreateCreditals(formData.LOGIN, ctx.headers["user-agent"] || ""))
                     .ifLeft((error) => {
                         logger.error(error)
@@ -46,7 +46,7 @@ export default function (): Router<Koa.DefaultState, Context> {
                         };
                         eventEmitter.emit('user_login', doc);
                     });
-            } else if (formData.AUTHORIZATION) {
+            } else if (formData?.AUTHORIZATION) {
                 const oauthMaybe = await ctx.oauthService.requestAuthorization(
                     formData.AUTHORIZATION.code,
                     formData.AUTHORIZATION.redirectUri,

@@ -15,7 +15,7 @@ export default function () {
         rateLimiterMiddleware,
         formDataMiddleware(fieldDescriptors, { allowedForms: ['REFRESH_TOKEN'] }),
         async (ctx) => {
-            const form = ctx.request.body.formData.REFRESH_TOKEN;
+            const form = ctx.request.body?.formData.REFRESH_TOKEN;
             if (!form) {
                 ctx.status = 400
                 return

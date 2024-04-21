@@ -13,9 +13,9 @@ export default () => {
     let api = new Router<Koa.DefaultState, Context>();
 
     api.patch("/", formDataMiddleware(fieldDescriptors, { allowedForms: ["MODIFY_PUSH_SUBSCRIPTION"] }), async (ctx) => {
-        const { formData } = ctx.request.body;
+        const { formData } = ctx.request.body || {};
 
-        if (formData.MODIFY_PUSH_SUBSCRIPTION) {
+        if (formData?.MODIFY_PUSH_SUBSCRIPTION) {
             await UserModel.modifyNotifyToken(formData.MODIFY_PUSH_SUBSCRIPTION.old, formData.MODIFY_PUSH_SUBSCRIPTION.new);
             ctx.status = 204
         } else {

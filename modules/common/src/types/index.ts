@@ -2,7 +2,6 @@ import { CONTROL_TYPES } from '../constants';
 import { IDevice } from '../models/interface/device';
 import { IThing, PropertyState } from '../models/interface/thing';
 import { IUser, Permission } from '../models/interface/userInterface';
-import type { Request } from 'express';
 import { JwtService } from '../services/jwtService';
 import { UserService } from '../services/userService';
 import { Context, Request as RequestKoa } from 'koa';
@@ -86,16 +85,6 @@ export type SocketUpdateThingState = {
         nodeId: IThing['config']['nodeId'];
         state: { [propertyId: string]: PropertyState };
     };
-};
-type Dict = { [key: string]: any };
-export type RequestWithAuth<P = {}, ReqQuery = {}> = Request<P, any, any, ReqQuery> & {
-    user: Pick<IUser, "_id" | "groups" | "realm"> & { admin?: boolean; accessPermissions?: Permission[], refreshTokenId?: string };
-    root?: boolean;
-};
-
-export type RequestWithAuthOpt<P = Dict> = Request<P> & {
-    user?: Pick<IUser, "_id" | "groups" | "realm"> & { admin?: boolean; accessPermissions?: Permission[], refreshTokenId?: string };
-    root?: boolean;
 };
 
 export type Measurement = {

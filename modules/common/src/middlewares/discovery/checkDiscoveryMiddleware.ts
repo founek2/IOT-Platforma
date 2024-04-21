@@ -1,9 +1,9 @@
-import express from 'express';
+import { Next } from 'koa';
 import mongoose from 'mongoose';
 import { DiscoveryModel } from '../../models/deviceDiscoveryModel';
-import { HasState, KoaContext, RequestWithAuth } from '../../types';
 import { Permission } from '../../models/interface/userInterface';
-import { Next } from 'koa';
+import { HasState, KoaContext } from '../../types';
+import { sendError } from '../../utils/sendError';
 
 /**
  * Middleware to check if discovered device exists and user has permission to it
@@ -13,15 +13,11 @@ export function checkDiscoveryMiddleware<C extends KoaContext & HasState>(option
     return async (ctx: C, next: Next) => {
         const discoveryId = ctx.params[options.paramKey];
         if (!mongoose.Types.ObjectId.isValid(discoveryId)) {
-            ctx.status = 400;
-            ctx.body = { error: 'InvalidParam' }
-            return;
+            return sendError(400, 'invalidParam', ctx);
         }
 
         if (!(await DiscoveryModel.checkExistsNotPairing(discoveryId))) {
-            ctx.status = 404;
-            ctx.body = { error: 'InvalidDeviceId' }
-            return;
+            return sendError(404, 'InvalidDeviceId', ctx);
         }
 
         if (ctx.state.user?.admin) return next();
@@ -33,8 +29,7 @@ export function checkDiscoveryMiddleware<C extends KoaContext & HasState>(option
         )
             return next();
 
-        ctx.status = 403;
-        ctx.body = { error: 'invalidPermissions' }
+        return sendError(403, 'invalidPermissions', ctx);
     };
 }
 

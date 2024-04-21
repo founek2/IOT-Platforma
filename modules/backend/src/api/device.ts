@@ -1,30 +1,19 @@
-import fieldDescriptors from 'common/lib/fieldDescriptors';
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import checkWritePerm from 'common/lib/middlewares/device/checkWritePerm';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { Actions } from '../services/actionsService';
-import { DeviceService } from '../services/deviceService';
-import eventEmitter from '../services/eventEmitter';
-import { IDevice } from 'common/lib/models/interface/device';
-import { RequestWithAuth } from 'common/lib/types';
-import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
-import { Context, HasContext } from '../types';
 import Router from '@koa/router';
-import Koa from "koa"
-import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
+import fieldDescriptors from 'common/lib/fieldDescriptors';
 import { readDevicePermissionMiddleware } from 'common/lib/middlewares/device/readDevicePermissionMiddleware';
 import { writeDevicePermissionMiddleware } from 'common/lib/middlewares/device/writeDevicePermissionMiddleware';
 import { formDataMiddleware } from 'common/lib/middlewares/formDataMiddleware';
-
-type Request = RequestWithAuth;
-type RequestId = RequestWithAuth & { params: { id: string } } & HasContext;
+import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import { IDevice } from 'common/lib/models/interface/device';
+import Koa from "koa";
+import { DeviceService } from '../services/deviceService';
+import eventEmitter from '../services/eventEmitter';
+import { Context } from '../types';
 
 /**
  * URL prefix /device
  */
-
 export default () => {
     let api = new Router<Koa.DefaultState, Context>();
 

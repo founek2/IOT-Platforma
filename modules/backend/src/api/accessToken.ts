@@ -1,22 +1,13 @@
 import Router from '@koa/router';
 import { fieldDescriptors } from 'common';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
 import { formDataMiddleware } from 'common/lib/middlewares/formDataMiddleware';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
-import checkWritePerm from 'common/lib/middlewares/user/checkWritePerm';
 import checkWritePermissionMiddleware from 'common/lib/middlewares/user/checkWritePermissionMiddleware';
 import { UserModel } from 'common/lib/models/userModel';
-import { RequestWithAuth } from 'common/lib/types';
+import type Koa from "koa";
 import { map, omit } from 'ramda';
-import { Context, HasContext } from '../types';
+import { Context } from '../types';
 import { ObjectId } from '../utils/objectId';
-import type Koa from "koa"
-
-type Params = { userId: string };
-type Request = RequestWithAuth<Params>;
-type RequestId = RequestWithAuth<Params & { id: string }>;
 
 /**
  * URL prefix /user/:userId/accessToken

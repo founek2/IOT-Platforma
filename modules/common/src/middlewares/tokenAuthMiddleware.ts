@@ -3,6 +3,7 @@ import { logger } from '../logger';
 import { Permission } from '../models/interface/userInterface';
 import { HasState, KoaContext, KoaHasContext } from '../types';
 import { Next } from 'koa';
+import { sendError } from '../utils/sendError';
 
 type Options = {
     restricted?: boolean;
@@ -58,8 +59,7 @@ export function tokenAuthMiddleware<C extends KoaContext>(
                 // }
             } catch (err) {
                 logger.error('token problem', err);
-                ctx.status = 400
-                ctx.body = { error: "invalidToken" }
+                return sendError(400, 'invalidToken', ctx);
             }
         } else if (typeof apiKey === "string") {
             const validationResult = await userService.validateAccessToken(apiKey);
@@ -82,8 +82,7 @@ export function tokenAuthMiddleware<C extends KoaContext>(
         } else if (!restricted) {
             return next();
         } else {
-            ctx.status = 400
-            ctx.body = { error: "tokenNotProvided" }
+            return sendError(400, 'tokenNotProvided', ctx);
         }
     };
 }

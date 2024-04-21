@@ -1,8 +1,8 @@
-import { DeviceModel } from '../../models/deviceModel';
-import checkDeviceMiddleware from './checkDeviceMiddleware';
-import { HasState, KoaContext, RequestWithAuthOpt } from '../../types';
-import { Permission } from '../../models/interface/userInterface';
 import { Next } from 'koa';
+import { DeviceModel } from '../../models/deviceModel';
+import { Permission } from '../../models/interface/userInterface';
+import { HasState, KoaContext } from '../../types';
+import checkDeviceMiddleware from './checkDeviceMiddleware';
 
 /**
  * Middleware to check if device exists and user has permission to read it

@@ -19,7 +19,7 @@ export const messages = {
     missingFormData: 'V dotazu chybí formulářová data',
     invalidPermissions: 'Nedostatečná oprávnění',
     validationFailed: 'Nevalidní formulář',
-    InvalidParam: 'Špatný request',
+    invalidParam: 'Špatný request',
     notImplemented: 'Funkce není implementována',
     entityNotFound: 'Požadovaný zdroj nebyl nalezen',
     deviceNotExits: 'Zařízení neexistuje',

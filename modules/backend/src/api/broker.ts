@@ -1,14 +1,8 @@
-import { RequestWithAuth } from 'common/lib/types';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
-import { checkIsRoot } from 'common/lib/middlewares/user/checkIsRoot';
-import { Context, HasContext } from '../types';
 import Router from '@koa/router';
-import Koa from "koa"
 import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
 import { checkIsRootMiddleware } from 'common/lib/middlewares/user/checkIsRootMiddleware';
-
-type Request = RequestWithAuth & HasContext;
+import Koa from "koa";
+import { Context } from '../types';
 
 /**
  * URL prefix /broker

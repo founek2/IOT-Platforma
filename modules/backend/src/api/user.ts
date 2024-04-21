@@ -18,8 +18,6 @@ function removeUserItself(id: IUser['_id']) {
     };
 }
 
-
-
 /**
  * URL prefix /user
  */
@@ -72,9 +70,9 @@ export default () => {
         }),
         async (ctx) => {
             const { userService } = ctx
-            const { formData } = ctx.request.body;
+            const { formData } = ctx.request.body || {};
 
-            if (formData.REGISTRATION) {
+            if (formData?.REGISTRATION) {
                 if (await UserModel.exists({ 'info.userName': formData.REGISTRATION.info.userName })) {
                     ctx.status = 409
                     ctx.body = { error: 'userNameAlreadyExist' }
@@ -100,10 +98,10 @@ export default () => {
                     ctx.status = 400
                     ctx.body = { error }
                 })
-            } else if (formData.FORGOT) {
+            } else if (formData?.FORGOT) {
                 eventEmitter.emit('user_forgot', { email: formData.FORGOT.email });
                 ctx.status = 204
-            } else if (formData.FORGOT_PASSWORD) {
+            } else if (formData?.FORGOT_PASSWORD) {
                 const token = await TokenModel.retrieve(formData.FORGOT_PASSWORD.token);
                 if (!token) return ctx.status = 400;
 

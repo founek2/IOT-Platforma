@@ -1,35 +1,27 @@
+import Router from '@koa/router';
+import { UserModel } from 'common';
 import fieldDescriptors from 'common/lib/fieldDescriptors';
+import { checkDiscoveryMiddleware } from "common/lib/middlewares/discovery/checkDiscoveryMiddleware";
+import { formDataMiddleware } from 'common/lib/middlewares/formDataMiddleware';
+import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
 import { DiscoveryModel, IDiscoveryDocument } from 'common/lib/models/deviceDiscoveryModel';
 import { DeviceModel } from 'common/lib/models/deviceModel';
 import { DeviceStatus } from 'common/lib/models/interface/device';
-import { RequestWithAuth } from 'common/lib/types';
+import { IThing } from 'common/lib/models/interface/thing';
+import { sendError } from "common/lib/utils/sendError";
+import Koa from "koa";
 import mongoose from 'mongoose';
 import { assocPath, map } from 'ramda';
-import checkDiscovery from 'common/lib/middlewares/discovery/checkDiscovery';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import eventEmitter from '../services/eventEmitter';
+import { Context } from '../types';
 import { convertDiscoveryThing } from '../utils/convertDiscoveryThing';
-import { IThing } from 'common/lib/models/interface/thing';
-import { Context, HasContext } from '../types';
-import { UserModel } from 'common';
-import Router from '@koa/router';
-import Koa from "koa"
-import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
-import { checkDiscoveryMiddleware } from "common/lib/middlewares/discovery/checkDiscoveryMiddleware"
-import { formDataMiddleware } from 'common/lib/middlewares/formDataMiddleware';
-import { sendError } from "common/lib/utils/sendError"
 
 const ObjectId = mongoose.Types.ObjectId;
 
-type Request = RequestWithAuth;
-type RequestId = RequestWithAuth & { params: { id: string } };
 
 /**
  * URL prefix /discovery
  */
-
 export default () => {
     let api = new Router<Koa.DefaultState, Context>();
 

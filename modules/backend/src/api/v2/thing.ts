@@ -1,22 +1,13 @@
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
+import Router from '@koa/router';
+import { checkRealmControlPermissionMiddleware } from 'common/lib/middlewares/device/checkRealmControlPermissionMiddleware';
+import { checkRealmReadPermissionMiddleware } from 'common/lib/middlewares/device/checkRealmReadPermissionMiddleware';
+import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
 import { DeviceModel } from 'common/lib/models/deviceModel';
-import { RequestWithAuth } from 'common/lib/types';
 import { getProperty } from 'common/lib/utils/getProperty';
 import { getThing } from 'common/lib/utils/getThing';
 import { validateValue } from 'common/lib/utils/validateValue';
-import checkRealmControlPerm from 'common/lib/middlewares/device/checkRealmControlPerm';
-import { Context, HasContext } from '../../types';
-import checkRealmReadPerm from 'common/lib/middlewares/device/checkRealmReadPerm';
-import { checkRealmControlPermissionMiddleware } from 'common/lib/middlewares/device/checkRealmControlPermissionMiddleware';
-import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
-import Router from '@koa/router';
-import Koa from "koa"
-import { checkRealmReadPermissionMiddleware } from 'common/lib/middlewares/device/checkRealmReadPermissionMiddleware';
-
-type Params = { realm: string; deviceId: string; nodeId: string };
-type Request = RequestWithAuth<Params>;
-type RequestQuery = RequestWithAuth<Params, { property?: string; value?: string }>;
+import Koa from "koa";
+import { Context } from '../../types';
 
 /**
  * URL prefix /device/:deviceId/thing/:nodeId

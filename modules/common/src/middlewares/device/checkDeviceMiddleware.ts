@@ -2,6 +2,7 @@ import { DeviceModel } from '../../models/deviceModel';
 import mongoose from 'mongoose';
 import { KoaContext } from '../../types';
 import { Next } from 'koa';
+import { sendError } from '../../utils/sendError';
 
 /**
  * Middleware to check if device exists
@@ -13,21 +14,15 @@ export default function <C extends KoaContext>({ paramKey = "id", type }: { para
 
         if (type === "metadata") {
             if (!(await DeviceModel.checkExistsByMetadata(deviceId))) {
-                ctx.status = 404
-                ctx.body = { error: 'deviceNotExits' }
-                return;
+                return sendError(404, 'deviceNotExits', ctx)
             }
         } else {
             if (!mongoose.Types.ObjectId.isValid(deviceId)) {
-                ctx.status = 400
-                ctx.body = { error: 'InvalidParam' }
-                return;
+                return sendError(400, 'invalidParam', ctx)
             }
 
             if (!(await DeviceModel.checkExists(deviceId))) {
-                ctx.status = 404
-                ctx.body = { error: 'deviceNotExits' }
-                return
+                return sendError(404, 'deviceNotExits', ctx)
             }
         }
 

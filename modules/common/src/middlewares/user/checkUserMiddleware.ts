@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { logger } from '../../logger';
 import { KoaContext } from '../../types';
 import { Next } from 'koa';
+import { sendError } from '../../utils/sendError';
 
 /**
  * Middleware to check if user exists
@@ -13,16 +14,12 @@ export default function <C extends KoaContext>(options: { paramKey: string } = {
         const userId = ctx.params[options.paramKey];
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             logger.warning("Malformed userId", userId, options.paramKey, ctx.params)
-            ctx.status = 400
-            ctx.body = { error: 'InvalidParam' }
-            return;
+            return sendError(400, 'invalidParam', ctx);
         };
 
-        if (!(await UserModel.checkExists(userId))) {
-            ctx.status = 400
-            ctx.body = { error: 'userNotExist' }
-            return;
-        }
+        if (!(await UserModel.checkExists(userId)))
+            return sendError(400, 'userNotExist', ctx);
+
 
         return next();
     };

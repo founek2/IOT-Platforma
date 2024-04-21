@@ -1,8 +1,9 @@
-import { DeviceModel } from '../../models/deviceModel';
-import checkDeviceMiddleware from './checkDeviceMiddleware';
-import { HasState, KoaContext, RequestWithAuthOpt } from '../../types';
-import { Permission } from '../../models/interface/userInterface';
 import { Next } from 'koa';
+import { DeviceModel } from '../../models/deviceModel';
+import { Permission } from '../../models/interface/userInterface';
+import { HasState, KoaContext } from '../../types';
+import { sendError } from '../../utils/sendError';
+import checkDeviceMiddleware from './checkDeviceMiddleware';
 
 /**
  * Middleware to check if device exists and user has permission to read it
@@ -12,11 +13,9 @@ export function writeDevicePermissionMiddleware<C extends KoaContext & HasState>
     return async (ctx: C, next: Next) => {
         return checkDeviceMiddleware(options)(ctx, async () => {
             const deviceId = ctx.params[options.paramKey];
-            if (!ctx.state.user) {
-                ctx.status = 403;
-                ctx.body = { error: 'missingUser' }
-                return
-            }
+            if (!ctx.state.user)
+                return sendError(403, 'missingUser', ctx)
+
             if (ctx.state.user.admin) return next();
 
             if (
@@ -25,8 +24,7 @@ export function writeDevicePermissionMiddleware<C extends KoaContext & HasState>
             )
                 return next();
 
-            ctx.status = 403
-            ctx.body = { error: 'invalidPermissions' }
+            return sendError(403, 'invalidPermissions', ctx)
         });
     };
 }

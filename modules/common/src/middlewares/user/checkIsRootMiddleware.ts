@@ -1,6 +1,5 @@
-import express from 'express';
 import { Next } from 'koa';
-import { HasContext, HasState, KoaContext, RequestWithAuthOpt } from '../../types';
+import { HasState, KoaContext } from '../../types';
 import { isRoot } from '../../utils/groups';
 import { sendError } from '../../utils/sendError';
 

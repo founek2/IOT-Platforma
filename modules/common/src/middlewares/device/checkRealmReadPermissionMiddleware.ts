@@ -1,11 +1,9 @@
-import express from 'express';
-import { DeviceModel } from '../../models/deviceModel';
-import checkDevice from './checkDevice';
-import { HasState, KoaContext, RequestWithAuthOpt } from '../../types';
-import { Permission } from '../../models/interface/userInterface';
-import checkDeviceMiddleware from './checkDeviceMiddleware';
 import { Next } from 'koa';
+import { DeviceModel } from '../../models/deviceModel';
+import { Permission } from '../../models/interface/userInterface';
+import { HasState, KoaContext } from '../../types';
 import { sendError } from '../../utils/sendError';
+import checkDeviceMiddleware from './checkDeviceMiddleware';
 
 /**
  * Middleware to check if device exists and user has permission to control it

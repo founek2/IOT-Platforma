@@ -254,7 +254,7 @@ describe('Device API test', async function () {
         should.equal(await permMiddlewareChecker('/api/device/dsadasd?type=apiKey', 'get'), 'InvalidDeviceId');
         should.equal(await permMiddlewareChecker('/api/device/dsadasd?type=control', 'get'), 'InvalidDeviceId');
 
-        should.equal(await permMiddlewareChecker('/api/device/dsadasd', 'get'), 'InvalidParam');
+        should.equal(await permMiddlewareChecker('/api/device/dsadasd', 'get'), 'invalidParam');
 
         const token = await getAdminToken();
         const res = await createDevice(forms.create_device, token); // created by admin

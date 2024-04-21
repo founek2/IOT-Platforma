@@ -1,15 +1,11 @@
-import { DeviceModel } from 'common/lib/models/deviceModel';
-import { RequestWithAuth } from 'common/lib/types';
-import { getThing } from 'common/lib/utils/getThing';
-import { Context } from '../../types';
 import Router from '@koa/router';
-import Koa from "koa"
+import { checkRealmReadPermissionMiddleware } from "common/lib/middlewares/device/checkRealmReadPermissionMiddleware";
 import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
+import { DeviceModel } from 'common/lib/models/deviceModel';
+import { getThing } from 'common/lib/utils/getThing';
 import { sendError } from 'common/lib/utils/sendError';
-import { checkRealmReadPermissionMiddleware } from "common/lib/middlewares/device/checkRealmReadPermissionMiddleware"
-
-type Params = { realm: string; deviceId: string; nodeId: string };
-type RequestQuery = RequestWithAuth<Params, { property?: string; value?: string }>;
+import Koa from "koa";
+import { Context } from '../../types';
 
 /**
  * URL prefix /device/:deviceId/thing/:nodeId/state
