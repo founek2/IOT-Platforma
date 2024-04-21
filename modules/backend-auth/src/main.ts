@@ -2,7 +2,7 @@ import type Router from "@koa/router";
 import { JwtService, UserService } from 'common';
 import { BusEmitterType } from 'common/lib/interfaces/asyncEmitter';
 import { connectMongoose } from 'common/lib/utils/connectMongoose';
-import { applyRouter } from 'common/src/utils/applyRouter';
+import { applyRouter } from 'common/lib/utils/applyRouter';
 import type Koa from "koa";
 import api from './api';
 import { Config } from './config';
