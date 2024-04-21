@@ -12,6 +12,8 @@ import { preferencesActions } from '../../store/slices/preferences/setting';
 import { getColorMode, getCurrentUserId, getCurrentUserName } from '../../selectors/getters';
 import { useNavigate } from 'react-router-dom';
 import { useSignOutMutation } from '../../endpoints/signOut';
+import { notificationActions } from '../../store/slices/notificationSlice';
+import SuccessMessages from 'common/src/localization/succcess';
 
 export function UserMenu() {
     const userName = useAppSelector(getCurrentUserName);
@@ -32,6 +34,7 @@ export function UserMenu() {
         signOutMutation();
         dispatch(authorizationActions.signOut());
         handleClose();
+        dispatch(notificationActions.add({ message: SuccessMessages.getMessage("successfullySignedOut") }))
     };
     const handleColorModeChange = () => {
         dispatch(preferencesActions.setColorMode(colorMode === 'light' ? 'dark' : 'light'));

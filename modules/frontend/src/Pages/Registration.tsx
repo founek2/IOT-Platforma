@@ -6,15 +6,19 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import EditUserForm from '../components/EditUserForm';
 import { RegisterUserForm, useRegisterAndSignInMutation, useRegisterMutation } from '../endpoints/users';
 import { useForm } from '../hooks/useForm';
+import { notificationActions } from '../store/slices/notificationSlice';
+import SuccessMessages from 'common/src/localization/succcess';
 
 export default function Registration() {
     const [registerAndSignIn, setRegisterAndSignIn] = useState(true);
     const { validateForm, resetForm } = useForm<RegisterUserForm>('REGISTRATION', { resetOnUnmount: true });
     const [registerAndSignInMutation] = useRegisterAndSignInMutation();
     const [registerMutation] = useRegisterMutation();
+    const dispatch = useDispatch();
 
     async function handleRegister() {
         const result = validateForm();
@@ -22,7 +26,10 @@ export default function Registration() {
 
         (registerAndSignIn ? registerAndSignInMutation(result.data) : registerMutation(result.data))
             .unwrap()
-            .then(() => resetForm())
+            .then(() => {
+                dispatch(notificationActions.add({ message: SuccessMessages.getMessage("userCreated"), options: { variant: 'success' } }))
+                resetForm()
+            })
             .catch(() => { });
     }
 
