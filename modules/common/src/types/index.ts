@@ -5,6 +5,7 @@ import { IUser, Permission } from '../models/interface/userInterface';
 import type { Request } from 'express';
 import { JwtService } from '../services/jwtService';
 import { UserService } from '../services/userService';
+import { Context, Request as RequestKoa } from 'koa';
 
 export interface Config {
     port: number;
@@ -131,3 +132,25 @@ export type HasContext = {
         userService: UserService
     }
 }
+
+export type KoaHasContext = {
+    jwtService: JwtService
+    userService: UserService
+}
+export type HasState = {
+    state: {
+        user: Pick<IUser, "_id" | "groups" | "realm"> & { admin?: boolean; accessPermissions?: Permission[], refreshTokenId?: string };
+        root?: boolean;
+    }
+}
+
+interface KoaRequest<RequestBody = any> extends RequestKoa {
+    body?: RequestBody;
+}
+
+export interface KoaContext<RequestBody = any, ResponseBody = any> extends Context {
+    request: KoaRequest<RequestBody>;
+    body: ResponseBody;
+}
+
+export interface KoaResponseContext<ResponseBody> extends KoaContext<any, ResponseBody> { }

@@ -1,15 +1,14 @@
 import { DeviceModel } from 'common/lib/models/deviceModel';
-import express, { Request, Response } from 'express';
 import { AuthType } from 'common/lib/constants';
 import { UserModel } from 'common/lib/models/userModel';
 import { logger } from 'common/lib/logger';
-import { HasContext } from '../types';
+import { Context, KoaContext } from '../types';
+import Router from "@koa/router"
+import type Koa from "koa"
 
-const router = express.Router();
-
-function sendDeny(path: string, res: Response) {
-    logger.debug(path, 'deny');
-    res.send('deny');
+function sendDeny(ctx: KoaContext<any, string>, reason: string) {
+    logger.debug(`${ctx.URL.pathname} DENY, reason: ${reason}`);
+    ctx.body = "deny";
 }
 
 function isGuest(userName: string) {
@@ -36,6 +35,8 @@ function removeUserNamePrefix(userName: string) {
  * specification https://github.com/rabbitmq/rabbitmq-auth-backend-http
  */
 export default () => {
+    const router = new Router<Koa.DefaultState, Context>();
+
     /**
      * Determines whether provided user can log into MQTT broker
      * userName can have following prefixes:
@@ -44,21 +45,25 @@ export default () => {
      *  - without prefix -> user is logging using his userName and password
      * @body { username, password }
      */
-    router.post('/user', async function (req, res) {
-        const { context } = req as any as Request & HasContext
-        const { username, password } = req.body;
+    router.post('/user', async function (ctx: KoaContext<{ username: string, password: string }, string>) {
+        const { username, password } = ctx.request.body as { username: string, password: string };
 
         logger.debug('username=' + username, 'password=' + password?.replace(/./g, "*"));
 
         if (isDevice(username)) {
             const [topicPrefix, deviceId] = splitUserName(username);
             const success = await DeviceModel.login(topicPrefix, deviceId, password);
-            return success ? res.send('allow') : sendDeny('/user device', res);
-        } else if (isUser(username)) {
-            if (!password) return sendDeny('/user missing password', res);
-            if (context.temporaryPassService.validatePass({ userName: username, password })) return res.send('allow administrator');
+            if (!success) return sendDeny(ctx, "device provided invalid credentials");
 
-            const result = await context.userService.checkCreditals({
+            ctx.body = "allow"
+        } else if (isUser(username)) {
+            if (!password) return sendDeny(ctx, "user did not provide password")
+            if (ctx.temporaryPassService.validatePass({ userName: username, password })) {
+                ctx.body = "allow administrator"
+                return;
+            }
+
+            const result = await ctx.userService.checkCreditals({
                 userName: username,
                 password,
                 authType: AuthType.passwd,
@@ -66,76 +71,93 @@ export default () => {
 
             result
                 .ifRight(
-                    (doc) =>
-                        doc.groups.some((group) => group === 'root' || group === 'admin') && res.send('allow administrator')
+                    (doc) => {
+                        if (doc.groups.some((group) => group === 'root' || group === 'admin')) {
+                            ctx.body = "allow administrator"
+                        } else {
+                            sendDeny(ctx, "user is not admin or root")
+                        }
+                    }
                 )
-                .ifLeft(() => sendDeny('/user user', res));
+                .ifLeft(() => sendDeny(ctx, "user provided invalid credentials"));
         } else if (isGuest(username)) {
             // in password is Realm
             const doc = await UserModel.findByUserName(password);
             // "guest" for backward compatibility
-            if (doc || password === 'guest') res.send('allow');
-            else sendDeny('/user invalid username', res);
-        } else sendDeny('/user other', res);
+            if (doc || password === 'guest') {
+                ctx.body = "allow"
+            }
+            else sendDeny(ctx, "guest provided invalid realm");
+        } else sendDeny(ctx, "unexpected username schema");
     });
 
     /** Determines whether client can access targeted vhost
      * @body { username, vhost, ip }
      */
-    router.post('/vhost', function (req, res) {
-        // console.log("/vhost", req.body)
-        if (req.body.vhost === '/') return res.send('allow');
-        sendDeny('/vhost', res);
+    router.post('/vhost', function (ctx: KoaContext<{ username: string, vhost: string, ip: string }, string>) {
+        if (ctx.request.body.vhost === '/')
+            ctx.body = "allow"
+        else sendDeny(ctx, "unsupported vhost");
     });
 
     /** Determines whether client can access targeted resource
      * @body { username, vhost, resource, name, permission }
      */
-    router.post('/resource', function (req, res) {
-        const { resource, username } = req.body;
+    router.post('/resource', function (ctx: KoaContext<{ username: string, vhost: string, resource: string }, string>) {
+        const { resource, username } = ctx.request.body;
         // console.log("/resource", req.body, resource === 'queue' || resource === 'exchange' || /^user=.+/.test(username))
-        if (resource === 'queue' || resource === 'exchange' || isUser(username)) return res.send('allow');
-
-        sendDeny('/resource', res);
+        if (resource === 'queue' || resource === 'exchange' || isUser(username))
+            ctx.body = "allow"
+        else sendDeny(ctx, "unsupported resource access");
     });
 
     /** Determines whether client can access targeted topic
      * @body { username, vhost, resource, name. permission, routing_key }
      */
-    router.post('/topic', async function (req, res) {
+    router.post('/topic', async function (ctx: KoaContext<{ username: string, vhost: string, resource: string, name: string, routing_key: string }, string>) {
         // console.log("/topic", req.body)
-        const { vhost, username, name, permission, routing_key } = req.body;
+        const { vhost, username, name, routing_key } = ctx.request.body;
         const [realm, deviceId] = splitUserName(username);
 
         // check if user has access
         if (isUser(username)) {
-            if (routing_key.startsWith("prefix."))
-                return res.send('allow');
-            if (routing_key.startsWith(`v2.${realm}.`))
-                return res.send('allow');
+            if (routing_key.startsWith("prefix.")) {
+                ctx.body = "allow"
+                return
+            }
+            if (routing_key.startsWith(`v2.${realm}.`)) {
+                ctx.body = "allow"
+                return
+            }
 
             const user = await UserModel.findByUserName(realm);
-            if (user?.groups.includes("admin"))
-                return res.send('allow');
+            if (user?.groups.includes("admin")) {
+                ctx.body = "allow"
+                return
+            }
 
-            return sendDeny('/topic ' + routing_key + ', user=' + username, res);
-        }
-
-        if (isDevice(username) && name === 'amq.topic' && vhost === '/') {
+            sendDeny(ctx, `${routing_key}, user=${username}`)
+        } else if (isDevice(username) && name === 'amq.topic' && vhost === '/') {
             const [realm, deviceId] = splitUserName(username);
-            if (routing_key.startsWith(`v2.${realm}.`)) return res.send('allow');
+            if (routing_key.startsWith(`v2.${realm}.`)) {
+                ctx.body = "allow"
+                return
+            }
 
-            return sendDeny('/topic ' + routing_key + ', user=' + username, res);
+            sendDeny(ctx, `${routing_key}, user=${username}`)
+        } else {
+            const matchedConf = routing_key.match(/^prefix\.([^\.]+)\.([^\.]+)(.*)/);
+            //console.log("matched", matchedConf);
+
+            /* Allow only write */
+            //console.log("cmp", matchedConf[2], username.replace("guest=", ""));
+            if (matchedConf && matchedConf[1] === username.replace(/^guest=/, '')) {
+                ctx.body = "allow"
+                return
+            }
+
+            sendDeny(ctx, `${routing_key}, user=${username}`)
         }
-
-        const matchedConf = routing_key.match(/^prefix\.([^\.]+)\.([^\.]+)(.*)/);
-        //console.log("matched", matchedConf);
-
-        /* Allow only write */
-        //console.log("cmp", matchedConf[2], username.replace("guest=", ""));
-        if (matchedConf && matchedConf[1] === username.replace(/^guest=/, '')) return res.send('allow');
-
-        sendDeny('/topic ' + routing_key + ', user=' + username, res);
     });
 
     return router;

@@ -1,35 +1,24 @@
-// import bodyParser from 'body-parser';
-// import config, { Config } from './config';
-// import { JwtService } from 'common/lib/services/jwtService';
-// import { connectMongoose } from 'common/lib/utils/connectMongoose';
-// import express, { Application } from 'express';
-// import { logger } from 'common/lib/logger';
-// import morgan from 'morgan';
-// import api from './api';
-// import eventEmitter from './services/eventEmitter';
-// import initSubscribers from './subscribers';
+import { loadConfig } from './config';
+import { logger } from 'common/lib/logger';
+import { bindServer } from './main';
+import { BusEmitter } from 'common/lib/interfaces/asyncEmitter';
+import Koa from "koa"
+import http from "http"
+import { AddressInfo } from 'net';
+import Router from '@koa/router';
+import { Context } from './types/index';
 
-// async function startServer(config: Config) {
-//     JwtService.init(config.jwt);
+const config = loadConfig();
+const app = new Koa();
+const server = http.createServer(app.callback());
+const router = new Router<Koa.DefaultState, Context>()
 
-//     initSubscribers(eventEmitter);
+bindServer(router, config, new BusEmitter());
+/* Start server */
+server.listen(config.portAuth, () => {
+    const addr = server.address() as AddressInfo;
+    logger.info(`Started on port http://${addr.address}:${addr.port}`);
+})
 
-//     await connectMongoose(config.dbUri);
-
-//     // mongoose.set('debug', Number(process.env.LOG_LEVEL) >= LogLevel.SILLY);
-
-//     const app = express();
-
-//     app.use(morgan('dev'));
-//     app.use(express.urlencoded({ extended: true }));
-
-//     app.use('/api', bodyParser.json({ limit: '100kb' }));
-
-//     app.use('/api', api({}));
-
-//     app.listen(config.portAuth, () => {
-//         logger.info(`Started on port ${config.portAuth}`);
-//     });
-// }
-
-// startServer(config);
+app.use(router.routes())
+app.use(router.allowedMethods())

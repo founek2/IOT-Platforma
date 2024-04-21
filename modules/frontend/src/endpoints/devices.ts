@@ -11,7 +11,7 @@ export const devicesApi = api.injectEndpoints({
     endpoints: (build) => ({
         updateDevice: build.mutation<{}, { deviceID: string; data: EditDeviceFormData }>({
             query: ({ deviceID, data }) => ({
-                url: `device/${deviceID}`,
+                url: `main/device/${deviceID}`,
                 method: 'PATCH',
                 body: { formData: { EDIT_DEVICE: data } },
             }),
@@ -19,23 +19,23 @@ export const devicesApi = api.injectEndpoints({
         }),
         deleteDevice: build.mutation<undefined, { deviceID: string }>({
             query: ({ deviceID }) => ({
-                url: `device/${deviceID}`,
+                url: `main/device/${deviceID}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['Devices'],
         }),
         devices: build.query<{ docs: IDevice[] }, void>({
-            query: () => `device`,
+            query: () => `main/device`,
 
             providesTags: ['Devices'],
         }),
         devicesAll: build.query<{ docs: IDevice[] }, void>({
-            query: () => `device?filter=all`,
+            query: () => `main/device?filter=all`,
             providesTags: ['DevicesAll'],
         }),
         sendDeviceCommand: build.mutation<undefined, { deviceID: string, command: DeviceCommand }>({
             query: ({ deviceID, command }) => ({
-                url: `device/${deviceID}`,
+                url: `main/device/${deviceID}`,
                 method: 'POST',
                 body: { formData: { DEVICE_SEND: { command: command } } },
             }),

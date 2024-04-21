@@ -1,34 +1,60 @@
+import Router from '@koa/router';
 import { fieldDescriptors } from 'common';
-import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import { Request } from 'express';
-import { HasContext } from '../types';
+import { formDataMiddleware } from "common/lib/middlewares/formDataMiddleware";
+import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiterMiddleware';
+import Koa from "koa";
+import { Context } from '../types';
 
 /**
  * URL prefix /authorization
  */
-export default () =>
-    resource({
-        mergeParams: true,
-        middlewares: {
-            create: [
-                rateLimiterMiddleware,
-                formDataChecker(fieldDescriptors, { allowedForms: ['REFRESH_TOKEN'] }),
-            ],
-        },
+export default function () {
+    const router = new Router<Koa.DefaultState, Context>();
 
-        async create({ body, context }: Request & HasContext, res) {
-            const { formData } = body;
+    router.post("/",
+        rateLimiterMiddleware,
+        formDataMiddleware(fieldDescriptors, { allowedForms: ['REFRESH_TOKEN'] }),
+        async (ctx) => {
+            const form = ctx.request.body.formData.REFRESH_TOKEN;
+            if (!form) {
+                ctx.status = 400
+                return
+            }
 
-            if (formData.REFRESH_TOKEN) {
-                (await context.userService.refreshToken(formData.REFRESH_TOKEN.token))
-                    .ifLeft((error) => res.status(401).send({ error }))
-                    .ifRight(({ accessToken }) => {
-                        res.send({
-                            accessToken,
-                        });
-                    });
-            } else res.sendStatus(400);
-        },
-    });
+            (await ctx.userService.refreshToken(form.token))
+                .ifLeft((error) => {
+                    ctx.body = { error }
+                    ctx.status = 401
+                })
+                .ifRight(({ accessToken }) => {
+                    ctx.body = { accessToken }
+                });
+        }
+    )
+
+    return router;
+}
+// export default () =>
+//     resource({
+//         mergeParams: true,
+//         middlewares: {
+//             create: [
+//                 rateLimiterMiddleware,
+//                 formDataChecker(fieldDescriptors, { allowedForms: ['REFRESH_TOKEN'] }),
+//             ],
+//         },
+
+//         async create({ body, context }: Request & HasContext, res) {
+//             const { formData } = body;
+
+//             if (formData.REFRESH_TOKEN) {
+//                 (await context.userService.refreshToken(formData.REFRESH_TOKEN.token))
+//                     .ifLeft((error) => res.status(401).send({ error }))
+//                     .ifRight(({ accessToken }) => {
+//                         res.send({
+//                             accessToken,
+//                         });
+//                     });
+//             } else res.sendStatus(400);
+//         },
+//     });

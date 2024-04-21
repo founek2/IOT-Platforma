@@ -66,7 +66,7 @@ self.addEventListener(
         const subscription = self.registration.pushManager
             .subscribe(event.oldSubscription.options)
             .then((subscription) =>
-                fetch(self.location.origin + "/api/pushsubscriptionchange", {
+                fetch(self.location.origin + "/api/main/pushsubscriptionchange", {
                     method: "patch",
                     headers: {
                         "Content-type": "application/json",

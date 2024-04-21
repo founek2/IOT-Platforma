@@ -36,25 +36,25 @@ export const thingsApi = api.injectEndpoints({
     endpoints: (build) => ({
         thingHistory: build.query<HistoryResponse['docs'], { deviceID: Device['_id']; thingID: Thing['config']['nodeId'] }>({
             query: ({ deviceID, thingID }) =>
-                `device/${deviceID}/thing/${thingID}/history?from=${subDays(new Date(), 1).getTime()}`,
+                `mqtt/device/${deviceID}/thing/${thingID}/history?from=${subDays(new Date(), 1).getTime()}`,
             transformResponse: (res: HistoryResponse) => res.docs,
             providesTags: ['History'],
         }),
         thingNotifications: build.query<INotifyThing, { deviceID: Device['_id']; thingID: Thing['config']['nodeId'] }>({
             query: ({ deviceID, thingID }) =>
-                `device/${deviceID}/thing/${thingID}/notify`,
+                `main/device/${deviceID}/thing/${thingID}/notify`,
             transformResponse: (res: any) => res.doc.thing,
             providesTags: ['ThingNotifications'],
         }),
         updateThingState: build.mutation<undefined, UpdateThingStateArgs>({
             query: ({ deviceId, nodeId, propertyId, value }) => ({
-                url: `device/${deviceId}/thing/${nodeId}?property=${propertyId}&value=${value}`,
+                url: `main/device/${deviceId}/thing/${nodeId}?property=${propertyId}&value=${value}`,
                 method: 'POST',
             }),
         }),
         updateThing: build.mutation<undefined, { deviceId: string, nodeId: string, data: EditThingFormData }>({
             query: ({ deviceId, nodeId, data }) => ({
-                url: `device/${deviceId}/thing/${nodeId}`,
+                url: `main/device/${deviceId}/thing/${nodeId}`,
                 method: 'PUT',
                 body: { formData: { EDIT_THING: data } },
                 invalidatesTags: ["Devices"]
@@ -62,7 +62,7 @@ export const thingsApi = api.injectEndpoints({
         }),
         updateThingNotifications: build.mutation<undefined, { deviceId: string, nodeId: string, data: EditNotificationsFormData }>({
             query: ({ deviceId, nodeId, data }) => ({
-                url: `device/${deviceId}/thing/${nodeId}/notify`,
+                url: `main/device/${deviceId}/thing/${nodeId}/notify`,
                 method: 'PUT',
                 body: { formData: { EDIT_NOTIFY: data } },
                 invalidatesTags: ["ThingNotifications"]

@@ -6,7 +6,7 @@ import { api } from './api';
 export const devicesApi = api.injectEndpoints({
     endpoints: (build) => ({
         vapidKey: build.query<string, undefined>({
-            query: () => `config/notification`,
+            query: () => `main/config/notification`,
             providesTags: ['NotificationConfig'],
             transformResponse: (body: { vapidPublicKey: string }) => body.vapidPublicKey
         }),

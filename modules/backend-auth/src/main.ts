@@ -1,43 +1,38 @@
-import express, { Express } from 'express';
-import { OAuthService } from './services/oauthService';
-import initSubscribers from './subscribers';
-import { connectMongoose } from 'common/lib/utils/connectMongoose';
-import eventEmitter from './services/eventEmitter';
-import { Config } from './config';
-import morgan from 'morgan';
-import bodyParser from 'body-parser';
-import api from './api';
-import { Context } from './types';
-import { JwtService } from 'common';
-import { UserService } from 'common';
-import { TemporaryPass } from './services/TemporaryPass';
+import type Router from "@koa/router";
+import { JwtService, UserService } from 'common';
 import { BusEmitterType } from 'common/lib/interfaces/asyncEmitter';
+import { connectMongoose } from 'common/lib/utils/connectMongoose';
+import { applyRouter } from 'common/src/utils/applyRouter';
+import type Koa from "koa";
+import api from './api';
+import { Config } from './config';
+import eventEmitter from './services/eventEmitter';
+import { OAuthService } from './services/oauthService';
+import { TemporaryPass } from './services/TemporaryPass';
+import initSubscribers from './subscribers';
+import { Context } from './types';
 
-export * from "./config"
-export async function bindServer(app: Express, config: Config, bus: BusEmitterType) {
+export * from "./config";
+export async function bindServer(router: Router<Koa.DefaultState, Context>, config: Config, bus: BusEmitterType) {
     /* INITIALIZE */
     const jwtService = new JwtService(config.jwt); // used in WebSocket middleware
     const userService = new UserService(jwtService)
     const oauthService = new OAuthService(config.oauth); // used in WebSocket middleware
     const temporaryPassService = new TemporaryPass(bus, config.mqtt);
-    const context: Context = {
-        oauthService,
-        userService,
-        jwtService,
-        temporaryPassService,
-    }
 
     initSubscribers(eventEmitter);
 
     await connectMongoose(config.dbUri);
 
-    app.use("/api/auth", (req: any, res, next) => {
-        req.context = context
-        next()
+    router.use("/api/auth", (ctx, next) => {
+        ctx.oauthService = oauthService;
+        ctx.userService = userService;
+        ctx.jwtService = jwtService;
+        ctx.temporaryPassService = temporaryPassService;
+        return next()
     })
 
-    app.use('/api/auth', bodyParser.json({ limit: '100kb' }));
-    app.use('/api/auth', api({ context }));
+    applyRouter(router, '/api/auth', api())
 
-    return { app, context }
+    return { router }
 }

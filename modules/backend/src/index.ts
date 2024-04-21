@@ -1,28 +1,25 @@
 import { loadConfig } from './config';
 import { logger } from 'common/lib/logger';
 import mongoose from 'mongoose';
-import { bindServer, MyApp } from './main';
-import express from "express";
+import { bindServer } from './main';
 import { BusEmitter } from 'common/lib/interfaces/asyncEmitter';
+import Koa from "koa"
+import http from "http"
+import { AddressInfo } from 'net';
+import Router from '@koa/router';
+import { Context } from './types/index';
 
 const config = loadConfig();
-const app = express();
-bindServer(app, config, new BusEmitter());
+const app = new Koa();
+const server = http.createServer(app.callback());
+const router = new Router<Koa.DefaultState, Context>()
+
+bindServer(router, config, new BusEmitter());
 /* Start server */
-const server = app.listen(config.port, () => {
-    logger.info(`Started on port ${config.port}`);
-});
+server.listen(config.port, () => {
+    const addr = server.address() as AddressInfo;
+    logger.info(`Started on port http://${addr.address}:${addr.port}`);
+})
 
-// handle appropriately server shutdown
-process.once('SIGINT', shutDown(app, mongoose.connection));
-process.once('SIGTERM', shutDown(app, mongoose.connection));
-process.once('SIGHUP', shutDown(app, mongoose.connection));
-
-function shutDown(app: express.Express, connection: mongoose.Connection) {
-    return async (code: NodeJS.Signals) => {
-        logger.info(code, 'received...');
-        server.close();
-        await connection.close();
-        process.exit(0);
-    };
-}
+app.use(router.routes())
+app.use(router.allowedMethods())

@@ -2,43 +2,50 @@ import { RequestWithAuth } from 'common/lib/types';
 import resource from 'common/lib/middlewares/resource-router-middleware';
 import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { checkIsRoot } from 'common/lib/middlewares/user/checkIsRoot';
-import { HasContext } from '../types';
+import { Context, HasContext } from '../types';
+import Router from '@koa/router';
+import Koa from "koa"
+import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
+import { checkIsRootMiddleware } from 'common/lib/middlewares/user/checkIsRootMiddleware';
 
 type Request = RequestWithAuth & HasContext;
 
 /**
- * URL prefix /user
+ * URL prefix /broker
  */
-export default () =>
-    resource({
-        mergeParams: true,
-        middlewares: {
-            index: [tokenAuthMIddleware(), checkIsRoot()],
-        },
-        /** GET / - List all users in system
-         * @restriction regular user - list only userNames, admin - list all users
-         * @header Authorization-JWT
-         */
-        async index(req: Request, res) {
-            const data = await req.context.brokerService.getData();
+export default () => {
+    let api = new Router<Koa.DefaultState, Context>();
 
-            res.send({
+    api.get("/",
+        tokenAuthMiddleware(),
+        checkIsRootMiddleware(),
+        async (ctx) => {
+            const data = await ctx.brokerService.getData();
+
+            ctx.body = {
                 data: data.extractNullable()
-            });
-        },
+            }
+        }
+    )
 
-        // async create({ body, user }: any, res) {
-        //     const doc = await UserService.createAccessToken(body.formData.ADD_ACCESS_TOKEN, user._id);
-        //     res.send({ doc });
-        // },
+    return api;
+}
 
-        // async modifyId({ body, user, params }: any, res) {
-        //     await UserService.updateAccessToken(params.id, user._id, body.formData.EDIT_ACCESS_TOKEN);
-        //     res.sendStatus(204);
-        // },
+// export const a = () =>
+//     resource({
+//         mergeParams: true,
+//         middlewares: {
+//             index: [tokenAuthMIddleware(), checkIsRoot()],
+//         },
+//         /** GET / - List all users in system
+//          * @restriction regular user - list only userNames, admin - list all users
+//          * @header Authorization-JWT
+//          */
+//         async index(req: Request, res) {
+//             const data = await req.context.brokerService.getData();
 
-        // async deleteId({ user, params }: any, res) {
-        //     await UserService.deleteAccessToken(params.id, user._id);
-        //     res.sendStatus(204);
-        // },
-    });
+//             res.send({
+//                 data: data.extractNullable()
+//             });
+//         },
+//     });

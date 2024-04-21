@@ -1,28 +1,43 @@
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { DeviceModel } from 'common/lib/models/deviceModel';
-import { RequestWithAuth } from 'common/lib/types';
 import { getThing } from 'common/lib/utils/getThing';
-import checkReadPerm from 'common/lib/middlewares/device/checkReadPerm';
-
-type Params = { deviceId: string; nodeId: string };
-type Request = RequestWithAuth<Params>;
+import Router from '@koa/router';
+import Koa from "koa"
+import { Context } from '../types/index';
+import { readDevicePermissionMiddleware } from "common/lib/middlewares/device/readDevicePermissionMiddleware"
+import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
 
 /**
  * URL prefix /device/:deviceId/thing/:nodeId/state
  */
-export default () =>
-    resource({
-        mergeParams: true,
-        middlewares: {
-            index: [tokenAuthMIddleware(), checkReadPerm({ paramKey: 'deviceId' })],
-        },
+export default () => {
+    let api = new Router<Koa.DefaultState, Context>();
 
-        async index({ params: { deviceId, nodeId } }: Request, res) {
-            const device = await DeviceModel.findById(deviceId);
-            const thing = getThing(device!, nodeId);
-            if (!thing) return res.sendStatus(404);
+    api.patch("/",
+        tokenAuthMiddleware(),
+        readDevicePermissionMiddleware({ paramKey: 'deviceId' }),
+        async (ctx) => {
+            const device = await DeviceModel.findById(ctx.params.deviceId);
+            const thing = getThing(device!, ctx.params.nodeId);
+            if (!thing) return ctx.status = 404
 
-            return thing.state;
-        },
-    });
+            ctx.body = thing.state;
+        })
+
+    return api;
+}
+
+// export default () =>
+//     resource({
+//         mergeParams: true,
+//         middlewares: {
+//             index: [tokenAuthMIddleware(), checkReadPerm({ paramKey: 'deviceId' })],
+//         },
+
+//         async index({ params: { deviceId, nodeId } }: Request, res) {
+//             const device = await DeviceModel.findById(deviceId);
+//             const thing = getThing(device!, nodeId);
+//             if (!thing) return res.sendStatus(404);
+
+//             return thing.state;
+//         },
+//     });

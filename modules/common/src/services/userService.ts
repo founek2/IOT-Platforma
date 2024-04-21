@@ -302,6 +302,7 @@ export class UserService {
         try {
             const rawAccessToken = Buffer.from(accessToken, "base64").toString()
             const [userName, rawToken] = rawAccessToken.split(":")
+            if (!userName || !rawToken) return Left('invalid');
 
             const hashedToken = await argon2.hash(rawToken, {
                 salt: saltFromUserName(userName),

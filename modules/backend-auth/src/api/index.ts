@@ -1,24 +1,25 @@
-import { Router } from 'express';
 import auth from './auth';
 import signIn from './signIn';
 import signOut from './signOut';
 import activeSignIn from './activeSignIn';
 import refresh from './refreshToken';
+import { Context } from '../types';
+import Router from "@koa/router"
+import type Koa from "koa";
+import { applyRouter } from "common/lib/utils/applyRouter"
 
-export default ({ }) => {
-    let api = Router();
+export default (): Router<Koa.DefaultState, Context> => {
+    let api = new Router<Koa.DefaultState, Context>();
 
-    api.use('/rabbitmq', auth());
-
-    api.use('/user/signIn/refresh', refresh());
-    api.use('/user/signIn/active', activeSignIn());
-    api.use('/user/signIn', signIn());
-
-    api.use('/user/signOut', signOut());
+    applyRouter(api, '/rabbitmq', auth())
+    applyRouter(api, '/user/signIn/refresh', refresh())
+    applyRouter(api, '/user/signIn/active', activeSignIn())
+    applyRouter(api, '/user/signIn', signIn())
+    applyRouter(api, '/user/signOut', signOut())
 
     // expose some API metadata at the root
-    api.get('/', (req, res) => {
-        res.json({ version: '2.0.0' });
+    api.get('/', (ctx) => {
+        ctx.body = { version: '2.0.0' };
     });
 
     return api;

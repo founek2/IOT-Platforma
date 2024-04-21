@@ -1,5 +1,5 @@
 import { server } from "common/__test__/helpers/superTest";
-import { ActionKeys, actionMap } from "common/src/middlewares/resource-router-middleware";
+import { ActionKeys, actionMap } from "common/lib/middlewares/resource-router-middleware";
 
 function expandUrlWithId(url: string, action: ActionKeys, id?: string) {
     if (action.endsWith("Id") || action === "read") {

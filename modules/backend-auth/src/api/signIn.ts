@@ -1,67 +1,55 @@
 import { fieldDescriptors, logger, UserModel } from 'common';
-import { OAuthProvider } from 'common/lib/models/interface/userInterface';
-import { MaybeAsync } from 'purify-ts/MaybeAsync';
-import formDataChecker from 'common/lib/middlewares/formDataChecker';
-import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiter';
-import resource from 'common/lib/middlewares/resource-router-middleware';
+import { IUser, OAuthProvider } from 'common/lib/models/interface/userInterface';
+import { rateLimiterMiddleware } from 'common/lib/middlewares/rateLimiterMiddleware';
 import eventEmitter from '../services/eventEmitter';
-import { Request } from 'express';
-import { HasContext } from '../types';
+import { Context, KoaFormContext, KoaResponseContext } from '../types';
 import { EitherAsync } from 'purify-ts';
-import tokenAuth from 'common/lib/middlewares/tokenAuth';
-import { RequestWithAuth } from 'common/lib/types';
+import Router from '@koa/router';
+import Koa from "koa";
+import { formDataMiddleware } from 'common/lib/middlewares/formDataMiddleware';
+import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
 
-/**
- * URL prefix /authorization
- */
-export default () =>
-    resource({
-        mergeParams: true,
-        middlewares: {
-            create: [
-                rateLimiterMiddleware,
-                formDataChecker(fieldDescriptors, { allowedForms: ['AUTHORIZATION', 'LOGIN'] }),
-            ],
-            deleteId: [tokenAuth()]
-        },
+export default function (): Router<Koa.DefaultState, Context> {
+    const router = new Router<Koa.DefaultState, Context>();
 
-        async index(req: Request & HasContext, res) {
-            const oauthArray: Array<any> = [];
-            if (req.context.oauthService) {
-                const { clientId, endpoint, scopes, iconUrl } = req.context.oauthService.oauth.seznam;
-                oauthArray.push({
-                    provider: 'seznam',
-                    iconUrl,
-                    authUrl: `${endpoint}?client_id=${clientId}&scope=${scopes.join('%20')}&response_type=code`,
-                });
-            }
+    type OAuthItem = { provider: string, iconUrl: string, authUrl: string };
+    router.get("/", (ctx: KoaResponseContext<{ oauth: OAuthItem[] }>) => {
+        const oauthArray: OAuthItem[] = [];
+        const { clientId, endpoint, scopes, iconUrl } = ctx.oauthService.oauth.seznam;
+        oauthArray.push({
+            provider: 'seznam',
+            iconUrl,
+            authUrl: `${endpoint}?client_id=${clientId}&scope=${scopes.join('%20')}&response_type=code`,
+        });
 
-            res.send({
-                oauth: oauthArray,
-            });
-        },
+        ctx.body = { oauth: oauthArray }
+    })
 
-        async create({ body, context, headers }: Request & HasContext, res) {
-            const { formData } = body;
+    router.post("/",
+        rateLimiterMiddleware,
+        formDataMiddleware(fieldDescriptors, { allowedForms: ['AUTHORIZATION', 'LOGIN'] }),
+        async (ctx) => {
+            const formData = ctx.request.body.formData;
 
             if (formData.LOGIN) {
-                (await context.userService.checkAndCreateCreditals(formData.LOGIN, headers["user-agent"] || ""))
+                (await ctx.userService.checkAndCreateCreditals(formData.LOGIN, ctx.headers["user-agent"] || ""))
                     .ifLeft((error) => {
                         logger.error(error)
-                        res.status(401).send({ error })
+                        ctx.status = 401;
+                        ctx.body = { error }
                     })
                     .ifRight(({ doc, accessToken, refreshToken }) => {
-                        res.send({
+                        ctx.body = {
                             user: doc,
                             accessToken,
                             refreshToken,
-                        });
+                        };
                         eventEmitter.emit('user_login', doc);
                     });
             } else if (formData.AUTHORIZATION) {
-                const oauthMaybe = await context.oauthService.requestAuthorization(
-                    body.formData.AUTHORIZATION.code,
-                    body.formData.AUTHORIZATION.redirectUri,
+                const oauthMaybe = await ctx.oauthService.requestAuthorization(
+                    formData.AUTHORIZATION.code,
+                    formData.AUTHORIZATION.redirectUri,
                     OAuthProvider.seznam
                 )
 
@@ -70,7 +58,7 @@ export default () =>
                 EitherAsync
                     .liftEither(oauthEither)
                     .chain((auth) =>
-                        context.userService.refreshOauthAuthorization(
+                        ctx.userService.refreshOauthAuthorization(
                             auth.email,
                             auth.email.replace(/@.*$/, '').replace(/\./g, ''),
                             {
@@ -80,30 +68,137 @@ export default () =>
                                 tokenType: auth.token_type,
                                 provider: OAuthProvider.seznam,
                             },
-                            headers["user-agent"] || ""
+                            ctx.headers["user-agent"] || ""
                         )
                     ).ifRight(({ doc, accessToken, refreshToken, oldOauth }) => {
-                        res.send({ user: doc, accessToken, refreshToken });
+                        ctx.body = { user: doc, accessToken, refreshToken };
                         eventEmitter.emit('user_login', doc);
 
                         if (oldOauth)
-                            context.oauthService.revokeToken(
+                            ctx.oauthService.revokeToken(
                                 oldOauth.accessToken,
                                 oldOauth.refreshToken,
                                 'refresh_token',
                                 oldOauth.provider
                             );
-                    }).ifLeft(() => res.sendStatus(500))
+                    }).ifLeft(() =>
+                        ctx.status = 500
+                    )
                     .run()
-            } else res.sendStatus(400);
-        },
-
-        async deleteId({ user, params }: RequestWithAuth<{ id: string }>, res) {
-            const refreshTokenId = params.id;
-
-            const result = await UserModel.invalidateRefreshToken(user._id, refreshTokenId)
-            if (result.nModified !== 1) return res.sendStatus(404)
-
-            res.sendStatus(204)
+            } else ctx.status = 400
         }
-    });
+    )
+
+    router.delete("/:id",
+        tokenAuthMiddleware(),
+        async (ctx) => {
+            const refreshTokenId = ctx.params.id;
+
+            const result = await UserModel.invalidateRefreshToken(ctx.state.user._id, refreshTokenId)
+            if (result.nModified !== 1) {
+                ctx.status = 404;
+            } else {
+                ctx.status = 204
+            }
+        }
+    )
+
+    return router;
+}
+
+// /**
+//  * URL prefix /authorization
+//  */
+// export default () =>
+//     resource({
+//         mergeParams: true,
+//         middlewares: {
+//             create: [
+//                 rateLimiterMiddleware,
+//                 formDataChecker(fieldDescriptors, { allowedForms: ['AUTHORIZATION', 'LOGIN'] }),
+//             ],
+//             deleteId: [tokenAuth()]
+//         },
+
+//         async index(req: Request & HasContext, res) {
+//             const oauthArray: Array<any> = [];
+//             if (req.context.oauthService) {
+//                 const { clientId, endpoint, scopes, iconUrl } = req.context.oauthService.oauth.seznam;
+//                 oauthArray.push({
+//                     provider: 'seznam',
+//                     iconUrl,
+//                     authUrl: `${endpoint}?client_id=${clientId}&scope=${scopes.join('%20')}&response_type=code`,
+//                 });
+//             }
+
+//             res.send({
+//                 oauth: oauthArray,
+//             });
+//         },
+
+//         async create({ body, context, headers }: Request & HasContext, res) {
+//             const { formData } = body;
+
+//             if (formData.LOGIN) {
+//                 (await context.userService.checkAndCreateCreditals(formData.LOGIN, headers["user-agent"] || ""))
+//                     .ifLeft((error) => {
+//                         logger.error(error)
+//                         res.status(401).send({ error })
+//                     })
+//                     .ifRight(({ doc, accessToken, refreshToken }) => {
+//                         res.send({
+//                             user: doc,
+//                             accessToken,
+//                             refreshToken,
+//                         });
+//                         eventEmitter.emit('user_login', doc);
+//                     });
+//             } else if (formData.AUTHORIZATION) {
+//                 const oauthMaybe = await context.oauthService.requestAuthorization(
+//                     body.formData.AUTHORIZATION.code,
+//                     body.formData.AUTHORIZATION.redirectUri,
+//                     OAuthProvider.seznam
+//                 )
+
+//                 const oauthEither = oauthMaybe.toEither("unexpectedError")
+
+//                 EitherAsync
+//                     .liftEither(oauthEither)
+//                     .chain((auth) =>
+//                         context.userService.refreshOauthAuthorization(
+//                             auth.email,
+//                             auth.email.replace(/@.*$/, '').replace(/\./g, ''),
+//                             {
+//                                 accessToken: auth.access_token,
+//                                 expiresIn: auth.expires_in,
+//                                 refreshToken: auth.refresh_token,
+//                                 tokenType: auth.token_type,
+//                                 provider: OAuthProvider.seznam,
+//                             },
+//                             headers["user-agent"] || ""
+//                         )
+//                     ).ifRight(({ doc, accessToken, refreshToken, oldOauth }) => {
+//                         res.send({ user: doc, accessToken, refreshToken });
+//                         eventEmitter.emit('user_login', doc);
+
+//                         if (oldOauth)
+//                             context.oauthService.revokeToken(
+//                                 oldOauth.accessToken,
+//                                 oldOauth.refreshToken,
+//                                 'refresh_token',
+//                                 oldOauth.provider
+//                             );
+//                     }).ifLeft(() => res.sendStatus(500))
+//                     .run()
+//             } else res.sendStatus(400);
+//         },
+
+//         async deleteId({ user, params }: RequestWithAuth<{ id: string }>, res) {
+//             const refreshTokenId = params.id;
+
+//             const result = await UserModel.invalidateRefreshToken(user._id, refreshTokenId)
+//             if (result.nModified !== 1) return res.sendStatus(404)
+
+//             res.sendStatus(204)
+//         }
+//     });

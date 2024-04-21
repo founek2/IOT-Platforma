@@ -1,6 +1,5 @@
 import { ControlRecipe } from 'common/lib/types';
-import type { Request } from 'express';
-import { IUser, Permission } from 'common/lib/models/interface/userInterface';
+import { IUser } from 'common/lib/models/interface/userInterface';
 import { JwtService } from 'common/lib/services/jwtService';
 import { UserService } from 'common/lib/services/userService';
 import { MailerService } from '../services/mailerService';
@@ -26,16 +25,6 @@ export interface UserBasic {
         userName: string;
     };
 }
-
-export type RequestWithAuthOpt = Request & {
-    user?: IUser & { admin?: boolean; accessPermissions?: Permission[] };
-    root?: boolean;
-};
-
-export type RequestWithAuth = Request & {
-    user: IUser & { admin?: boolean; accessPermissions?: Permission[] };
-    root?: boolean;
-};
 
 export type Context = {
     jwtService: JwtService

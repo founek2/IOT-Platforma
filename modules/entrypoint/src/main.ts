@@ -1,48 +1,50 @@
 import * as backendModule from 'backend'
 import * as authModule from 'backend-auth'
 import * as mqttModule from 'backend-mqtt'
-import express, { Express } from "express"
+import Koa, { DefaultState } from "koa"
 import { logger } from "common"
 import http from 'http';
 import { AddressInfo } from 'net'
-import morgan from 'morgan';
-import cors from "cors"
-import mongoSanitize from 'express-mongo-sanitize';
+import morgan from './morgan';
+import mongoSanitize from 'koa-mongo-sanitize';
 import path from "path"
-import bodyParser from 'body-parser';
+import bodyParser from 'koa-bodyparser';
 import { BusEmitter } from "common/lib/interfaces/asyncEmitter"
+import koaStatic from "koa-static";
+import Router from "@koa/router"
 
 interface Module<T> {
-    bindServer: (app: Express, config: T, server: http.Server) => Promise<Express>,
+    bindServer: (app: Koa<Koa.DefaultState, Koa.DefaultContext>, config: T, server: http.Server) => Promise<Koa>,
     loadConfig: () => T
 }
 
-export async function createServer() {
-    let app = express();
-    const server = http.createServer(app);
 
-    app.use(express.urlencoded({ extended: true }));
+export async function createServer() {
+    const app = new Koa();
+    const server = http.createServer(app.callback());
 
     // Logger
-    if (process.env.DEBUG_RABBITMQ) {
-        app.use(morgan('dev'));
-    } else {
-        app.use(/^(?!\/api\/auth\/rabbitmq\/).+/, morgan('dev'));
-    }
+    const reqLogger = morgan('dev');
+    app.use(async (ctx, next) => {
+        if (process.env.DEBUG_RABBITMQ) {
+            return reqLogger(ctx, next)
+        } else {
+            // Ignore rabbitmq auth endpoints
+            if (/^(?!\/api\/auth\/rabbitmq\/).+/.test(ctx.URL.pathname))
+                return reqLogger(ctx, next)
+            else
+                return next()
+        }
+    });
 
-    // Cors
-    app.use(cors())
-
-    app.use(bodyParser.json({
-        limit: "100kb",
-    }));
+    app.use(bodyParser());
 
     // mongo sanitizer (removes $ from keys)
-    app.use('/api', mongoSanitize());
+    app.use(mongoSanitize());
 
     // server static frontend files
     const frontend_path = path.join(__dirname, '../../frontend/build');
-    app.use(express.static(frontend_path));
+    app.use(koaStatic(frontend_path));
 
     // const modules: Module<any>[] = [backendModule, authModule, mqttModule];
     // Promise.all(modules.map((mod) => mod.bindServer(app, mod.loadConfig(), server)))
@@ -55,26 +57,39 @@ export async function createServer() {
         old_emit.apply(bus, arguments as any);
     }
 
-    await authModule.bindServer(app, authModule.loadConfig(), bus)
-    await mqttModule.bindServer(app, mqttModule.loadConfig(), bus, server)
-    await backendModule.bindServer(app, backendModule.loadConfig(), bus)
+    const router = new Router() as Router<DefaultState, any>;
+    await authModule.bindServer(router, authModule.loadConfig(), bus)
+    await mqttModule.bindServer(router, mqttModule.loadConfig(), bus, server)
+    await backendModule.bindServer(router, backendModule.loadConfig(), bus)
 
-    app.use("/api/*", (req, res) => {
-        res.sendStatus(404)
-    })
+    // Print all registered routes
+    // console.log(router.stack.map(i => i.path));
+
+    // router.use('/api/(.*)', (ctx) => {
+    //     console.log("status 404")
+    //     ctx.status = 404
+    // })
 
     // fallback for paths without file extension
-    app.get(/[\/][^.]+$/, (req, res) => res.sendFile(path.join(frontend_path, 'index.html')));
+    // router.get(/[\/][^.]+$/, async (ctx) => {
+    //     console.log("failing", ctx.status)
+    //     ctx.status = 200
+    //     await send(ctx, 'index.html', { root: frontend_path })
+    // });
 
-    app.use("*", (req, res) => {
-        res.sendStatus(404)
-    })
+    app
+        .use(router.routes())
+        .use(router.allowedMethods());
 
-    const jsonErrorHandler = (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-        logger.error(err)
-        res.status(500).send({ error: err });
-    }
-    app.use(jsonErrorHandler)
+    // app.use("*", (req, res) => {
+    //     res.sendStatus(404)
+    // })
+
+    // const jsonErrorHandler = (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    //     logger.error(err)
+    //     res.status(500).send({ error: err });
+    // }
+    // app.use(jsonErrorHandler)
 
     const port = parseInt(String(process.env.PORT)) || 8085
     server.listen(port, () => {

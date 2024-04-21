@@ -1,42 +1,37 @@
-import { OAuthProvider } from 'common/lib/models/interface/userInterface';
-import { RequestWithAuth } from 'common/lib/types';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import tokenAuthMIddleware from 'common/lib/middlewares/tokenAuth';
 import { logger } from 'common/lib/logger';
-import { HasContext } from '../types';
+import { Context } from '../types';
 import { UserModel } from 'common';
-
-type Request = RequestWithAuth;
+import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
+import Router from '@koa/router';
+import type Koa from "koa"
 
 /**
  * URL prefix /authorization/signOut
  */
-export default () =>
-    resource({
-        mergeParams: true,
-        middlewares: {
-            create: [tokenAuthMIddleware()],
-        },
 
-        async create({ user, context }: Request & HasContext, res) {
-            const result = await UserModel.invalidateRefreshToken(user._id, user.refreshTokenId);
-            if (result.nModified !== 1) return res.sendStatus(404)
+export default (): Router<Koa.DefaultState, Context> => {
+    let api = new Router<Koa.DefaultState, Context>();
 
-            res.sendStatus(204);
+    api.post("/", tokenAuthMiddleware(), async (ctx) => {
+        const result = await UserModel.invalidateRefreshToken(ctx.state.user._id, ctx.state.user.refreshTokenId);
+        if (result.nModified !== 1) return ctx.status = 404
+        else ctx.status = 204;
 
-            // (await context.userService.getAuthorization(user._id))
-            //     .ifJust(async (oauth) => {
-            //         context.userService.removeAuthorization(user._id);
+        (await ctx.userService.getAuthorization(ctx.state.user._id))
+            .ifJust(async (oauth) => {
+                ctx.userService.removeAuthorization(ctx.state.user._id);
 
-            //         const result = await context.oauthService.revokeToken(
-            //             oauth.accessToken,
-            //             oauth.refreshToken,
-            //             'refresh_token',
-            //             oauth.provider
-            //         );
-            //         result.ifNothing(() => {
-            //             logger.warning('signOut: Unable to revoke', oauth);
-            //         });
-            //     });
-        },
-    });
+                const result = await ctx.oauthService.revokeToken(
+                    oauth.accessToken,
+                    oauth.refreshToken,
+                    'refresh_token',
+                    oauth.provider
+                );
+                result.ifNothing(() => {
+                    logger.warning('signOut: Unable to revoke', oauth);
+                });
+            });
+    })
+
+    return api;
+}

@@ -1,34 +1,56 @@
 import { UserModel } from 'common';
-import resource from 'common/lib/middlewares/resource-router-middleware';
-import { HasContext } from '../types';
-import tokenAuth from 'common/lib/middlewares/tokenAuth';
-import { RequestWithAuth } from "common/lib/types"
+import { Context } from '../types';
 import { UAParser } from 'ua-parser-js';
+import { tokenAuthMiddleware } from 'common/lib/middlewares/tokenAuthMiddleware';
+import Router from '@koa/router';
+import type Koa from "koa"
 
-/**
- * URL prefix /authorization
- */
-export default () =>
-    resource({
-        mergeParams: true,
-        middlewares: {
-            index: [tokenAuth()]
-        },
+export default () => {
+    let api = new Router<Koa.DefaultState, Context>();
 
-        async index({ user }: RequestWithAuth & HasContext, res) {
-            const doc = await UserModel.findById(user._id).lean()
-            if (!doc) return res.sendStatus(404);
+    api.get("/", tokenAuthMiddleware(), async (ctx) => {
+        const doc = await UserModel.findById(ctx.state.user._id).lean()
+        if (!doc) return ctx.status = 404
 
-            const activeRefreshTokens = (doc.refreshTokens || [])
-                .filter((t) => t.validTo ? t.validTo.getTime() > Date.now() : true)
-                .map(t => ({
-                    ...t,
-                    userAgent: t.userAgent ? new UAParser(t.userAgent).getResult() : undefined,
-                }))
+        const activeRefreshTokens = (doc.refreshTokens || [])
+            .filter((t) => t.validTo ? t.validTo.getTime() > Date.now() : true)
+            .map(t => ({
+                ...t,
+                userAgent: t.userAgent ? new UAParser(t.userAgent).getResult() : undefined,
+            }))
 
-            res.send({
-                activeRefreshTokens
-            })
-        },
+        ctx.body = {
+            activeRefreshTokens
+        }
+    })
 
-    });
+    return api;
+}
+
+// /**
+//  * URL prefix /authorization
+//  */
+// export default () =>
+//     resource({
+//         mergeParams: true,
+//         middlewares: {
+//             index: [tokenAuth()]
+//         },
+
+//         async index({ user }: RequestWithAuth & HasContext, res) {
+//             const doc = await UserModel.findById(user._id).lean()
+//             if (!doc) return res.sendStatus(404);
+
+//             const activeRefreshTokens = (doc.refreshTokens || [])
+//                 .filter((t) => t.validTo ? t.validTo.getTime() > Date.now() : true)
+//                 .map(t => ({
+//                     ...t,
+//                     userAgent: t.userAgent ? new UAParser(t.userAgent).getResult() : undefined,
+//                 }))
+
+//             res.send({
+//                 activeRefreshTokens
+//             })
+//         },
+
+//     });

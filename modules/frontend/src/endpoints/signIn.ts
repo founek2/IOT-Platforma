@@ -68,7 +68,7 @@ export const signInApi = api.injectEndpoints({
             invalidatesTags: ['SignIn'],
         }),
         getAuthTypes: build.query<AuthTypesResponse, string>({
-            query: (userName) => `user/${userName}?attribute=authType`,
+            query: (userName) => `main/user/${userName}?attribute=authType`,
             providesTags: ['UserAuthTypes'],
         }),
         getActiveSignIn: build.query<ActiveSignInResponse["activeRefreshTokens"], void>({

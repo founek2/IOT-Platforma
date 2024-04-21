@@ -1,11 +1,10 @@
-import { Express } from 'express';
 import initSubscribers from './subscribers';
 import { connectMongoose } from 'common/lib/utils/connectMongoose';
 import eventEmitter from './services/eventEmitter';
 import { Config } from './config';
 import api from './api';
 import { Context } from './types';
-import { JwtService, InfluxService } from 'common';
+import { JwtService, InfluxService, UserService } from 'common';
 import { Server } from 'http';
 import { Server as serverIO } from 'socket.io';
 import { MqttService } from './services/mqtt';
@@ -13,9 +12,11 @@ import { NotificationService } from './services/NotificationService';
 import { Just } from 'purify-ts';
 import { BusEmitterType } from 'common/lib/interfaces/asyncEmitter';
 import { PassKeeper } from 'common/lib/services/passKeeperService';
+import type Router from "@koa/router"
+import type Koa from "koa"
 
 export * from "./config"
-export async function bindServer(app: Express, config: Config, bus: BusEmitterType, server: Server) {
+export async function bindServer(router: Router<Koa.DefaultState, Context>, config: Config, bus: BusEmitterType, server: Server) {
     /* INITIALIZE */
     const jwtService = new JwtService(config.jwt); // used in WebSocket middleware
     const influxService = new InfluxService(config.influxDb)
@@ -27,23 +28,23 @@ export async function bindServer(app: Express, config: Config, bus: BusEmitterTy
     })
     const mqttService = new MqttService(config.mqtt, notificationService, influxService);
     const passKeper = new PassKeeper(bus);
-    const context: Context = {
-        jwtService,
-        influxService,
-        mqttService
-    }
+    const userService = new UserService(jwtService);
 
-    initSubscribers(eventEmitter, context.mqttService);
+    initSubscribers(eventEmitter, mqttService);
 
     await connectMongoose(config.dbUri);
 
     const io = new serverIO(server, { path: '/socket.io' });
 
-    app.use("/api", (req: any, res, next) => {
-        req.context = context
-        next()
+    router.use("/api/mqtt", (ctx, next) => {
+        ctx.jwtService = jwtService
+        ctx.influxService = influxService
+        ctx.mqttService = mqttService
+        ctx.userService = userService
+        return next()
     })
-    app.use('/api', api({ io, context, bus }));
+    const apiRoutes = api({ io, jwtService, bus });
+    router.use('/api/mqtt', apiRoutes.routes(), apiRoutes.allowedMethods());
 
     const { userName, password } = config.mqtt;
     const getPass = userName && password ? async () => Just({ userName, password }) : () => passKeper.getPass()
@@ -52,5 +53,5 @@ export async function bindServer(app: Express, config: Config, bus: BusEmitterTy
         mqttService.connect(io, getPass)
     }, 1000)
 
-    return Object.assign(app, { io })
+    return { router, io }
 }

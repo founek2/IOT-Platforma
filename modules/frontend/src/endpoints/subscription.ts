@@ -1,6 +1,4 @@
-import { IDevice } from 'common/src/models/interface/device';
 import { api } from './api';
-import { SignInResponse, User } from './signIn';
 
 export interface RegisterUserForm {
     info: {
@@ -32,7 +30,7 @@ export const usersApi = api.injectEndpoints({
     endpoints: (build) => ({
         subscribeToNotification: build.mutation<undefined, { userId: string; data: PushSubscription }>({
             query: ({ userId, data }) => ({
-                url: `user/${userId}/notification`,
+                url: `main/user/${userId}/notification`,
                 method: 'POST',
                 body: { formData: { ADD_PUSH_SUBSCRIPTION: data } },
             }),

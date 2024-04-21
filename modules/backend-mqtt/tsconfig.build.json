@@ -2,7 +2,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "paths": {
-            "common/src/*": [
+            "common/lib/*": [
                 "../common/lib/*"
             ]
         }

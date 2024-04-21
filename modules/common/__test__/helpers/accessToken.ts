@@ -1,5 +1,5 @@
 import { UserModel, UserService } from "common";
-import { JwtService } from "common/src/services/jwtService"
+import { JwtService } from "common/lib/services/jwtService"
 
 export function getTokenFactory(options: ConstructorParameters<typeof JwtService>[0]) {
     const jwtService = new JwtService(options);

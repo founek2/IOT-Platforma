@@ -1,6 +1,4 @@
 import { JwtService, UserService } from 'common';
-import { Application, Express } from 'express';
-import http from 'http';
 import loadersInit from './loaders';
 import { MailerService } from './services/mailerService';
 import { Config } from './config';
@@ -8,13 +6,15 @@ import { Actions } from './services/actionsService';
 import { BrokerService } from './services/brokerService';
 import { BusEmitterType } from "common/lib/interfaces/asyncEmitter"
 import { PassKeeper } from "common/lib/services/passKeeperService";
-
-export interface MyApp extends Application {
-    server: http.Server;
-}
+import Router from '@koa/router';
+import Koa from "koa"
+import { Context } from './types/index';
+import api from './api';
+import api2 from './api/v2';
+import { applyRouter } from 'common/lib/utils/applyRouter';
 
 export * from "./config"
-export async function bindServer(app: Express, config: Config, bus: BusEmitterType) {
+export async function bindServer(router: Router<Koa.DefaultState, Context>, config: Config, bus: BusEmitterType) {
     /* INITIALIZE */
     const jwtService = new JwtService(config.jwt); // used in WebSocket middleware
     const mailerService = new MailerService(config);
@@ -30,48 +30,19 @@ export async function bindServer(app: Express, config: Config, bus: BusEmitterTy
         brokerService,
     };
 
-    await loadersInit({
-        app, config, context
-    });
+    router.use("/api/main", (ctx, next) => {
+        ctx.mailerService = mailerService;
+        ctx.userService = userService;
+        ctx.actionsService = actionsService;
+        ctx.brokerService = brokerService;
+        ctx.jwtService = jwtService;
+        return next()
+    })
 
-    return { app, context }
+    applyRouter(router, '/api/main/v2', api2());
+    applyRouter(router, '/api/main', api({ config }));
+
+    await loadersInit({ config, context });
+
+    return { router, context }
 }
-
-// export function createApp(config: Config) {
-//     /* INITIALIZE */
-//     JwtService.init(config.jwt); // used in WebSocket middleware
-//     MailerService.init(config.email);
-
-//     const expressApp = express();
-//     const app: MyApp = Object.assign(expressApp, { server: http.createServer(expressApp) });
-
-//     if (!app.server) throw Error('Unable to create server');
-
-//     /* SocketIO proxy*/
-
-//     const { createProxyMiddleware } = require('http-proxy-middleware');
-//     // const proxy = require('http-proxy-middleware');
-//     var mqttProxy = createProxyMiddleware({
-//         target: config.serviceMqttUri,
-//         changeOrigin: true, // for vhosted sites, changes host header to match to target's host
-//         ws: true, // enable websocket proxy
-//         logLevel: 'error',
-//     });
-//     app.use('/socket.io', mqttProxy);
-//     app.use('/api/device/:deviceId/thing/:thingId/history', mqttProxy);
-//     app.server.on('upgrade', mqttProxy.upgrade);
-
-//     const authProxy = createProxyMiddleware({
-//         target: config.serviceAuthUri,
-//         changeOrigin: true,
-//         logLevel: 'error',
-//     });
-//     app.use('/api/auth/rabbitmq', authProxy);
-//     app.use('/api/auth/user', authProxy);
-
-//     logger.info('Proxy enabled');
-
-//     loadersInit({ app, config });
-
-//     return app;
-// }

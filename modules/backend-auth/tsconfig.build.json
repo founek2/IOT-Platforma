@@ -2,11 +2,20 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "paths": {
-            "common/src/*": ["../common/lib/*"]
+            "common/lib/*": [
+                "../common/lib/*"
+            ]
         },
         "plugins": [
-            { "transform": "typescript-transform-paths", "useRootDirs": true },
-            { "transform": "typescript-transform-paths", "useRootDirs": true, "afterDeclarations": true }
+            {
+                "transform": "typescript-transform-paths",
+                "useRootDirs": true
+            },
+            {
+                "transform": "typescript-transform-paths",
+                "useRootDirs": true,
+                "afterDeclarations": true
+            }
         ]
     }
 }

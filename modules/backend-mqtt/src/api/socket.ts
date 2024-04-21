@@ -1,7 +1,6 @@
-import { JwtService } from 'common/lib/services/jwtService';
-import express from 'express';
-import { Server as serverIO, Socket } from 'socket.io';
 import { logger } from 'common/lib/logger';
+import { JwtService } from 'common/lib/services/jwtService';
+import { Server as serverIO, Socket } from 'socket.io';
 
 type socketWithUser = {
     request: { user?: { id: string } };
@@ -38,6 +37,4 @@ export default (io: serverIO, jwtService: JwtService) => {
             logger.debug('Client disconnected');
         });
     });
-
-    return express.Router();
 };

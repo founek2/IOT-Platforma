@@ -35,7 +35,7 @@ function detectConnectionType(item: BrokerConnectionItem) {
 export const brokerApi = api.injectEndpoints({
     endpoints: (build) => ({
         broker: build.query<BrokerData<ItemExtended>, void>({
-            query: () => `broker`,
+            query: () => `main/broker`,
             providesTags: ['Broker'],
             transformResponse: (body: { data: BrokerData }): BrokerData<ItemExtended> => {
                 const items = body.data.connections.items;
