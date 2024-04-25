@@ -19,6 +19,7 @@ export default (config: Config) => {
             const picked = pick(['port', 'portAuth', 'bodyLimit', 'homepage', 'jwt', 'agenda', 'email'], config);
 
             const data = compose(
+                // @ts-ignore
                 over(lensProp('email'), pick(['host', 'port', 'secure', 'userName'])),
                 // @ts-ignore
                 over(lensProp('mqtt'), pick(['url', 'port'])),

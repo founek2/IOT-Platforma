@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from '@reduxjs/toolkit';
 import authorization from './authorizationSlice';
 import devices from './devicesSlice';
 import things from './thingsSlice';

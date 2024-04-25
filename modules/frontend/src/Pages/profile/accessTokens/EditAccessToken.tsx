@@ -3,7 +3,7 @@ import { IAccessToken, Permission } from 'common/src/models/interface/userInterf
 import { pick } from 'ramda';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { compose } from 'redux';
+import { compose } from '@reduxjs/toolkit';
 import FieldConnector from '../../../components/FieldConnector';
 import { TokenPermissions } from '../../../constants';
 import { AccessToken } from '../../../endpoints/accessTokens';

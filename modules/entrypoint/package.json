@@ -14,17 +14,15 @@
     "backend": "workspace:modules/backend",
     "backend-auth": "workspace:modules/backend-auth",
     "backend-mqtt": "workspace:modules/backend-mqtt",
-    "body-parser": "^1.20.2",
     "common": "workspace:modules/common",
-    "koa": "^2.15.0",
+    "koa": "^2.15.3",
     "koa-bodyparser": "^4.4.1",
     "koa-mongo-sanitize": "^1.1.0",
     "koa-send": "^5.0.1",
     "koa-static": "^5.0.0",
-    "morgan": "^1.9.1"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@types/body-parser": "^1.19.2",
     "@types/koa": "^2.14.0",
     "@types/koa__router": "^12.0.4",
     "@types/morgan": "^1.9.2",

@@ -14,7 +14,6 @@ export interface Config {
     portMqtt: number;
     serviceMqttUri: string;
     serviceAuthUri: string;
-    firebaseAdminPath: string;
     dbUri: string;
     influxDb: {
         url: string;

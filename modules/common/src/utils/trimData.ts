@@ -17,6 +17,7 @@ export function trimData(formData: any) {
             map(
                 recTrim
             ),
+            // @ts-ignore
             mapObjIndexed(
                 recTrim
             )

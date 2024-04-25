@@ -31,7 +31,6 @@ const config: Config = {
     portMqtt: Number(process.env.MQTT_SERVICE_PORT) || 8083,
     serviceAuthUri: mustGetString('SERVICE_AUTH_URI', 'http://localhost:8084'),
     serviceMqttUri: mustGetString('SERVICE_MQTT_URI', 'http://localhost:8083'),
-    firebaseAdminPath: process.env.FIREBASE_ADMIN_PATH as string,
     dbUri: mustGetString('DATABASE_URI'),
     influxDb: {
         url: mustGetString('INFLUX_URL', 'http://localhost:8086'),
