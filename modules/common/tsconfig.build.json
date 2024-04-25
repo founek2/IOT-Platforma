@@ -1,10 +1,6 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "paths": {},
-        "plugins": [
-            { "transform": "typescript-transform-paths", "useRootDirs": true },
-            { "transform": "typescript-transform-paths", "useRootDirs": true, "afterDeclarations": true }
-        ]
+        "paths": {}
     }
 }
