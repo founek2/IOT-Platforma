@@ -1,6 +1,6 @@
 {
   "name": "entrypoint",
-  "packageManager": "yarn@3.6.2",
+  "version": "0.1.0",
   "scripts": {
     "build": "tsc --build",
     "dev": "ts-node-dev ./src/index.ts",
