@@ -21,7 +21,7 @@ export function controlDevicePermissionMiddleware<C extends KoaContext & HasStat
 
             if (
                 ctx.state.user.accessPermissions?.includes(Permission.control) &&
-                (await DeviceModel.checkWritePerm(deviceId, ctx.state.user._id))
+                (await DeviceModel.checkControlPerm(deviceId, ctx.state.user._id))
             )
                 return next();
 
