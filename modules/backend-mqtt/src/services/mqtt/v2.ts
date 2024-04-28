@@ -11,7 +11,7 @@ import { uniq } from 'ramda';
 import { InfluxService } from 'common/lib/services/influxService';
 import { NotificationService } from '../NotificationService';
 import { PropertyDataType } from 'common/lib/models/interface/thing';
-import { INTERNAL_PROPERTY_STATE_ID, INTERNAL_THING_ID } from 'common/src/constants';
+import { INTERNAL_PROPERTY_STATE_ID, INTERNAL_THING_ID } from 'common/lib/constants';
 
 type cbFn = (topic: string, message: Buffer, groups: string[]) => void;
 export default function (handle: (stringTemplate: string, fn: cbFn) => void, io: serverIO, notificationService: NotificationService, influxService: InfluxService) {
