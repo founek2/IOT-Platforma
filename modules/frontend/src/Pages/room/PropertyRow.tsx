@@ -73,7 +73,7 @@ export function PropertyRowPlain({ state, property, onChange, disabled: disabled
             </Select>
         );
     } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format
-        && property.settable && numericFormatDiff(property as IThingPropertyNumeric) <= 300) {
+        && property.settable && numericFormatDiff(property as IThingPropertyNumeric) <= 500) {
         const propertyNumeric = property as IThingPropertyNumeric;
         component = (
             <Slider
