@@ -26,14 +26,14 @@ export default function getLastUpdateText(
 
     if (diff.getTime() <= 0 || diffSec < 60) return [nowText, 60 - diffSec];
 
-    if (diffMonths >= 12) {
+    if (hours >= 1 && hours < 24) {
+        return [prefix + ' ' + hours + ' hod', (hours + 1) * 60 * 60 - diffSec];
+    } else if (days >= 1 && days < 30) {
+        return [prefix + ' ' + days + ' dny', (days + 1) * 24 * 60 * 60 - diffSec];
+    } else if (diffMonths >= 12) {
         return [prefix + ' ' + Math.round(diffMonths / 12) + ' rok', null];
     } else if (diffMonths > 0) {
         return [prefix + ' ' + diffMonths + ' měsíc', null];
-    } else if (days >= 1) {
-        return [prefix + ' ' + days + ' dny', (days + 1) * 24 * 60 * 60 - diffSec];
-    } else if (hours >= 1) {
-        return [prefix + ' ' + hours + ' hod', (hours + 1) * 60 * 60 - diffSec];
     } else {
         return [prefix + ' ' + min + ' min', (min + 1) * 60 - diffSec];
     }
