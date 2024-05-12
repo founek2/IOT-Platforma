@@ -302,13 +302,11 @@ export class UserService {
         try {
             const rawAccessToken = Buffer.from(accessToken, "base64").toString()
             const [userName, rawToken] = rawAccessToken.split(":")
-            if (!userName || !rawToken) return Left('invalid');
+            if (!userName || !rawToken) throw new Error("invalid")
 
             const hashedToken = await argon2.hash(rawToken, {
                 salt: saltFromUserName(userName),
             })
-
-            logger.debug("hashedToken", hashedToken)
 
             const user = await UserModel.findOne(
                 {
@@ -321,11 +319,11 @@ export class UserService {
                     }
                 }, 'accessTokens.$ groups info'
             ).lean();
-            if (!user) return Left('invalid');
+            if (!user) throw new Error("invalid")
 
             return Right([user, user.accessTokens![0]])
-        } catch (err) {
-            logger.debug(err)
+        } catch (err: any) {
+            logger.debug("Token v2 verification failed:", 'message' in err ? err.message : err)
         }
 
         const user = await UserModel.findOne(

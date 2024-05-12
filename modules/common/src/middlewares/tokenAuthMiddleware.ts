@@ -39,46 +39,34 @@ export function tokenAuthMiddleware<C extends KoaContext>(
             try {
                 const payload = (await jwtService.verify(jwtToken)).unsafeCoerce();
 
-                // const user = await UserModel.findById(payload.sub).exec();
-                // if (user) {
                 logger.debug(`Verified user=${payload.sub}, groups=${payload.groups.join(',')}`);
                 ctx.state.user = {
                     _id: payload.sub,
                     groups: payload.groups,
                     accessPermissions: [Permission.write, Permission.read, Permission.control],
                     realm: payload.realm,
-                    // root: payload.groups.some((v) => v === 'root'),
                     admin: payload.groups.some((v) => v === 'admin'),
                     refreshTokenId: payload.iss
                 }
 
                 return next();
-                // } else {
-                //     logger.debug('userNotExist');
-                //     res.status(404).send({ error: 'userNotExist', command: 'logOut' });
-                // }
             } catch (err) {
                 logger.error('token problem', err);
                 return sendError(400, 'invalidToken', ctx);
             }
         } else if (typeof apiKey === "string") {
             const validationResult = await userService.validateAccessToken(apiKey);
-            validationResult
-                .ifLeft(() => {
-                    ctx.status = 400
-                    ctx.body = { error: "invalidToken" }
-                })
-                .ifRight(([user, { permissions }]) => {
-                    ctx.state.user = user;
-                    ctx.state.user.accessPermissions = permissions;
 
-                    // full access
-                    if (ctx.state.user.accessPermissions.some((b) => b === Permission.write)) {
-                        if (ctx.state.user.groups.some((v) => v === 'admin')) ctx.state.user.admin = true;
-                    }
+            if (validationResult.isRight()) {
+                const [user, { permissions }] = validationResult.unsafeCoerce()
 
-                    return next();
-                })
+                ctx.state.user = user;
+                ctx.state.user.accessPermissions = permissions;
+
+                return next();
+            } else {
+                return sendError(400, 'invalidToken', ctx);
+            }
         } else if (!restricted) {
             return next();
         } else {

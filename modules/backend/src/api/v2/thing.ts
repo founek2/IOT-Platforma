@@ -19,7 +19,8 @@ export default () => {
         tokenAuthMiddleware(),
         checkRealmReadPermissionMiddleware({ paramKey: 'deviceId' }),
         async (ctx) => {
-            ctx.body('Z bezpečnostích důvodů není metoda GET podporována. Použijte matodu POST pro ovládání nebo odeberte query parametry z url.');
+            ctx.body = 'Z bezpečnostích důvodů není metoda GET podporována. Použijte matodu POST pro ovládání nebo odeberte query parametry z url.';
+            ctx.status = 405
         }
     )
 
