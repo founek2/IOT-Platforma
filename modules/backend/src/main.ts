@@ -38,8 +38,16 @@ export async function bindServer(router: Router<Koa.DefaultState, Context>, conf
         ctx.jwtService = jwtService;
         return next()
     })
+    router.use("/api/v2", (ctx, next) => {
+        ctx.mailerService = mailerService;
+        ctx.userService = userService;
+        ctx.actionsService = actionsService;
+        ctx.brokerService = brokerService;
+        ctx.jwtService = jwtService;
+        return next()
+    })
 
-    applyRouter(router, '/api/main/v2', api2());
+    applyRouter(router, '/api/v2', api2());
     applyRouter(router, '/api/main', api({ config }));
 
     await loadersInit({ config, context });
