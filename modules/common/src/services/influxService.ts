@@ -121,6 +121,17 @@ export class InfluxService {
                     reject(error);
                 },
                 complete() {
+                    // manually sort, because for some queries the order was invalid
+                    // even using sort function in query did not help
+                    rows.sort((a, b) => {
+                        if (a._time < b._time) {
+                            return -1;
+                        }
+                        if (a._time > b._time) {
+                            return 1;
+                        }
+                        return 0;
+                    })
                     resolve(rows);
                 },
             })
