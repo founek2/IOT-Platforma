@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { IDevice } from 'common/lib/models/interface/device';
 import { DeviceModel } from 'common/lib/models/deviceModel';
-import { HistoricalModel } from 'common/lib/models/historyModel';
 import { NotifyModel } from 'common/lib/models/notifyModel';
 
 /**
@@ -19,9 +18,8 @@ export class DeviceService {
 
         if (res.deletedCount !== 1) return false;
 
-        await HistoricalModel.deleteMany({
-            device: mongoose.Types.ObjectId(deviceId),
-        });
+        // TODO delete data from influx
+
         await NotifyModel.deleteMany({
             deviceId: mongoose.Types.ObjectId(deviceId),
         });

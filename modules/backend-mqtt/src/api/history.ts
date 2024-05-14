@@ -29,37 +29,3 @@ export default () => {
 
     return api;
 }
-
-// export function aaa() {
-//     resource({
-//         mergeParams: true,
-//         middlewares: {
-//             read: [tokenAuthMIddleware(), checkReadPerm({ paramKey: 'deviceId' })],
-//         },
-//         /** GET / - List all history data associated with provided thing of device in time period
-//          * @restriction user needs read permission
-//          * @header Authorization-JWT
-//          * @param {Date} from beggining of the time period
-//          * @param {Date} to end of the time period, default now
-//          * @return json { docs: IHistorical[] }
-//          */
-//         async index({ params, query: { from, to }, context }: Request & HasContext, res) {
-//             const { deviceId, thingId } = params;
-
-//             const rows = await context.influxService.getMeasurements(
-//                 deviceId,
-//                 thingId,
-//                 new Date(Number(from)),
-//                 new Date(to ? Number(to) : new Date())
-//             );
-
-//             // const docs = await HistoricalModel.getData(
-//             //     deviceId,
-//             //     thingId,
-//             //     new Date(Number(from)),
-//             //     new Date(to ? Number(to) : new Date())
-//             // );
-//             res.send({ docs: rows });
-//         },
-//     });
-// }

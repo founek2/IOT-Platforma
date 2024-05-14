@@ -5,7 +5,6 @@ import { logger } from 'common/lib/logger';
 import { getThing } from 'common/lib/utils/getThing';
 import { getProperty } from 'common/lib/utils/getProperty';
 import { validateValue } from 'common/lib/utils/validateValue';
-import { HistoricalModel } from 'common/lib/models/historyModel';
 import { SocketUpdateThingState } from 'common/lib/types';
 import { uniq } from 'ramda';
 import { InfluxService } from 'common/lib/services/influxService';
@@ -93,7 +92,6 @@ export default function (handle: (stringTemplate: string, fn: cbFn) => void, io:
 
         sendToUsers(io, device, nodeId, propertyId, result.value, timestamp);
 
-        HistoricalModel.saveData(device._id, thing._id, propertyId, result.value, timestamp);
         notificationService.processData(device, nodeId, propertyId, result.value);
 
         const sample = InfluxService.createMeasurement(
