@@ -14,6 +14,7 @@ import { BusEmitterType } from 'common/lib/interfaces/asyncEmitter';
 import { PassKeeper } from 'common/lib/services/passKeeperService';
 import type Router from "@koa/router"
 import type Koa from "koa"
+import { migrate } from './services/migrations';
 
 export * from "./config"
 export async function bindServer(router: Router<Koa.DefaultState, Context>, config: Config, bus: BusEmitterType, server: Server) {
@@ -33,6 +34,7 @@ export async function bindServer(router: Router<Koa.DefaultState, Context>, conf
     initSubscribers(eventEmitter, mqttService);
 
     await connectMongoose(config.dbUri);
+    await migrate(config);
 
     const io = new serverIO(server, { path: '/socket.io' });
 
