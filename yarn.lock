@@ -7039,7 +7039,7 @@ __metadata:
     koa: "npm:^2.15.3"
     mongoose: "npm:^5.13.22"
     morgan: "npm:^1.10.0"
-    mqtt: "npm:^5.5.3"
+    mqtt: "npm:^5.6.2"
     purify-ts: "npm:^1.3.5"
     ramda: "npm:^0.27.1"
     socket.io: "npm:^4.7.5"
@@ -14147,9 +14147,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mqtt@npm:^5.5.3":
-  version: 5.5.3
-  resolution: "mqtt@npm:5.5.3"
+"mqtt@npm:^5.6.2":
+  version: 5.6.2
+  resolution: "mqtt@npm:5.6.2"
   dependencies:
     "@types/readable-stream": "npm:^4.0.5"
     "@types/ws": "npm:^8.5.9"
@@ -14172,7 +14172,7 @@ __metadata:
     mqtt: build/bin/mqtt.js
     mqtt_pub: build/bin/pub.js
     mqtt_sub: build/bin/sub.js
-  checksum: 10/d6e6ffd306e01f41e16048535e383fc7a9a6eb43337563ae52d93dcb2c17ea7bd75f97d41419c8712c899b22521604a4019d2c6563ea0ac1ad7274b765541354
+  checksum: 10/c74220a6bf3586b1e1b942e7cf9e3e2a54c5263ec607dee1c14edefa1c88c7c758b15cdca903d63c7634cc723de00c37f33effd074842f3a618e0f2604fbbda4
   languageName: node
   linkType: hard
 
