@@ -55,7 +55,7 @@ export default function (): Router<Koa.DefaultState, Context> {
 
                 const oauthEither = oauthMaybe.toEither("unexpectedError")
 
-                EitherAsync
+                const process = EitherAsync
                     .liftEither(oauthEither)
                     .chain((auth) =>
                         ctx.userService.refreshOauthAuthorization(
@@ -83,8 +83,8 @@ export default function (): Router<Koa.DefaultState, Context> {
                             );
                     }).ifLeft(() =>
                         ctx.status = 500
-                    )
-                    .run()
+                    );
+                await process.run();
             } else ctx.status = 400
         }
     )
