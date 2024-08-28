@@ -90,7 +90,7 @@ pipeline {
             }
 
             steps {
-                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://192.168.10.200:9020/trigger/IOT-hosting-dev/iot-server'
+                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://192.168.10.35:9020/trigger/IOT-hosting-dev/iot-server'
             }
         }
     }
