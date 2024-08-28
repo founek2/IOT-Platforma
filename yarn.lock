@@ -10447,7 +10447,6 @@ __metadata:
     fork-ts-checker-webpack-plugin: "npm:^7.3.0"
     history: "npm:^5.3.0"
     html-webpack-plugin: "npm:^5.6.0"
-    integration: "workspace:modules/integration"
     mini-css-extract-plugin: "npm:^2.9.0"
     normalizr: "npm:^3.6.2"
     notistack: "npm:^2.0.8"
@@ -11718,14 +11717,6 @@ __metadata:
   checksum: 10/314ae176e8d4deb3def56106da8002b462221c174ddb7ce0c49ee72c8cd1f9044f7b10cc555a7d8850982c3b9ca96fc212122749f5234bc2b6fb05fb942ed566
   languageName: node
   linkType: hard
-
-"integration@workspace:modules/integration, zigbee-plugin@workspace:modules/integration":
-  version: 0.0.0-use.local
-  resolution: "zigbee-plugin@workspace:modules/integration"
-  dependencies:
-    mqtt: "npm:^5.8.1"
-  languageName: unknown
-  linkType: soft
 
 "internal-slot@npm:^1.0.4, internal-slot@npm:^1.0.5":
   version: 1.0.6
@@ -19700,3 +19691,11 @@ __metadata:
   checksum: 10/2cac84540f65c64ccc1683c267edce396b26b1e931aa429660aefac8fbe0188167b7aee815a3c22fa59a28a58d898d1a2b1825048f834d8d629f4c2a5d443801
   languageName: node
   linkType: hard
+
+"zigbee-plugin@workspace:modules/integration":
+  version: 0.0.0-use.local
+  resolution: "zigbee-plugin@workspace:modules/integration"
+  dependencies:
+    mqtt: "npm:^5.8.1"
+  languageName: unknown
+  linkType: soft
