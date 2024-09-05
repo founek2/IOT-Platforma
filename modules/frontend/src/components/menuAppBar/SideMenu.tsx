@@ -51,7 +51,7 @@ export function SideMenu({ open, onClose, onOpen }: SideMenuProps) {
     const location = useLocation();
 
     return (
-        <SwipeableDrawer anchor="left" open={open} onClose={onClose} onOpen={onOpen}>
+        <SwipeableDrawer anchor="left" open={open} onClose={onClose} onOpen={onOpen} disableSwipeToOpen>
             <Box sx={{ width: 250 }} role="presentation" onClick={onClose} onKeyDown={onClose}>
                 <List
                     subheader={
