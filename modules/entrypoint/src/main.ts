@@ -12,6 +12,7 @@ import bodyParser from 'koa-bodyparser';
 import { BusEmitter } from "common/lib/interfaces/asyncEmitter"
 import koaStatic from "koa-static";
 import Router from "@koa/router"
+import send from 'koa-send'
 
 interface Module<T> {
     bindServer: (app: Koa<Koa.DefaultState, Koa.DefaultContext>, config: T, server: http.Server) => Promise<Koa>,
@@ -70,12 +71,12 @@ export async function createServer() {
     //     ctx.status = 404
     // })
 
-    // fallback for paths without file extension
-    // router.get(/[\/][^.]+$/, async (ctx) => {
-    //     console.log("failing", ctx.status)
-    //     ctx.status = 200
-    //     await send(ctx, 'index.html', { root: frontend_path })
-    // });
+    // fallback for paths without "api" prefix and file extension
+    router.get(/^\/(?!api\/)[^.]+$/, async (ctx) => {
+        console.log("failing", ctx.status)
+        ctx.status = 200
+        await send(ctx, 'index.html', { root: frontend_path })
+    });
 
     app
         .use(router.routes())
