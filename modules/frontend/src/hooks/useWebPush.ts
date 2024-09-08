@@ -86,7 +86,7 @@ export function useWebPush(): [() => void, { permissionState?: PermissionState, 
 
                 if (serviceWorker.state === "activated") setRegistration(register)
                 else
-                    serviceWorker.addEventListener("statechange", function (e) {
+                    serviceWorker.addEventListener("statechange", function () {
                         if (serviceWorker.state == "activated") {
                             logger.info("sw activated")
                             setRegistration(register)

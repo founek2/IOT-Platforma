@@ -31,7 +31,9 @@ export function preserveLocation() {
             const text = localStorage.getItem('location');
             if (text) {
                 const prevLocation: Location = JSON.parse(text);
-                window.location.href = `${window.location.origin}${prevLocation.pathname}${prevLocation.search}`;
+
+                if (prevLocation.pathname != window.location.pathname)
+                    window.location.href = `${window.location.origin}${prevLocation.pathname}${prevLocation.search}`;
             }
         } catch (err) {
             logger.error('failed to load prev history', err);

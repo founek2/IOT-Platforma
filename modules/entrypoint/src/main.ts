@@ -73,7 +73,6 @@ export async function createServer() {
 
     // fallback for paths without "api" prefix and file extension
     router.get(/^\/(?!api\/)[^.]+$/, async (ctx) => {
-        console.log("failing", ctx.status)
         ctx.status = 200
         await send(ctx, 'index.html', { root: frontend_path })
     });
