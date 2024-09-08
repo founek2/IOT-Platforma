@@ -21,25 +21,27 @@ export function RegisterServiceWorker() {
                 });
             },
         };
-        serviceWorker.register("/service-worker.js", config);
+        serviceWorker.register('/service-worker.js', config);
     }, []);
 
     useEffect(() => {
+        if (!('serviceWorker' in navigator)) return;
+
         function listener(event: MessageEvent) {
             if (!event.data.action) {
-                return
+                return;
             }
 
             switch (event.data.action) {
                 case 'redirect-from-notificationclick':
-                    window.location.href = event.data.url
-                    break
+                    window.location.href = event.data.url;
+                    break;
             }
         }
 
-        navigator.serviceWorker.addEventListener('message', listener)
-        return () => navigator.serviceWorker.removeEventListener("message", listener)
-    }, [])
+        navigator.serviceWorker.addEventListener('message', listener);
+        return () => navigator.serviceWorker.removeEventListener('message', listener);
+    }, []);
 
     return (
         <Snackbar
