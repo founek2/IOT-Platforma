@@ -21,7 +21,7 @@ export function MenuAppBar() {
     const {
         data: [headerText, RightIcon],
     } = useAppBarContext();
-    const isPhone = useMediaQuery(theme.breakpoints.up('sm'));
+    const isPhone = useMediaQuery(theme.breakpoints.down('sm'));
     const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
     const [isMenuOpen, setMenuOpen] = React.useState(false);
     const [isLoginOpen, setLoginOpen] = React.useState(false);
