@@ -21,7 +21,8 @@ export function MenuAppBar() {
     const {
         data: [headerText, RightIcon],
     } = useAppBarContext();
-    const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
+    const isPhone = useMediaQuery(theme.breakpoints.up('sm'));
+    const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
     const [isMenuOpen, setMenuOpen] = React.useState(false);
     const [isLoginOpen, setLoginOpen] = React.useState(false);
     const isUserLoggedIn = useAppSelector(isLoggedIn);
@@ -38,12 +39,11 @@ export function MenuAppBar() {
         setMenuOpen(open);
     };
 
-
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
-                    <Toolbar>
+                    <Toolbar variant={isTablet ? 'dense' : undefined}>
                         <IconButton
                             onClick={() => setMenuOpen(true)}
                             size="large"
@@ -56,7 +56,7 @@ export function MenuAppBar() {
                         </IconButton>
 
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            {headerText ? headerText : <Link to="/building">{isDesktop ? 'IoT Domu' : 'Domu'}</Link>}
+                            {headerText ? headerText : <Link to="/building">{isPhone ? 'Domu' : 'IoT Domu'}</Link>}
                         </Typography>
 
                         {RightIcon ? (
