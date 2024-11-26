@@ -27,7 +27,7 @@ pipeline {
             when { branch "release*" }
 
             environment {
-                USER_CREDENTIALS = credentials('Jenkins - iot')
+                USER_CREDENTIALS = credentials('Jenkins-iot')
             }
    
             steps {
@@ -41,7 +41,7 @@ pipeline {
             when { branch "develop*" }
 
             environment {
-                USER_CREDENTIALS = credentials('Jenkins - iot')
+                USER_CREDENTIALS = credentials('Jenkins-iot')
             }
    
             steps {
