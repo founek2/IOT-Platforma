@@ -62,7 +62,7 @@
         "@babel/core": "^7.24.4",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
         "@svgr/webpack": "^6.5.1",
-        "@types/node": "^18.19.31",
+        "@types/node": "^20.11.25",
         "@types/plotly.js": "^2.29.2",
         "@types/ramda": "0.28.15",
         "@types/react": "^18.2.79",

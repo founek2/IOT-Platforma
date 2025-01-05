@@ -1,84 +1,85 @@
-import { Button, Card, CardContent, CardHeader, CircularProgress, Grid, IconButton, Paper } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import DoneIcon from '@mui/icons-material/Done';
+import { CircularProgress, Grid, IconButton, Paper } from '@mui/material';
 import clsx from 'clsx';
 import { notEmpty } from 'common/src/utils/notEmpty';
 import React, { useCallback, useEffect, useState } from 'react';
-import DataList from '../components/DataList';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Dialog } from '../components/Dialog';
 import { Draggable, DraggableProvider } from '../components/Draggable';
-import PlotifyGauge from '../components/PlotifyGauge';
-import { BrokerConnectionItem, BrokerData, ConnectionType, ItemExtended, useBrokerQuery } from '../endpoints/broker';
-import { useDevicesAllQuery, useDevicesQuery } from '../endpoints/devices';
+import PropertySelect, { PropertySelectEvent } from '../components/PropertySelect';
+import { useDevicesAllQuery } from '../endpoints/devices';
+import { useUpdateThingStateMutation } from '../endpoints/thing';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppBarContext } from '../hooks/useAppBarContext';
 import { ThingContext } from '../hooks/useThing';
-import dashboardSlice, {
-    PropertyPreferences,
-    propertyPreferencesReducerActions,
-} from '../store/slices/preferences/dashboardSlice';
-import { thingPreferencesSelectors } from '../store/slices/preferences/thingSlice';
+import { PropertyPreferences, propertyPreferencesReducerActions } from '../store/slices/preferences/dashboardSlice';
 import { byPreferences } from '../utils/sort';
 import PropertyRow from './room/PropertyRow';
-import AddIcon from '@mui/icons-material/Add';
-import { Dialog } from '../components/Dialog';
-import PropertySelect, { PropertySelectEvent } from '../components/PropertySelect';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAppBarContext } from '../hooks/useAppBarContext';
-import DoneIcon from '@mui/icons-material/Done';
 
 function Properties({ editMode, onMove }: { editMode: boolean; onMove: (dragId: string, hoverId: string) => any }) {
     const preferences = useAppSelector((state) => state.preferences.dashboard.entities);
     const thingsEntities = useAppSelector((state) => state.application.things.entities);
+    const [updatePropertyState] = useUpdateThingStateMutation();
 
     const config = Object.values(preferences) as PropertyPreferences[];
-    const things = config.map((c) => thingsEntities[c.thingId]).filter(notEmpty);
 
-    const properties = things.flatMap((thing) => {
-        const properties = thing.config.properties.filter((property) => preferences[property._id!]).filter(notEmpty);
-        return properties.map((property) => ({ thing, property }));
-    });
+    const properties = Object.values(thingsEntities)
+        .flatMap((thing) => {
+            if (!thing || !config.some((c) => c.thingId === thing._id)) return;
+
+            const properties = thing.config.properties
+                .filter((property) => preferences[property._id!])
+                .filter(notEmpty);
+            return properties.map((property) => ({ thing, property }));
+        })
+        .filter(notEmpty);
+
+    const sorted = properties.map((t) => ({ ...t, id: t.property._id! })).sort(byPreferences(preferences));
 
     return (
         <>
-            {properties
-                .map((t) => ({ ...t, id: t.property._id! }))
-                .sort(byPreferences(preferences))
-                .map(({ property, thing }, idx) => (
-                    <Draggable
-                        id={property._id!}
-                        key={property._id!}
-                        index={idx}
-                        onMove={onMove}
-                        type="property"
-                        dragDisabled={!editMode}
-                        render={(isDragable: boolean, ref) => (
-                            <Grid item xs={6} md={4} xl={4}>
-                                <ThingContext.Provider value={thing} key={property._id}>
-                                    <Paper
-                                        ref={ref}
-                                        sx={{
-                                            padding: 1,
-                                            sx: isDragable ? 0.4 : 1,
-                                            userSelect: 'none',
-                                            // display: 'flex',
-                                            alignItems: 'center',
+            {sorted.map(({ property, thing }, idx) => (
+                <Draggable
+                    id={property._id!}
+                    key={property._id}
+                    index={idx}
+                    onMove={onMove}
+                    type="property"
+                    dragDisabled={!editMode}
+                    render={(isDragable: boolean, ref) => (
+                        <Grid item xs={6} md={4} xl={4}>
+                            <ThingContext.Provider value={thing} key={property._id}>
+                                <Paper
+                                    ref={ref}
+                                    sx={{
+                                        padding: 1,
+                                        sx: isDragable ? 0.4 : 1,
+                                        userSelect: 'none',
+                                        alignItems: 'center',
+                                    }}
+                                    className={clsx({ floating: editMode })}
+                                >
+                                    <PropertyRow
+                                        property={property}
+                                        state={thing.state?.[property.propertyId]}
+                                        title={`${thing.config.name} ${property.name}`}
+                                        onChange={(value) => {
+                                            updatePropertyState({
+                                                deviceId: thing.deviceId,
+                                                nodeId: thing.config.nodeId,
+                                                thingId: thing._id,
+                                                propertyId: property.propertyId,
+                                                value,
+                                            });
                                         }}
-                                        className={clsx({ floating: editMode })}
-                                    >
-                                        <PropertyRow
-                                            property={property}
-                                            state={thing.state?.[property.propertyId]}
-                                            title={`${thing.config.name} ${property.name}`}
-                                            onChange={(value) => {
-                                                // mutateThingState({
-                                                //     propertyId: property.propertyId,
-                                                //     value,
-                                                // });
-                                            }}
-                                        />
-                                    </Paper>
-                                </ThingContext.Provider>
-                            </Grid>
-                        )}
-                    />
-                ))}
+                                    />
+                                </Paper>
+                            </ThingContext.Provider>
+                        </Grid>
+                    )}
+                />
+            ))}
         </>
     );
 }
@@ -129,7 +130,7 @@ export default function UserDashboard() {
 
     function onChange({ target: { value } }: PropertySelectEvent) {
         dispatch(
-            propertyPreferencesReducerActions.addOne({
+            propertyPreferencesReducerActions.setOne({
                 _id: value.propertyId,
                 thingId: value.thingId,
                 order: Number.MAX_SAFE_INTEGER,
