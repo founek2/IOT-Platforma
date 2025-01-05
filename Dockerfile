@@ -1,4 +1,4 @@
-FROM node:20-alpine3.18
+FROM node:22-alpine3.20
 
 RUN apk add --no-cache openssh-keygen yarn openssl bash unzip && mkdir /keys
 
