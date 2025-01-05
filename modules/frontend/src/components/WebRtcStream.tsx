@@ -52,11 +52,5 @@ export function WebRtcStream({ src }: VideoStreamProps) {
         };
     }, [ref]);
 
-    return (
-        <Paper sx={{ position: 'relative' }} ref={(v) => (ref.current = v || undefined)}>
-            {/* <CardMedia component="video" autoPlay onLoadedData={() => setLoaded(true)} >
-            <source src={"https://kamery.home.iotdomu.cz/api/stream.mp4?src=rtsp_camera_1_sub?duration=3"} type={type} />
-        </CardMedia> */}
-        </Paper>
-    );
+    return <Paper sx={{ position: 'relative' }} ref={(v) => (ref.current = v || undefined)} />;
 }

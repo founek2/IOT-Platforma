@@ -31,14 +31,17 @@ import { PropertyState } from '../../store/slices/application/thingsSlice';
 import { CircleComponent } from '../../components/OnlineCircle';
 import { CircleColors } from '../../utils/getCircleColor';
 import { VideoStream } from '../../components/VideoStream';
-import { isUrl } from "common/src/utils/isUrl"
+import { isUrl } from 'common/src/utils/isUrl';
 import { WebRtcStream } from '../../components/WebRtcStream';
 import { onEnterRun } from 'common/src/utils/onEnter';
 
 const ConfirmationCircle = styled(CircleComponent)({
-    position: "absolute", right: -24, top: 0, bottom: 0,
-    margin: "auto"
-})
+    position: 'absolute',
+    right: -24,
+    top: 0,
+    bottom: 0,
+    margin: 'auto',
+});
 
 interface PropertyRowPlainProps {
     state?: PropertyState;
@@ -56,24 +59,29 @@ export function PropertyRowPlain({ state, property, onChange, disabled: disabled
     if (property.dataType === PropertyDataType.enum) {
         const propertyEnum = property as IThingPropertyEnum;
 
-        component = propertyEnum.format.length === 1 ? (
-            <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} disabled={disabled} />
-        ) : (
-            <Select
-                value={value || ''}
-                onChange={(e) => onChange(e.target.value as string)}
-                variant="standard"
-                disabled={disabled}
-            >
-                {(property as IThingPropertyEnum).format.map((label) => (
-                    <MenuItem value={label} key={label}>
-                        {label}
-                    </MenuItem>
-                ))}
-            </Select>
-        );
-    } else if (isNumericDataType(property.dataType) && (property as IThingPropertyNumeric).format
-        && property.settable && numericFormatDiff(property as IThingPropertyNumeric) <= 500) {
+        component =
+            propertyEnum.format.length === 1 ? (
+                <ActivatorButton onClick={() => onChange(propertyEnum.format[0])} disabled={disabled} />
+            ) : (
+                <Select
+                    value={value || ''}
+                    onChange={(e) => onChange(e.target.value as string)}
+                    variant="standard"
+                    disabled={disabled}
+                >
+                    {(property as IThingPropertyEnum).format.map((label) => (
+                        <MenuItem value={label} key={label}>
+                            {label}
+                        </MenuItem>
+                    ))}
+                </Select>
+            );
+    } else if (
+        isNumericDataType(property.dataType) &&
+        (property as IThingPropertyNumeric).format &&
+        property.settable &&
+        numericFormatDiff(property as IThingPropertyNumeric) <= 500
+    ) {
         const propertyNumeric = property as IThingPropertyNumeric;
         component = (
             <Slider
@@ -98,29 +106,35 @@ export function PropertyRowPlain({ state, property, onChange, disabled: disabled
                 disabled={disabled}
             />
         );
-    } else if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/") && typeof value === "string") {
-        component = <CardMedia component="img" src={`data:${property.format};base64,` + value} />
+    } else if (
+        property.dataType === PropertyDataType.binary &&
+        property.format?.startsWith('image/') &&
+        typeof value === 'string'
+    ) {
+        component = <CardMedia component="img" src={`data:${property.format};base64,` + value} />;
     } else if (property.dataType === PropertyDataType.color) {
-        component = <ColorPicker
-            value={value as string}
-            onChange={(e) => {
-                onChange(e.target.value);
-            }}
-            disabled={disabled}
-        />
-    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("image/") && isUrl(value)) {
-        component = <CardMedia component="img" src={value as string} />
-    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("video/") && isUrl(value)) {
-        component = <VideoStream src={value as string} />
-    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith("webrtc") && isUrl(value)) {
-        component = <WebRtcStream src={value as string} />
+        component = (
+            <ColorPicker
+                value={value as string}
+                onChange={(e) => {
+                    onChange(e.target.value);
+                }}
+                disabled={disabled}
+            />
+        );
+    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith('image/') && isUrl(value)) {
+        component = <CardMedia component="img" src={value as string} />;
+    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith('video/') && isUrl(value)) {
+        component = <VideoStream src={value as string} />;
+    } else if (property.dataType === PropertyDataType.string && property.format?.startsWith('webrtc') && isUrl(value)) {
+        component = <WebRtcStream src={value as string} />;
     } else if (property.settable) {
         const isNum = isNumericDataType(property.dataType);
         component = (
             <TextField
                 focused={stateValue ? String(stateValue) !== String(value) : undefined}
                 value={stateValue || ''}
-                inputProps={{ inputMode: isNum ? 'numeric' : "text", pattern: isNum ? '[0-9]*' : "" }}
+                inputProps={{ inputMode: isNum ? 'numeric' : 'text', pattern: isNum ? '[0-9]*' : '' }}
                 onChange={(e) => setStateValue(isNum ? Number(e.target.value) : e.target.value)}
                 onKeyDown={onEnterRun((e: any) => {
                     const val = isNum ? Number(e.target.value) : e.target.value;
@@ -135,33 +149,38 @@ export function PropertyRowPlain({ state, property, onChange, disabled: disabled
                 disabled={disabled}
             />
         );
-    }
-    else {
+    } else {
         component = (
             <Typography component="span" sx={disabledOverride ? { opacity: 0.6 } : undefined}>
-                {value === undefined ? "-" : value}
+                {value === undefined ? '-' : value}
             </Typography>
         );
     }
-    return <Box display="flex" alignItems="center" position="relative">
-        <CopyUrlContext propertyId={property.propertyId} value={value as string}>
-            {component}
-        </CopyUrlContext>
-        {property.unitOfMeasurement ?
-            <Typography
-                component="span"
-                sx={{ paddingLeft: property.unitOfMeasurement ? '0.4em' : '0', opacity: disabledOverride ? 0.6 : 1 }}
-            >
-                {property.unitOfMeasurement}
-            </Typography> : null}
-        <Fade in={state?.inTransition} timeout={{ enter: 1500, exit: 500 }}>
-            <ConfirmationCircle color={CircleColors.Orange} title="Čeká se na potvrzení" />
-        </Fade>
-    </Box>
+    return (
+        <Box display="flex" alignItems="center" position="relative">
+            <CopyUrlContext propertyId={property.propertyId} value={value as string}>
+                {component}
+            </CopyUrlContext>
+            {property.unitOfMeasurement ? (
+                <Typography
+                    component="span"
+                    sx={{
+                        paddingLeft: property.unitOfMeasurement ? '0.4em' : '0',
+                        opacity: disabledOverride ? 0.6 : 1,
+                    }}
+                >
+                    {property.unitOfMeasurement}
+                </Typography>
+            ) : null}
+            <Fade in={state?.inTransition} timeout={{ enter: 1500, exit: 500 }}>
+                <ConfirmationCircle color={CircleColors.Orange} title="Čeká se na potvrzení" />
+            </Fade>
+        </Box>
+    );
 }
 
-function DetailVisualization({ property, historyData }: { property: IThingProperty, historyData: Measurement[] }) {
-    const [selected, setSelected] = useState<number>()
+function DetailVisualization({ property, historyData }: { property: IThingProperty; historyData: Measurement[] }) {
+    const [selected, setSelected] = useState<number>();
 
     if (isNumericDataType(property.dataType))
         return <PlotifyNumeric data={[convertNumericHistoryToGraphData(historyData, property.propertyId)]} />;
@@ -170,34 +189,50 @@ function DetailVisualization({ property, historyData }: { property: IThingProper
 
     const data = convertNumericHistoryToGraphData(historyData, property.propertyId);
     return (
-        <Box textAlign="center" display="flex" alignItems="center" flexDirection="column" gap={1} >
-            {
-                data.x
-                    .slice(-3)
-                    .reverse()
-                    .map((date, i) => {
-                        const value = data.y[i];
-                        if (property.dataType === PropertyDataType.string && property.format?.startsWith("video/") && isUrl(value))
-                            return null
-                        if (property.dataType === PropertyDataType.string && property.format?.startsWith("webrtc") && isUrl(value))
-                            return null
+        <Box textAlign="center" display="flex" alignItems="center" flexDirection="column" gap={1}>
+            {data.x
+                .slice(-3)
+                .reverse()
+                .map((date, i) => {
+                    const value = data.y[i];
+                    if (
+                        property.dataType === PropertyDataType.string &&
+                        property.format?.startsWith('video/') &&
+                        isUrl(value)
+                    )
+                        return null;
+                    if (
+                        property.dataType === PropertyDataType.string &&
+                        property.format?.startsWith('webrtc') &&
+                        isUrl(value)
+                    )
+                        return null;
 
-                        if (property.dataType === PropertyDataType.binary && property.format?.startsWith("image/"))
-                            return <Box key={date.getTime()} display="flex" flexDirection="row" gap={2} onClick={() => setSelected(selected === i ? undefined : i)}>
-                                <Typography >
-                                    {format(date, 'd. L. HH:mm')}
-                                </Typography>
-                                <CardMedia component="img" src={`data:${property.format};base64,` + value} sx={{ maxWidth: selected === i ? "none" : 50 }} />
-                            </Box>
-
+                    if (property.dataType === PropertyDataType.binary && property.format?.startsWith('image/'))
                         return (
-                            <Typography key={date.getTime()}>
-                                {format(date, 'd. L. HH:mm')} - {value}
-                            </Typography>
+                            <Box
+                                key={date.getTime()}
+                                display="flex"
+                                flexDirection="row"
+                                gap={2}
+                                onClick={() => setSelected(selected === i ? undefined : i)}
+                            >
+                                <Typography>{format(date, 'd. L. HH:mm')}</Typography>
+                                <CardMedia
+                                    component="img"
+                                    src={`data:${property.format};base64,` + value}
+                                    sx={{ maxWidth: selected === i ? 'none' : 50 }}
+                                />
+                            </Box>
                         );
-                    })
-            }
-        </Box >
+
+                    return (
+                        <Typography key={date.getTime()}>
+                            {format(date, 'd. L. HH:mm')} - {value}
+                        </Typography>
+                    );
+                })}
+        </Box>
     );
 }
 
@@ -210,9 +245,13 @@ interface PropertyRowProps {
     defaultShowDetail?: boolean;
     sx?: SxProps<Theme>;
     className?: string;
+    title?: string;
 }
 
-const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function PropertyRow({ property, state, onChange, history, defaultShowDetail = false, sx, className }, ref) {
+const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function PropertyRow(
+    { property, state, onChange, history, defaultShowDetail = false, sx, className, title },
+    ref
+) {
     const [showDetail, setshowDetail] = useState(defaultShowDetail);
     const toogleDetail = useCallback(() => setshowDetail(!showDetail), [setshowDetail, showDetail]);
 
@@ -224,7 +263,7 @@ const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function Proper
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {Icon ? <Icon onClick={toogleDetail} /> : null}
                 <Typography component="span" onClick={toogleDetail} pr={2} sx={{ cursor: 'pointer' }}>
-                    {name}
+                    {title || name}
                 </Typography>
                 <PropertyRowPlain property={property} state={state} onChange={onChange} />
             </Box>
@@ -236,11 +275,11 @@ const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function Proper
                     prefix="Aktualizováno před"
                 />
             ) : null}
-            {showDetail && history?.some((v) => v.propertyId === property.propertyId)
-                ? <DetailVisualization property={property} historyData={history} />
-                : null}
+            {showDetail && history?.some((v) => v.propertyId === property.propertyId) ? (
+                <DetailVisualization property={property} historyData={history} />
+            ) : null}
         </Box>
     );
-})
+});
 
 export default PropertyRow;

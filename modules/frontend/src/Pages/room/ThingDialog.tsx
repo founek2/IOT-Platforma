@@ -26,7 +26,7 @@ export function ThingDialog() {
     const [fetchHistory, { data: historyData }] = useLazyThingHistoryQuery({
         pollingInterval: thing ? REFRESH_HISTORY_INTERVAL : 0,
     });
-    const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch();
     const { mutateThingState } = useUpdateThingStateSmart(thingId);
     const [mutateThing] = useUpdateThingMutation();
 
@@ -35,30 +35,32 @@ export function ThingDialog() {
     }, [thing?._id]);
 
     function onMove(dragId: string, hoverId: string) {
-        setThingDirty(true)
-        dispatch(thingsReducerActions.swapPropertyOrderFor([thingId, dragId, hoverId]))
+        setThingDirty(true);
+        dispatch(thingsReducerActions.swapPropertyOrderFor([thingId, dragId, hoverId]));
     }
 
     async function handleClose() {
         if (thingDirty && thing) {
             await mutateThing({
-                deviceId: thing.deviceId, nodeId: thing._id, data: {
-                    config: thing.config
-                }
-            }).unwrap()
+                deviceId: thing.deviceId,
+                nodeId: thing._id,
+                data: {
+                    config: thing.config,
+                },
+            })
+                .unwrap()
                 .then(() => {
-                    setEditMode(false)
-                    setThingDirty(false)
-                    dispatch(notificationActions.add({ message: "Změna byla uložena" }))
+                    setEditMode(false);
+                    setThingDirty(false);
+                    dispatch(notificationActions.add({ message: 'Změna byla uložena' }));
                 })
-                .catch(err => console.log(err))
+                .catch((err) => console.log(err));
         }
-        navigate({ search: '' }, { replace: true })
+        navigate({ search: '' }, { replace: true });
     }
 
-
-    const content = thing
-        ? thing.config.properties.map((property, i) => (
+    const content = thing ? (
+        thing.config.properties.map((property, i) => (
             <Draggable
                 id={property._id!}
                 key={property._id!}
@@ -66,7 +68,7 @@ export function ThingDialog() {
                 onMove={onMove}
                 type="property"
                 dragDisabled={!editMode}
-                render={(isDragable: boolean, ref) =>
+                render={(isDragable: boolean, ref) => (
                     <ThingContext.Provider value={thing} key={property._id}>
                         <PropertyRow
                             ref={ref}
@@ -85,11 +87,17 @@ export function ThingDialog() {
                             defaultShowDetail={i === 0}
                         />
                     </ThingContext.Provider>
-                } />
+                )}
+            />
         ))
-        : <></>;
+    ) : (
+        <></>
+    );
 
-    const menu = [{ label: "Uspořádat", onClick: () => setEditMode(!editMode) }, { label: "Notifikace", path: `/device/${thing?.deviceId}/thing/${thingId}/notification` }]
+    const menu = [
+        { label: 'Uspořádat', onClick: () => setEditMode(!editMode) },
+        { label: 'Notifikace', path: `/device/${thing?.deviceId}/thing/${thingId}/notification` },
+    ];
     return (
         <Dialog
             open={Boolean(thing)}
@@ -97,25 +105,29 @@ export function ThingDialog() {
             title={thing?.config.name}
             menuItems={(closeMenu) =>
                 menu.map(({ label, path, onClick }) => {
-                    const item = <MenuItem key={label} onClick={() => { closeMenu(); if (onClick) onClick(); }}>{label}</MenuItem>
-                    return path ? <Link key={label} to={path}>{item}</Link> : item
+                    const item = (
+                        <MenuItem
+                            key={label}
+                            onClick={() => {
+                                closeMenu();
+                                if (onClick) onClick();
+                            }}
+                        >
+                            {label}
+                        </MenuItem>
+                    );
+                    return path ? (
+                        <Link key={label} to={path}>
+                            {item}
+                        </Link>
+                    ) : (
+                        item
+                    );
                 })
-                //    ( <MenuItem onClick={() => {
-                //         closeMenu()
-                //         setEditMode(!editMode)
-                //     }}>Uspořádat</MenuItem>
-                //     <Link to={`/device/${thing?.deviceId}/thing/${thingId}/notification`}>
-                //         <MenuItem onClick={() => {
-                //             closeMenu()
-                //         }}>Notifikace</MenuItem>
-                //     </Link>
-                //    )
             }
             fullWidth
         >
-            <>
-                {<DraggableProvider disabled={!editMode}>{content}</DraggableProvider>}
-            </>
+            <>{<DraggableProvider disabled={!editMode}>{content}</DraggableProvider>}</>
         </Dialog>
     );
 }

@@ -73,24 +73,6 @@ export function DeviceConfigDialog({ open, onClose, device }: DeviceConfigDialog
                     metadata: device.metadata,
                     things: things.map((t) => t.config),
                 } as any)}
-                {/* {convertJsonToYamlHtml([
-                {
-                    name: "bateria",
-                    type: "sensor",
-                    properties: [
-                        {
-                            _id: "123",
-                            unit: "%",
-                            settable: true
-                        },
-                        {
-                            nodes: [
-                                { feature: "jeeej" }
-                            ]
-                        }
-                    ]
-                }
-            ])} */}
             </DialogContentText>
         </MyDialog>
     );

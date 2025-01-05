@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { generateDeviceId } from '../utils/generateDeviceId';
 
 type EventMap = Record<string, any>;
 
@@ -35,6 +36,7 @@ export interface EmitterEvents {
     invalid_token: void;
 }
 
+const ID_KEY = 'deviceId';
 const STORAGE_KEY = "accessToken"
 class InternalStorage extends MyEmitter<EmitterEvents> {
     constructor() {
@@ -52,6 +54,15 @@ class InternalStorage extends MyEmitter<EmitterEvents> {
 
     deleteAccessToken() {
         localStorage.removeItem(STORAGE_KEY)
+    }
+
+    getDeviceId(): String {
+        const id = localStorage.getItem(ID_KEY);
+        if (id) return id;
+
+        const newId = generateDeviceId();
+        localStorage.setItem(ID_KEY, newId);
+        return newId;
     }
 }
 

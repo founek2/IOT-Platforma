@@ -46,7 +46,7 @@ export class VideoStream extends VideoRTC {
         <style>
         .info {
             position: absolute;
-            top: 25;
+            top: 25px;
             left: 0;
             padding: 12px;
             color: white;
@@ -55,7 +55,7 @@ export class VideoStream extends VideoRTC {
         }
         .mic {
             position: absolute;
-            top: 25;
+            top: 25px;
             right: 0;
             padding: 12px;
             color: white;
