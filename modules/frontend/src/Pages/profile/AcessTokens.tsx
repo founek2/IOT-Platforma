@@ -4,6 +4,7 @@ import {
     Box,
     Button,
     DialogContentText,
+    Grid,
     IconButton,
     Paper,
     Table,
@@ -82,46 +83,54 @@ function AccessTokens() {
 
     return (
         <>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Název</TableCell>
-                            <TableCell align="right">Oprávnění</TableCell>
-                            <TableCell align="right">Vytvořeno</TableCell>
-                            <TableCell align="right">Akce</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {accessTokens?.map((row) => (
-                            <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">
-                                    {row.name}
-                                </TableCell>
-                                <TableCell align="right">{row.permissions.join(', ')}</TableCell>
-                                <TableCell align="right">{new Date(row.createdAt).toLocaleDateString()}</TableCell>
-                                <TableCell align="right">
-                                    <IconButton
-                                        onClick={() => {
-                                            setOpenDialog({ type: OpenDialog.Delete, id: row._id });
-                                        }}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => setOpenDialog({ type: OpenDialog.Edit, id: row._id })}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Box textAlign="center" mt={2}>
-                <Button onClick={() => setOpenDialog({ type: OpenDialog.Create, id: '' })} variant="contained">
-                    Vytvořit token
-                </Button>
-            </Box>
+            <Grid container spacing={2}>
+                <Grid item xs={12} display="flex" justifyContent="center">
+                    <Button onClick={() => setOpenDialog({ type: OpenDialog.Create, id: '' })} variant="contained">
+                        Vytvořit token
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Název</TableCell>
+                                    <TableCell align="right">Oprávnění</TableCell>
+                                    <TableCell align="right">Vytvořeno</TableCell>
+                                    <TableCell align="right">Akce</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {accessTokens?.map((row) => (
+                                    <TableRow key={row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                        <TableCell component="th" scope="row">
+                                            {row.name}
+                                        </TableCell>
+                                        <TableCell align="right">{row.permissions.join(', ')}</TableCell>
+                                        <TableCell align="right">
+                                            {new Date(row.createdAt).toLocaleDateString()}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <IconButton
+                                                onClick={() => {
+                                                    setOpenDialog({ type: OpenDialog.Delete, id: row._id });
+                                                }}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                onClick={() => setOpenDialog({ type: OpenDialog.Edit, id: row._id })}
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+            </Grid>
             <Dialog
                 open={openDialog?.type === OpenDialog.Create}
                 title="Vytvoření tokenu"
