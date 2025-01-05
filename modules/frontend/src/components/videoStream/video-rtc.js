@@ -139,6 +139,12 @@ export class VideoRTC extends HTMLElement {
          * @type {Object.<string,Function>}
          */
         this.onmessage = null;
+
+        /**
+         * [internal] Remembers micrphone tracks
+         * @type {MediaStreamTrack[]}
+         */
+        this.mediaTracks = [];
     }
 
     /**
@@ -319,6 +325,20 @@ export class VideoRTC extends HTMLElement {
 
         this.video.src = '';
         this.video.srcObject = null;
+
+        this.muteMicrophone()
+    }
+
+    muteMicrophone() {
+        this.mediaTracks.forEach(track => track.enabled = false);
+    }
+
+    unmuteMicrophone() {
+        this.mediaTracks.forEach(track => track.enabled = true);
+    }
+
+    isMicrophoneEnabled() {
+        return this.media.indexOf('microphone') >= 0
     }
 
     /**
@@ -535,9 +555,12 @@ export class VideoRTC extends HTMLElement {
      */
     async createOffer(pc) {
         try {
-            if (this.media.indexOf('microphone') >= 0) {
+            if (this.isMicrophoneEnabled()) {
                 const media = await navigator.mediaDevices.getUserMedia({ audio: true });
-                media.getTracks().forEach(track => {
+                this.mediaTracks = media.getTracks();
+                this.muteMicrophone();
+
+                this.mediaTracks.forEach(track => {
                     pc.addTransceiver(track, { direction: 'sendonly' });
                 });
             }
