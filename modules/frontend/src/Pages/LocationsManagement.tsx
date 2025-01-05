@@ -6,7 +6,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useUpdateDeviceMutation } from '../endpoints/devices';
 import { getAllDevices, getDevice } from '../selectors/getters';
-import { IconButton, TextField } from '@mui/material';
+import { Divider, IconButton, TextField } from '@mui/material';
 import { DeviceWidget } from './room/widgets/DeviceWidget';
 import { Device } from '../store/slices/application/devicesSlice';
 import DiscoverySection from './deviceManagement/DiscoverySection';
@@ -28,7 +28,7 @@ function searchByText(text: string) {
         device.metadata.deviceId.toLowerCase().includes(search) ||
         device.info.location.building.toLowerCase().includes(search) ||
         device.info.location.room.toLowerCase().includes(search) ||
-        `${device.info.location.building}/${device.info.location.room}`.toLowerCase().startsWith(search)
+        `${device.info.location.building}/${device.info.location.room}`.toLowerCase().startsWith(search);
 }
 
 interface DevicesProps {
@@ -48,15 +48,15 @@ export default function LocationsManagement({ title }: DevicesProps) {
     const editMode = searchParams.has('edit');
 
     const onMove = useCallback(
-        (dragId: string, hoverId: string) =>
-            dispatch(devicePreferencesReducerActions.swapOrderFor([dragId, hoverId])),
+        (dragId: string, hoverId: string) => dispatch(devicePreferencesReducerActions.swapOrderFor([dragId, hoverId])),
         [dispatch]
     );
 
     const prepareEditMode = useCallback(() => {
         dispatch(
             devicePreferencesReducerActions.resetOrderFor(
-                devices.map(({ _id }) => ({ id: _id }))
+                devices
+                    .map(({ _id }) => ({ id: _id }))
                     .sort(byPreferences(preferencies))
                     .map((r) => r.id)
             )
@@ -98,32 +98,35 @@ export default function LocationsManagement({ title }: DevicesProps) {
                         variant="standard"
                         label="Vyhledávání"
                         fullWidth
-                        sx={{ marginTop: 1 }}
+                        sx={{ mt: 1, mb: 2 }}
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                     />
                     <GridRoom>
                         <DraggableProvider disabled={!editMode}>
-                            {
-                                devices
-                                    .filter(searchByText(searchText))
-                                    .map(({ _id }) => ({ id: _id }))
-                                    .sort(byPreferences(preferencies))
-                                    .map(({ id }, idx) => <Draggable
+                            {devices
+                                .filter(searchByText(searchText))
+                                .map(({ _id }) => ({ id: _id }))
+                                .sort(byPreferences(preferencies))
+                                .map(({ id }, idx) => (
+                                    <Draggable
                                         id={id}
                                         key={id}
                                         index={idx}
                                         onMove={onMove}
                                         type="device"
                                         dragDisabled={!editMode}
-                                        render={(isDragable: boolean, ref) =>
+                                        render={(isDragable: boolean, ref) => (
                                             <DeviceWidget
-                                                id={id} key={id} ref={ref}
+                                                id={id}
+                                                key={id}
+                                                ref={ref}
                                                 sx={{ opacity: isDragable ? 0.4 : 1 }}
                                                 className={clsx({ floating: editMode })}
-                                            />}
-                                    />)
-                            }
+                                            />
+                                        )}
+                                    />
+                                ))}
                         </DraggableProvider>
                     </GridRoom>
                 </Grid>
