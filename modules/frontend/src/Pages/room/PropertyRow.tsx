@@ -251,10 +251,11 @@ interface PropertyRowProps {
     defaultShowDetail?: boolean;
     sx?: SxProps<Theme>;
     className?: string;
+    title?: string;
 }
 
 const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function PropertyRow(
-    { property, state, onChange, history, defaultShowDetail = false, sx, className },
+    { property, state, onChange, history, defaultShowDetail = false, sx, className, title },
     ref
 ) {
     const [showDetail, setshowDetail] = useState(defaultShowDetail);
@@ -268,7 +269,7 @@ const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function Proper
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {Icon ? <Icon onClick={toogleDetail} /> : null}
                 <Typography component="span" onClick={toogleDetail} pr={2} sx={{ cursor: 'pointer' }}>
-                    {name}
+                    {title || name}
                 </Typography>
                 <PropertyRowPlain property={property} state={state} onChange={onChange} />
             </Box>

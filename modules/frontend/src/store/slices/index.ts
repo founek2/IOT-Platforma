@@ -2,6 +2,7 @@ import { ActionFromReducersMapObject, combineReducers, Reducer, StateFromReducer
 import { api } from '../../endpoints/api';
 import application from './application';
 import formsData from './formDataSlice';
+import plugins from './pluginsSlice';
 import notifications from './notificationSlice';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
@@ -13,6 +14,7 @@ const reducers = {
     preferences,
     formsData,
     notifications,
+    plugins,
 };
 
 type ReducersMapObject = typeof reducers;

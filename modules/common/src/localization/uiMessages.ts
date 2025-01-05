@@ -2,6 +2,7 @@ import { messageFactory } from '.';
 
 const messages = {
     userManagement: 'Správe uživatelů',
+    userDashboard: 'Dashboard',
     dashboard: 'Přehled',
     registration: 'Registrovat',
     deviceControl: 'Správa Zařízení',

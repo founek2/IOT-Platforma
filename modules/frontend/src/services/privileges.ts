@@ -26,10 +26,9 @@ const RoomLazy = lazy(() => import(/* webpackChunkName: 'Room' */ '../Pages/Room
 // const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'EditNotifyForm' */ '../Pages/EditNotifyForm'));
 
 const ProfileLazy = lazy(() => import(/* webpackChunkName: 'Profile' */ '../Pages/Profile'));
-
 const EditNotifyFormLazy = lazy(() => import(/* webpackChunkName: 'NotifyForm' */ '../Pages/EditNotifyForm'));
-
 const DashboardLazy = lazy(() => import(/* webpackChunkName: 'Dashboard' */ '../Pages/Dashboard'));
+const UserDashboardLazy = lazy(() => import(/* webpackChunkName: 'UserDashboard' */ '../Pages/UserDashboard'));
 
 const userRoutes: Route[] = [
     {
@@ -49,6 +48,13 @@ const userRoutes: Route[] = [
         Component: LocationsLazy,
         Loader: LocationsLoader,
         name: 'devices',
+        Icon: CloudIcon,
+    },
+    {
+        path: '/userDashboard',
+        Component: UserDashboardLazy,
+        // Loader: LocationsLoader,
+        name: 'userDashboard',
         Icon: CloudIcon,
     },
     {

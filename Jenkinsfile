@@ -27,7 +27,7 @@ pipeline {
             when { branch "release*" }
 
             environment {
-                USER_CREDENTIALS = credentials('Jenkins - iot')
+                USER_CREDENTIALS = credentials('Jenkins-iot')
             }
    
             steps {
@@ -41,7 +41,7 @@ pipeline {
             when { branch "develop*" }
 
             environment {
-                USER_CREDENTIALS = credentials('Jenkins - iot')
+                USER_CREDENTIALS = credentials('Jenkins-iot')
             }
    
             steps {
@@ -90,7 +90,7 @@ pipeline {
             }
 
             steps {
-                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://192.168.10.35:9020/trigger/IOT-hosting-dev/iot-server'
+                sh 'curl  -X POST -H  "X-API-Key: $TRIGGER_API_KEY" --ipv4 http://docker.host.doma:9020/trigger/IOT-hosting-dev/iot-server'
             }
         }
     }

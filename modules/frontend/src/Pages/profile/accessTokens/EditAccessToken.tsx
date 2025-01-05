@@ -10,7 +10,7 @@ import { AccessToken } from '../../../endpoints/accessTokens';
 import { formsDataActions } from '../../../store/slices/formDataActions';
 
 interface DiscoverySectionProps {
-    formName: "EDIT_ACCESS_TOKEN" | "ADD_ACCESS_TOKEN";
+    formName: 'EDIT_ACCESS_TOKEN' | 'ADD_ACCESS_TOKEN';
     accessToken?: AccessToken;
 }
 
@@ -24,43 +24,60 @@ function EditDeviceForm({ formName, accessToken }: DiscoverySectionProps) {
         if (accessToken) compose(fillForm, pick(['name', 'permissions']))(accessToken);
     }, [accessToken, dispatch, formName]);
 
-
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <FieldConnector
-                    fieldProps={{ fullWidth: true }}
-                    deepPath={`${formName}.name`}
-                />
+                <FieldConnector fieldProps={{ fullWidth: true }} deepPath={`${formName}.name`} />
             </Grid>
             <Grid item xs={12} sm={6}>
                 <FieldConnector
                     fieldProps={{ fullWidth: true }}
                     deepPath={`${formName}.permissions`}
-                    component={({ onChange, value }: { onChange: (e: any) => void, value?: Permission[] }) => {
+                    component={({ onChange, value }: { onChange: (e: any) => void; value?: Permission[] }) => {
                         function handleChange(value: string[]) {
-                            onChange({ target: { value } })
+                            onChange({ target: { value } });
                         }
-                        console.log("val", value)
-                        return <>
-                            <List
-                                // subheader={<ListSubheader>{label}</ListSubheader>}
-                                sx={[{ bgcolor: 'background.paper', overflow: 'auto' }]}
-                            >
-                                <ListItemButton selected={value?.length === 1 && value?.includes(Permission.read)} onClick={() => handleChange(["read"])}>čtení</ListItemButton>
-                                <ListItemButton selected={value?.length === 1 && value?.includes(Permission.write)} onClick={() => handleChange(["write"])}>zápis</ListItemButton>
-                                <ListItemButton selected={value?.includes(Permission.read) && value?.includes(Permission.write) && value?.includes(Permission.control)} onClick={() => handleChange(["read", "write", "control"])}>ovládání</ListItemButton>
-                            </List>
-                        </>
+
+                        return (
+                            <>
+                                <List
+                                    // subheader={<ListSubheader>{label}</ListSubheader>}
+                                    sx={[{ bgcolor: 'background.paper', overflow: 'auto' }]}
+                                >
+                                    <ListItemButton
+                                        selected={value?.length === 1 && value?.includes(Permission.read)}
+                                        onClick={() => handleChange(['read'])}
+                                    >
+                                        čtení
+                                    </ListItemButton>
+                                    <ListItemButton
+                                        selected={value?.length === 1 && value?.includes(Permission.write)}
+                                        onClick={() => handleChange(['read', 'control'])}
+                                    >
+                                        ovládání
+                                    </ListItemButton>
+                                    <ListItemButton
+                                        selected={
+                                            value?.includes(Permission.read) &&
+                                            value?.includes(Permission.write) &&
+                                            value?.includes(Permission.control)
+                                        }
+                                        onClick={() => handleChange(['read', 'write', 'control'])}
+                                    >
+                                        správa
+                                    </ListItemButton>
+                                </List>
+                            </>
+                        );
                     }}
                     fullWidth
                     options={TokenPermissions}
 
-                // selectOptions={TokenPermissions.map(({ value, label }) => (
-                //     <MenuItem value={value} key={label}>
-                //         {label}
-                //     </MenuItem>
-                // ))}
+                    // selectOptions={TokenPermissions.map(({ value, label }) => (
+                    //     <MenuItem value={value} key={label}>
+                    //         {label}
+                    //     </MenuItem>
+                    // ))}
                 />
             </Grid>
         </Grid>

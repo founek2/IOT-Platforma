@@ -11,10 +11,9 @@ import { preserveLocation } from '../utils/preserveLocation';
 
 preserveLocation();
 
-
 const SuspenseTrigger = () => {
-    throw new Promise(() => { })
-}
+    throw new Promise(() => {});
+};
 
 export default function MyRoutes() {
     const userGroups = useAppSelector(getCurrentGroups);
@@ -22,18 +21,21 @@ export default function MyRoutes() {
     return (
         <Routes>
             {privileges.getPathsWithComp(userGroups).map(({ path, Component, name, Loader }) => {
-                const route = <Route
-                    path={path}
-                    key={path}
-                    element={<Suspense fallback={Loader ? <Loader /> : undefined}>
-                        <Component title={name ? uiMessages.getMessage(name) : undefined} />
-                        {/* <SuspenseTrigger /> */}
-                    </Suspense>}
-                />
+                const route = (
+                    <Route
+                        path={path}
+                        key={path}
+                        element={
+                            <Suspense fallback={Loader ? <Loader /> : undefined}>
+                                <Component title={name ? uiMessages.getMessage(name) : undefined} />
+                                {/* <SuspenseTrigger /> */}
+                            </Suspense>
+                        }
+                    />
+                );
 
-                return route
-            }
-            )}
+                return route;
+            })}
             <Route path="/authorization/*" element={<Authorization />} />
             <Route path="/registration" element={<Registration />} />
             <Route path="/*" element={<HomePage />} />
