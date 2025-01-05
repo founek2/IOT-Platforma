@@ -30,7 +30,7 @@ export function WebRtcStream({ src }: VideoStreamProps) {
             document.body.className = "flex";
         }
 
-        const background = params.get("background") !== "false";
+        const background = params.get("background") === "true";
         const width = "1 0 " + (params.get("width") || "320px");
 
         for (let i = 0; i < streams.length; i++) {
