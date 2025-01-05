@@ -63,7 +63,7 @@ const config = {
                 loader: 'ts-loader',
                 options: {
                     getCustomTransformers: () => ({
-                        before: [!isEnvProduction && ReactRefreshTypeScript()].filter(Boolean),
+                        before: [!isEnvProduction && ReactRefreshTypeScript.default()].filter(Boolean),
                     }),
                     projectReferences: true,
                 },
@@ -132,22 +132,34 @@ const config = {
         }),
     ].filter(Boolean),
     devServer: {
-        proxy: {
-            '/api': {
+        proxy: [
+            {
+                context: ['/api'],
                 target: 'http://localhost:3000',
                 router: () => proxyTarget,
-                // router: () => 'https://dev.iotdomu.cz',
-                // logLevel: 'debug' /*optional*/,
                 changeOrigin: true,
             },
-            '/socket.io': {
+            {
+                context: ['/socket.io'],
                 target: 'http://localhost:3000',
                 router: () => proxyTarget,
                 ws: true,
                 changeOrigin: true,
             },
-            // '/api': 'https://iotdomu.cz',
-        },
+        ],
+        // proxy: {
+        //     '/api': {
+        //         target: 'http://localhost:3000',
+        //         router: () => proxyTarget,
+        //         changeOrigin: true,
+        //     },
+        //     '/socket.io': {
+        //         target: 'http://localhost:3000',
+        //         router: () => proxyTarget,
+        //         ws: true,
+        //         changeOrigin: true,
+        //     },
+        // },
         historyApiFallback: {
             rewrites: [{ from: /^\/(?!api\/)/, to: '/index.html' }],
         },
@@ -188,6 +200,12 @@ const config = {
                 // },
             },
         },
+    },
+    watchOptions: {
+        // for some systems, watching many files can result in a lot of CPU or memory usage
+        // https://webpack.js.org/configuration/watch/#watchoptionsignored
+        // don't use this pattern, if you have a monorepo with linked packages
+        ignored: /node_modules/,
     },
 };
 
