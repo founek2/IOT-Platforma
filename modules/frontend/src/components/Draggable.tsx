@@ -5,14 +5,10 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 
-interface DragItem {
+export interface DragItem {
     id: string;
     index: number;
 }
-
-const ItemTypes = {
-    CARD: 'CARD',
-};
 
 export interface DraggableComponentProps {
     id: string;
@@ -20,8 +16,9 @@ export interface DraggableComponentProps {
     onMove: (dragId: string, hoverId: string) => void;
     render: (isDraggin: boolean, ref: React.RefObject<HTMLDivElement>) => JSX.Element;
     type: string;
+    onDrop?: () => any;
 }
-export function DraggableComponent({ id, index, onMove, render, type }: DraggableComponentProps) {
+export function DraggableComponent({ id, index, onMove, render, type, onDrop }: DraggableComponentProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
         accept: type,
@@ -30,10 +27,14 @@ export function DraggableComponent({ id, index, onMove, render, type }: Draggabl
                 handlerId: monitor.getHandlerId(),
             };
         },
+        drop(item, monitor) {
+            console.log('drop');
+        },
         hover(item: DragItem, monitor) {
             if (!ref.current) {
                 return;
             }
+            console.log('id ', id);
             const dragIndex = item.index;
             const hoverIndex = index;
 
@@ -58,7 +59,7 @@ export function DraggableComponent({ id, index, onMove, render, type }: Draggabl
             // When dragging downwards, only move when the cursor is below 25%
             // When dragging upwards, only move when the cursor is above 25%
 
-            console.log(dragIndex, hoverIndex, hoverClientY, hoverMiddleY)
+            console.log(dragIndex, hoverIndex, hoverClientY, hoverMiddleY);
             // Dragging downwards
             if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY / 1.5) {
                 return;
@@ -70,7 +71,7 @@ export function DraggableComponent({ id, index, onMove, render, type }: Draggabl
             }
 
             // Time to actually perform the action
-            console.log("move")
+            console.log('move');
             onMove(item.id, id);
 
             // Note: we're mutating the monitor item here!
@@ -101,13 +102,51 @@ export function Draggable({ dragDisabled, render, ...props }: DraggableComponent
     return <DraggableComponent {...props} render={render} />;
 }
 
+export interface DroppableComponentProps {
+    onDrop: (item: DragItem) => void;
+    onHover?: (item: DragItem) => void;
+    render: (isDraggin: boolean, ref: React.RefObject<HTMLDivElement>) => JSX.Element;
+    type: string;
+}
+export function DroppableComponent({ render, type, onDrop, onHover }: DroppableComponentProps) {
+    const ref = useRef<HTMLDivElement>(null);
+    const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
+        accept: type,
+        collect(monitor) {
+            return {
+                handlerId: monitor.getHandlerId(),
+            };
+        },
+        drop(item, monitor) {
+            onDrop(item);
+        },
+        hover(item) {
+            if (onHover) onHover(item);
+        },
+    });
+
+    drop(ref);
+    return render(false, ref);
+}
+
+export function Droppable({ dragDisabled, render, ...props }: DroppableComponentProps & { dragDisabled?: boolean }) {
+    if (dragDisabled) return render(false, { current: null });
+
+    return <DroppableComponent {...props} render={render} />;
+}
+
 const checkIfTouchScreen = () => matchMedia('(hover: none), (pointer: coarse)').matches;
 
-export function DraggableProvider({ children, disabled }: { children: React.ReactElement | React.ReactElement[], disabled?: boolean }) {
+export function DraggableProvider({
+    children,
+    disabled,
+}: {
+    children: React.ReactElement | React.ReactElement[];
+    disabled?: boolean;
+}) {
     const isTouchScreen = checkIfTouchScreen();
 
-    if (disabled)
-        return <>{children}</>;
+    if (disabled) return <>{children}</>;
 
     if (isTouchScreen) {
         logger.debug('Using TouchBackend');

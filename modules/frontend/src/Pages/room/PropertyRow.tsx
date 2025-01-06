@@ -48,8 +48,15 @@ interface PropertyRowPlainProps {
     property: IThingProperty;
     onChange: (newValue: string | number) => void;
     disabled?: boolean;
+    onDummyClick?: () => any;
 }
-export function PropertyRowPlain({ state, property, onChange, disabled: disabledOverride }: PropertyRowPlainProps) {
+export function PropertyRowPlain({
+    state,
+    property,
+    onChange,
+    disabled: disabledOverride,
+    onDummyClick,
+}: PropertyRowPlainProps) {
     const value = state?.value;
     const [stateValue, setStateValue] = useState<number | string>(); // TODO rozbije se při příchozí změně z websocketu (desync)
     const disabled = disabledOverride || !property.settable;
@@ -117,7 +124,14 @@ export function PropertyRowPlain({ state, property, onChange, disabled: disabled
         property.format?.startsWith('image/') &&
         typeof value === 'string'
     ) {
-        component = <CardMedia component="img" src={`data:${property.format};base64,` + value} />;
+        component = (
+            <CardMedia
+                component="img"
+                src={`data:${property.format};base64,` + value}
+                onClick={onDummyClick}
+                sx={{ cursor: onDummyClick ? 'pointer' : undefined }}
+            />
+        );
     } else if (property.dataType === PropertyDataType.color) {
         component = (
             <ColorPicker
@@ -252,26 +266,27 @@ interface PropertyRowProps {
     sx?: SxProps<Theme>;
     className?: string;
     title?: string;
+    onDetailClick?: () => any;
 }
 
 const PropertyRow = forwardRef<HTMLDivElement, PropertyRowProps>(function PropertyRow(
-    { property, state, onChange, history, defaultShowDetail = false, sx, className, title },
+    { property, state, onChange, history, defaultShowDetail = false, sx, className, title, onDetailClick },
     ref
 ) {
     const [showDetail, setshowDetail] = useState(defaultShowDetail);
     const toogleDetail = useCallback(() => setshowDetail(!showDetail), [setshowDetail, showDetail]);
-
     const { propertyClass, name } = property;
     const Icon = propertyClass ? SensorIcons[propertyClass] : null;
-    // console.log('state row', state?.desiredValue);
+    const handleDetail = onDetailClick ? onDetailClick : toogleDetail;
+
     return (
         <Box sx={sx} ref={ref} className={className}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {Icon ? <Icon onClick={toogleDetail} /> : null}
-                <Typography component="span" onClick={toogleDetail} pr={2} sx={{ cursor: 'pointer' }}>
+                {Icon ? <Icon onClick={handleDetail} /> : null}
+                <Typography component="span" onClick={handleDetail} pr={2} sx={{ cursor: 'pointer' }}>
                     {title || name}
                 </Typography>
-                <PropertyRowPlain property={property} state={state} onChange={onChange} />
+                <PropertyRowPlain property={property} state={state} onChange={onChange} onDummyClick={handleDetail} />
             </Box>
             {showDetail && state?.timestamp ? (
                 <UpdatedBefore
