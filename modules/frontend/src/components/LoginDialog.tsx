@@ -55,7 +55,7 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
             signIn(data)
                 .unwrap()
                 .then(() => {
-                    console.log("done")
+                    console.log('done');
                     handleClose();
                     navigate('/building');
                 })
@@ -111,6 +111,7 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
                         <FieldConnector
                             autoFocus
                             deepPath="LOGIN.userName"
+                            fieldProps={{ autoComplete: 'username' }}
                             fullWidth
                             onChange={(e) =>
                                 onStopTyping(async () => {
@@ -126,7 +127,7 @@ export default function LoginDialog({ onClose, open }: LoginDialogProps) {
                         <FieldConnector
                             autoFocus
                             deepPath="LOGIN.password"
-                            fieldProps={{ type: 'password' }}
+                            fieldProps={{ type: 'password', autoComplete: 'current-password' }}
                             fullWidth
                             onEnter={actionHandler}
                             sx={authTypeSelected === AuthType.passwd ? undefined : { display: 'none' }}
